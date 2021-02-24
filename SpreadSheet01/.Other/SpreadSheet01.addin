@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Command">
+    <Text>SpreadSheet01</Text>
+    <Description>Description of SpreadSheet01</Description>
+    <Assembly>SpreadSheet01.dll</Assembly>
+    <FullClassName>SpreadSheet01.Command</FullClassName>
+    <ClientId>fb86c1be-7bf4-4adb-85c8-28740611b40a</ClientId>
+    <VendorId>pro.cyberstudio</VendorId>
+    <VendorDescription>CyberStudio</VendorDescription>
+  </AddIn>
+  <AddIn Type="Application">
+    <Name>Application SpreadSheet01</Name>
+    <Assembly>SpreadSheet01.dll</Assembly>
+    <FullClassName>SpreadSheet01.App</FullClassName>
+    <ClientId>7959bca4-2359-46ee-8ae4-ae3b2297eafd</ClientId>
+    <VendorId>pro.cyberstudio</VendorId>
+    <VendorDescription>CyberStudio</VendorDescription>
+  </AddIn>
+</RevitAddIns>
