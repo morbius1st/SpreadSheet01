@@ -1,21 +1,14 @@
 ﻿#region using
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Autodesk.Revit.ApplicationServices;
-using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.UI.Selection;
-using SpreadSheet01.ExcelSupport;
 using UtilityLibrary;
-using SpreadSheet01.RevitSupport;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 
 using static SpreadSheet01.RevitSupport.RevitCellParameters;
-using static SpreadSheet01.RevitSupport.RevitCellItem;
 using static SpreadSheet01.RevitSupport.ParamReadReqmt;
 
 
@@ -353,7 +346,7 @@ namespace SpreadSheet01.RevitSupport
 			// 			}
 			// 		}
 			//
-			// 		if (found == RevitChartItem.ItemIdCount) break;
+			// 		if (found == RevitChartItem.DataParamCount) break;
 			// 	}
 			//
 			// 	if (ci != null) chartList.Add(ci);
@@ -409,7 +402,7 @@ namespace SpreadSheet01.RevitSupport
 
 			if (annoSym == null)
 			{
-				ci.Error = RevitCellErrorCode.INVALID_ANNO_SYM_CS001111;
+				ci.Error = RevitCellErrorCode.INVALID_ANNO_SYM_CS001120;
 				return ci;
 			}
 
@@ -445,24 +438,24 @@ namespace SpreadSheet01.RevitSupport
 				{
 				case ParamDataType.STRING:
 					{
-						RevitValueString rs = 
-							new RevitValueString(
+						RevitParamText rs = 
+							new RevitParamText(
 								pd.ReadReqmt == READ_VALUE_IGNORE ? "" : param.AsString(), pd);
 						ci[idx] = rs;
 						paramCount++;
 						break;
 					}
-
-				case ParamDataType.TEXT:
-					{ 
-						ci.AddText(param.AsString(), name, pd);
-						textCount++;
-						break;
-					}
+				//
+				// case ParamDataType.TEXT:
+				// 	{ 
+				// 		ci.AddText(param.AsString(), name, pd);
+				// 		textCount++;
+				// 		break;
+				// 	}
 
 				case ParamDataType.ADDRESS:
 					{ 
-						RevitValueAddr ra = new RevitValueAddr(param.AsString(), pd);
+						RevitParamAddr ra = new RevitParamAddr(param.AsString(), pd);
 						ci[idx] = ra;
 						paramCount++;
 						break;
@@ -470,7 +463,7 @@ namespace SpreadSheet01.RevitSupport
 
 				case ParamDataType.NUMBER:
 					{
-						RevitValueNumber rn = new RevitValueNumber(
+						RevitParamNumber rn = new RevitParamNumber(
 							pd.ReadReqmt == READ_VALUE_IGNORE ? Double.NaN : param.AsDouble(), pd);
 						ci[idx] = rn;
 						paramCount++;
@@ -479,7 +472,7 @@ namespace SpreadSheet01.RevitSupport
 
 				case ParamDataType.BOOL:
 					{
-						RevitValueBool rb = new RevitValueBool(
+						RevitParamBool rb = new RevitParamBool(
 							(pd.ReadReqmt == READ_VALUE_IGNORE ? (bool?) null : param.AsInteger() == 1), pd);
 						ci[idx] = rb;
 						paramCount++;
@@ -488,7 +481,7 @@ namespace SpreadSheet01.RevitSupport
 
 				case ParamDataType.IGNORE:
 					{
-						// RevitValueString rs = new RevitValueString("Not Used", pd);
+						// RevitParamText rs = new RevitParamText("Not Used", pd);
 						// ci[idx] = rs;
 						paramCount++;
 						break;
@@ -502,7 +495,7 @@ namespace SpreadSheet01.RevitSupport
 				ci.CellParamDataType = ParamDataType.ERROR;
 				ci.Error = RevitCellErrorCode.PARAM_VALUE_MISSING_CS001101;
 			}
-			else if (paramCount != RevitCellParameters.ItemIdCount)
+			else if (paramCount != RevitCellParameters.DataParamCount)
 			{
 				ci.CellParamDataType = ParamDataType.ERROR;
 				ci.Error = RevitCellErrorCode.PARAM_MISSING_CS001102;

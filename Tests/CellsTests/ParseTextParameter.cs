@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -24,7 +25,7 @@ namespace Tests.CellsTests
 	{
 	#region private fields
 
-		private Dictionary<string, RevitValueText> textValues = new Dictionary<string, RevitValueText>();
+		private Dictionary<string, RevitParamText> textValues = new Dictionary<string, RevitParamText>();
 
 		private Dictionary<string, RevitCellItem> CellItemsBySeqName;
 		private Dictionary<string, RevitCellItem> CellItemsByNameSeq;
@@ -115,90 +116,105 @@ namespace Tests.CellsTests
 
 		}
 
-		private void listCellItems(string[] paramNames)
+		private void test3()
 		{
-			Console.WriteLine("\nbegin listing");
+			SampleAnnoSymbols sample = new SampleAnnoSymbols();
+			sample.Process();
 
-			ParamDesc pd;
+			GetCells(sample);
 
-			foreach (KeyValuePair<string, RevitCellItem> kvp in CellItemsBySeqName)
+		}
+
+
+		private void GetCells(SampleAnnoSymbols sample)
+		{
+			RevitCellItem ci;
+
+			List<RevitCellItem> errorList = new List<RevitCellItem>();
+
+			CellItemsBySeqName = new Dictionary<string, RevitCellItem>();
+			CellItemsByNameSeq = new Dictionary<string, RevitCellItem>();
+
+			foreach (AnnotationSymbol annoSym in sample.Symbol)
 			{
-				Console.WriteLine("\n  key|" + kvp.Key);
-				Console.WriteLine(" name|" + kvp.Value.Name);
 
-				if (kvp.Value.HasError.Value)
+				ci = categorizeCellParameters(annoSym);
+
+				if (ci.HasError == true)
 				{
-					foreach (RevitCellErrorCode errorCode in kvp.Value.Errors)
-					{
-						Console.Write("error| " + errorCode.ToString());
-					}
-
-					Console.Write("\n");
+					errorList.Add(ci);
+					continue;
 				}
-				
-				for (var i = 0; i < paramNames.Length; i++)
-				{
-					string name = paramNames[i];
 
-					pd = Match(name);
+				string keySeqName = makeKey(ci, true);
+				string keyNameSeq = makeKey(ci, false);
 
-					int idx = pd.Index;
-
-					if (pd.DataType != ParamDataType.TEXT)
-					{
-						string text = kvp.Value[idx]?.GetValue().ToString();
-
-						text = text.IsVoid() ? "is void" : text;
-
-						Console.WriteLine((name.PadRight(maxColWidth + 3) + "| .......  " + text));
-					}
-					else
-					{
-						
-						RevitValueText text1 = (RevitValueText) kvp.Value[idx];
-
-						Console.Write("read text1| " + text1.GetValue()
-							+ " param name| " + text1.ParamDesc.ParameterName
-							 );
-
-						foreach (RevitCellErrorCode errCode in text1.Errors())
-						{
-							Console.Write(
-								" error| " + errCode.ToString());
-						}
-
-						Console.Write("\n");
-
-						foreach (RevitTextData text2 in ((RevitValueText) kvp.Value[idx]).TextValues())
-						{
-							Console.Write("read text2| "
-								+ "   val| " + text2.GetValue()
-								+ "   key| " + text2.GetKey()
-								+ "   row| " + text2.Row 
-								+ "   col| " + text2.Col
-								+ "   pos| " + text2.Position
-								+ "   seq| " + text2.Seq
-								+ " valid| " + text2.IsValid
-								+ " pname| " + text2.ParamDesc.ParameterName
-								);
-							foreach (RevitCellErrorCode errCode in text2.Errors())
-							{
-								Console.Write(
-									" error| " + errCode.ToString());
-							}
-
-							Console.Write("\n");
-
-							Console.WriteLine("  new text| " + text2.NewValue);
-							
-							Console.Write("\n");
-						}
-					}
-				}
+				CellItemsBySeqName.Add(keySeqName, ci);
+				CellItemsByNameSeq.Add(keyNameSeq, ci);
 			}
 		}
 
 
+
+		private RevitCellItem categorizeCellParameters(AnnotationSymbol annoSym)
+		{
+			RevitCellItem ci = new RevitCellItem();
+
+			if (annoSym == null)
+			{
+				ci.Error = RevitCellErrorCode.INVALID_ANNO_SYM_CS001120;
+				return ci;
+			}
+
+			ci.AnnoSymbol = annoSym;
+
+			IList<Parameter> parameters = annoSym.GetOrderedParameters();
+
+			int totalParams = parameters.Count;
+			int paramCount = 0;
+			double labelCount = 0;
+
+			foreach (Parameter param in parameters)
+			{
+				string name = param.Definition.Name;
+
+				ParamDesc pd = RevitCellParameters.Match(name);
+
+				if (pd == null)  continue;
+
+				bool result = ci.Add(pd, param);
+
+				if (result)
+				{
+					ci.Error = RevitCellErrorCode.INVALID_DATA_FORMAT_CS000I10;
+				}
+
+				if (pd.MetaType == ParamMetaType.INFORMATION)
+				{
+					paramCount++;
+				}
+				else
+				{
+					if (pd.Index == LabelIdx)
+					{
+						labelCount += lblCountIncrement;
+					}
+					else
+					{
+						labelCount += lblCountItemIncrementValue;
+					}
+				}
+			}
+
+			if (paramCount == 0 || paramCount != ReqdParamCount ||
+				labelCount.Equals(0) || 
+				((labelCount * lblCountItemIncrementBasis) % lblCountItemIncrementBasis) != 0)
+			{
+				ci.Error = RevitCellErrorCode.PARAM_MISSING_CS001102;
+			}
+
+			return ci;
+		}
 
 		private void GetCells(string[] paramNames, List<OrderedParams> paramList)
 		{
@@ -253,18 +269,18 @@ namespace Tests.CellsTests
 				{
 				case ParamDataType.STRING:
 					{
-						RevitValueString rs = new RevitValueString(op.Value[i], pd);
+						RevitParamString rs = new RevitParamString(op.Value[i], pd);
 						ci[idx] = rs;
 						paramCount++;
 						break;
 					}
 
-				case ParamDataType.TEXT:
-					{
-						ci.AddText(op.Value[i], paramName, pd);
-						textCount++;
-						break;
-					}
+				// case ParamDataType.TEXT:
+				// 	{
+				// 		ci.AddText(op.Value[i], paramName, pd);
+				// 		textCount++;
+				// 		break;
+				// 	}
 
 				case ParamDataType.NUMBER:
 					{
@@ -272,12 +288,12 @@ namespace Tests.CellsTests
 						bool result = double.TryParse(op.Value[i], out info);
 						if (!result)
 						{
-							ci[idx] = new RevitValueNumber(Double.NaN, pd);
+							ci[idx] = new RevitParamNumber(Double.NaN, pd);
 							ci[idx].ErrorCode = RevitCellErrorCode.INVALID_DATA_FORMAT_CS000I10;
 							continue;
 						}
 
-						RevitValueNumber rn = new RevitValueNumber(info, pd);
+						RevitParamNumber rn = new RevitParamNumber(info, pd);
 						ci[idx] = rn;
 						paramCount++;
 						break;
@@ -290,12 +306,12 @@ namespace Tests.CellsTests
 
 						if (!result)
 						{
-							ci[idx] = new RevitValueBool(false, pd);
+							ci[idx] = new RevitParamBool(false, pd);
 							ci[idx].ErrorCode = RevitCellErrorCode.INVALID_DATA_FORMAT_CS000I10;
 							continue;
 						}
 
-						RevitValueBool rb = new RevitValueBool(info == 1, pd);
+						RevitParamBool rb = new RevitParamBool(info == 1, pd);
 						ci[idx] = rb;
 						paramCount++;
 						break;
@@ -305,73 +321,89 @@ namespace Tests.CellsTests
 			return ci;
 		}
 
-
-/*
-		private void test1()
+		private void listCellItems(string[] paramNames)
 		{
-			Console.WriteLine("begin text parse tests");
+			Console.WriteLine("\nbegin listing");
 
-			string[] testNames = new string[]
-			{
-				"Text (1,1)", "Text (2,1)", "Text (1,2)",
-				"Text (3)", "text", "Text (x)", "Text",
-				"Text (13,1)", "Text (1,13)", "Text (4,5)",
-				"Text (1,1)"
-			};
-
-			string key;
-			RevitValueText value;
 			ParamDesc pd;
 
-			foreach (string name in testNames)
+			foreach (KeyValuePair<string, RevitCellItem> kvp in CellItemsBySeqName)
 			{
-				Console.WriteLine("\ntesting| " + name);
-				pd = RevitCellParameters.Match(name);
-				value = new RevitValueText(name, name, pd);
-				key = value.GetKey();
+				Console.WriteLine("\n  key|" + kvp.Key);
+				Console.WriteLine(" name|" + kvp.Value.Name);
 
-				// possible conditions
-				// 1 all good - need to just add the key and proceed
-				// 2. basically good but duplicate key
-				// 3. invalid value for some reason
-				// for 2 & 3
-				// make an error key, try to add, adjust, try to add
-
-				for (int i = 0; i < RevitValueText.MAX_CELLS; i++)
+				if (kvp.Value.HasError.Value)
 				{
-					if (!textValues.ContainsKey(key))
+					foreach (RevitCellErrorCode errorCode in kvp.Value.Errors)
 					{
-						textValues.Add(key, value);
-						break;
+						Console.Write("error| " + errorCode.ToString());
 					}
 
-					value.SetDuplicateKey();
-					key = value.GetKey();
+					Console.Write("\n");
 				}
-
-				Console.WriteLine("  value added| "
-					+ " row| " + value.Row 
-					+ " col| " + value.Col
-					+ " pos| " + value.Position
-					+ " seq| " + value.Seq
-					+ " key| " + value.GetKey()
-					+ " valid| " + value.IsValid
-					+ " val| " + value.GetValue()
-					);
-
-				if (!value.IsValid)
+				
+				for (var i = 0; i < paramNames.Length; i++)
 				{
-					Console.WriteLine("  err codes| ");
-					foreach (RevitCellErrorCode errCode in value.Errors())
+					string name = paramNames[i];
+
+					pd = Match(name);
+
+					int idx = pd.Index;
+
+					if (pd.MetaType != ParamMetaType.LABEL)
 					{
-						Console.WriteLine("   err code|" + errCode.ToString());
+						string text = kvp.Value[idx]?.GetValue().ToString();
+
+						text = text.IsVoid() ? "is void" : text;
+
+						Console.WriteLine((name.PadRight(maxColWidth + 3) + "| .......  " + text));
+					}
+					else
+					{
+						
+						RevitParamText text1 = (RevitParamText) kvp.Value[idx];
+
+						Console.Write("read text1| " + text1.GetValue()
+							+ " param name| " + text1.ParamDesc.ParameterName
+							 );
+
+						foreach (RevitCellErrorCode errCode in text1.Errors())
+						{
+							Console.Write(
+								" error| " + errCode.ToString());
+						}
+
+						Console.Write("\n");
+
+						foreach (RevitTextData text2 in ((RevitParamText) kvp.Value[idx]).TextValues())
+						{
+							Console.Write("read text2| "
+								+ "   val| " + text2.GetValue()
+								+ "   key| " + text2.GetKey()
+								+ "   row| " + text2.Row 
+								+ "   col| " + text2.Col
+								+ "   pos| " + text2.Position
+								+ "   seq| " + text2.Seq
+								+ " valid| " + text2.IsValid
+								+ " pname| " + text2.ParamDesc.ParameterName
+								);
+							foreach (RevitCellErrorCode errCode in text2.Errors())
+							{
+								Console.Write(
+									" error| " + errCode.ToString());
+							}
+
+							Console.Write("\n");
+
+							Console.WriteLine("  new text| " + text2.NewValue);
+							
+							Console.Write("\n");
+						}
 					}
 				}
-
 			}
-
 		}
-*/
+
 		private string makeKey(RevitCellItem ci, bool asSeqName)
 		{
 			string seq = ((string) ci[SeqIdx].GetValue());

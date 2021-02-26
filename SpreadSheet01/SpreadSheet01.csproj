@@ -85,16 +85,18 @@
     <Compile Include="ExcelSupport\ExcelExchange.cs" />
     <Compile Include="ExcelSupport\ExcelManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RevitSupport\RevitAnnoSymbols.cs" />
     <Compile Include="RevitSupport\RevitCellItem.cs" />
     <Compile Include="RevitSupport\RevitCellParameters.cs" />
     <Compile Include="RevitSupport\RevitChartItem.cs" />
     <Compile Include="RevitSupport\RevitManager.cs" />
-    <Compile Include="RevitSupport\RevitParamValue\ARevitValue.cs" />
-    <Compile Include="RevitSupport\RevitParamValue\RevitValueAddr.cs" />
-    <Compile Include="RevitSupport\RevitParamValue\RevitValueBool.cs" />
-    <Compile Include="RevitSupport\RevitParamValue\RevitValueNumber.cs" />
-    <Compile Include="RevitSupport\RevitParamValue\RevitValueString.cs" />
-    <Compile Include="RevitSupport\RevitParamValue\RevitValueText.cs" />
+    <Compile Include="RevitSupport\RevitParamValue\ARevitParam.cs" />
+    <Compile Include="RevitSupport\RevitParamValue\RevitParamAddr.cs" />
+    <Compile Include="RevitSupport\RevitParamValue\RevitParamBool.cs" />
+    <Compile Include="RevitSupport\RevitParamValue\RevitParamNumber.cs" />
+    <Compile Include="RevitSupport\RevitParamValue\RevitParamLabel.cs" />
+    <Compile Include="RevitSupport\RevitParamValue\RevitParamText.cs" />
+    <Compile Include="RevitSupport\RevitParamValue\RevitParamTextVoid.cs" />
     <Compile Include="RevitSupport\RevitTests.cs" />
   </ItemGroup>
   <ItemGroup>

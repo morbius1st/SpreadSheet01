@@ -2,9 +2,9 @@
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
-	public class RevitParamString : ARevitParam
+	public class RevitParamText : ARevitParam
 	{
-		public RevitParamString(string value, ParamDesc paramDesc)
+		public RevitParamText(string value, ParamDesc paramDesc)
 		{
 			this.paramDesc = paramDesc;
 

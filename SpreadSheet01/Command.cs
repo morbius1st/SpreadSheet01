@@ -169,7 +169,7 @@ namespace SpreadSheet01
 		// 					found++;
 		// 				}
 		// 			}
-		// 			if (found == RevitChartItem.ItemIdCount) break;
+		// 			if (found == RevitChartItem.DataParamCount) break;
 		// 		}
 		//
 		// 		if (ci != null) chartList.Add(ci);

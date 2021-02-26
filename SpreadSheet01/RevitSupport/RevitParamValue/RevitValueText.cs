@@ -3,11 +3,11 @@
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
 	
-	public class RevitValueText : ARevitValue
+	public class RevitParamText : ARevitParam
 	{
 		private Dictionary<string, RevitTextData> textValues = new Dictionary<string, RevitTextData>();
 
-		public RevitValueText(string paramName, ParamDesc paramDesc)
+		public RevitParamText(string paramName, ParamDesc paramDesc)
 		{
 			this.paramDesc = paramDesc;
 			base.SetValue("");
@@ -63,7 +63,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		}
 	}
 
-	public class RevitTextData : ARevitValue
+	public class RevitTextData : ARevitParam
 	{
 		public static int MAX_CELLS = 12;
 
@@ -186,7 +186,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		private void setInvalidPosition()
 		{
-			ErrorCode = RevitCellErrorCode.LOCATION_BAD_CS001115;
+			ErrorCode = RevitCellErrorCode.LOCATION_BAD_CS001120;
 			SetInvalid();
 		}
 
