@@ -6,7 +6,7 @@ using static SpreadSheet01.RevitSupport.RevitCellParameters;
 
 // Solution:     SpreadSheet01
 // Project:       SpreadSheet01
-// File:             RevitCellItem.cs
+// File:             RevitCellParams.cs
 // Created:      2021-02-17 (6:43 PM)
 
 namespace SpreadSheet01.RevitSupport
@@ -34,7 +34,7 @@ namespace SpreadSheet01.RevitSupport
 		EMPTY = 0,
 		GROUP,
 		IGNORE,
-		STRING,
+		TEXT,
 		NUMBER,
 		ADDRESS,
 		RELATIVEADDRESS,
@@ -85,26 +85,10 @@ namespace SpreadSheet01.RevitSupport
 	}
 
 
-	public class RevitCellItem
+	public class RevitCellParams
 	{
-	#region family parameters
 
-		// private string name;				// set - created
-		// private string text;				// set - read from excel (special)
-		// private string cellAddrName;		// get - read from family
-		// private string cellAddr;			// get - read from family
-		// private string formula;			// get - read from family
-		// private double valueAsNumber;	// set - read from excel
-		// private string resultAsString;	// set - created
-		// private double resultAsNumber;	// set - created
-		// private string formattingInfo;	// get - read from family
-		// private string globalParamName;	// get - read from family
-		// private bool dataIsToCell;		// get - read from family
-		// private bool hasError;			// set - created
-
-	#endregion
-
-		public ARevitParam[] CellValues = new ARevitParam[DataParamCount];
+		public ARevitParam[] CellValues = new ARevitParam[ParamCounts[(int) ParamGroupType.DATA]];
 
 		private Dictionary<string, RevitParamLabel> textValues = new Dictionary<string, RevitParamLabel>();
 
@@ -115,7 +99,7 @@ namespace SpreadSheet01.RevitSupport
 		private AnnotationSymbol annoSymbol;
 
 
-		public RevitCellItem()
+		public RevitCellParams()
 		{
 			cellParamDataType = ParamDataType.EMPTY;
 
@@ -141,7 +125,7 @@ namespace SpreadSheet01.RevitSupport
 			get => CellValues[NameIdx].GetValue();
 			set
 			{
-				RevitParamText rv = new RevitParamText(value, CellParams[NameIdx]);
+				RevitParamText rv = new RevitParamText(value, CellAllParams[NameIdx]);
 				CellValues[NameIdx] = rv;
 			}
 		}
@@ -151,7 +135,7 @@ namespace SpreadSheet01.RevitSupport
 			get => CellValues[CellAddrIdx].GetValue();
 			set
 			{
-				RevitParamText rv = new RevitParamText(value, CellParams[CellAddrIdx]);
+				RevitParamText rv = new RevitParamText(value, CellAllParams[CellAddrIdx]);
 				CellValues[CellAddrIdx] = rv;
 			}
 		}
@@ -161,7 +145,7 @@ namespace SpreadSheet01.RevitSupport
 			get => CellValues[DataIsToCellIdx].GetValue();
 			set
 			{
-				RevitParamBool rv = new RevitParamBool(value, CellParams[DataIsToCellIdx]);
+				RevitParamBool rv = new RevitParamBool(value, CellAllParams[DataIsToCellIdx]);
 				CellValues[DataIsToCellIdx] = rv;
 			}
 		}
@@ -171,7 +155,7 @@ namespace SpreadSheet01.RevitSupport
 			get => CellValues[HasErrorsIdx].GetValue();
 			set
 			{
-				RevitParamBool rv = new RevitParamBool(value, CellParams[HasErrorsIdx]);
+				RevitParamBool rv = new RevitParamBool(value, CellAllParams[HasErrorsIdx]);
 				CellValues[HasErrorsIdx] = rv;
 			}
 		}
@@ -270,7 +254,7 @@ namespace SpreadSheet01.RevitSupport
 		// 	get => CellValues[TextIdx].GetValue();
 		// 	set
 		// 	{
-		// 		// RevitParamLabel rv = new RevitParamLabel(value, CellParams[TextIdx]);
+		// 		// RevitParamLabel rv = new RevitParamLabel(value, CellAllParams[TextIdx]);
 		// 		// CellValues[TextIdx] = rv;
 		// 	}
 		// }
@@ -279,7 +263,7 @@ namespace SpreadSheet01.RevitSupport
 		// 	get => CellValues[CellAddrNameIdx].GetValue();
 		// 	set
 		// 	{
-		// 		RevitParamText rv = new RevitParamText(value, CellParams[CellAddrNameIdx]);
+		// 		RevitParamText rv = new RevitParamText(value, CellAllParams[CellAddrNameIdx]);
 		// 		CellValues[CellAddrNameIdx] = rv;
 		// 	}
 		// }
@@ -289,7 +273,7 @@ namespace SpreadSheet01.RevitSupport
 		// 	get => CellValues[FormulaIdx].GetValue();
 		// 	set
 		// 	{
-		// 		RevitParamText rv = new RevitParamText(value, CellParams[FormulaIdx]);
+		// 		RevitParamText rv = new RevitParamText(value, CellAllParams[FormulaIdx]);
 		// 		CellValues[FormulaIdx] = rv;
 		// 	}
 		// }
@@ -299,7 +283,7 @@ namespace SpreadSheet01.RevitSupport
 		// 	get => CellValues[ValueAsNumberIdx].GetValue();
 		// 	set
 		// 	{
-		// 		RevitParamNumber rv = new RevitParamNumber(value, CellParams[ValueAsNumberIdx]);
+		// 		RevitParamNumber rv = new RevitParamNumber(value, CellAllParams[ValueAsNumberIdx]);
 		// 		CellValues[ValueAsNumberIdx] = rv;
 		// 	}
 		// }
@@ -309,7 +293,7 @@ namespace SpreadSheet01.RevitSupport
 		// 	get => CellValues[CalcResultsAsTextIdx].GetValue();
 		// 	set
 		// 	{
-		// 		RevitParamText rv = new RevitParamText(value, CellParams[CalcResultsAsTextIdx]);
+		// 		RevitParamText rv = new RevitParamText(value, CellAllParams[CalcResultsAsTextIdx]);
 		// 		CellValues[CalcResultsAsTextIdx] = rv;
 		// 	}
 		// }
@@ -319,7 +303,7 @@ namespace SpreadSheet01.RevitSupport
 		// 	get => CellValues[CalcResultsAsNumberIdx].GetValue();
 		// 	set
 		// 	{
-		// 		RevitParamNumber rv = new RevitParamNumber(value, CellParams[CalcResultsAsNumberIdx]);
+		// 		RevitParamNumber rv = new RevitParamNumber(value, CellAllParams[CalcResultsAsNumberIdx]);
 		// 		CellValues[CalcResultsAsNumberIdx] = rv;
 		// 	}
 		// }
@@ -329,7 +313,7 @@ namespace SpreadSheet01.RevitSupport
 		// 	get => CellValues[GlobalParamNameIdx].GetValue();
 		// 	set
 		// 	{
-		// 		RevitParamText rv = new RevitParamText(value, CellParams[GlobalParamNameIdx]);
+		// 		RevitParamText rv = new RevitParamText(value, CellAllParams[GlobalParamNameIdx]);
 		// 		CellValues[GlobalParamNameIdx] = rv;
 		// 	}
 		// }

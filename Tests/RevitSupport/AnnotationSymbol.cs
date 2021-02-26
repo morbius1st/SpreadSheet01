@@ -34,9 +34,10 @@ namespace Autodesk.Revit.DB
 
 		}
 
-		public void AddParameter(int index, string strVal, double dblVal = 0.0, int intVal = 0, string name = "")
+		public void AddParameter(int index, int adjIdx, string strVal, double dblVal = 0.0, int intVal = 0,
+			string name = null, string suffix = null)
 		{
-			string paramName = CellParams[NameIdx].ParameterName;
+			string paramName = CellAllParams[NameIdx].ParameterName;
 			paramName = name.IsVoid() ? paramName : name + " " + paramName;
 
 			Parameter p = new Parameter(paramName, strVal, dblVal, intVal);
@@ -45,65 +46,75 @@ namespace Autodesk.Revit.DB
 
 		private void AddSymbol1()
 		{
-			AddParameter(NameIdx, "Myname1");
-			AddParameter(SeqIdx, "1");
-			AddParameter(CellAddrIdx, "@A2");
-			AddParameter(FormattingInfoIdx, "format info");
-			AddParameter(GraphicType, "graphic type");
-			AddParameter(DataIsToCellIdx, "", 0.0, 1);
-			AddParameter(HasErrorsIdx, "", 0.0, 1);
-			AddParameter(DataVisible, "", 0.0, 1);
+			int adj1 = ParamCounts[(int) ParamGroupType.DATA];
+			int adj2 = adj1 + ParamCounts[(int) ParamGroupType.COLLECTION];
 
-			AddParameter(LabelIdx, "", 0.0, 0, "Label #A");
-			AddParameter(lblRelAddrIdx , "(1,1)", 0.0, 0, "#A");
-			AddParameter(lblDataTypeIdx, "text", 0.0, 0, "#A");
-			AddParameter(lblFormulaIdx , "", 0.0, 0, "#A");
-			AddParameter(lblIgnoreIdx  , "", 0.0, 0, "#A");
-			AddParameter(lblAsLengthIdx, "", 0.0, 0, "#A");
-			AddParameter(lblAsNumberIdx, "", 0.0, 0, "#A");
-			AddParameter(lblAsYesNoIdx , "", 0.0, 0, "#A");
+
+			AddParameter(NameIdx, 0, "Myname1");
+			AddParameter(SeqIdx, 0, "1");
+			AddParameter(CellAddrIdx, 0, "@A2");
+			AddParameter(FormattingInfoIdx, 0, "format info");
+			AddParameter(GraphicType, 0, "graphic type");
+			AddParameter(DataIsToCellIdx, 0, "", 0.0, 1);
+			AddParameter(HasErrorsIdx, 0, "", 0.0, 1);
+			AddParameter(DataVisibleIdx, 0, "", 0.0, 1);
+
+			AddParameter(LabelIdx, adj1, "", 0.0, 0, "Label #1");
+			AddParameter(lblRelAddrIdx, adj2 , "(1,1)", 0.0, 0, "#1");
+			AddParameter(lblDataTypeIdx, adj2, "text", 0.0, 0, "#1");
+			AddParameter(lblFormulaIdx, adj2, "", 0.0, 0, "#1");
+			AddParameter(lblIgnoreIdx, adj2, "", 0.0, 0, "#1");
+			AddParameter(lblAsLengthIdx, adj2, "", 0.0, 0, "#1");
+			AddParameter(lblAsNumberIdx, adj2, "", 0.0, 0, "#1");
+			AddParameter(lblAsYesNoIdx, adj2, "", 0.0, 0, "#1");
 		}
 
 		private void AddSymbol2()
 		{
-			AddParameter(NameIdx, "Myname2");
-			AddParameter(SeqIdx, "1");
-			AddParameter(CellAddrIdx, "@A4");
-			AddParameter(FormattingInfoIdx, "format info");
-			AddParameter(GraphicType, "graphic type");
-			AddParameter(DataIsToCellIdx, "", 0.0, 1);
-			AddParameter(HasErrorsIdx, "", 0.0, 1);
-			AddParameter(DataVisible, "", 0.0, 1);
+			int adj1 = ParamCounts[(int) ParamGroupType.DATA];
+			int adj2 = adj1 + ParamCounts[(int) ParamGroupType.COLLECTION];
 
-			AddParameter(LabelIdx, "", 0.0, 0, "Label #A");
-			AddParameter(lblRelAddrIdx , "(1,1)", 0.0, 0, "#A");
-			AddParameter(lblDataTypeIdx, "text", 0.0, 0, "#A");
-			AddParameter(lblFormulaIdx , "", 0.0, 0, "#A");
-			AddParameter(lblIgnoreIdx  , "", 0.0, 0, "#A");
-			AddParameter(lblAsLengthIdx, "", 0.0, 0, "#A");
-			AddParameter(lblAsNumberIdx, "", 0.0, 0, "#A");
-			AddParameter(lblAsYesNoIdx , "", 0.0, 0, "#A");
+			AddParameter(NameIdx, 0, "Myname2");
+			AddParameter(SeqIdx, 0, "1");
+			AddParameter(CellAddrIdx, 0, "@A4");
+			AddParameter(FormattingInfoIdx, 0, "format info");
+			AddParameter(GraphicType, 0, "graphic type");
+			AddParameter(DataIsToCellIdx, 0, "", 0.0, 1);
+			AddParameter(HasErrorsIdx, 0, "", 0.0, 1);
+			AddParameter(DataVisibleIdx, 0, "", 0.0, 1);
+
+			AddParameter(LabelIdx, adj1, "", 0.0, 0, "Label #1");
+			AddParameter(lblRelAddrIdx, adj2 , "(1,1)", 0.0, 0, "#1");
+			AddParameter(lblDataTypeIdx, adj2, "text", 0.0, 0, "#1");
+			AddParameter(lblFormulaIdx, adj2, "", 0.0, 0, "#1");
+			AddParameter(lblIgnoreIdx, adj2, "", 0.0, 0, "#1");
+			AddParameter(lblAsLengthIdx, adj2, "", 0.0, 0, "#1");
+			AddParameter(lblAsNumberIdx, adj2, "", 0.0, 0, "#1");
+			AddParameter(lblAsYesNoIdx, adj2, "", 0.0, 0, "#1");
 		}
 
 		private void AddSymbol3()
 		{
-			AddParameter(NameIdx, "Myname3");
-			AddParameter(SeqIdx, "1");
-			AddParameter(CellAddrIdx, "@A6");
-			AddParameter(FormattingInfoIdx, "format info");
-			AddParameter(GraphicType, "graphic type");
-			AddParameter(DataIsToCellIdx, "", 0.0, 1);
-			AddParameter(HasErrorsIdx, "", 0.0, 1);
-			AddParameter(DataVisible, "", 0.0, 1);
+			int adj1 = ParamCounts[(int) ParamGroupType.DATA];
+			int adj2 = adj1 + ParamCounts[(int) ParamGroupType.COLLECTION];
 
-			AddParameter(LabelIdx, "", 0.0, 0, "Label #A");
-			AddParameter(lblRelAddrIdx , "(1,1)", 0.0, 0, "#A");
-			AddParameter(lblDataTypeIdx, "text", 0.0, 0, "#A");
-			AddParameter(lblFormulaIdx , "", 0.0, 0, "#A");
-			AddParameter(lblIgnoreIdx  , "", 0.0, 0, "#A");
-			AddParameter(lblAsLengthIdx, "", 0.0, 0, "#A");
-			AddParameter(lblAsNumberIdx, "", 0.0, 0, "#A");
-			AddParameter(lblAsYesNoIdx , "", 0.0, 0, "#A");
+			AddParameter(NameIdx, 0, "Myname3");
+			AddParameter(SeqIdx, 0, "1");
+			AddParameter(CellAddrIdx, 0, "@A6");
+			AddParameter(FormattingInfoIdx, 0, "format info");
+			AddParameter(GraphicType, 0, "graphic type");
+			AddParameter(DataIsToCellIdx, 0, "", 0.0, 1);
+			AddParameter(HasErrorsIdx, 0, "", 0.0, 1);
+			AddParameter(DataVisibleIdx, 0, "", 0.0, 1);
+
+			AddParameter(LabelIdx, adj1, "", 0.0, 0, "Label #1");
+			AddParameter(lblRelAddrIdx, adj2 , "(1,1)", 0.0, 0, "#1");
+			AddParameter(lblDataTypeIdx, adj2, "text", 0.0, 0, "#1");
+			AddParameter(lblFormulaIdx, adj2, "", 0.0, 0, "#1");
+			AddParameter(lblIgnoreIdx, adj2, "", 0.0, 0, "#1");
+			AddParameter(lblAsLengthIdx, adj2, "", 0.0, 0, "#1");
+			AddParameter(lblAsNumberIdx, adj2, "", 0.0, 0, "#1");
+			AddParameter(lblAsYesNoIdx, adj2, "", 0.0, 0, "#1");
 		}
 
 

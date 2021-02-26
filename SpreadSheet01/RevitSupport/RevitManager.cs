@@ -32,13 +32,13 @@ namespace SpreadSheet01.RevitSupport
 
 		private ChartList chartList = new ChartList();
 
-		private Dictionary<string, RevitCellItem> CellItemsBySeqName { get; set; }
-		private Dictionary<string, RevitCellItem> CellItemsByNameSeq { get; set; }
+		private Dictionary<string, RevitCellParams> CellItemsBySeqName { get; set; }
+		private Dictionary<string, RevitCellParams> CellItemsByNameSeq { get; set; }
 
 		private ICollection<Element> chartFamilies;
 		private ICollection<Element> cellFamilies;
 
-		private List<RevitCellItem> errorList = new List<RevitCellItem>();
+		private List<RevitCellParams> errorList = new List<RevitCellParams>();
 
 	#endregion
 
@@ -107,18 +107,18 @@ namespace SpreadSheet01.RevitSupport
 		// 	}
 		//
 		// 	string key;
-		// 	RevitCellItem ci;
+		// 	RevitCellParams cp;
 		//
-		// 	CellItemsBySeqName = new Dictionary<string, RevitCellItem>();
+		// 	CellItemsBySeqName = new Dictionary<string, RevitCellParams>();
 		//
 		// 	foreach (Element cellFamily in cellFamilies)
 		// 	{
 		// 		int[] fails = new int[ReadParamFromFamily.Length];
 		// 		int failIdx = 0;
 		//
-		// 		ci = new RevitCellItem();
+		// 		ci = new RevitCellParams();
 		//
-		// 		ci.AnnoSymbol = cellFamily as AnnotationSymbol;
+		// 		cp.AnnoSymbol = cellFamily as AnnotationSymbol;
 		//
 		// 		IList<Parameter> parameters = cellFamily.GetOrderedParameters();
 		//
@@ -146,11 +146,11 @@ namespace SpreadSheet01.RevitSupport
 		// 					{
 		// 						break;
 		// 					}
-		// 				case DataType.STRING:
+		// 				case DataType.TEXT:
 		// 					{
 		// 						ci[idx] =
 		// 							cellFamily.LookupParameter(paramName)?.AsString() ?? "";
-		// 						ci.CellParamDataType = DataType.STRING;
+		// 						cp.CellParamDataType = DataType.TEXT;
 		//
 		// 						break;
 		// 					}
@@ -158,7 +158,7 @@ namespace SpreadSheet01.RevitSupport
 		// 					{
 		// 						ci[idx] =
 		// 							cellFamily.LookupParameter(paramName)?.AsDouble() ?? 0.0;
-		// 						ci.CellParamDataType = DataType.NUMBER;
+		// 						cp.CellParamDataType = DataType.NUMBER;
 		//
 		// 						break;
 		// 					}
@@ -166,13 +166,13 @@ namespace SpreadSheet01.RevitSupport
 		// 					{
 		// 						ci[idx] =
 		// 							(cellFamily.LookupParameter(paramName)?.AsInteger() ?? 1) == 1;
-		// 						ci.CellParamDataType = DataType.BOOL;
+		// 						cp.CellParamDataType = DataType.BOOL;
 		//
 		// 						break;
 		// 					}
 		// 				default:
 		// 					{
-		// 						ci.CellParamDataType = DataType.ERROR;
+		// 						cp.CellParamDataType = DataType.ERROR;
 		//
 		// 						break;
 		// 					}
@@ -184,16 +184,16 @@ namespace SpreadSheet01.RevitSupport
 		// 			}
 		// 		}
 		//
-		// 		if (failIdx > 0) ci.HasError = true;
+		// 		if (failIdx > 0) cp.HasError = true;
 		//
 		// 		// KEY_ADDR_BEGIN
 		// 		// 	KEY_ADDR_END  
 		// 		// KEY_IDX_BEGIN 
 		// 		// KEY_IDX_END   
 		//
-		// 		key = ci[RevitCellItem.D_CELL_ADDR_NAME];
+		// 		key = ci[RevitCellParams.D_CELL_ADDR_NAME];
 		//
-		// 		key = key.IsVoid() ? ci[RevitCellItem.D_CELL_ADDR] : key;
+		// 		key = key.IsVoid() ? ci[RevitCellParams.D_CELL_ADDR] : key;
 		//
 		// 		if (!key.IsVoid())
 		// 		{
@@ -211,7 +211,7 @@ namespace SpreadSheet01.RevitSupport
 		// 				}
 		// 			}
 		//
-		// 			if (ci.Name.IsVoid()) ci.Name = key;
+		// 			if (cp.Name.IsVoid()) cp.Name = key;
 		//
 		// 			if (gotKey) CellItemsBySeqName.Add(key, ci);
 		// 		}
@@ -231,26 +231,26 @@ namespace SpreadSheet01.RevitSupport
 				return false;
 			}
 
-			RevitCellItem ci;
+			RevitCellParams cp;
 
-			CellItemsBySeqName = new Dictionary<string, RevitCellItem>();
-			CellItemsByNameSeq = new Dictionary<string, RevitCellItem>();
+			CellItemsBySeqName = new Dictionary<string, RevitCellParams>();
+			CellItemsByNameSeq = new Dictionary<string, RevitCellParams>();
 
 			foreach (Element cellFamily in cellFamilies)
 			{
-				ci = categorizeCellParameters(cellFamily as AnnotationSymbol);
+				cp = categorizeCellParameters(cellFamily as AnnotationSymbol);
 
-				if (ci.HasError == true)
+				if (cp.HasError == true)
 				{
-					errorList.Add(ci);
+					errorList.Add(cp);
 					continue;
 				}
 
-				string keySeqName = makeKey(ci, true);
-				string keyNameSeq = makeKey(ci, false);
+				string keySeqName = makeKey(cp, true);
+				string keyNameSeq = makeKey(cp, false);
 
-				CellItemsBySeqName.Add(keySeqName, ci);
-				CellItemsByNameSeq.Add(keyNameSeq, ci);
+				CellItemsBySeqName.Add(keySeqName, cp);
+				CellItemsByNameSeq.Add(keyNameSeq, cp);
 			}
 
 			return errorList.Count == 0;
@@ -269,32 +269,32 @@ namespace SpreadSheet01.RevitSupport
 		// 	}
 		//
 		// 	string key;
-		// 	RevitCellItem ci;
+		// 	RevitCellParams cp;
 		//
-		// 	CellItemsBySeqName = new Dictionary<string, RevitCellItem>();
+		// 	CellItemsBySeqName = new Dictionary<string, RevitCellParams>();
 		//
 		// 	foreach (Element e in cellFamilies)
 		// 	{
 		// 		try
 		// 		{
-		// 			ci = new RevitCellItem();
+		// 			ci = new RevitCellParams();
 		//
-		// 			ci.AnnoSymbol = e;
-		// 			ci.Name = (e.LookupParameter(RevitCellItem.CellItemIds[RevitCellItem.D_NAME])).AsString();
-		// 			ci.CellAddrName = (e.LookupParameter(RevitCellItem.CellItemIds[RevitCellItem.D_CELL_ADDR_NAME])).AsString();
+		// 			cp.AnnoSymbol = e;
+		// 			cp.Name = (e.LookupParameter(RevitCellParams.CellItemIds[RevitCellParams.D_NAME])).AsString();
+		// 			cp.CellAddrName = (e.LookupParameter(RevitCellParams.CellItemIds[RevitCellParams.D_CELL_ADDR_NAME])).AsString();
 		//
-		// 			if (ci.CellAddrName.IsVoid())
+		// 			if (cp.CellAddrName.IsVoid())
 		// 			{
-		// 				ci.CellAddr = (e.LookupParameter(RevitCellItem.CellItemIds[RevitCellItem.D_CELL_ADDR])).AsString();
+		// 				cp.CellAddr = (e.LookupParameter(RevitCellParams.CellItemIds[RevitCellParams.D_CELL_ADDR])).AsString();
 		// 			}
 		//
-		// 			ci.Formula = (e.LookupParameter(RevitCellItem.CellItemIds[RevitCellItem.D_FORMULA])).AsString();
-		// 			ci.ResultAsNumber = (e.LookupParameter(RevitCellItem.CellItemIds[RevitCellItem.D_CALC_RESULTS_AS_NUMBER]))
+		// 			cp.Formula = (e.LookupParameter(RevitCellParams.CellItemIds[RevitCellParams.D_FORMULA])).AsString();
+		// 			cp.ResultAsNumber = (e.LookupParameter(RevitCellParams.CellItemIds[RevitCellParams.D_CALC_RESULTS_AS_NUMBER]))
 		// 			.AsDouble();
-		// 			ci.ResultAsString = (e.LookupParameter(RevitCellItem.CellItemIds[RevitCellItem.D_CALC_RESULTS_AS_TEXT]))
+		// 			cp.ResultAsString = (e.LookupParameter(RevitCellParams.CellItemIds[RevitCellParams.D_CALC_RESULTS_AS_TEXT]))
 		// 			.AsString();
 		//
-		// 			key = getKey(ci.Name, ci.CellAddrName, ci.CellAddr);
+		// 			key = getKey(cp.Name, cp.CellAddrName, cp.CellAddr);
 		//
 		// 			CellItemsBySeqName.Add(key, ci);
 		// 		}
@@ -341,7 +341,7 @@ namespace SpreadSheet01.RevitSupport
 			// 		{
 			// 			if (name.Equals(kvp.Key))
 			// 			{
-			// 				ci.Chart[kvp.Value] = p.AsString();
+			// 				cp.Chart[kvp.Value] = p.AsString();
 			// 				found++;
 			// 			}
 			// 		}
@@ -380,15 +380,15 @@ namespace SpreadSheet01.RevitSupport
 
 	#region private methods
 
-		private string makeKey(RevitCellItem ci, bool asSeqName)
+		private string makeKey(RevitCellParams cp, bool asSeqName)
 		{
-			string seq = ((string) ci[SeqIdx].GetValue());
+			string seq = ((string) cp[SeqIdx].GetValue());
 			seq = seq.IsVoid() ? "ZZZZZZ" : seq;
 			seq = KEY_IDX_BEGIN + $"{seq,8}" + KEY_IDX_END;
 
-			string name = ci.Name.IsVoid() ? "Un-named " : ci.Name + " " ;
+			string name = cp.Name.IsVoid() ? "Un-named " : cp.Name + " " ;
 
-			string eid = ci.AnnoSymbol == null ? "null element" : ci.AnnoSymbol.Id.ToString();
+			string eid = cp.AnnoSymbol == null ? "null element" : cp.AnnoSymbol.Id.ToString();
 
 
 			if (asSeqName) return seq + name + eid;
@@ -396,17 +396,17 @@ namespace SpreadSheet01.RevitSupport
 			return name + seq + eid;
 		}
 
-		private RevitCellItem categorizeCellParameters(AnnotationSymbol annoSym)
+		private RevitCellParams categorizeCellParameters(AnnotationSymbol annoSym)
 		{
-			RevitCellItem ci = new RevitCellItem();
+			RevitCellParams cp = new RevitCellParams();
 
 			if (annoSym == null)
 			{
-				ci.Error = RevitCellErrorCode.INVALID_ANNO_SYM_CS001120;
-				return ci;
+				cp.Error = RevitCellErrorCode.INVALID_ANNO_SYM_CS001120;
+				return cp;
 			}
 
-			ci.AnnoSymbol = annoSym;
+			cp.AnnoSymbol = annoSym;
 
 			IList<Parameter> parameters = annoSym.GetOrderedParameters();
 
@@ -421,34 +421,34 @@ namespace SpreadSheet01.RevitSupport
 
 				ParamDesc pd = RevitCellParameters.Match(name);
 
-				Debug.WriteLine("has error A?|" + ci.HasError);
+				Debug.WriteLine("has error A?|" + cp.HasError);
 
 				if (pd == null)
 				{
 					continue;
 				}
 
-				ci.CellParamDataType = pd.DataType;
+				cp.CellParamDataType = pd.DataType;
 
 				int idx = pd.Index;
 
-				Debug.WriteLine("has error B?|" + ci.HasError);
+				Debug.WriteLine("has error B?|" + cp.HasError);
 
 				switch (pd.DataType)
 				{
-				case ParamDataType.STRING:
+				case ParamDataType.TEXT:
 					{
 						RevitParamText rs = 
 							new RevitParamText(
 								pd.ReadReqmt == READ_VALUE_IGNORE ? "" : param.AsString(), pd);
-						ci[idx] = rs;
+						cp[idx] = rs;
 						paramCount++;
 						break;
 					}
 				//
 				// case ParamDataType.TEXT:
 				// 	{ 
-				// 		ci.AddText(param.AsString(), name, pd);
+				// 		cp.AddText(param.AsString(), name, pd);
 				// 		textCount++;
 				// 		break;
 				// 	}
@@ -456,7 +456,7 @@ namespace SpreadSheet01.RevitSupport
 				case ParamDataType.ADDRESS:
 					{ 
 						RevitParamAddr ra = new RevitParamAddr(param.AsString(), pd);
-						ci[idx] = ra;
+						cp[idx] = ra;
 						paramCount++;
 						break;
 					}
@@ -465,7 +465,7 @@ namespace SpreadSheet01.RevitSupport
 					{
 						RevitParamNumber rn = new RevitParamNumber(
 							pd.ReadReqmt == READ_VALUE_IGNORE ? Double.NaN : param.AsDouble(), pd);
-						ci[idx] = rn;
+						cp[idx] = rn;
 						paramCount++;
 						break;
 					}
@@ -474,7 +474,7 @@ namespace SpreadSheet01.RevitSupport
 					{
 						RevitParamBool rb = new RevitParamBool(
 							(pd.ReadReqmt == READ_VALUE_IGNORE ? (bool?) null : param.AsInteger() == 1), pd);
-						ci[idx] = rb;
+						cp[idx] = rb;
 						paramCount++;
 						break;
 					}
@@ -487,23 +487,23 @@ namespace SpreadSheet01.RevitSupport
 						break;
 					}
 				}
-				Debug.WriteLine("has error C?|" + ci.HasError);
+				Debug.WriteLine("has error C?|" + cp.HasError);
 			}
 
 			if (textCount == 0)
 			{
-				ci.CellParamDataType = ParamDataType.ERROR;
-				ci.Error = RevitCellErrorCode.PARAM_VALUE_MISSING_CS001101;
+				cp.CellParamDataType = ParamDataType.ERROR;
+				cp.Error = RevitCellErrorCode.PARAM_VALUE_MISSING_CS001101;
 			}
-			else if (paramCount != RevitCellParameters.DataParamCount)
+			else if (paramCount != RevitCellParameters.ParamCounts[(int) ParamGroupType.DATA])
 			{
-				ci.CellParamDataType = ParamDataType.ERROR;
-				ci.Error = RevitCellErrorCode.PARAM_MISSING_CS001102;
+				cp.CellParamDataType = ParamDataType.ERROR;
+				cp.Error = RevitCellErrorCode.PARAM_MISSING_CS001102;
 			}
 
-			Debug.WriteLine("has error D?|" + ci.HasError);
+			Debug.WriteLine("has error D?|" + cp.HasError);
 
-			return ci;
+			return cp;
 		}
 
 
@@ -513,7 +513,7 @@ namespace SpreadSheet01.RevitSupport
 			{
 				int found = 0;
 
-				RevitChartItem ci = new RevitChartItem();
+				RevitChartItem cp = new RevitChartItem();
 
 				foreach (Parameter p in e.ParametersMap)
 				{
@@ -523,7 +523,7 @@ namespace SpreadSheet01.RevitSupport
 					{
 						if (name.Equals(kvp.Key))
 						{
-							ci.Chart[kvp.Value] = p.AsString();
+							cp.Chart[kvp.Value] = p.AsString();
 							found++;
 						}
 					}
@@ -531,7 +531,7 @@ namespace SpreadSheet01.RevitSupport
 					if (found == RevitChartItem.ItemIdCount) break;
 				}
 
-				if (ci != null) chartList.Add(ci);
+				if (cp != null) chartList.Add(cp);
 			}
 		}
 

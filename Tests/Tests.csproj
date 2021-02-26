@@ -47,6 +47,33 @@
     <Compile Include="..\..\..\..\UtilityLibrary\UtilityLibrary\CsExtensions.cs">
       <Link>.Linked\CsExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitAnnoSymbols.cs">
+      <Link>RevitSupport\RevitAnnoSymbols.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellParameters.cs">
+      <Link>RevitSupport\RevitCellParameters.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellParams.cs">
+      <Link>RevitSupport\RevitCellParams.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\ARevitParam.cs">
+      <Link>RevitSupport\RevitParamValue\ARevitParam.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamAddr.cs">
+      <Link>RevitSupport\RevitParamValue\RevitParamAddr.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamBool.cs">
+      <Link>RevitSupport\RevitParamValue\RevitParamBool.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamLabel.cs">
+      <Link>RevitSupport\RevitParamValue\RevitParamLabel.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamNumber.cs">
+      <Link>RevitSupport\RevitParamValue\RevitParamNumber.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamText.cs">
+      <Link>RevitSupport\RevitParamValue\RevitParamText.cs</Link>
+    </Compile>
     <Compile Include="CellsTests\ParseTextParameter.cs" />
     <Compile Include="DynamicTests.cs" />
     <Compile Include="DynamicValue2.cs" />
@@ -57,8 +84,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="RevitSupport\RevitParamValue\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -165,7 +165,7 @@ namespace SpreadSheet01
 		// 			{
 		// 				if (name.Equals(kvp.Key))
 		// 				{
-		// 					ci.Chart[kvp.Value] = p.AsString();
+		// 					cp.Chart[kvp.Value] = p.AsString();
 		// 					found++;
 		// 				}
 		// 			}

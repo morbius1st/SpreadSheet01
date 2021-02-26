@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Autodesk.Revit.DB.DirectContext3D;
+
 using UtilityLibrary;
 
 using static SpreadSheet01.RevitSupport.RevitCellParameters;
@@ -141,7 +140,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		{
 			switch (paramDesc.DataType)
 			{
-			case ParamDataType.STRING:
+			case ParamDataType.TEXT:
 				{
 					LabelParameterString ps = new LabelParameterString(value, paramDesc);
 					LabelParams.Add(RevitValueSupport.MakeLabelKey(paramId), ps);
