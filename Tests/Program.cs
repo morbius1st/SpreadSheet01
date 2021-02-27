@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tests.CellsTests;
+// using Tests.CellsTests;
 
 namespace Tests
 {
@@ -13,7 +13,7 @@ namespace Tests
 		static Program p;
 
 		static DynamicTests dt = new DynamicTests();
-		private static ParseTextParameter pt = new ParseTextParameter();
+		// private static ParseTextParameter pt = new ParseTextParameter();
 
 		static void Main(string[] args)
 		{
@@ -24,7 +24,7 @@ namespace Tests
 			do
 			{
 				// dt.Process();
-				pt.Process();
+				// pt.Process();
 
 				Console.Write("\nEnter r to repeat: ");
 				c = Console.ReadKey(false);

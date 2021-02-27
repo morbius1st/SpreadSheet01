@@ -1,4 +1,6 @@
-﻿#region using
+﻿/*
+
+#region using
 
 using System;
 using System.Collections.Generic;
@@ -60,6 +62,58 @@ namespace Tests.CellsTests
 	#endregion
 
 	#region private methods
+
+		private void test1()
+		{
+			SampleAnnoSymbols sample = new SampleAnnoSymbols();
+			sample.Process();
+
+			RevitGroup rg0 = new RevitGroup();
+
+			foreach (AnnotationSymbol annoSym in sample.Symbol)
+			{
+				RevitCellParams cp = addParameters(annoSym.parameters);
+
+				string key = cp.Key;
+
+				rg0.CellParams.Add(key, cp);
+			}
+
+		}
+
+		private RevitCellParams addParameters(IList<Parameter> paramList)
+		{
+			RevitCellParams cp1A = new RevitCellParams();
+
+			IList<Parameter[]> Label = new List<Parameter[]>();
+
+			foreach (Parameter param in paramList)
+			{
+				ParamDesc pd = Match(param.Definition.Name);
+
+				if (pd.GroupType == ParamGroupType.DATA)
+				{
+					cp1A.CellValues[pd.ParamIndex] = new RevitParamText(param.AsString(), pd);
+				}
+				else
+				{
+					int pos1;
+					int pos2;
+					int idx =
+						RevitValueSupport.GetLabelIndex(param.Definition.Name, 
+							out pos1, out pos2);
+
+
+				}
+
+
+			}
+
+			return cp1A;
+		}
+
+
+
 
 		private class OrderedParams
 		{
@@ -182,21 +236,21 @@ namespace Tests.CellsTests
 
 				if (pd == null)  continue;
 
-				bool result = cp.Add(pd, param);
-
-				if (result)
-				{
-					cp.Error = RevitCellErrorCode.INVALID_DATA_FORMAT_CS000I10;
-				}
-
-				if (pd.GroupType ==	ParamGroupType.DATA)
-				{
-					paramCount++;
-				}
-				else
-				{
-					labelCount++;
-				}
+				// bool result = cp.Add(pd, param);
+				//
+				// if (result)
+				// {
+				// 	cp.Error = RevitCellErrorCode.INVALID_DATA_FORMAT_CS000I10;
+				// }
+				//
+				// if (pd.GroupType ==	ParamGroupType.DATA)
+				// {
+				// 	paramCount++;
+				// }
+				// else
+				// {
+				// 	labelCount++;
+				// }
 			}
 
 			if (paramCount == 0 || paramCount != ParamCounts[(int) ParamGroupType.DATA] ||
@@ -431,3 +485,5 @@ namespace Tests.CellsTests
 	#endregion
 	}
 }
+
+*/

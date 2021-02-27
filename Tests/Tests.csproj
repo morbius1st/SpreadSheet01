@@ -47,17 +47,14 @@
     <Compile Include="..\..\..\..\UtilityLibrary\UtilityLibrary\CsExtensions.cs">
       <Link>.Linked\CsExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitAnnoSymbols.cs">
-      <Link>RevitSupport\RevitAnnoSymbols.cs</Link>
-    </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellParameters.cs">
       <Link>RevitSupport\RevitCellParameters.cs</Link>
     </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellParams.cs">
-      <Link>RevitSupport\RevitCellParams.cs</Link>
-    </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\ARevitParam.cs">
       <Link>RevitSupport\RevitParamValue\ARevitParam.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitCellSupport.cs">
+      <Link>RevitSupport\RevitParamValue\RevitCellSupport.cs</Link>
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamAddr.cs">
       <Link>RevitSupport\RevitParamValue\RevitParamAddr.cs</Link>
@@ -75,6 +72,7 @@
       <Link>RevitSupport\RevitParamValue\RevitParamText.cs</Link>
     </Compile>
     <Compile Include="CellsTests\ParseTextParameter.cs" />
+    <Compile Include="CellsTests\RevitContainer.cs" />
     <Compile Include="DynamicTests.cs" />
     <Compile Include="DynamicValue2.cs" />
     <Compile Include="Program.cs" />

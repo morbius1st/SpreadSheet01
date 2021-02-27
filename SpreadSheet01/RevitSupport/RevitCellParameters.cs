@@ -1,11 +1,11 @@
 ﻿
 using System;
 using System.Collections.Generic;
-
-using static SpreadSheet01.RevitSupport.ParamReadReqmt;
-using static SpreadSheet01.RevitSupport.ParamDataType;
-using static SpreadSheet01.RevitSupport.ParamMode;
-using static SpreadSheet01.RevitSupport.ParamGroupType;
+using SpreadSheet01.RevitSupport.RevitParamValue;
+using static SpreadSheet01.RevitSupport.RevitParamValue.ParamReadReqmt;
+using static SpreadSheet01.RevitSupport.RevitParamValue.ParamDataType;
+using static SpreadSheet01.RevitSupport.RevitParamValue.ParamMode;
+using static SpreadSheet01.RevitSupport.RevitParamValue.ParamGroupType;
 
 // Solution:     SpreadSheet01
 // Project:       SpreadSheet01
