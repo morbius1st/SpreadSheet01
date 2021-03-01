@@ -1,0 +1,267 @@
+﻿<Window x:Name="PrimeWin"
+		x:Class="Cells.Windows.MainWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:data="clr-namespace:Cells.CellsTests"
+		xmlns:rvt="clr-namespace:SpreadSheet01.RevitSupport"
+		xmlns:val="clr-namespace:SpreadSheet01.RevitSupport.RevitParamValue"
+		xmlns:local="clr-namespace:Cells.Windows"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		Title="MainWindow"
+		Width="1100"
+		Height="900"
+		DataContext="{Binding ElementName=PrimeWin}"
+		mc:Ignorable="d"
+		Background="{StaticResource Normal.Window.Background}"
+		Loaded="Window_Loaded"
+		>
+	<Window.Resources />
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="90" />
+		</Grid.ColumnDefinitions>
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="40" />
+		</Grid.RowDefinitions>
+
+		<DockPanel
+				Grid.Column="1"
+				Grid.Row="1"
+				Grid.ColumnSpan="2"
+				>
+			<Button x:Name="BtnDone"
+					Content="Done"
+					Margin="5"
+					Width="90"
+					HorizontalAlignment="Right"
+					DockPanel.Dock="Right"
+					Click="BtnDone_OnClick"
+					/>
+
+			<Button x:Name="BtnDebug"
+					Content="Debug"
+					Margin="5"
+					Width="90"
+					HorizontalAlignment="Right"
+					DockPanel.Dock="Right"
+					Click="BtnDebug_OnClick"
+					/>
+
+		</DockPanel>
+
+		<TextBox x:Name="TbxMsg"
+				Grid.Column="0"
+				Grid.Row="0"
+				Background="Transparent"
+				Foreground="White"
+				VerticalScrollBarVisibility="Visible"
+				HorizontalScrollBarVisibility="Visible"
+				/>
+
+
+
+		<ListView x:Name="LvSymbols01"
+				Grid.Column="1"
+				Grid.Row="0"
+				DataContext="{Binding ElementName=PrimeWin,
+															Path=RevitTests}"
+				Background="Transparent"
+				Foreground="White"
+				ScrollViewer.VerticalScrollBarVisibility="Visible"
+				ItemsSource="{Binding AnnoSyms.Containers}"
+				>
+			<ListView.ItemTemplate>
+				<DataTemplate x:Name="LvDt01"
+						DataType="{x:Type val:RevitAnnoSym}"
+						>
+					<DockPanel x:Name="Dok01">
+						<DockPanel DockPanel.Dock="Top">
+							<TextBox
+									Foreground="#444444"
+									Text="{Binding Path=Key,
+																 Mode=OneWay}"
+									/>
+						</DockPanel>
+
+						<ListView
+								x:Name="LvSymbol01"
+								DataContext="{Binding Value}"
+								Foreground="#444444"
+								DockPanel.Dock="Bottom"
+								ScrollViewer.VerticalScrollBarVisibility="Visible"
+								ItemsSource="{Binding Value,
+																			Mode=OneWay}"
+								>
+
+									<DockPanel>
+										<TextBlock
+												DockPanel.Dock="Top"
+												Text="{Binding Path=AnnoSymbol.Name}"
+												/>
+
+										<StackPanel
+												DockPanel.Dock="Top"
+												Orientation="Horizontal"
+												>
+											<TextBlock
+													Margin="10,0,0,0"
+													Text="{Binding Path=RevitParamList[0].Value,
+																				 Mode=OneWay}"
+													/>
+											<TextBlock
+													Margin="10,0,0,0"
+													Text="{Binding Path=RevitParamList[1].Value,
+																				 Mode=OneWay}"
+													/>
+											<TextBlock
+													Margin="10,0,0,0"
+													Text="{Binding Path=RevitParamList[2].Value,
+																				 Mode=OneWay}"
+													/>
+											<TextBlock
+													Margin="10,0,0,0"
+													Text="{Binding Path=RevitParamList[3].Value,
+																				 Mode=OneWay}"
+													/>
+											<TextBlock
+													Margin="10,0,0,0"
+													Text="{Binding Path=RevitParamList[4].Value,
+																				 Mode=OneWay}"
+													/>
+										</StackPanel>
+
+
+										<ListView
+												x:Name="LvLabels01"
+												DataContext="{Binding RevitParamList[8],
+																							Mode=OneWay}"
+												DockPanel.Dock="Bottom"
+												ItemsSource="{Binding Containers,
+																							Mode=OneWay}"
+												>
+											<ListView.ItemTemplate>
+												<DataTemplate>
+													<StackPanel Orientation="Vertical">
+														<TextBlock Text="{Binding Path=Value, Mode=OneWay}" />
+
+														<ListView
+																x:Name="LvLabel01"
+																ItemsSource="{Binding Value}"
+																
+																DataContext="{Binding Value}"
+																>
+																<!-- <ListView.ItemTemplate> -->
+																<!-- 	<DataTemplate> -->
+																		<StackPanel Orientation="Horizontal">
+																			<TextBlock
+																					Text="{Binding Path=RevitParamList[1].Value, Mode=OneWay}"
+																					></TextBlock>
+																		</StackPanel>
+																<!-- 	</DataTemplate> -->
+																<!-- </ListView.ItemTemplate> -->
+
+														</ListView>
+
+													</StackPanel>
+
+												</DataTemplate>
+											</ListView.ItemTemplate>
+										</ListView>
+
+									</DockPanel>
+
+						</ListView>
+					</DockPanel>
+				</DataTemplate>
+			</ListView.ItemTemplate>
+
+		</ListView>
+
+
+
+
+		<!--  <TreeView x:Name="TvMsg"  -->
+		<!--  Grid.Column="1"  -->
+		<!--  Grid.Row="0"  -->
+		<!--  Background="Transparent"  -->
+		<!--  Foreground="White"  -->
+		<!--  DataContext="{Binding ElementName=PrimeWin, Path=RevitTests}"  -->
+		<!--  ItemsSource="{Binding AnnoSyms.Containers}"  -->
+		<!--  >  -->
+		<!-- 	<TreeView.ItemTemplate> -->
+		<!--  <HierarchicalDataTemplate  -->
+		<!--  x:Name="hdt01"  -->
+		<!--  DataType="val:RevitAnnoSym"  -->
+		<!--  ItemsSource="{Binding Value}">  -->
+		<!-- 			<DockPanel> -->
+		<!--  <TextBlock  -->
+		<!--  HorizontalAlignment="Left"  -->
+		<!--  Foreground="White"  -->
+		<!--  Text="{Binding Path=Value.AnnoSymbol.Name}" />  -->
+		<!--  <TextBlock  -->
+		<!--  Margin="10,0,0,0"  -->
+		<!--  HorizontalAlignment="Left"  -->
+		<!--  Foreground="White"  -->
+		<!--  Text="{Binding Path=Value}" />  -->
+		<!--    -->
+		<!-- 			</DockPanel> -->
+		<!-- 			<HierarchicalDataTemplate.ItemTemplate> -->
+		<!-- 				<HierarchicalDataTemplate> -->
+		<!--    -->
+		<!-- 				</HierarchicalDataTemplate> -->
+		<!--    -->
+		<!-- 			</HierarchicalDataTemplate.ItemTemplate> -->
+		<!--  ~1~ 	<HierarchicalDataTemplate @1@  -->
+		<!--  ~1~ 			DataType="{x:Type val:RevitAnnoSym}" @1@  -->
+		<!--  ~1~ 		ItemsSource="{Binding RevitParamList/}" @1@  -->
+		<!--  ~1~ 			> @1@  -->
+		<!--  ~1~ 		<TextBlock @1@  -->
+		<!--  ~1~ 				Foreground="White" @1@  -->
+		<!--  ~1~ 				Text="{Binding Path=AnnoSymbol.Name}" @1@  -->
+		<!--  ~1~ 				/> @1@  -->
+		<!-- 			~1~ ~2~ 		<HierarchicalDataTemplate.ItemTemplate> @2@ @1@ -->
+		<!--  ~1~ ~2~ 			<HierarchicalDataTemplate  @2@ @1@  -->
+		<!--  ~1~ ~2~ 					DataType="val:RevitAnnoSym" @2@ @1@  -->
+		<!--  ~1~ ~2~ 					ItemsSource="{Binding Path=RevitParamList}" @2@ @1@  -->
+		<!--  ~1~ ~2~ 			> @2@ @1@  -->
+		<!--  ~1~ ~2~ 				<TextBlock @2@ @1@  -->
+		<!--  ~1~ ~2~ 						Text="{Binding Path=[\].ParamDesc.ParameterName}" @2@ @1@  -->
+		<!--  ~1~ ~2~ 						Foreground="White" @2@ @1@  -->
+		<!--  ~1~ ~2~ 						/> @2@ @1@  -->
+		<!--  ~1~ ~2~ @2@ @1@  -->
+		<!-- 			~1~ ~2~ 			</HierarchicalDataTemplate> @2@ @1@ -->
+		<!-- 			~1~ ~2~ 			</HierarchicalDataTemplate.ItemTemplate> @2@ @1@ -->
+		<!-- 			~1~ 	</HierarchicalDataTemplate> @1@ -->
+		<!--    -->
+		<!-- 		</HierarchicalDataTemplate> -->
+		<!--    -->
+		<!-- 	</TreeView.ItemTemplate> -->
+		<!--    -->
+		<!--    -->
+		<!--  ~1~  DataType="{x:Type val:RevitAnnoSyms}"  @1@  -->
+		<!-- 	<TreeView.Resources> -->
+		<!--  ~1~  <HierarchicalDataTemplate  @1@  -->
+		<!--  ~1~  DataType="{x:Type val:RevitAnnoSyms}"  @1@  -->
+		<!--  ~1~  ItemsSource="{Binding Path=Containers}"  @1@  -->
+		<!--  ~1~  >  @1@  -->
+		<!-- 		~1~ 		<TextBlock Text="{Binding Path=ParamDesc.ParameterName}"></TextBlock> @1@ -->
+		<!-- 		~1~ </HierarchicalDataTemplate> @1@ -->
+		<!--  ~1~  <HierarchicalDataTemplate  @1@  -->
+		<!--  ~1~  DataType="{x:Type val:RevitAnnoSym}"  @1@  -->
+		<!--  ~1~  ItemsSource="{Binding Path=RevitParamList}"  @1@  -->
+		<!--  ~1~  >  @1@  -->
+		<!--  ~1~    @1@  -->
+		<!-- 		~1~ </HierarchicalDataTemplate> @1@ -->
+		<!--    -->
+		<!-- 	</TreeView.Resources> -->
+		<!--    -->
+		<!-- </TreeView> -->
+
+	</Grid>
+</Window>

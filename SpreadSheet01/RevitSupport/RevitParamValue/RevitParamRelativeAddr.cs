@@ -3,13 +3,18 @@
 // File:             RevitParamAddr.cs
 // Created:      2021-02-22 (9:53 PM)
 
+using SpreadSheet01.ExcelSupport;
 using UtilityLibrary;
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
-	public class RevitParamAddr : ARevitParam
+	public class RevitParamRelativeAddr : ARevitParam
 	{
-		public RevitParamAddr(string value, ParamDesc paramDesc)
+		
+		public int Row { get; private set; }
+		public int Col { get; private set; }
+
+		public RevitParamRelativeAddr(string value, ParamDesc paramDesc)
 		{
 			this.paramDesc = paramDesc;
 
@@ -31,14 +36,21 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			}
 			else
 			{
+				int row;
+				int col;
+
 				this.value = value;
 
-				// bool result = ExcelAssist.ParseExcelAddress(value, out row, out col);
-				//
-				// if (!result)
-				// {
-				// 	ErrorCode = RevitCellErrorCode.PARAM_VALUE_BAD_ADDR_CS001105;
-				// }
+				bool result = ExcelAssist.ParseRelativeAddress(value, out row, out col);
+
+				Row = row;
+				Col = col;
+
+				if (!result)
+				{
+					ErrorCode = RevitCellErrorCode.PARAM_VALUE_BAD_REL_ADDR_CS001104;
+				}
+
 			}
 		}
 	}

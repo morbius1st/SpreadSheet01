@@ -72,7 +72,8 @@
       <Link>RevitSupport\RevitParamValue\RevitParamText.cs</Link>
     </Compile>
     <Compile Include="CellsTests\ParseTextParameter.cs" />
-    <Compile Include="CellsTests\RevitContainer.cs" />
+    <Compile Include="CellsTests\RevitParamTest.cs" />
+    <Compile Include="RevitSupport\RevitContainer.cs" />
     <Compile Include="DynamicTests.cs" />
     <Compile Include="DynamicValue2.cs" />
     <Compile Include="Program.cs" />
@@ -82,6 +83,8 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="RevitSupport\RevitElements\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

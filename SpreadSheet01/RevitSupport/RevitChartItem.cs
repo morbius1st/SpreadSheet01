@@ -4,6 +4,7 @@
 // Created:      2021-02-17 (6:44 PM)
 
 using System.Collections.Generic;
+using UtilityLibrary;
 
 namespace SpreadSheet01.RevitSupport
 {
@@ -27,22 +28,24 @@ namespace SpreadSheet01.RevitSupport
 			ItemIdCount = ChartItemIds.Count;
 		}
 
+		public bool IsValid => (!ChartPath.IsVoid() && !ChartWorkSheet.IsVoid());
+
 
 		public string[] Chart { get; set; }  = new string[3];
 
-		public string Path
+		public string ChartPath
 		{
 			get => Chart[EXCEL_PATH];
 			set => Chart[EXCEL_PATH] = value;
 		}
 
-		public string WorkSheet
+		public string ChartWorkSheet
 		{
 			get => Chart[EXCEL_WORKSHEET];
 			set => Chart[EXCEL_WORKSHEET] = value;
 		}
 
-		public string FamilyTypeName
+		public string ChartFamilyTypeName
 		{
 			get => Chart[CELL_FAMILYTYPENAME];
 			set => Chart[CELL_FAMILYTYPENAME] = value;

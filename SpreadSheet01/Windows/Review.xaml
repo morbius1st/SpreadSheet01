@@ -1,0 +1,57 @@
+﻿<Window x:Class="SpreadSheet01.Windows.Review"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				xmlns:data="clr-namespace:SpreadSheet01.RevitSupport"
+        xmlns:local="clr-namespace:SpreadSheet01.Windows"
+        xmlns:revitParamValue="clr-namespace:SpreadSheet01.RevitSupport.RevitParamValue"
+        mc:Ignorable="d"
+        Title="Review" Height="450" Width="800"
+				Background="#333333"
+				DataContext="{Binding Source={x:Static data:RevitTests.rvtMgr}}"
+				>
+  <Window.Resources>
+
+	</Window.Resources>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="110" />
+		</Grid.ColumnDefinitions>
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="40" />
+		</Grid.RowDefinitions>
+
+		<Button
+				Grid.Column="1"
+				Grid.Row="1"
+				Margin="5"
+				Content="Done"
+				Click="BtnDone_OnClick"
+		/>
+
+		<TreeView 
+				x:Name="tv01"
+				Foreground="White"
+				Grid.Column="0"
+				Grid.Row="0"
+				Background="Transparent"
+				ItemsSource="{Binding Path=Symbols}"
+		>
+			<TreeView.ItemTemplate>
+				<HierarchicalDataTemplate
+
+						ItemsSource="{Binding Path=Containers}">
+						<TextBlock Text="{Binding Path=ParamDesc.ParameterName}"/>
+				</HierarchicalDataTemplate>
+			</TreeView.ItemTemplate>
+
+		</TreeView>
+
+
+        
+	</Grid>
+</Window>

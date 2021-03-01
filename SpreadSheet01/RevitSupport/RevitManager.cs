@@ -2,15 +2,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using UtilityLibrary;
 using SpreadSheet01.RevitSupport.RevitParamValue;
-
 using static SpreadSheet01.RevitSupport.RevitCellParameters;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamReadReqmt;
-
 
 #endregion
 
@@ -19,7 +19,18 @@ using static SpreadSheet01.RevitSupport.RevitParamValue.ParamReadReqmt;
 
 namespace SpreadSheet01.RevitSupport
 {
-	public class RevitManager
+	public class ChartList
+	{
+		public List<RevitChartItem> Charts { get; } = new List<RevitChartItem>();
+
+		public void Add(RevitChartItem revitChart)
+		{
+			Charts.Add(revitChart);
+		}
+	}
+
+
+	public class RevitManager : INotifyPropertyChanged
 	{
 	#region private fields
 
@@ -30,25 +41,43 @@ namespace SpreadSheet01.RevitSupport
 		private const string KEY_IDX_BEGIN  = "《";
 		private const string KEY_IDX_END    = "》";
 
-		private ChartList chartList = new ChartList();
-
 		private Dictionary<string, RevitCellParams> CellItemsBySeqName { get; set; }
 		private Dictionary<string, RevitCellParams> CellItemsByNameSeq { get; set; }
+
+		private ChartList chartList;
 
 		private ICollection<Element> chartFamilies;
 		private ICollection<Element> cellFamilies;
 
-		private List<RevitCellParams> errorList = new List<RevitCellParams>();
+		private RevitChartItem selectedChart;
+
+
+		private List<RevitCellParams> errorList;
+
+		private RevitAnnoSyms annoSyms;
 
 	#endregion
 
 	#region ctor
 
-		public RevitManager() { }
+		public RevitManager()
+		{
+			chartList = new ChartList();
+			errorList = new List<RevitCellParams>();
+			annoSyms = new RevitAnnoSyms();
+		}
 
 	#endregion
 
 	#region public properties
+
+		public RevitChartItem SelectedChart => selectedChart;
+
+		public bool GotCellFamilies { get; private set; }
+
+		public bool GotChart => selectedChart.IsValid;
+
+		public RevitAnnoSyms Symbols => annoSyms;
 
 	#endregion
 
@@ -58,8 +87,17 @@ namespace SpreadSheet01.RevitSupport
 
 	#region public methods
 
+
+		public string GetCharts(Document doc)
+		{
+
+		}
+
+
+
 		public string getChart(Document doc, int whichChart = 0)
 		{
+
 			TaskDialog td;
 
 			chartFamilies = FindGenericAnnotationByName(doc, "SpreadSheetData");
@@ -77,8 +115,8 @@ namespace SpreadSheet01.RevitSupport
 
 			getCharts(chartFamilies);
 
-			string chartPath = chartList.Charts[whichChart].Path;
-			string chartWorkSheet = chartList.Charts[whichChart].WorkSheet;
+			string chartPath = chartList.Charts[whichChart].ChartPath;
+			string chartWorkSheet = chartList.Charts[whichChart].ChartWorkSheet;
 
 			if (chartPath.IsVoid() || chartWorkSheet.IsVoid())
 			{
@@ -91,174 +129,54 @@ namespace SpreadSheet01.RevitSupport
 				return null;
 			}
 
-			return chartList.Charts[whichChart].FamilyTypeName;
+			selectedChart = chartList.Charts[whichChart];
+
+			return chartList.Charts[whichChart].ChartFamilyTypeName;
 		}
 
-		// public bool GetCells2(Document doc, string familyTypeName)
-		// {
-		// 	// select all matching cells
-		// 	cellFamilies =
-		// 		SelectbyCatAndMatchStringParameter(doc, BuiltInCategory.OST_GenericAnnotation, familyTypeName);
-		//
-		// 	if (cellFamilies == null && cellFamilies.Count == 0)
-		// 	{
-		// 		errorNoCells(familyTypeName);
-		// 		return false;
-		// 	}
-		//
-		// 	string key;
-		// 	RevitCellParams cp;
-		//
-		// 	CellItemsBySeqName = new Dictionary<string, RevitCellParams>();
-		//
-		// 	foreach (Element cellFamily in cellFamilies)
-		// 	{
-		// 		int[] fails = new int[ReadParamFromFamily.Length];
-		// 		int failIdx = 0;
-		//
-		// 		ci = new RevitCellParams();
-		//
-		// 		cp.AnnoSymbol = cellFamily as AnnotationSymbol;
-		//
-		// 		IList<Parameter> parameters = cellFamily.GetOrderedParameters();
-		//
-		// 		// FamilyInstance fi = cellFamily as FamilyInstance;
-		// 		// AnnotationSymbol asx = cellFamily as AnnotationSymbol;
-		// 		//
-		// 		// ICollection<ElementId> se = fi.GetSubComponentIds();
-		// 		// ICollection<Subelement> ee = fi.GetSubelements();
-		// 		// IList<Subelement> sx = fi.Symbol.GetSubelements();
-		//
-		//
-		// 		for (var i = 0; i < ReadParamFromFamily.GetLength(0); i++)
-		// 		{
-		// 			int idx = ReadParamFromFamily[i];
-		//
-		// 			try
-		// 			{
-		// 				DataType paramDataType = CellParamInfo[idx].DataType;
-		// 				string paramName = CellParamInfo[idx].ParameterName;
-		//
-		//
-		// 				switch (paramDataType)
-		// 				{
-		// 				case DataType.TEXT:
-		// 					{
-		// 						break;
-		// 					}
-		// 				case DataType.TEXT:
-		// 					{
-		// 						ci[idx] =
-		// 							cellFamily.LookupParameter(paramName)?.AsString() ?? "";
-		// 						cp.CellParamDataType = DataType.TEXT;
-		//
-		// 						break;
-		// 					}
-		// 				case DataType.NUMBER:
-		// 					{
-		// 						ci[idx] =
-		// 							cellFamily.LookupParameter(paramName)?.AsDouble() ?? 0.0;
-		// 						cp.CellParamDataType = DataType.NUMBER;
-		//
-		// 						break;
-		// 					}
-		// 				case DataType.BOOL:
-		// 					{
-		// 						ci[idx] =
-		// 							(cellFamily.LookupParameter(paramName)?.AsInteger() ?? 1) == 1;
-		// 						cp.CellParamDataType = DataType.BOOL;
-		//
-		// 						break;
-		// 					}
-		// 				default:
-		// 					{
-		// 						cp.CellParamDataType = DataType.ERROR;
-		//
-		// 						break;
-		// 					}
-		// 				}
-		// 			}
-		// 			catch
-		// 			{
-		// 				fails[failIdx++] = i;
-		// 			}
-		// 		}
-		//
-		// 		if (failIdx > 0) cp.HasError = true;
-		//
-		// 		// KEY_ADDR_BEGIN
-		// 		// 	KEY_ADDR_END  
-		// 		// KEY_IDX_BEGIN 
-		// 		// KEY_IDX_END   
-		//
-		// 		key = ci[RevitCellParams.D_CELL_ADDR_NAME];
-		//
-		// 		key = key.IsVoid() ? ci[RevitCellParams.D_CELL_ADDR] : key;
-		//
-		// 		if (!key.IsVoid())
-		// 		{
-		// 			string testKey = KEY_ADDR_BEGIN + key + KEY_ADDR_END ;
-		// 			bool gotKey = false;
-		//
-		// 			for (int i = 0; i < 100; i++)
-		// 			{
-		// 				key = testKey +  KEY_IDX_BEGIN + i.ToString("D3") + KEY_IDX_END;
-		//
-		// 				if (!CellItemsBySeqName.ContainsKey(key))
-		// 				{
-		// 					gotKey = true;
-		// 					break;
-		// 				}
-		// 			}
-		//
-		// 			if (cp.Name.IsVoid()) cp.Name = key;
-		//
-		// 			if (gotKey) CellItemsBySeqName.Add(key, ci);
-		// 		}
-		// 	}
-		//
-		// 	return true;
-		// }
-
-		public bool GetCells(Document doc, string familyTypeName)
+		// create a list of annotation families of the proper type
+		public bool GetCellFamilies(Document doc, string familyTypeName)
 		{
 			cellFamilies =
-				SelectbyCatAndMatchStringParameter(doc, BuiltInCategory.OST_GenericAnnotation, familyTypeName);
+				SelectbyCatAndMatchStringParameter(doc,
+					BuiltInCategory.OST_GenericAnnotation, familyTypeName);
 
-			if (cellFamilies == null && cellFamilies.Count == 0)
+			if (cellFamilies == null || cellFamilies.Count == 0)
 			{
 				errorNoCells(familyTypeName);
 				return false;
 			}
 
-			RevitCellParams cp;
+			GotCellFamilies = true;
 
-			CellItemsBySeqName = new Dictionary<string, RevitCellParams>();
-			CellItemsByNameSeq = new Dictionary<string, RevitCellParams>();
-
-			foreach (Element cellFamily in cellFamilies)
-			{
-				cp = categorizeCellParameters(cellFamily as AnnotationSymbol);
-
-				if (cp.HasError == true)
-				{
-					errorList.Add(cp);
-					continue;
-				}
-
-				string keySeqName = makeKey(cp, true);
-				string keyNameSeq = makeKey(cp, false);
-
-				CellItemsBySeqName.Add(keySeqName, cp);
-				CellItemsByNameSeq.Add(keyNameSeq, cp);
-			}
-
-			return errorList.Count == 0;
+			return true;
 		}
 
-		// public bool GetCells2(Document doc, string familyTypeName)
+		public bool GetAllCellParameters()
+		{
+			if (!GotCellFamilies) return false;
+
+			foreach (Element el in cellFamilies)
+			{
+				AnnotationSymbol annoSym = el as AnnotationSymbol;
+
+				RevitAnnoSym rvtAnnoSym = catagorizeAnnoSymParams(annoSym);
+
+				rvtAnnoSym.RvtElement = el;
+				rvtAnnoSym.AnnoSymbol = annoSym;
+
+				string key = RevitValueSupport.MakeAnnoSymKey(rvtAnnoSym, false);
+
+				annoSyms.Add(key, rvtAnnoSym);
+			}
+
+			return true;
+		}
+
+
+
+		// public bool GetCells(Document doc, string familyTypeName)
 		// {
-		// 	// select all matching cells
 		// 	cellFamilies =
 		// 		SelectbyCatAndMatchStringParameter(doc, BuiltInCategory.OST_GenericAnnotation, familyTypeName);
 		//
@@ -268,40 +186,29 @@ namespace SpreadSheet01.RevitSupport
 		// 		return false;
 		// 	}
 		//
-		// 	string key;
 		// 	RevitCellParams cp;
 		//
 		// 	CellItemsBySeqName = new Dictionary<string, RevitCellParams>();
+		// 	CellItemsByNameSeq = new Dictionary<string, RevitCellParams>();
 		//
-		// 	foreach (Element e in cellFamilies)
+		// 	foreach (Element cellFamily in cellFamilies)
 		// 	{
-		// 		try
+		// 		cp = categorizeCellParameters(cellFamily as AnnotationSymbol);
+		//
+		// 		if (cp.HasError == true)
 		// 		{
-		// 			ci = new RevitCellParams();
-		//
-		// 			cp.AnnoSymbol = e;
-		// 			cp.Name = (e.LookupParameter(RevitCellParams.CellItemIds[RevitCellParams.D_NAME])).AsString();
-		// 			cp.CellAddrName = (e.LookupParameter(RevitCellParams.CellItemIds[RevitCellParams.D_CELL_ADDR_NAME])).AsString();
-		//
-		// 			if (cp.CellAddrName.IsVoid())
-		// 			{
-		// 				cp.CellAddr = (e.LookupParameter(RevitCellParams.CellItemIds[RevitCellParams.D_CELL_ADDR])).AsString();
-		// 			}
-		//
-		// 			cp.Formula = (e.LookupParameter(RevitCellParams.CellItemIds[RevitCellParams.D_FORMULA])).AsString();
-		// 			cp.ResultAsNumber = (e.LookupParameter(RevitCellParams.CellItemIds[RevitCellParams.D_CALC_RESULTS_AS_NUMBER]))
-		// 			.AsDouble();
-		// 			cp.ResultAsString = (e.LookupParameter(RevitCellParams.CellItemIds[RevitCellParams.D_CALC_RESULTS_AS_TEXT]))
-		// 			.AsString();
-		//
-		// 			key = getKey(cp.Name, cp.CellAddrName, cp.CellAddr);
-		//
-		// 			CellItemsBySeqName.Add(key, ci);
+		// 			errorList.Add(cp);
+		// 			continue;
 		// 		}
-		// 		catch { }
+		//
+		// 		string keySeqName = makeKey(cp, true);
+		// 		string keyNameSeq = makeKey(cp, false);
+		//
+		// 		CellItemsBySeqName.Add(keySeqName, cp);
+		// 		CellItemsByNameSeq.Add(keyNameSeq, cp);
 		// 	}
 		//
-		// 	return true;
+		// 	return errorList.Count == 0;
 		// }
 
 
@@ -380,6 +287,233 @@ namespace SpreadSheet01.RevitSupport
 
 	#region private methods
 
+		private RevitAnnoSym catagorizeAnnoSymParams(AnnotationSymbol aSym)
+		{
+			RevitAnnoSym ras = new RevitAnnoSym();
+			ARevitParam rvtParam;
+
+			int dataParamCount = 0;
+			int labelParamCount = 0;
+			int containerParamCount = 0;
+
+			int labelId;
+			bool isLabel;
+			ParamDesc pd;
+
+			foreach (Parameter param in aSym.GetOrderedParameters())
+			{
+				string paramName = RevitValueSupport.GetParamName(param.Definition.Name, out labelId, out isLabel);
+
+				pd = RevitCellParameters.Match(paramName);
+
+				if (pd == null) continue;
+
+				switch (pd.Group)
+				{
+				case ParamGroup.DATA:
+					{
+						dataParamCount++;
+						if (pd.DataType == ParamDataType.IGNORE) continue;
+
+						rvtParam = catagorizeParameter(param, pd);
+
+						ras.Add(pd.Index, rvtParam);
+						break;
+					}
+				case ParamGroup.CONTAINER:
+					{
+						Debug.WriteLine("got container");
+						containerParamCount++;
+						if (pd.DataType == ParamDataType.IGNORE) continue;
+
+						RevitLabels labels = (RevitLabels) ras[LabelsIdx];
+
+						// RevitLabel label = getLabel(labelId, labels);
+						//
+						// ARevitParam labelParam = catagorizeParameter(param, pd);
+						//
+						// label.Add(pd.Index, labelParam);
+
+						saveLabelParam(labelId, param, pd, labels);
+
+						break;
+					}
+				case ParamGroup.LABEL:
+					{
+						labelParamCount++;
+
+						if (labelId < 0 || pd.DataType == ParamDataType.IGNORE) continue;
+
+						RevitLabels labels = (RevitLabels) ras[LabelsIdx];
+
+						// RevitLabel label = getLabel(labelId, labels);
+						//
+						// ARevitParam labelParam = catagorizeParameter(param, pd);
+						//
+						// label.Add(pd.Index, labelParam);
+
+						saveLabelParam(labelId, param, pd, labels);
+
+						break;
+					}
+				}
+			}
+
+			return ras;
+		}
+
+		private void saveLabelParam(int labelId, Parameter param, ParamDesc pd, RevitLabels labels)
+		{
+			RevitLabel label = getLabel(labelId, labels);
+
+			ARevitParam labelParam = catagorizeParameter(param, pd);
+
+			label.Add(pd.Index, labelParam);
+		}
+
+		private RevitLabel getLabel(int idx, RevitLabels labels)
+		{
+			RevitLabel label = null;
+
+			string key = RevitValueSupport.MakeLabelKey(idx);
+
+			bool result = labels.Containers.TryGetValue(key, out label);
+
+			if (!result)
+			{
+				label = new RevitLabel();
+				labels.Containers.Add(key, label);
+			}
+
+			return label;
+		}
+
+		private ARevitParam catagorizeParameter(Parameter param, ParamDesc pd, string name = "")
+		{
+			ARevitParam p = null;
+
+			switch (pd.DataType)
+			{
+			case ParamDataType.BOOL:
+				{
+					p = new RevitParamBool(
+						pd.ReadReqmt ==
+						ParamReadReqmt.READ_VALUE_IGNORE
+							? (bool?) false
+							: param.AsInteger() == 1, pd);
+					break;
+				}
+			case ParamDataType.NUMBER:
+				{
+					p = new RevitParamNumber(
+						pd.ReadReqmt ==
+						ParamReadReqmt.READ_VALUE_IGNORE
+							? double.NaN
+							: param.AsDouble(), pd);
+					break;
+				}
+			case ParamDataType.TEXT:
+				{
+					p = new RevitParamText(pd.ReadReqmt ==
+						ParamReadReqmt.READ_VALUE_IGNORE
+							? ""
+							: param.AsString(), pd);
+					break;
+				}
+			case ParamDataType.DATATYPE:
+				{
+					p = new RevitParamText(pd.ReadReqmt ==
+						ParamReadReqmt.READ_VALUE_IGNORE
+							? ""
+							: param.AsString(), pd);
+					break;
+				}
+			case ParamDataType.ADDRESS:
+				{
+					p = new RevitParamText(pd.ReadReqmt ==
+						ParamReadReqmt.READ_VALUE_IGNORE
+							? ""
+							: param.AsString(), pd);
+					break;
+				}
+			case ParamDataType.RELATIVEADDRESS:
+				{
+					p = new RevitParamRelativeAddr(pd.ReadReqmt ==
+						ParamReadReqmt.READ_VALUE_IGNORE
+							? ""
+							: param.AsString(), pd);
+
+					break;
+				}
+			case ParamDataType.LABEL_TITLE:
+				{
+					p = new RevitParamLabel("", pd);
+					((RevitParamLabel) p).LabelValueName = param.Definition.Name;
+					break;
+				}
+			}
+
+			return p;
+		}
+
+		private void getCharts(ICollection<Element> charts)
+		{
+			foreach (Element e in charts)
+			{
+				int found = 0;
+
+				RevitChartItem cp = new RevitChartItem();
+
+				foreach (Parameter p in e.ParametersMap)
+				{
+					string name = p.Definition.Name;
+
+					foreach (KeyValuePair<string, int> kvp in RevitChartItem.ChartItemIds)
+					{
+						if (name.Equals(kvp.Key))
+						{
+							cp.Chart[kvp.Value] = p.AsString();
+							found++;
+						}
+					}
+
+					if (found == RevitChartItem.ItemIdCount) break;
+				}
+
+				if (cp != null) chartList.Add(cp);
+			}
+		}
+
+		private void errorNoCells(string familyTypeName)
+		{
+			TaskDialog td = new TaskDialog("Spread Sheet Cells for| " + familyTypeName);
+			td.MainContent = "No cells found";
+			td.MainIcon = TaskDialogIcon.TaskDialogIconError;
+			td.CommonButtons = TaskDialogCommonButtons.Ok;
+			td.Show();
+		}
+
+		/*
+		private string getKey(string name, string cellName, string cellAddr)
+		{
+			string Key;
+
+			if (!name.IsVoid())
+			{
+				Key = name;
+			}
+			else if (!cellName.IsVoid())
+			{
+				Key = cellName;
+			}
+			else
+			{
+				Key = cellAddr;
+			}
+
+			return Key;
+		}
+
 		private string makeKey(RevitCellParams cp, bool asSeqName)
 		{
 			string seq = ((string) cp[SeqIdx].GetValue());
@@ -438,7 +572,7 @@ namespace SpreadSheet01.RevitSupport
 				{
 				case ParamDataType.TEXT:
 					{
-						RevitParamText rs = 
+						RevitParamText rs =
 							new RevitParamText(
 								pd.ReadReqmt == READ_VALUE_IGNORE ? "" : param.AsString(), pd);
 						cp[idx] = rs;
@@ -454,7 +588,7 @@ namespace SpreadSheet01.RevitSupport
 				// 	}
 
 				case ParamDataType.ADDRESS:
-					{ 
+					{
 						RevitParamAddr ra = new RevitParamAddr(param.AsString(), pd);
 						cp[idx] = ra;
 						paramCount++;
@@ -487,6 +621,7 @@ namespace SpreadSheet01.RevitSupport
 						break;
 					}
 				}
+
 				Debug.WriteLine("has error C?|" + cp.HasError);
 			}
 
@@ -495,7 +630,7 @@ namespace SpreadSheet01.RevitSupport
 				cp.CellParamDataType = ParamDataType.ERROR;
 				cp.Error = RevitCellErrorCode.PARAM_VALUE_MISSING_CS001101;
 			}
-			else if (paramCount != RevitCellParameters.ParamCounts[(int) ParamGroupType.DATA])
+			else if (paramCount != RevitCellParameters.ParamCounts[(int) ParamGroup.DATA])
 			{
 				cp.CellParamDataType = ParamDataType.ERROR;
 				cp.Error = RevitCellErrorCode.PARAM_MISSING_CS001102;
@@ -506,64 +641,7 @@ namespace SpreadSheet01.RevitSupport
 			return cp;
 		}
 
-
-		private void getCharts(ICollection<Element> charts)
-		{
-			foreach (Element e in charts)
-			{
-				int found = 0;
-
-				RevitChartItem cp = new RevitChartItem();
-
-				foreach (Parameter p in e.ParametersMap)
-				{
-					string name = p.Definition.Name;
-
-					foreach (KeyValuePair<string, int> kvp in RevitChartItem.ChartItemIds)
-					{
-						if (name.Equals(kvp.Key))
-						{
-							cp.Chart[kvp.Value] = p.AsString();
-							found++;
-						}
-					}
-
-					if (found == RevitChartItem.ItemIdCount) break;
-				}
-
-				if (cp != null) chartList.Add(cp);
-			}
-		}
-
-
-		private void errorNoCells(string familyTypeName)
-		{
-			TaskDialog td = new TaskDialog("Spread Sheet Cells for| " + familyTypeName);
-			td.MainContent = "No cells found";
-			td.MainIcon = TaskDialogIcon.TaskDialogIconError;
-			td.CommonButtons = TaskDialogCommonButtons.Ok;
-			td.Show();
-		}
-
-		private string getKey(string name, string cellName, string cellAddr)
-		{
-			string Key;
-
-			if (!name.IsVoid())
-			{
-				Key = name;
-			}
-			else if (!cellName.IsVoid())
-			{
-				Key = cellName;
-			}
-			else
-			{
-				Key = cellAddr;
-			}
-
-			return Key;
-		}
+		*/
 
 	#endregion
 
@@ -572,6 +650,13 @@ namespace SpreadSheet01.RevitSupport
 	#endregion
 
 	#region event publishing
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		private void OnPropertyChanged([CallerMemberName] string memberName = "")
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(memberName));
+		}
 
 	#endregion
 
@@ -585,13 +670,4 @@ namespace SpreadSheet01.RevitSupport
 	#endregion
 	}
 
-	public class ChartList
-	{
-		public List<RevitChartItem> Charts { get; } = new List<RevitChartItem>();
-
-		public void Add(RevitChartItem revitChart)
-		{
-			Charts.Add(revitChart);
-		}
-	}
 }

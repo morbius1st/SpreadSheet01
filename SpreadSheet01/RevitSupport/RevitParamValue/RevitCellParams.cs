@@ -12,7 +12,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
 	public class RevitCellParams
 	{
-		public ARevitParam[] CellValues = new ARevitParam[ParamCounts[(int) ParamGroupType.DATA]];
+		public ARevitParam[] CellValues = new ARevitParam[ParamCounts[(int) ParamGroup.DATA]];
 
 		private AnnotationSymbol annoSymbol;
 

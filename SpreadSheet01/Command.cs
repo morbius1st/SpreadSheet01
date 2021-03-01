@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Linq;
 using SpreadSheet01.ExcelSupport;
 using SpreadSheet01.RevitSupport;
+using SpreadSheet01.Windows;
 using UtilityLibrary;
 
 #endregion
@@ -51,20 +52,27 @@ namespace SpreadSheet01
 
 			Result result;
 
-			// // Modify document within a transaction
+/*			// // Modify document within a transaction
 			using (Transaction tx = new Transaction(doc))
 			{
 				tx.Start(ROOT_TRANSACTION_NAME);
 
 				result = rt.TestSpreadSheet1(doc);
-			
+
 				// ExcelExchange exe = new ExcelExchange();
-			
+
 				// exe.UpdateValues(doc,
 				// 	chartPath, chartWorkSheet, cells);
-			
+
 				tx.Commit();
 			}
+*/
+
+			result = rt.TestSpreadSheet1(doc);
+
+			// Review r = new Review();
+			//
+			// r.ShowDialog();
 
 			return Result.Succeeded;
 		}

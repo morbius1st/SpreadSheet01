@@ -11,6 +11,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{DDC429DE-0FCC-45A7-A152-112E9AB46CC4}</ProjectGuid>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SpreadSheet01</RootNamespace>
@@ -71,6 +72,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\UtilityLibrary\UtilityLibrary\CsObservableDictionary.cs">
+      <Link>.External\CsObservableDictionary.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\..\UtilityLibrary\UtilityLibrary\FilePath\V3.0\CsFilePath.cs">
       <Link>.External\CsFilePath.cs</Link>
     </Compile>
@@ -84,6 +88,7 @@
     <Compile Include="Command.cs" />
     <Compile Include="ExcelSupport\ExcelExchange.cs" />
     <Compile Include="ExcelSupport\ExcelManager.cs" />
+    <Compile Include="ExcelSupport\ExcelAssist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RevitSupport\RevitParamValue\RevitContainer.cs" />
     <Compile Include="RevitSupport\RevitParamValue\RevitCellParams.cs" />
@@ -91,14 +96,22 @@
     <Compile Include="RevitSupport\RevitChartItem.cs" />
     <Compile Include="RevitSupport\RevitManager.cs" />
     <Compile Include="RevitSupport\RevitParamValue\ARevitParam.cs" />
+    <Compile Include="RevitSupport\RevitParamValue\RevitParamRelativeAddr.cs" />
     <Compile Include="RevitSupport\RevitParamValue\RevitParamAddr.cs" />
     <Compile Include="RevitSupport\RevitParamValue\RevitParamBool.cs" />
     <Compile Include="RevitSupport\RevitParamValue\RevitParamNumber.cs" />
-    <Compile Include="RevitSupport\RevitParamValue\RevitParamLabel.cs" />
+    <Compile Include="RevitSupport\RevitParamValue\RevitParamLabelVoid.cs" />
     <Compile Include="RevitSupport\RevitParamValue\RevitCellSupport.cs" />
+    <Compile Include="RevitSupport\RevitParamValue\RevitParamLabel.cs" />
     <Compile Include="RevitSupport\RevitParamValue\RevitParamText.cs" />
     <Compile Include="RevitSupport\RevitParamValue\RevitParamTextVoid.cs" />
     <Compile Include="RevitSupport\RevitTests.cs" />
+    <Compile Include="Windows\Review.xaml.cs">
+      <DependentUpon>Review.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SelectCharts.xaml.cs">
+      <DependentUpon>SelectCharts.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\information16.png" />
@@ -106,6 +119,16 @@
     <Content Include=".Other\SpreadSheet01.addin" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Page Include="Windows\Review.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\SelectCharts.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if exist "$(AppData)\Autodesk\REVIT\Addins\2020" copy "$(ProjectDir).other\*.addin" "$(AppData)\Autodesk\REVIT\Addins\2020"

@@ -13,6 +13,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using SpreadSheet01.ExcelSupport;
+using SpreadSheet01.RevitSupport.RevitParamValue;
 using UtilityLibrary;
 
 #endregion
@@ -26,9 +27,9 @@ namespace SpreadSheet01.RevitSupport
 	{
 	#region private fields
 
-		private const string ROOT_TRANSACTION_NAME = "Transaction Name";
+		private const string ROOT_TRANSACTION_NAME = "Cells";
 
-		private RevitManager rvtMgr = new RevitManager();
+		public static RevitManager rvtMgr { get; private set; }
 
 	#endregion
 
@@ -51,30 +52,40 @@ namespace SpreadSheet01.RevitSupport
 		
 		public Result TestSpreadSheet1(Document doc)
 		{
+			rvtMgr = new RevitManager();
+			
 			string chartFamily = rvtMgr.getChart(doc);
 
 			// chartFamily = "CellParkingAnalysis-02";
-			chartFamily = "CellLegend-01";
+			chartFamily = "CellLegend-02";
 
-			if (chartFamily.IsVoid()) return Result.Failed;
+			if (chartFamily.IsVoid() ||
+				!rvtMgr.GotChart) return Result.Failed;
 
-			bool result = rvtMgr.GetCells(doc, chartFamily);
+			bool result = rvtMgr.GetCellFamilies(doc, chartFamily);
+
+			if (result)
+			{
+				result = rvtMgr.GetAllCellParameters();
+			}
 
 			if (!result) return Result.Failed;
 
 
-			// 	// Modify document within a transaction
-				using (Transaction tx = new Transaction(doc))
-				{
-					tx.Start(ROOT_TRANSACTION_NAME);
-			
-					ExcelExchange exe = new ExcelExchange();
-			
-					// exe.UpdateValues(doc,
-						// chartPath, chartWorkSheet, cells);
-			
-					tx.Commit();
-				}
+			// Modify document within a transaction
+			using (Transaction tx = new Transaction(doc))
+			{
+				tx.Start(ROOT_TRANSACTION_NAME+ ": Update cell family| " + chartFamily);
+
+				ExcelExchange exe = new ExcelExchange();
+
+				exe.UpdateValues(doc,
+					rvtMgr.SelectedChart.ChartPath,
+					rvtMgr.SelectedChart.ChartWorkSheet,
+					rvtMgr.Symbols);
+
+				tx.Commit();
+			}
 
 			return Result.Succeeded;
 		}

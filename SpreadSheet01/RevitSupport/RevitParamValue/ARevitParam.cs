@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using UtilityLibrary;
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
-	public abstract class ARevitParam
+	public abstract class ARevitParam : INotifyPropertyChanged
 	{
 		protected dynamic value;
 
@@ -13,6 +16,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		protected bool gotValue;
 
 		public abstract dynamic GetValue();
+
+		public dynamic Value => value;
 
 		public RevitCellErrorCode ErrorCode
 		{
@@ -29,10 +34,21 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		public ParamDesc ParamDesc
 		{
 			get => paramDesc;
-			private set => paramDesc = value;
+			private set
+			{
+				paramDesc = value;
+				OnPropertyChanged();
+			}
 		}
 
 		public bool IsValid => errors == null;
+
+		public void UpdateProperties()
+		{
+			OnPropertyChanged(nameof(Value));
+			OnPropertyChanged(nameof(ParamDesc));
+		}
+
 
 		public void SetValue<T>(T value)
 		{
@@ -44,6 +60,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 			gotValue = true;
 			Assigned = true;
+
+			OnPropertyChanged(nameof(Value));
 
 		}
 
@@ -65,9 +83,17 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			}
 		}
 
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		private void OnPropertyChanged([CallerMemberName] string memberName = "")
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(memberName));
+		}
+
+
 		public override string ToString()
 		{
-			return "<" + (value.ToString() ?? "null value") + " >|< " + (IsValid ? "Valid" : "Invalid") + ">";
+			return "<" + (value?.ToString() ?? "null value") + " >|< " + (IsValid ? "Valid" : "Invalid") + ">";
 		}
 	}
 

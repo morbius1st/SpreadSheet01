@@ -91,7 +91,7 @@ namespace Tests.CellsTests
 			{
 				ParamDesc pd = Match(param.Definition.Name);
 
-				if (pd.GroupType == ParamGroupType.DATA)
+				if (pd.Group == ParamGroup.DATA)
 				{
 					cp1A.CellValues[pd.ParamIndex] = new RevitParamText(param.AsString(), pd);
 				}
@@ -243,7 +243,7 @@ namespace Tests.CellsTests
 				// 	cp.Error = RevitCellErrorCode.INVALID_DATA_FORMAT_CS000I10;
 				// }
 				//
-				// if (pd.GroupType ==	ParamGroupType.DATA)
+				// if (pd.Group ==	ParamGroup.DATA)
 				// {
 				// 	paramCount++;
 				// }
@@ -253,8 +253,8 @@ namespace Tests.CellsTests
 				// }
 			}
 
-			if (paramCount == 0 || paramCount != ParamCounts[(int) ParamGroupType.DATA] ||
-				labelCount.Equals(0) || (labelCount % ParamCounts[(int) ParamGroupType.LABEL]) != 0 )
+			if (paramCount == 0 || paramCount != ParamCounts[(int) ParamGroup.DATA] ||
+				labelCount.Equals(0) || (labelCount % ParamCounts[(int) ParamGroup.LABEL]) != 0 )
 			{
 				cp.Error = RevitCellErrorCode.PARAM_MISSING_CS001102;
 			}
@@ -396,7 +396,7 @@ namespace Tests.CellsTests
 
 					int idx = pd.Index;
 
-					if (pd.GroupType != ParamGroupType.LABEL)
+					if (pd.Group != ParamGroup.LABEL)
 					{
 						string text = kvp.Value[idx]?.GetValue().ToString();
 

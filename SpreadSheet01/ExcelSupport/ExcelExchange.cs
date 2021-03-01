@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 
 using Autodesk.Revit.DB;
+using SpreadSheet01.RevitSupport;
+using SpreadSheet01.RevitSupport.RevitParamValue;
 using UtilityLibrary;
 
 #endregion
@@ -21,6 +23,7 @@ namespace SpreadSheet01.ExcelSupport
 		private const string UNIT_FORMAT_STR = "Unit Format";
 		private const string VALUE = "Value";
 
+		private RevitManager rvtMgr;
 
 		private ExcelManager exMgr = new ExcelManager();
 
@@ -54,7 +57,7 @@ namespace SpreadSheet01.ExcelSupport
 
 		public bool UpdateValues(Document doc, string excelFilePath, 
 			string excelWorkSheetName, 
-			ICollection<Element> cells)
+			RevitAnnoSyms cells)
 		{
 			Configure(excelFilePath, excelWorkSheetName);
 
@@ -64,6 +67,41 @@ namespace SpreadSheet01.ExcelSupport
 			string value;
 			int fails = 0;
 
+			string anchorCellName;
+			string relativeAddr;
+			string cellAddr;
+
+
+			foreach (KeyValuePair<string, RevitAnnoSym> rvtAnnoSym in cells.Containers)
+			{
+				Element e = rvtAnnoSym.Value.RvtElement;
+
+				anchorCellName = rvtAnnoSym.Value.RevitParamList[RevitCellParameters.CellAddrIdx].Value;
+
+				RevitLabels labels = (RevitLabels) rvtAnnoSym.Value.RevitParamList[RevitCellParameters.LabelsIdx];
+
+				foreach (KeyValuePair<string, RevitLabel> kvp in labels.Containers)
+				{
+					RevitLabel label = (RevitLabel) kvp.Value;
+
+					RevitParamRelativeAddr relAddr = (RevitParamRelativeAddr) label[RevitCellParameters.lblRelAddrIdx];
+
+					cellAddr = ExcelAssist.AddToCellAddr(anchorCellName, relAddr.Row, relAddr.Col);
+
+					if (!exMgr.GetValue(cellAddr, out value))
+					{
+						fails++;
+						value = "%ERROR%";
+					}
+
+					string labelValueTitle = ((RevitParamLabel) label[RevitCellParameters.LabelIdx]).LabelValueName;
+
+					Parameter p = e.LookupParameter(labelValueTitle);
+					p.Set(value);
+				}
+
+			}
+/*
 			foreach (Element e in cells)
 			{
 				try
@@ -84,7 +122,7 @@ namespace SpreadSheet01.ExcelSupport
 					continue;
 				}
 			}
-
+*/
 
 			return true;
 		}
@@ -99,8 +137,6 @@ namespace SpreadSheet01.ExcelSupport
 
 		private void Configure(string excelFilePath, string excelWorkSheetName)
 		{
-			// bool result;
-
 			if (!exMgr.OpenExcelFile(excelFilePath)) return ; //false;
 
 			if (!exMgr.OpenExcelWorkSheet(excelWorkSheetName)) return; // false;

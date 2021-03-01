@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tests.CellsTests;
+
 // using Tests.CellsTests;
 
 namespace Tests
@@ -13,6 +15,10 @@ namespace Tests
 		static Program p;
 
 		static DynamicTests dt = new DynamicTests();
+
+		private static RevitParamTest rpt = new RevitParamTest();
+
+
 		// private static ParseTextParameter pt = new ParseTextParameter();
 
 		static void Main(string[] args)
@@ -25,6 +31,7 @@ namespace Tests
 			{
 				// dt.Process();
 				// pt.Process();
+				rpt.Process();
 
 				Console.Write("\nEnter r to repeat: ");
 				c = Console.ReadKey(false);

@@ -9,7 +9,7 @@ using static SpreadSheet01.RevitSupport.RevitCellParameters;
 
 // user name: jeffs
 // created:   2/25/2021 6:52:29 PM
-// spreadsheet01
+// tests
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
@@ -43,7 +43,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 	*/
 
 
-	
+
 	public class RevitContainerTest
 	{
 		private RevitAnnoSyms annoSyms = new RevitAnnoSyms();
@@ -134,16 +134,13 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 	{
 		public RevitAnnoSym()
 		{
-			int a = LabelIdx;
-
+			
 			RevitParamList = new ARevitParam[RevitCellParameters.ParamCounts[(int) ParamGroup.DATA]];
 
 			RevitParamList[LabelsIdx] = new RevitLabels();
 		}
 
 		public AnnotationSymbol AnnoSymbol { get; set; }
-
-		public Element RvtElement {get; set; }
 	}
 
 	public class RevitLabel : RevitContainer
