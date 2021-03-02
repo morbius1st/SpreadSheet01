@@ -9,8 +9,54 @@
 		Width="600"
 		Height="800"
 		mc:Ignorable="d"
+		DataContext="{Binding ElementName=SelCharts}"
 		Background="#313339"
 		Loaded="SelectCharts_OnLoaded"
 		>
-	<Grid />
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="90" />
+		</Grid.ColumnDefinitions>
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="40" />
+		</Grid.RowDefinitions>
+
+		<StackPanel
+				Grid.Column="0"
+				Grid.Row="1"
+				Grid.ColumnSpan="2"
+				HorizontalAlignment="Right"
+				Orientation="Horizontal">
+							
+			<Button
+					x:Name="BtnDebug"
+					Margin="5"
+					Width="90"
+					Click="BtnDebug_OnClick"
+					Content="Debug"
+					/>	
+
+			<Button
+					x:Name="BtnDone"
+					Margin="5"
+					Width="90"
+					Click="BtnDone_OnClick"
+					Content="Done"
+					/>
+
+		</StackPanel>
+
+		<ListView
+				Background="Transparent"
+				Foreground="White"
+				ItemsSource="{Binding Path=Charts, Mode=OneWay}"
+				
+				/>
+
+
+
+	</Grid>
 </Window>

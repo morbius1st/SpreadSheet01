@@ -24,6 +24,11 @@ using UtilityLibrary;
 
 namespace SpreadSheet01
 {
+	public static class RevitDoc
+	{
+		public static Document Doc { get; set; }
+	}
+
 	[Transaction(TransactionMode.Manual)]
 	public class Command : IExternalCommand
 	{
@@ -45,12 +50,19 @@ namespace SpreadSheet01
 			Application app = uiapp.Application;
 			Document doc = uidoc.Document;
 
+			RevitDoc.Doc = doc;
+
 			// Access current selection
 			Selection sel = uidoc.Selection;
 
 			RevitTests rt = new RevitTests();
 
 			Result result;
+
+			SelectCharts charts = new SelectCharts();
+
+			charts.ShowDialog();
+
 
 /*			// // Modify document within a transaction
 			using (Transaction tx = new Transaction(doc))
@@ -68,7 +80,7 @@ namespace SpreadSheet01
 			}
 */
 
-			result = rt.TestSpreadSheet1(doc);
+			// result = rt.TestSpreadSheet1(doc);
 
 			// Review r = new Review();
 			//

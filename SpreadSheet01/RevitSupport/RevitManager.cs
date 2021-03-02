@@ -71,6 +71,8 @@ namespace SpreadSheet01.RevitSupport
 
 	#region public properties
 
+		public ChartList ChartList => chartList;
+
 		public RevitChartItem SelectedChart => selectedChart;
 
 		public bool GotCellFamilies { get; private set; }
@@ -88,9 +90,27 @@ namespace SpreadSheet01.RevitSupport
 	#region public methods
 
 
-		public string GetCharts(Document doc)
+		public void GetCharts()
 		{
+			TaskDialog td;
 
+			chartFamilies = FindGenericAnnotationByName(RevitDoc.Doc, "SpreadSheetData");
+
+			if (chartFamilies == null && chartFamilies.Count == 0)
+			{
+				td = new TaskDialog("Spread Sheets");
+				td.MainContent = "No charts found";
+				td.MainIcon = TaskDialogIcon.TaskDialogIconError;
+				td.CommonButtons = TaskDialogCommonButtons.Ok;
+				td.Show();
+
+				return;
+			}
+
+			getCharts(chartFamilies);
+
+			OnPropertyChanged(nameof(ChartList));
+			
 		}
 
 
