@@ -47,53 +47,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 
 
-	public class RevitContainerTest
-	{
-		private RevitAnnoSyms annoSyms = new RevitAnnoSyms();
-
-		private ObservableCollection<RevitAnnoSyms> sx = new ObservableCollection<RevitAnnoSyms>();
-
-		public void test2()
-		{
-			ARevitParam px = new RevitParamAddr("asdf", null);
-			
-			RevitAnnoSym rx = new RevitAnnoSym();
-			rx.Add(1, px);
-			
-			RevitAnnoSyms ras = new RevitAnnoSyms();
-			ras.Add("asdf", rx);
-
-			RevitAnnoSym sym = new RevitAnnoSym();
-			
-			string key = RevitValueSupport.MakeAnnoSymKey(sym, false);
-			
-			annoSyms.Add(key, sym);
-		}
-
-
-		private RevitAnnoSym makeSym()
-		{
-			RevitAnnoSym sym = null;
-
-			// sym.ContentList.Add("asf", null);
-
-
-			return sym;
-		}
-
-		private void addParams(RevitAnnoSym sym)
-		{
-
-			ParamDesc pd = RevitCellParameters.Match("Name");
-
-
-			RevitParamBool rb = new RevitParamBool(true, pd);
-		}
-	}
-
 	public class RevitContainers<T> : ARevitParam, INotifyPropertyChanged
 	{
-
 		public ObservableDictionary<string, T> Containers { get; set; }
 
 		// public List<T>  ContainerList { get; private set; }  
@@ -131,13 +86,21 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		}
 	}
 
-
 	public class RevitAnnoSyms : RevitContainers<RevitAnnoSym>
 	{
 
 		public override string ToString()
 		{
 			return "I am RevitAnnoSyms| ";
+		}
+	}
+
+	public class RevitCharts : RevitContainers<RevitAnnoSym>
+	{
+		// a collection of Chart Families
+		public override string ToString()
+		{
+			return "I am RevitCharts| ";
 		}
 	}
 
@@ -149,8 +112,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			return "I am RevitLabels| ";
 		}
 	}
-
-
 
 	public class RevitContainer : INotifyPropertyChanged
 	{
@@ -213,7 +174,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 	public class RevitLabel : RevitContainer
 	{
-
 		public RevitLabel()
 		{
 			RevitParamList = new ARevitParam[RevitCellParameters.ParamCounts[(int) ParamGroup.LABEL]];
@@ -224,5 +184,50 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			return "I am RevitLabel| ";
 		}
 	}
+
+/*
+	public class RevitContainerTest
+	{
+		private RevitAnnoSyms annoSyms = new RevitAnnoSyms();
+
+		private ObservableCollection<RevitAnnoSyms> sx = new ObservableCollection<RevitAnnoSyms>();
+
+		public void test2()
+		{
+			ARevitParam px = new RevitParamAddr("asdf", null);
+			
+			RevitAnnoSym rx = new RevitAnnoSym();
+			rx.Add(1, px);
+			
+			RevitAnnoSyms ras = new RevitAnnoSyms();
+			ras.Add("asdf", rx);
+
+			RevitAnnoSym sym = new RevitAnnoSym();
+			
+			string key = RevitValueSupport.MakeAnnoSymKey(sym, false);
+			
+			annoSyms.Add(key, sym);
+		}
+
+		private RevitAnnoSym makeSym()
+		{
+			RevitAnnoSym sym = null;
+
+			// sym.ContentList.Add("asf", null);
+
+
+			return sym;
+		}
+
+		private void addParams(RevitAnnoSym sym)
+		{
+
+			ParamDesc pd = RevitCellParameters.Match("Name");
+
+
+			RevitParamBool rb = new RevitParamBool(true, pd);
+		}
+	}
+	*/
 
 }

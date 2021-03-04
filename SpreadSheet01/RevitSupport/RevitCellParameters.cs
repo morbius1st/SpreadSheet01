@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
 using SpreadSheet01.RevitSupport.RevitParamValue;
+using UtilityLibrary;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamReadReqmt;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamDataType;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamMode;
@@ -41,7 +43,7 @@ namespace SpreadSheet01.RevitSupport
 			ParamIndex = index + indexAdjust;
 		}
 
-		
+		public static ParamDesc Empty => new ParamDesc("", -1, -1, DATA, IGNORE, READ_VALUE_IGNORE, NOT_USED);
 
 		public string ParameterName {
 			get => parameterName;
@@ -66,11 +68,12 @@ namespace SpreadSheet01.RevitSupport
 
 		public static string GetShortNameSimple(string name)
 		{
-			return name.Substring(0, Math.Min(name.Length, 6));
+			return name.Substring(0, Math.Min(name.Length, 8));
 		}
 		
 		public static string GetShortName(string name)
 		{
+			if (name.IsVoid()) return "";
 			string test = name;
 
 			int pos1 = name.IndexOf('#');
@@ -90,7 +93,7 @@ namespace SpreadSheet01.RevitSupport
 				test = name.Substring(0, pos1 - 1);
 			}
 
-			return name.Substring(0, Math.Min(name.Length, 6));
+			return name.Substring(0, Math.Min(name.Length, 8));
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -199,11 +202,6 @@ namespace SpreadSheet01.RevitSupport
 			AllParamCount = AllParamDefCount + ParamCounts[(int) LABEL];
 
 			CellParamIndex = new SortedDictionary<string, int>();
-
-#pragma warning disable CS0219 // The variable 'd' is assigned but its value is never used
-			int d = (int) DATA;
-#pragma warning restore CS0219 // The variable 'd' is assigned but its value is never used
-			int x = ParamCounts[(int) DATA];
 
 			// CellAllParams = new ParamDesc[ParamCounts[(int) DATA]];
 			CellAllParams = new ParamDesc[AllParamCount];

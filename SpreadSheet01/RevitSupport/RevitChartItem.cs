@@ -18,7 +18,7 @@ namespace SpreadSheet01.RevitSupport
 
 		public static Dictionary<string, int> ChartItemIds { get; }  = new Dictionary<string, int>(3)
 		{
-			{"Excel File",  EXCEL_PATH},
+			{"Excel File Path",  EXCEL_PATH},
 			{"Excel WorkSheet Name",  EXCEL_WORKSHEET},
 			{"Cell Family Name",  CELL_FAMILYTYPENAME}
 		};

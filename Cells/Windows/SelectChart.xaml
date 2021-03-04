@@ -1,0 +1,57 @@
+﻿<Window x:Class="Cells.Windows.SelectChart"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Cells.Windows"
+        mc:Ignorable="d"
+        Background="#333333"
+        Title="SelectChart" Height="650" Width="500">
+
+  <Window.Resources>
+
+	</Window.Resources>
+
+	<Grid>
+
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="90" />
+		</Grid.ColumnDefinitions>
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="40" />
+		</Grid.RowDefinitions>
+
+		<StackPanel
+				Grid.Column="0"
+				Grid.Row="1"
+				Grid.ColumnSpan="2"
+				Orientation="Horizontal"
+				HorizontalAlignment="Right"
+				>
+
+			<Button
+					Margin="5"
+					Content="Debug"
+					Width="80"
+					x:Name="BtnDebug"
+					Click="BtnDebug_OnClick"
+					/>
+
+			<Button
+					Margin="5"
+					Content="Done"
+					Width="80"
+					Click="BtnDone_OnClick"
+					x:Name="BtnDone"					
+					/>
+
+
+		</StackPanel>
+
+
+        
+	</Grid>
+</Window>

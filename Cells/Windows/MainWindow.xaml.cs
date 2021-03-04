@@ -22,7 +22,9 @@ namespace Cells.Windows
 	{
 	#region private fields
 
-		public RevitParamTest RevitTests { get; private set; } = new RevitParamTest();
+		public RevitParamTest RevitParamTests { get; } = new RevitParamTest();
+
+		public RevitChartTests RevitChartTests { get; } = new RevitChartTests();
 
 		private static MainWindow me;
 
@@ -81,9 +83,12 @@ namespace Cells.Windows
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			WriteLine("Loaded...");
-			RevitTests.Process();
 
-			OnPropertyChange("RevitTests");
+			// RevitParamTests.Process();
+
+			RevitChartTests.Process();
+
+			OnPropertyChange("RevitParamTests");
 		}
 
 	#endregion

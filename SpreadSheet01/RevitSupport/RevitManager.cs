@@ -51,10 +51,10 @@ namespace SpreadSheet01.RevitSupport
 
 		private RevitChartItem selectedChart;
 
-
 		private List<RevitCellParams> errorList;
 
 		private RevitAnnoSyms annoSyms;
+
 
 	#endregion
 

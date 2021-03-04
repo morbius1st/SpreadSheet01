@@ -119,22 +119,25 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 	{
 		ERROR = -1,
 		EMPTY = 0,
-		LABEL_TITLE,
 		IGNORE,
+		LABEL_TITLE,
 		TEXT,
 		NUMBER,
 		ADDRESS,
 		RELATIVEADDRESS,
 		BOOL,
 		DATATYPE,
-		FORMULA
+		FORMULA,
+		FILE_PATH,
+		UPDATE_TYPE
 	}
 
 	public enum ParamGroup
 	{
 		DATA,
 		CONTAINER,
-		LABEL
+		LABEL,
+		MUST_EXIST
 	}
 
 	public enum ValueStatus

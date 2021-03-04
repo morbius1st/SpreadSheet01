@@ -8,23 +8,80 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Messaging;
 using SpreadSheet01.RevitSupport;
+using SpreadSheet01.RevitSupport.RevitChartInfo;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using UtilityLibrary;
 
 using static SpreadSheet01.RevitSupport.RevitCellParameters;
+using static SpreadSheet01.RevitSupport.RevitChartInfo.RevitChartParameters;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamDataType;
 
 namespace Autodesk.Revit.DB
 {
-	public class SampleAnnoSymbols
+
+
+	public class SampleAnnoSymbols : INotifyPropertyChanged
 	{
+		public AnnotationSymbol[] Charts {get; set; }
+
 		public AnnotationSymbol[] Symbols {get; set; }
+
+		public RevitCellParameters rcp = new RevitCellParameters();
+		public RevitChartParameters rcpx = new RevitChartParameters();
 
 		private int symbolIdx = 0;
 
 		public void Process()
+		{
+			makeAnnoSyms();
+			makeChartSyms();
+
+			OnPropertyChanged(nameof(Charts));
+			OnPropertyChanged(nameof(Symbols));
+
+		}
+
+		private void makeChartSyms()
+		{
+			Charts = new AnnotationSymbol[5];
+
+			symbolIdx = 0;
+			Charts[symbolIdx] = new AnnotationSymbol();
+			Charts[symbolIdx].parameters = new List<Parameter>();
+			Charts[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
+			AddChart1();
+
+			symbolIdx = 1;
+			Charts[symbolIdx] = new AnnotationSymbol();
+			Charts[symbolIdx].parameters = new List<Parameter>();
+			Charts[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
+			AddChart2();
+
+			symbolIdx = 2;
+			Charts[symbolIdx] = new AnnotationSymbol();
+			Charts[symbolIdx].parameters = new List<Parameter>();
+			Charts[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
+			AddChart3();
+
+			symbolIdx = 3;
+			Charts[symbolIdx] = new AnnotationSymbol();
+			Charts[symbolIdx].parameters = new List<Parameter>();
+			Charts[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
+			AddChart4();
+
+			symbolIdx = 4;
+			Charts[symbolIdx] = new AnnotationSymbol();
+			Charts[symbolIdx].parameters = new List<Parameter>();
+			Charts[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
+			AddChart5();
+		}
+
+
+		private void makeAnnoSyms()
 		{
 			Symbols = new AnnotationSymbol[3];
 
@@ -45,8 +102,10 @@ namespace Autodesk.Revit.DB
 			Symbols[symbolIdx].parameters = new List<Parameter>();
 			Symbols[symbolIdx].Name = "Symbol| " + symbolIdx.ToString("D2");
 			AddSymbol3();
-
 		}
+
+
+
 
 		public void AddParameter( int index, int adjIdx,
 			ParamDataType type,
@@ -157,6 +216,95 @@ namespace Autodesk.Revit.DB
 
 			AddParameter(LabelIdx         , 0, ERROR, "", 0.0, 0, "end of list");
 		}
+
+		public void AddChart( int index, int adjIdx,
+			ParamDataType type,
+			string strVal, double dblVal = 0.0, int intVal = 0,
+			string name = null)
+		{
+			string paramName = ChartAllParams[index + adjIdx].ParameterName;
+			paramName = name.IsVoid() ? paramName : name + " " + paramName;
+
+			Parameter p = new Parameter(paramName, type, strVal, dblVal, intVal);
+			Charts[symbolIdx].parameters.Add(p);
+		}
+
+		private void AddChart1()
+		{
+
+			AddChart(ChartNameIdx        , 0, TEXT, "Myname1");
+			AddChart(ChartDescIdx        , 0, TEXT, "Description 1");
+			AddChart(ChartSeqIdx         , 0, TEXT, "1");
+			AddChart(ChartFilePathIdx    , 0, TEXT, @".\CsSampleChart_01_02.xlsx");
+			AddChart(ChartWorkSheetIdx   , 0, TEXT, "CsSheet 1");
+			AddChart(ChartFamilyNameIdx  , 0, TEXT, "CsCellFamily01");
+			AddChart(ChartUpdateTypeIdx  , 0, UPDATE_TYPE, "Alyways");
+			AddChart(ChartHasErrorsIdx   , 0, IGNORE, "");
+		}
+
+		private void AddChart2()
+		{
+
+			AddChart(ChartNameIdx        , 0, TEXT, "Myname2");
+			AddChart(ChartDescIdx        , 0, TEXT, "Description 2");
+			AddChart(ChartSeqIdx         , 0, TEXT, "2");
+			AddChart(ChartFilePathIdx    , 0, TEXT, @".\CsSampleChart_01_02.xlsx");
+			AddChart(ChartWorkSheetIdx   , 0, TEXT, "CsSheet 2");
+			AddChart(ChartFamilyNameIdx  , 0, TEXT, "CsCellFamily02");
+			AddChart(ChartUpdateTypeIdx  , 0, UPDATE_TYPE, "Alyways");
+			AddChart(ChartHasErrorsIdx   , 0, IGNORE, "");
+		}
+
+		private void AddChart3()
+		{
+
+			AddChart(ChartNameIdx        , 0, TEXT, "Myname3");
+			AddChart(ChartDescIdx        , 0, TEXT, "Description 3");
+			AddChart(ChartSeqIdx         , 0, TEXT, "3");
+			AddChart(ChartFilePathIdx    , 0, TEXT, @".\CsSampleChart_03_04.xlsx");
+			AddChart(ChartWorkSheetIdx   , 0, TEXT, "CsSheet 1");
+			AddChart(ChartFamilyNameIdx  , 0, TEXT, "CsCellFamily03");
+			AddChart(ChartUpdateTypeIdx  , 0, UPDATE_TYPE, "Alyways");
+			AddChart(ChartHasErrorsIdx   , 0, IGNORE, "");
+		}
+		
+		private void AddChart4()
+		{
+
+			AddChart(ChartNameIdx        , 0, TEXT, "Myname4");
+			AddChart(ChartDescIdx        , 0, TEXT, "Description 4 (not found worksheet)");
+			AddChart(ChartSeqIdx         , 0, TEXT, "4");
+			AddChart(ChartFilePathIdx    , 0, TEXT, @".\CsSampleChart_03_04.xlsx");
+			AddChart(ChartWorkSheetIdx   , 0, TEXT, "CsSheet 2");
+			AddChart(ChartFamilyNameIdx  , 0, TEXT, "CsCellFamily04");
+			AddChart(ChartUpdateTypeIdx  , 0, UPDATE_TYPE, "Alyways");
+			AddChart(ChartHasErrorsIdx   , 0, IGNORE, "");
+		}
+		
+		private void AddChart5()
+		{
+
+			AddChart(ChartNameIdx        , 0, TEXT, "Myname5");
+			AddChart(ChartDescIdx        , 0, TEXT, "Description 5 (not found chart)");
+			AddChart(ChartSeqIdx         , 0, TEXT, "5");
+			AddChart(ChartFilePathIdx    , 0, TEXT, @".\CsSampleChart_04.xlsx");
+			AddChart(ChartWorkSheetIdx   , 0, TEXT, "CsSheet 1");
+			AddChart(ChartFamilyNameIdx  , 0, TEXT, "CsCellFamily05");
+			AddChart(ChartUpdateTypeIdx  , 0, UPDATE_TYPE, "Alyways");
+			AddChart(ChartHasErrorsIdx   , 0, IGNORE, "");
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		private void OnPropertyChanged([CallerMemberName] string memberName = "")
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(memberName));
+		}
+
+	}
+
+	public class Element
+	{
 
 	}
 

@@ -1,0 +1,33 @@
+
+Add system parameters that can be placed into formulas
+i.e. 
+=%%date(yyyy-mm-dd)%%
+
+
+Allow global parameters in formulas
+%{global parameter}%
+
+Allow formula to assign a value to a global parameter
+=%{global parameter}% == {formula}
+
+Allow formula to assign value to other cell
+=%[cell family name::cell name::item number]%== {formula}
+
+Allow automatically update “plot cells” upon plotting
+
+At chart cell, add parameter that says do not update / update on demand only
+
+Need to create “parameter manager” to hold and define “parameters” (need different name “Param”) maybe?
+* needs to define every parameter I deal with
+* one set is the parameter definition / description
+* one set holds the current values for all of the found items
+* hierarchical / tree – every node the same
+  -> top level uses observable collection which allows indexing
+     -> access via index based on enum
+     -> access the parameter subject i.e. cell parameters, chart parameters, program parameters
+  -> next level is the top level set of parameters associated with the subject / item
+  -> etc, next level
+ -> for the param set that holds the values:
+    -> value is held in a class based on dynamic
+        -> from excel numbers needs to hold both the raw value and the formatted value
+        -> access is via “value.AsNumber” “value.AsString”, “value.AsFormatted”, “value.YesNo”, etc.

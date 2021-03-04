@@ -1,8 +1,10 @@
 ﻿#region + Using Directives
 
+using System;
 using System.Collections.Generic;
 using Autodesk.Revit.DB;
-
+// using Autodesk.Revit.DB;
+using SpreadSheet01.RevitSupport.RevitParamValue;
 using static SpreadSheet01.RevitSupport.RevitCellParameters;
 
 #endregion
@@ -11,7 +13,7 @@ using static SpreadSheet01.RevitSupport.RevitCellParameters;
 // created:   2/25/2021 6:52:29 PM
 // spreadsheet01
 
-namespace SpreadSheet01.RevitSupport.RevitParamValue
+namespace SpreadSheet01.RevitSupport
 {
 	/*
 	 the primary collection of the parameters for all of the annotation symbols of a type
@@ -41,6 +43,31 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 	notes:
 	1. adjust chart anno symbol to use multiple anno symbols
 	*/
+
+	public class DynVal
+	{
+		private dynamic dynamicValue; // base value, as provided // as a number from excel
+		private string formatString;  // 
+		private string preFormatted;  // as provided directly from excel
+
+		public dynamic DynamicValue => dynamicValue;
+
+		public string AsPreFormatted() => preFormatted;
+
+		public string AsFormatted() => dynamicValue.ToString(formatString);
+
+		public string AsString() => dynamicValue.ToString();
+
+		public double AsDouble() => dynamicValue == typeof(double) ? dynamicValue : Double.NaN;
+
+		public double AsInteger() => dynamicValue == typeof(int) ? dynamicValue : Int32.MaxValue;
+
+		public double AsBool() => dynamicValue == typeof(bool) ? dynamicValue : false;
+
+		public Type BaseType() => dynamicValue.GetType();
+
+	}
+
 
 
 	

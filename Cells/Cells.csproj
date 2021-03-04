@@ -34,10 +34,31 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;USER_SETTINGS, APP_SETTINGS, SUITE_SETTINGS, MACH_SETTINGS, SITE_SETTINGS</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -69,8 +90,14 @@
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellParameters.cs">
       <Link>RevitSupport\RevitCellParameters.cs</Link>
     </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitChartItem.cs">
+      <Link>RevitSupport\RevitChartItem.cs</Link>
+    </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\ARevitParam.cs">
       <Link>RevitSupport\RevitParamValue\ARevitParam.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitCellParams.cs">
+      <Link>RevitSupport\RevitParamValue\RevitCellParams.cs</Link>
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitCellSupport.cs">
       <Link>RevitSupport\RevitParamValue\RevitCellSupport.cs</Link>
@@ -90,8 +117,11 @@
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamText.cs">
       <Link>RevitSupport\RevitParamValue\RevitParamText.cs</Link>
     </Compile>
+    <Compile Include="CellsTests\RevitChartTests.cs" />
     <Compile Include="CellsTests\RevitParamTest.cs" />
     <Compile Include="RevitSupport\AnnotationSymbol.cs" />
+    <Compile Include="RevitSupport\RevitChartInfo\RevitChartManager.cs" />
+    <Compile Include="RevitSupport\RevitChartInfo\RevitChartParameters.cs" />
     <Compile Include="RevitSupport\RevitContainer.cs" />
     <Compile Include="Settings\AppSettings.cs" />
     <Compile Include="Settings\DataSet.cs" />
@@ -100,6 +130,9 @@
     <Compile Include="Settings\SiteSettings.cs" />
     <Compile Include="Settings\SuiteSettings.cs" />
     <Compile Include="Settings\UserSettings.cs" />
+    <Compile Include="Windows\SelectChart.xaml.cs">
+      <DependentUpon>SelectChart.xaml</DependentUpon>
+    </Compile>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -131,6 +164,10 @@
     <Page Include="Windows\ResourceFiles\XamlResources\VisualStates.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\SelectChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

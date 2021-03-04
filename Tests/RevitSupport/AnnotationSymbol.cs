@@ -18,6 +18,11 @@ using static SpreadSheet01.RevitSupport.RevitParamValue.ParamDataType;
 
 namespace Autodesk.Revit.DB
 {
+	public class Element
+	{
+
+	}
+
 	public class SampleAnnoSymbols
 	{
 		public AnnotationSymbol[] Symbols {get; set; }
