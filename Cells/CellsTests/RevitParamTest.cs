@@ -1,9 +1,4 @@
-﻿// Solution:     SpreadSheet01
-// Project:       Tests
-// File:             RevitParamTest.cs
-// Created:      2021-02-26 (10:02 PM)
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -12,7 +7,14 @@ using Autodesk.Revit.DB;
 using Cells.Windows;
 using SpreadSheet01.RevitSupport;
 using SpreadSheet01.RevitSupport.RevitParamValue;
-using static SpreadSheet01.RevitSupport.RevitCellParameters;
+using SpreadSheet01.RevitSupport.RevitParamInfo;
+using static SpreadSheet01.RevitSupport.RevitParamInfo.RevitCellParameters;
+
+// Solution:     SpreadSheet01
+// Project:       Tests
+// File:             RevitParamTest.cs
+// Created:      2021-02-26 (10:02 PM)
+
 
 namespace Cells.CellsTests
 {
@@ -36,11 +38,11 @@ namespace Cells.CellsTests
 				MainWindow.WriteLine("\n");
 				MainWindow.WriteLine("process symbol| " + annoSym.Name);
 
-				RevitAnnoSym rvtAnnoSym = catagorizePAnnoSymParams(annoSym);
+				RevitAnnoSym rvtAnnoSym = catagorizePAnnoSymParams(annoSym, ParamClass.CHART);
 				
 				rvtAnnoSym.AnnoSymbol = annoSym;
 
-				string key = RevitValueSupport.MakeAnnoSymKey(rvtAnnoSym, false);
+				string key = RevitParamUtil.MakeAnnoSymKey(rvtAnnoSym, false);
 
 				MainWindow.WriteLine("   adding key| " + key);
 
@@ -70,7 +72,7 @@ namespace Cells.CellsTests
 		}
 
 
-		private RevitAnnoSym catagorizePAnnoSymParams(AnnotationSymbol aSym)
+		private RevitAnnoSym catagorizePAnnoSymParams(AnnotationSymbol aSym, ParamClass paramClass)
 		{
 			RevitAnnoSym ras = new RevitAnnoSym();
 			ARevitParam rvtParam;
@@ -88,7 +90,7 @@ namespace Cells.CellsTests
 				if (param.Definition.Type == ParamDataType.ERROR) break;
 				if (param.Definition.Type == ParamDataType.EMPTY) continue;
 
-				string paramName = RevitValueSupport.GetParamName(param.Definition.Name, out labelId, out isLabel);
+				string paramName = RevitParamUtil.GetParamName(param.Definition.Name, paramClass, out labelId, out isLabel);
 
 				pd = RevitCellParameters.Match(paramName);
 
@@ -160,7 +162,7 @@ namespace Cells.CellsTests
 		{
 			RevitLabel label = null;
 
-			string key = RevitValueSupport.MakeLabelKey(idx);
+			string key = RevitParamUtil.MakeLabelKey(idx);
 
 			bool result = labels.Containers.TryGetValue(key, out label);
 
@@ -194,7 +196,7 @@ namespace Cells.CellsTests
 						pd.ReadReqmt ==
 						ParamReadReqmt.READ_VALUE_IGNORE
 							? double.NaN
-							: param.AsNumber(), pd);
+							: param.AsDouble(), pd);
 					break;
 				}
 			case ParamDataType.TEXT:

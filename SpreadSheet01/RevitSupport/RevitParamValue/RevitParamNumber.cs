@@ -1,4 +1,6 @@
-﻿namespace SpreadSheet01.RevitSupport.RevitParamValue
+﻿using SpreadSheet01.RevitSupport.RevitParamInfo;
+
+namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
 	public class RevitParamNumber : ARevitParam
 	{
@@ -9,7 +11,7 @@
 			set(value);
 		}
 
-		public override dynamic GetValue() => (double?) value;
+		public override dynamic GetValue() => (double?) dynValue.Value;
 
 		private void set(double? value)
 		{
@@ -23,11 +25,11 @@
 				)
 			{
 				ErrorCode = RevitCellErrorCode.PARAM_VALUE_NAN_CS001103;
-				this.value = double.NaN;
+				this.dynValue.Value = double.NaN;
 			}
 			else
 			{
-				this.value = value;
+				this.dynValue.Value = value;
 			}
 		}
 	}

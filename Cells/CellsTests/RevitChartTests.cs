@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Autodesk.Revit.DB;
-using Cells.Windows;
 using SpreadSheet01.RevitSupport.RevitParamValue;
+using Cells.Windows;
+using Cells.CellsTests;
+using SpreadSheet01.RevitSupport;
 
 #endregion
 
@@ -25,12 +26,19 @@ namespace Cells.CellsTests
 		{
 			aSyms = new SampleAnnoSymbols();
 
+			getChartSymbols(aSyms);
+
+
+
+		}
+
+		private void getChartSymbols(SampleAnnoSymbols aSyms)
+		{
 			aSyms.Process();
 
 			listSymbols(aSyms.Charts);
 
 			AnnotationSymbol[] a = aSyms.Charts;
-
 		}
 
 		private void listSymbols(AnnotationSymbol[] annoSyms)

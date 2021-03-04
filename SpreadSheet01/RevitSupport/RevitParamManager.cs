@@ -1,4 +1,4 @@
-﻿#region using directives
+﻿#region using
 
 using System;
 using System.Collections.Generic;
@@ -7,30 +7,28 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-
-using SpreadSheet01.RevitSupport.RevitParamValue;
+using SpreadSheet01.RevitSupport.RevitParamInfo;
 
 #endregion
 
 // username: jeffs
-// created:  3/1/2021 10:29:39 PM
+// created:  3/3/2021 7:51:06 PM
 
 namespace SpreadSheet01.RevitSupport
 {
-	public class RevitChartManager : INotifyPropertyChanged
+	public enum ParamClass
+	{
+		CHART,
+		LABEL
+	}
+
+	public class RevitParamManager
 	{
 	#region private fields
-
-		private RevitCharts Charts;
-
+		
 	#endregion
 
 	#region ctor
-
-		public RevitChartManager()
-		{
-			Charts = new RevitCharts();
-		}
 
 	#endregion
 
@@ -44,9 +42,24 @@ namespace SpreadSheet01.RevitSupport
 
 	#region public methods
 
-		public void Add(RevitChartItem item)
+		public static ParamDesc Match(string fullName, ParamClass paramClass)
 		{
-			// Charts.Add();
+			ParamDesc pd;
+
+			switch (paramClass)
+			{
+			case ParamClass.CHART:
+				{
+					break;
+				}
+			case ParamClass.LABEL:
+				{
+					return RevitCellParameters.Match(fullName);
+					break;
+				}
+			}
+
+			return ParamDesc.Empty;
 		}
 
 	#endregion
@@ -61,20 +74,13 @@ namespace SpreadSheet01.RevitSupport
 
 	#region event publishing
 
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		private void OnPropertyChange([CallerMemberName] string memberName = "")
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(memberName));
-		}
-
 	#endregion
 
 	#region system overrides
 
 		public override string ToString()
 		{
-			return "this is RevitChartManager";
+			return "this is RevitParamManager";
 		}
 
 	#endregion

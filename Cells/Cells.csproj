@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;USER_SETTINGS, APP_SETTINGS, SUITE_SETTINGS, MACH_SETTINGS, SITE_SETTINGS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;USER_SETTINGS, APP_SETTINGS, SUITE_SETTINGS, MACH_SETTINGS, SITE_SETTINGS, NOREVIT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -87,11 +87,29 @@
     <Compile Include="..\..\..\..\UtilityLibrary\UtilityLibrary\FilePath\V3.0\CsFilePath.cs">
       <Link>.Linked\CsFilePath.cs</Link>
     </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellParameters.cs">
-      <Link>RevitSupport\RevitCellParameters.cs</Link>
+    <Compile Include="..\SpreadSheet01\ExcelSupport\ExcelAssist.cs">
+      <Link>ExcelSupport\ExcelAssist.cs</Link>
     </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitChartItem.cs">
-      <Link>RevitSupport\RevitChartItem.cs</Link>
+    <Compile Include="..\SpreadSheet01\RevitSupport\DynamicValue.cs">
+      <Link>RevitSupport\DynamicValue.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitChartInfo\RevitChartItem.cs">
+      <Link>RevitSupport\RevitChartInfo\RevitChartItem.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitChartInfo\RevitChartManager.cs">
+      <Link>RevitSupport\RevitChartInfo\RevitChartManager.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitContainer.cs">
+      <Link>RevitSupport\RevitContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamInfo\RevitCatagorizeParam.cs">
+      <Link>RevitSupport\RevitParamInfo\RevitCatagorizeParam.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamInfo\RevitCellParameters.cs">
+      <Link>RevitSupport\RevitParamInfo\RevitCellParameters.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamManager.cs">
+      <Link>RevitSupport\RevitParamManager.cs</Link>
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\ARevitParam.cs">
       <Link>RevitSupport\RevitParamValue\ARevitParam.cs</Link>
@@ -114,15 +132,17 @@
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamNumber.cs">
       <Link>RevitSupport\RevitParamValue\RevitParamNumber.cs</Link>
     </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamRelativeAddr.cs">
+      <Link>RevitSupport\RevitParamValue\RevitParamRelativeAddr.cs</Link>
+    </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamText.cs">
       <Link>RevitSupport\RevitParamValue\RevitParamText.cs</Link>
     </Compile>
     <Compile Include="CellsTests\RevitChartTests.cs" />
     <Compile Include="CellsTests\RevitParamTest.cs" />
-    <Compile Include="RevitSupport\AnnotationSymbol.cs" />
-    <Compile Include="RevitSupport\RevitChartInfo\RevitChartManager.cs" />
+    <Compile Include="RevitSupport\AutoDesk\AnnotationSymbol.cs" />
+    <Compile Include="CellsTests\SampleAnnoSymbols.cs" />
     <Compile Include="RevitSupport\RevitChartInfo\RevitChartParameters.cs" />
-    <Compile Include="RevitSupport\RevitContainer.cs" />
     <Compile Include="Settings\AppSettings.cs" />
     <Compile Include="Settings\DataSet.cs" />
     <Compile Include="Settings\HeadingSetting.cs" />

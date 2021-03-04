@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using SpreadSheet01.RevitSupport.RevitParamInfo;
 using UtilityLibrary;
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
 	public abstract class ARevitParam : INotifyPropertyChanged
 	{
-		protected dynamic value;
+	#region private fields
+
+		protected DynamicValue dynValue;
 
 		protected List<RevitCellErrorCode> errors;
 
@@ -15,10 +18,24 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		protected bool gotValue;
 
+	#endregion
+
+	#region public properties
+
 		public abstract dynamic GetValue();
 
-		public dynamic Value => value;
+		public dynamic DynValue => dynValue;
 
+		public ParamDesc ParamDesc
+		{
+			get => paramDesc;
+			private set
+			{
+				paramDesc = value;
+				OnPropertyChanged();
+			}
+		}
+		
 		public RevitCellErrorCode ErrorCode
 		{
 			set
@@ -31,24 +48,17 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		public bool Assigned { get; private set; }
 
-		public ParamDesc ParamDesc
-		{
-			get => paramDesc;
-			private set
-			{
-				paramDesc = value;
-				OnPropertyChanged();
-			}
-		}
-
 		public bool IsValid => errors == null;
+
+	#endregion
+
+	#region public methods
 
 		public void UpdateProperties()
 		{
-			OnPropertyChanged(nameof(Value));
+			OnPropertyChanged(nameof(DynValue));
 			OnPropertyChanged(nameof(ParamDesc));
 		}
-
 
 		public void SetValue<T>(T value)
 		{
@@ -61,17 +71,11 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			gotValue = true;
 			Assigned = true;
 
-			OnPropertyChanged(nameof(Value));
+			OnPropertyChanged(nameof(DynValue));
 
 		}
 
-		// return false if do not process
-		public static bool ReadValue(ParamDesc paramDesc)
-		{
-			if (paramDesc.ReadReqmt == ParamReadReqmt.READ_VALUE_IGNORE) return false;
-
-			return true;
-		}
+	#endregion
 
 		public IEnumerable<RevitCellErrorCode> Errors()
 		{
@@ -90,12 +94,9 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(memberName));
 		}
 
-
 		public override string ToString()
 		{
-			return "<" + (value?.ToString() ?? "null value") + " >|< " + (IsValid ? "Valid" : "Invalid") + ">";
+			return "<" + (dynValue?.ToString() ?? "null value") + " >|< " + (IsValid ? "Valid" : "Invalid") + ">";
 		}
 	}
-
-	// generic string value
 }

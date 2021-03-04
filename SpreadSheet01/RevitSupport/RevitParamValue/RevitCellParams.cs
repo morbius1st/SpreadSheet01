@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Autodesk.Revit.DB;
-using static SpreadSheet01.RevitSupport.RevitCellParameters;
+using static SpreadSheet01.RevitSupport.RevitParamInfo.RevitCellParameters;
 
 
 // Solution:     SpreadSheet01

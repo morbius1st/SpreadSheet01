@@ -62,11 +62,11 @@ namespace SpreadSheet01.RevitSupport
 			if (chartFamily.IsVoid() ||
 				!rvtMgr.GotChart) return Result.Failed;
 
-			bool result = rvtMgr.GetCellFamilies(doc, chartFamily);
+			bool result = rvtMgr.RvtSelect.GetCellFamilies(doc, chartFamily, rvtMgr);
 
 			if (result)
 			{
-				result = rvtMgr.GetAllCellParameters();
+				result = rvtMgr.GetAllCellParameters(ParamClass.LABEL);
 			}
 
 			if (!result) return Result.Failed;

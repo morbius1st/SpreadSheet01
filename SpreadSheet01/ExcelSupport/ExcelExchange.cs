@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using Autodesk.Revit.DB;
 using SpreadSheet01.RevitSupport;
+using SpreadSheet01.RevitSupport.RevitParamInfo;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using UtilityLibrary;
 
@@ -76,7 +77,7 @@ namespace SpreadSheet01.ExcelSupport
 			{
 				Element e = rvtAnnoSym.Value.RvtElement;
 
-				anchorCellName = rvtAnnoSym.Value.RevitParamList[RevitCellParameters.CellAddrIdx].Value;
+				anchorCellName = rvtAnnoSym.Value.RevitParamList[RevitCellParameters.CellAddrIdx].DynValue;
 
 				RevitLabels labels = (RevitLabels) rvtAnnoSym.Value.RevitParamList[RevitCellParameters.LabelsIdx];
 

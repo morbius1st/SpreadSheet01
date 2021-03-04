@@ -10,8 +10,10 @@ using System.Net.Configuration;
 using System.Text.RegularExpressions;
 using Autodesk.Revit.DB;
 using SpreadSheet01.RevitSupport;
+using SpreadSheet01.RevitSupport;
 using SpreadSheet01.RevitSupport.RevitParamValue;
-using static SpreadSheet01.RevitSupport.RevitCellParameters;
+using SpreadSheet01.RevitSupport.RevitParamInfo;
+using static SpreadSheet01.RevitSupport.RevitParamInfo.RevitCellParameters;
 
 namespace Tests.CellsTests
 {
@@ -23,6 +25,8 @@ namespace Tests.CellsTests
 
 		public void Process()
 		{
+			
+
 			aSyms = new SampleAnnoSymbols();
 			aSyms.Process();
 
@@ -35,11 +39,11 @@ namespace Tests.CellsTests
 				Console.WriteLine("\n");
 				Console.WriteLine("process symbol| " + annoSym.Name);
 
-				RevitAnnoSym rvtAnnoSym = catagorizePAnnoSymParams(annoSym);
+				RevitAnnoSym rvtAnnoSym = catagorizePAnnoSymParams(annoSym, ParamClass.LABEL);
 
 				rvtAnnoSym.AnnoSymbol = annoSym;
 
-				string key = RevitValueSupport.MakeAnnoSymKey(rvtAnnoSym, false);
+				string key = RevitParamUtil.MakeAnnoSymKey(rvtAnnoSym, false);
 
 				Console.WriteLine("   adding key| " + key);
 
@@ -53,7 +57,7 @@ namespace Tests.CellsTests
 		}
 
 
-		private RevitAnnoSym catagorizePAnnoSymParams(AnnotationSymbol aSym)
+		private RevitAnnoSym catagorizePAnnoSymParams(AnnotationSymbol aSym, ParamClass paramClass)
 		{
 			RevitAnnoSym ras = new RevitAnnoSym();
 			ARevitParam rvtParam;
@@ -71,7 +75,7 @@ namespace Tests.CellsTests
 				if (param.Definition.Type == ParamDataType.ERROR) break;
 				if (param.Definition.Type == ParamDataType.EMPTY) continue;
 
-				string paramName = RevitValueSupport.GetParamName(param.Definition.Name, out labelId, out isLabel);
+				string paramName = RevitParamUtil.GetParamName(param.Definition.Name, paramClass, out labelId, out isLabel);
 
 				pd = RevitCellParameters.Match(paramName);
 
@@ -143,7 +147,7 @@ namespace Tests.CellsTests
 		{
 			RevitLabel label = null;
 
-			string key = RevitValueSupport.MakeLabelKey(idx);
+			string key = RevitParamUtil.MakeLabelKey(idx);
 
 			bool result = labels.Containers.TryGetValue(key, out label);
 
@@ -177,7 +181,7 @@ namespace Tests.CellsTests
 						pd.ReadReqmt ==
 						ParamReadReqmt.READ_VALUE_IGNORE
 							? double.NaN
-							: param.AsNumber(), pd);
+							: param.AsDouble(), pd);
 					break;
 				}
 			case ParamDataType.TEXT:

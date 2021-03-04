@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-
+using SpreadSheet01.RevitSupport.RevitParamInfo;
 using UtilityLibrary;
 
-using static SpreadSheet01.RevitSupport.RevitCellParameters;
+using static SpreadSheet01.RevitSupport.RevitParamInfo.RevitCellParameters;
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
@@ -52,7 +52,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		public int Id => id;
 		public string Key => "#" + id.ToString("D5");
 
-		public override dynamic GetValue() => (string) value;
+		public override dynamic GetValue() => (string) dynValue.Value;
 
 		// process a parameter name
 		// return the "clean" parameter name
@@ -62,7 +62,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			{
 				// got the primary parameter;
 				name = paramName;
-				this.value = null;
+				this.dynValue.Value = null;
 			}
 			else
 			{
@@ -79,31 +79,31 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			case ParamDataType.TEXT:
 				{
 					LabelParameterString ps = new LabelParameterString(value, paramDesc);
-					LabelParams.Add(RevitValueSupport.MakeLabelKey(paramId), ps);
+					LabelParams.Add(RevitParamUtil.MakeLabelKey(paramId), ps);
 					break;
 				}
 			case ParamDataType.RELATIVEADDRESS:
 				{
 					LabelParameterString ps = new LabelParameterString(value, paramDesc);
-					LabelParams.Add(RevitValueSupport.MakeLabelKey(paramId), ps);
+					LabelParams.Add(RevitParamUtil.MakeLabelKey(paramId), ps);
 					break;
 				}
 			case ParamDataType.DATATYPE:
 				{
 					LabelParameterString ps = new LabelParameterString(value, paramDesc);
-					LabelParams.Add(RevitValueSupport.MakeLabelKey(paramId), ps);
+					LabelParams.Add(RevitParamUtil.MakeLabelKey(paramId), ps);
 					break;
 				}
 			case ParamDataType.BOOL:
 				{
 					LabelParameterString ps = new LabelParameterString(value, paramDesc);
-					LabelParams.Add(RevitValueSupport.MakeLabelKey(paramId), ps);
+					LabelParams.Add(RevitParamUtil.MakeLabelKey(paramId), ps);
 					break;
 				}
 			case ParamDataType.NUMBER:
 				{
 					LabelParameterString ps = new LabelParameterString(value, paramDesc);
-					LabelParams.Add(RevitValueSupport.MakeLabelKey(paramId), ps);
+					LabelParams.Add(RevitParamUtil.MakeLabelKey(paramId), ps);
 					break;
 				}
 			}
@@ -116,30 +116,13 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 	public abstract class LabelParameter : ARevitParam
 	{
-		public LabelParameter()
-		{
-			// base.SetValue(value);
-			// set(value);
-		}
-
-		public override dynamic GetValue() => (string) value;
-
-		// protected abstract void set(string value);
+		// public LabelParameter()
 		// {
-		// 	gotValue = false;
-		//
-		// 	if (paramDesc.ReadReqmt == ParamReadReqmt.READ_VALUE_REQUIRED
-		// 		&& value.IsVoid() )
-		// 	{
-		// 		ErrorCode = RevitCellErrorCode.PARAM_VALUE_MISSING_CS001101;
-		// 		this.value = null;
-		// 	}
-		// 	else
-		// 	{
-		// 		this.value = value;
-		// 	}
+		// 	// base.SetValue(value);
+		// 	// set(value);
 		// }
 
+		public override dynamic GetValue() => (string) dynValue.Value;
 	}
 
 	
@@ -155,7 +138,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			set(value);
 		}
 
-		public override dynamic GetValue() => (string) value;
+		public override dynamic GetValue() => (string) dynValue.Value;
 
 		protected void set(string value)
 		{
@@ -168,11 +151,11 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 				&& value.IsVoid() )
 			{
 				ErrorCode = RevitCellErrorCode.PARAM_VALUE_MISSING_CS001101;
-				this.value = null;
+				this.dynValue.Value = null;
 			}
 			else
 			{
-				this.value = value;
+				this.dynValue.Value = value;
 			}
 		}
 	}
@@ -189,7 +172,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			set(value);
 		}
 
-		public override dynamic GetValue() => (double) value;
+		public override dynamic GetValue() => (double) dynValue.Value;
 
 		protected void set(double value)
 		{
@@ -202,11 +185,11 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 				&& double.IsNaN(value))
 			{
 				ErrorCode = RevitCellErrorCode.PARAM_INVALID_CS001100;
-				this.value = null;
+				this.dynValue.Value = null;
 			}
 			else
 			{
-				this.value = value;
+				this.dynValue.Value = value;
 			}
 		}
 	}
@@ -223,7 +206,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			set(value);
 		}
 
-		public override dynamic GetValue() => (double) value;
+		public override dynamic GetValue() => (double) dynValue.Value;
 
 		protected void set(ParamDataType value)
 		{
@@ -235,11 +218,11 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			if (paramDesc.ReadReqmt == ParamReadReqmt.READ_VALUE_REQUIRED)
 			{
 				ErrorCode = RevitCellErrorCode.PARAM_INVALID_CS001100;
-				this.value = null;
+				this.dynValue.Value = null;
 			}
 			else
 			{
-				this.value = value;
+				this.dynValue.Value = value;
 			}
 		}
 	}

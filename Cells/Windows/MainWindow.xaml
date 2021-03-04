@@ -78,7 +78,7 @@
 				>
 			<ListView.ItemTemplate>
 				<DataTemplate x:Name="LvDt01"
-						DataType="{x:Type val:RevitAnnoSym}"
+						DataType="{x:Type rvt:RevitAnnoSym}"
 						>
 					<DockPanel x:Name="Dok01">
 						<DockPanel DockPanel.Dock="Top">

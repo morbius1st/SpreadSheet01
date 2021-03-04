@@ -13,7 +13,7 @@ using SpreadSheet01.RevitSupport;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using UtilityLibrary;
 
-using static SpreadSheet01.RevitSupport.RevitCellParameters;
+using static SpreadSheet01.RevitSupport.RevitParamInfo.RevitCellParameters;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamDataType;
 
 namespace Autodesk.Revit.DB
@@ -197,14 +197,14 @@ namespace Autodesk.Revit.DB
 	public class Parameter
 	{
 		private string asString;
-		private double asNumber;
+		private double asDouble;
 		private int asInteger;
 
 
 		public Definition Definition { get; set; }
 
 		public string AsString () =>  asString;
-		public double AsNumber () =>  asNumber;
+		public double AsDouble () =>  asDouble;
 		public int AsInteger () =>  asInteger;
 
 		public Parameter(   string name, ParamDataType type, 
@@ -212,7 +212,7 @@ namespace Autodesk.Revit.DB
 		{
 			Definition = new Definition() {Name = name, Type = type};
 			asString = strVal;
-			asNumber = dblVal;
+			asDouble = dblVal;
 			asInteger = intVal;
 		}
 

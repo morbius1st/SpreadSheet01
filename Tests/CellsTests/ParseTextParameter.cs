@@ -100,7 +100,7 @@ namespace Tests.CellsTests
 					int pos1;
 					int pos2;
 					int idx =
-						RevitValueSupport.GetLabelIndex(param.Definition.Name, 
+						RevitParamUtil.GetLabelIndex(param.Definition.Name, 
 							out pos1, out pos2);
 
 

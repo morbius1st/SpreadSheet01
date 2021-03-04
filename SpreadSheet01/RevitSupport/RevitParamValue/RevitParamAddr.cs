@@ -3,6 +3,7 @@
 // File:             RevitParamAddr.cs
 // Created:      2021-02-22 (9:53 PM)
 
+using SpreadSheet01.RevitSupport.RevitParamInfo;
 using UtilityLibrary;
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
@@ -17,7 +18,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			set(value);
 		}
 
-		public override dynamic GetValue() => (string) value;
+		public override dynamic GetValue() => (string) dynValue.Value;
 
 		private void set(string value)
 		{
@@ -27,11 +28,11 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 				&& value.IsVoid() )
 			{
 				ErrorCode = RevitCellErrorCode.PARAM_VALUE_MISSING_CS001101;
-				this.value = null;
+				this.dynValue.Value = null;
 			}
 			else
 			{
-				this.value = value;
+				this.dynValue.Value = value;
 
 				// bool result = ExcelAssist.ParseExcelAddress(value, out row, out col);
 				//

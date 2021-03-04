@@ -1,4 +1,6 @@
-﻿namespace SpreadSheet01.RevitSupport.RevitParamValue
+﻿using SpreadSheet01.RevitSupport.RevitParamInfo;
+
+namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
 	public class RevitParamBool : ARevitParam
 	{
@@ -9,7 +11,7 @@
 			set(value);
 		}
 
-		public override dynamic GetValue() => (bool?) value;
+		public override dynamic GetValue() => (bool?) dynValue.Value;
 
 		private void set(bool? value)
 		{
@@ -20,11 +22,11 @@
 				)
 			{
 				ErrorCode = RevitCellErrorCode.PARAM_VALUE_MISSING_CS001101;
-				this.value = null;
+				this.dynValue.Value = null;
 			}
 			else
 			{
-				this.value = value;
+				this.dynValue.Value = value;
 			}
 		}
 	}

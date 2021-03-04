@@ -7,9 +7,9 @@ using SpreadSheet01.RevitSupport.RevitParamValue;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamReadReqmt;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamDataType;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamMode;
-
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamGroup;
 
+using SpreadSheet01.RevitSupport.RevitParamInfo;
 #endregion
 
 // user name: jeffs
@@ -38,6 +38,7 @@ namespace SpreadSheet01.RevitSupport.RevitChartInfo
 
 		public RevitChartParameters()
 		{
+			
 			assignParameters();
 		}
 

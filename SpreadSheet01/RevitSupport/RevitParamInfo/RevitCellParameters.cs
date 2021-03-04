@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using UtilityLibrary;
-using static SpreadSheet01.RevitSupport.RevitParamValue.ParamReadReqmt;
-using static SpreadSheet01.RevitSupport.RevitParamValue.ParamDataType;
-using static SpreadSheet01.RevitSupport.RevitParamValue.ParamMode;
-using static SpreadSheet01.RevitSupport.RevitParamValue.ParamGroup;
 
 // Solution:     SpreadSheet01
 // Project:       SpreadSheet01
@@ -16,7 +11,7 @@ using static SpreadSheet01.RevitSupport.RevitParamValue.ParamGroup;
 // Created:      2021-02-20 (5:36 AM)
 
 
-namespace SpreadSheet01.RevitSupport
+namespace SpreadSheet01.RevitSupport.RevitParamInfo
 {
 	public class ParamDesc : INotifyPropertyChanged
 	{
@@ -43,7 +38,7 @@ namespace SpreadSheet01.RevitSupport
 			ParamIndex = index + indexAdjust;
 		}
 
-		public static ParamDesc Empty => new ParamDesc("", -1, -1, DATA, IGNORE, READ_VALUE_IGNORE, NOT_USED);
+		public static ParamDesc Empty => new ParamDesc("", -1, -1, ParamGroup.DATA, ParamDataType.IGNORE, ParamReadReqmt.READ_VALUE_IGNORE, ParamMode.NOT_USED);
 
 		public string ParameterName {
 			get => parameterName;
@@ -120,15 +115,15 @@ namespace SpreadSheet01.RevitSupport
 
 		// public static int DataParamCount = 0;
 		//
-		public static readonly int NameIdx                   = ParamCounts[(int) DATA]++; // set - created
-		public static readonly int SeqIdx                    = ParamCounts[(int) DATA]++; // get - read from family
-		public static readonly int CellAddrIdx               = ParamCounts[(int) DATA]++; // get - read from family
-		public static readonly int FormattingInfoIdx         = ParamCounts[(int) DATA]++; // get - read from family
-		public static readonly int GraphicType               = ParamCounts[(int) DATA]++; // ignore
-		public static readonly int DataIsToCellIdx           = ParamCounts[(int) DATA]++; // get - read from family
-		public static readonly int HasErrorsIdx              = ParamCounts[(int) DATA]++; // set - created
-		public static readonly int DataVisibleIdx            = ParamCounts[(int) DATA]++; // ignore
-		public static readonly int LabelsIdx                 = ParamCounts[(int) DATA]++; // ignore
+		public static readonly int NameIdx                   = ParamCounts[(int) ParamGroup.DATA]++; // set - created
+		public static readonly int SeqIdx                    = ParamCounts[(int) ParamGroup.DATA]++; // get - read from family
+		public static readonly int CellAddrIdx               = ParamCounts[(int) ParamGroup.DATA]++; // get - read from family
+		public static readonly int FormattingInfoIdx         = ParamCounts[(int) ParamGroup.DATA]++; // get - read from family
+		public static readonly int GraphicType               = ParamCounts[(int) ParamGroup.DATA]++; // ignore
+		public static readonly int DataIsToCellIdx           = ParamCounts[(int) ParamGroup.DATA]++; // get - read from family
+		public static readonly int HasErrorsIdx              = ParamCounts[(int) ParamGroup.DATA]++; // set - created
+		public static readonly int DataVisibleIdx            = ParamCounts[(int) ParamGroup.DATA]++; // ignore
+		public static readonly int LabelsIdx                 = ParamCounts[(int) ParamGroup.DATA]++; // ignore
 
 		// public static readonly int
 			// LabelsIdx                 = ParamCounts[(int) DATA]; // the collection of label items
@@ -137,17 +132,17 @@ namespace SpreadSheet01.RevitSupport
 
 		// public static int CollectGroupCount = 0;
 
-		public static readonly int LabelIdx                  = ParamCounts[(int) LABEL]++; // 
+		public static readonly int LabelIdx                  = ParamCounts[(int) ParamGroup.LABEL]++; // 
 
 		// public static int LabelParamCount = 0;
 
-		public static readonly int lblRelAddrIdx             = ParamCounts[(int) LABEL]++; // 
-		public static readonly int lblDataTypeIdx            = ParamCounts[(int) LABEL]++; // 
-		public static readonly int lblFormulaIdx             = ParamCounts[(int) LABEL]++; // 
-		public static readonly int lblIgnoreIdx              = ParamCounts[(int) LABEL]++; // 
-		public static readonly int lblAsLengthIdx            = ParamCounts[(int) LABEL]++; // 
-		public static readonly int lblAsNumberIdx            = ParamCounts[(int) LABEL]++; // 
-		public static readonly int lblAsYesNoIdx             = ParamCounts[(int) LABEL]++; // 
+		public static readonly int lblRelAddrIdx             = ParamCounts[(int) ParamGroup.LABEL]++; // 
+		public static readonly int lblDataTypeIdx            = ParamCounts[(int) ParamGroup.LABEL]++; // 
+		public static readonly int lblFormulaIdx             = ParamCounts[(int) ParamGroup.LABEL]++; // 
+		public static readonly int lblIgnoreIdx              = ParamCounts[(int) ParamGroup.LABEL]++; // 
+		public static readonly int lblAsLengthIdx            = ParamCounts[(int) ParamGroup.LABEL]++; // 
+		public static readonly int lblAsNumberIdx            = ParamCounts[(int) ParamGroup.LABEL]++; // 
+		public static readonly int lblAsYesNoIdx             = ParamCounts[(int) ParamGroup.LABEL]++; // 
 
 
 		// public static readonly int TextIdx                   = DataParamCount++; // set - read from excel (special)
@@ -194,12 +189,12 @@ namespace SpreadSheet01.RevitSupport
 		private static void assignParameters()
 		{
 			int adj1 = ParamCounts[(int) ParamGroup.DATA];
-			int adj2 = adj1 + ParamCounts[(int) CONTAINER];
+			int adj2 = adj1 + ParamCounts[(int) ParamGroup.CONTAINER];
 
-			AllParamDefCount = adj2 + ParamCounts[(int) LABEL];
+			AllParamDefCount = adj2 + ParamCounts[(int) ParamGroup.LABEL];
 
 
-			AllParamCount = AllParamDefCount + ParamCounts[(int) LABEL];
+			AllParamCount = AllParamDefCount + ParamCounts[(int) ParamGroup.LABEL];
 
 			CellParamIndex = new SortedDictionary<string, int>();
 
@@ -210,60 +205,60 @@ namespace SpreadSheet01.RevitSupport
 
 			// data parameters
 			// 0
-			pd = new ParamDesc("Name"                          , NameIdx          , 0,    DATA, TEXT, READ_VALUE_REQUIRED, READ_FROM_PARAMETER);
+			pd = new ParamDesc("Name"                          , NameIdx          , 0,    ParamGroup.DATA, ParamDataType.TEXT, ParamReadReqmt.READ_VALUE_REQUIRED, ParamMode.READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// 1
-			pd = new ParamDesc("Sequence"                      , SeqIdx           , 0,    DATA, TEXT, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
+			pd = new ParamDesc("Sequence"                      , SeqIdx           , 0,    ParamGroup.DATA, ParamDataType.TEXT, ParamReadReqmt.READ_VALUE_OPTIONAL, ParamMode.READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// 2
-			pd = new ParamDesc("Excel Cell Address"            , CellAddrIdx      , 0,    DATA, ADDRESS, READ_VALUE_SET_REQUIRED, READ_FROM_PARAMETER);
+			pd = new ParamDesc("Excel Cell Address"            , CellAddrIdx      , 0,    ParamGroup.DATA, ParamDataType.ADDRESS, ParamReadReqmt.READ_VALUE_SET_REQUIRED, ParamMode.READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// 3
-			pd = new ParamDesc("Value Formatting Information"  , FormattingInfoIdx, 0,    DATA, TEXT, READ_VALUE_OPTIONAL, CALCULATED);
+			pd = new ParamDesc("Value Formatting Information"  , FormattingInfoIdx, 0,    ParamGroup.DATA, ParamDataType.TEXT, ParamReadReqmt.READ_VALUE_OPTIONAL, ParamMode.CALCULATED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// 4
-			pd = new ParamDesc("Cell Graphic Type"             , GraphicType      , 0,    DATA, IGNORE, READ_VALUE_IGNORE, NOT_USED);
+			pd = new ParamDesc("Cell Graphic Type"             , GraphicType      , 0,    ParamGroup.DATA, ParamDataType.IGNORE, ParamReadReqmt.READ_VALUE_IGNORE, ParamMode.NOT_USED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// 5
-			pd = new ParamDesc("Data Direction Is To This Cell", DataIsToCellIdx  , 0,    DATA, BOOL, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
+			pd = new ParamDesc("Data Direction Is To This Cell", DataIsToCellIdx  , 0,    ParamGroup.DATA, ParamDataType.BOOL, ParamReadReqmt.READ_VALUE_OPTIONAL, ParamMode.READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// 6
-			pd = new ParamDesc("Has Error"                     , HasErrorsIdx     , 0,    DATA, BOOL, READ_VALUE_IGNORE, CALCULATED);
+			pd = new ParamDesc("Has Error"                     , HasErrorsIdx     , 0,    ParamGroup.DATA, ParamDataType.BOOL, ParamReadReqmt.READ_VALUE_IGNORE, ParamMode.CALCULATED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// 7
-			pd = new ParamDesc("Cell Data Visible"             , DataVisibleIdx   , 0,    DATA, IGNORE, READ_VALUE_IGNORE, NOT_USED);
+			pd = new ParamDesc("Cell Data Visible"             , DataVisibleIdx   , 0,    ParamGroup.DATA, ParamDataType.IGNORE, ParamReadReqmt.READ_VALUE_IGNORE, ParamMode.NOT_USED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 
 
 			// // 8 - this parameter holds all of the labels which holds all of the label parameters
-			pd = new ParamDesc("Labels"                        , LabelsIdx        , 0,    CONTAINER, IGNORE, READ_VALUE_IGNORE, NOT_USED);
+			pd = new ParamDesc("Labels"                        , LabelsIdx        , 0,    ParamGroup.CONTAINER, ParamDataType.IGNORE, ParamReadReqmt.READ_VALUE_IGNORE, ParamMode.NOT_USED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 
 			// A
-			pd = new ParamDesc("Label"                         , LabelIdx         , adj2, LABEL, LABEL_TITLE, READ_VALUE_REQUIRED, READ_FROM_EXCEL);
+			pd = new ParamDesc("Label"                         , LabelIdx         , adj2, ParamGroup.LABEL, ParamDataType.LABEL_TITLE, ParamReadReqmt.READ_VALUE_REQUIRED, ParamMode.READ_FROM_EXCEL);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 
 			// the parameters associated with a label
 			// A
-			pd = new ParamDesc("Relative Address"              , lblRelAddrIdx    , adj2, LABEL, RELATIVEADDRESS, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
+			pd = new ParamDesc("Relative Address"              , lblRelAddrIdx    , adj2, ParamGroup.LABEL, ParamDataType.RELATIVEADDRESS, ParamReadReqmt.READ_VALUE_OPTIONAL, ParamMode.READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// B
-			pd = new ParamDesc("Data Type"                     , lblDataTypeIdx   , adj2, LABEL, DATATYPE, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
+			pd = new ParamDesc("Data Type"                     , lblDataTypeIdx   , adj2, ParamGroup.LABEL, ParamDataType.DATATYPE, ParamReadReqmt.READ_VALUE_OPTIONAL, ParamMode.READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// C
-			pd = new ParamDesc("Formula"                       , lblFormulaIdx    , adj2, LABEL, FORMULA, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
+			pd = new ParamDesc("Formula"                       , lblFormulaIdx    , adj2, ParamGroup.LABEL, ParamDataType.FORMULA, ParamReadReqmt.READ_VALUE_OPTIONAL, ParamMode.READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// D
-			pd = new ParamDesc("Ignore"                        , lblIgnoreIdx     , adj2, LABEL, BOOL, READ_VALUE_REQUIRED, READ_FROM_PARAMETER);
+			pd = new ParamDesc("Ignore"                        , lblIgnoreIdx     , adj2, ParamGroup.LABEL, ParamDataType.BOOL, ParamReadReqmt.READ_VALUE_REQUIRED, ParamMode.READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// E
-			pd = new ParamDesc("As Length"                     , lblAsLengthIdx   , adj2, LABEL, NUMBER, READ_VALUE_IGNORE, CALCULATED);
+			pd = new ParamDesc("As Length"                     , lblAsLengthIdx   , adj2, ParamGroup.LABEL, ParamDataType.NUMBER, ParamReadReqmt.READ_VALUE_IGNORE, ParamMode.CALCULATED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// F
-			pd = new ParamDesc("As Number"                     , lblAsNumberIdx   , adj2, LABEL, NUMBER, READ_VALUE_IGNORE, CALCULATED);
+			pd = new ParamDesc("As Number"                     , lblAsNumberIdx   , adj2, ParamGroup.LABEL, ParamDataType.NUMBER, ParamReadReqmt.READ_VALUE_IGNORE, ParamMode.CALCULATED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// G
-			pd = new ParamDesc("As Yes-No"                     , lblAsYesNoIdx    , adj2, LABEL, NUMBER, READ_VALUE_IGNORE, CALCULATED);
+			pd = new ParamDesc("As Yes-No"                     , lblAsYesNoIdx    , adj2, ParamGroup.LABEL, ParamDataType.NUMBER, ParamReadReqmt.READ_VALUE_IGNORE, ParamMode.CALCULATED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 		}
 

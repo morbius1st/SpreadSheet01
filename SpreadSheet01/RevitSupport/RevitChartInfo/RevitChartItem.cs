@@ -6,7 +6,7 @@
 using System.Collections.Generic;
 using UtilityLibrary;
 
-namespace SpreadSheet01.RevitSupport
+namespace SpreadSheet01.RevitSupport.RevitChartInfo
 {
 	public class RevitChartItem
 	{
