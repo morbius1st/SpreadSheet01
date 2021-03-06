@@ -50,45 +50,45 @@ namespace SpreadSheet01.RevitSupport
 	#region public methods
 
 		
-		public Result TestSpreadSheet1(Document doc)
-		{
-			rvtMgr = new RevitManager();
-			
-			string chartFamily = rvtMgr.getChart(doc);
-
-			// chartFamily = "CellParkingAnalysis-02";
-			chartFamily = "CellLegend-02";
-
-			if (chartFamily.IsVoid() ||
-				!rvtMgr.GotChart) return Result.Failed;
-
-			bool result = rvtMgr.RvtSelect.GetCellFamilies(doc, chartFamily, rvtMgr);
-
-			if (result)
-			{
-				result = rvtMgr.GetAllCellParameters(ParamClass.LABEL);
-			}
-
-			if (!result) return Result.Failed;
-
-
-			// Modify document within a transaction
-			using (Transaction tx = new Transaction(doc))
-			{
-				tx.Start(ROOT_TRANSACTION_NAME+ ": Update cell family| " + chartFamily);
-
-				ExcelExchange exe = new ExcelExchange();
-
-				exe.UpdateValues(doc,
-					rvtMgr.SelectedChart.ChartPath,
-					rvtMgr.SelectedChart.ChartWorkSheet,
-					rvtMgr.Symbols);
-
-				tx.Commit();
-			}
-
-			return Result.Succeeded;
-		}
+		// public Result TestSpreadSheet1(Document doc)
+		// {
+		// 	rvtMgr = new RevitManager();
+		// 	
+		// 	string chartFamily = rvtMgr.getChart(doc);
+		//
+		// 	// chartFamily = "CellParkingAnalysis-02";
+		// 	chartFamily = "CellLegend-02";
+		//
+		// 	if (chartFamily.IsVoid() ||
+		// 		!rvtMgr.GotChart) return Result.Failed;
+		//
+		// 	bool result = rvtMgr.RvtSelect.GetCellFamilies(doc, chartFamily, rvtMgr);
+		//
+		// 	if (result)
+		// 	{
+		// 		result = rvtMgr.GetAllCellParameters(ParamClass.LABEL);
+		// 	}
+		//
+		// 	if (!result) return Result.Failed;
+		//
+		//
+		// 	// Modify document within a transaction
+		// 	using (Transaction tx = new Transaction(doc))
+		// 	{
+		// 		tx.Start(ROOT_TRANSACTION_NAME+ ": Update cell family| " + chartFamily);
+		//
+		// 		ExcelExchange exe = new ExcelExchange();
+		//
+		// 		exe.UpdateValues(doc,
+		// 			rvtMgr.SelectedChart.ChartPath,
+		// 			rvtMgr.SelectedChart.ChartWorkSheet,
+		// 			rvtMgr.Symbols);
+		//
+		// 		tx.Commit();
+		// 	}
+		//
+		// 	return Result.Succeeded;
+		// }
 
 
 		// public Result TestSpreadSheet(Document doc,

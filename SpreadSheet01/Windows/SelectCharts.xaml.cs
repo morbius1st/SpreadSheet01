@@ -35,7 +35,7 @@ namespace SpreadSheet01.Windows
 
 		// public RevitManager RevitMgr => rvtMgr;
 
-		public List<RevitChartItem> Charts => rvtMgr.ChartList.Charts;
+		// public List<RevitChartItem> Charts => rvtMgr.ChartList.Charts;
 
 
 		private void BtnDone_OnClick(object sender, RoutedEventArgs e)
@@ -51,7 +51,7 @@ namespace SpreadSheet01.Windows
 
 		private void SelectCharts_OnLoaded(object sender, RoutedEventArgs e)
 		{
-			rvtMgr.GetCharts();
+			// rvtMgr.GetCharts();
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

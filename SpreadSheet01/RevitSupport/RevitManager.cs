@@ -19,15 +19,15 @@ using static SpreadSheet01.RevitSupport.RevitParamValue.ParamReadReqmt;
 
 namespace SpreadSheet01.RevitSupport
 {
-	public class ChartList
-	{
-		public List<RevitChartItem> Charts { get; } = new List<RevitChartItem>();
-
-		public void Add(RevitChartItem revitChart)
-		{
-			Charts.Add(revitChart);
-		}
-	}
+	// public class ChartList
+	// {
+	// 	public List<RevitChartItem> Charts { get; } = new List<RevitChartItem>();
+	//
+	// 	public void Add(RevitChartItem revitChart)
+	// 	{
+	// 		Charts.Add(revitChart);
+	// 	}
+	// }
 
 	public class RevitManager : INotifyPropertyChanged
 	{
@@ -43,12 +43,12 @@ namespace SpreadSheet01.RevitSupport
 		private Dictionary<string, RevitCellParams> CellItemsBySeqName { get; set; }
 		private Dictionary<string, RevitCellParams> CellItemsByNameSeq { get; set; }
 
-		private ChartList chartList;
+		// private ChartList chartList;
 
 		private ICollection<Element> chartFamilies;
 		private ICollection<Element> cellFamilies;
 
-		private RevitChartItem selectedChart;
+		// private RevitChartItem selectedChart;
 
 		private List<RevitCellParams> errorList;
 
@@ -62,7 +62,7 @@ namespace SpreadSheet01.RevitSupport
 
 		public RevitManager()
 		{
-			chartList = new ChartList();
+			// chartList = new ChartList();
 			errorList = new List<RevitCellParams>();
 			annoSyms = new RevitAnnoSyms();
 			revitCat = new RevitCatagorizeParam();
@@ -73,13 +73,13 @@ namespace SpreadSheet01.RevitSupport
 
 	#region public properties
 
-		public ChartList ChartList => chartList;
-
-		public RevitChartItem SelectedChart => selectedChart;
+		// public ChartList ChartList => chartList;
+		//
+		// public RevitChartItem SelectedChart => selectedChart;
+		//
+		// public bool GotChart => selectedChart.IsValid;
 
 		public bool GotCellFamilies { get; set; }
-
-		public bool GotChart => selectedChart.IsValid;
 
 		public RevitAnnoSyms Symbols => annoSyms;
 
@@ -103,70 +103,70 @@ namespace SpreadSheet01.RevitSupport
 	#region public methods
 
 
-		public void GetCharts()
-		{
-			TaskDialog td;
+		// public void GetCharts()
+		// {
+		// 	TaskDialog td;
+		//
+		// 	chartFamilies = rvtSelect.FindGenericAnnotationByName(RevitDoc.Doc, "SpreadSheetData");
+		//
+		// 	if (chartFamilies == null && chartFamilies.Count == 0)
+		// 	{
+		// 		td = new TaskDialog("Spread Sheets");
+		// 		td.MainContent = "No charts found";
+		// 		td.MainIcon = TaskDialogIcon.TaskDialogIconError;
+		// 		td.CommonButtons = TaskDialogCommonButtons.Ok;
+		// 		td.Show();
+		//
+		// 		return;
+		// 	}
+		//
+		// 	getCharts(chartFamilies);
+		//
+		// 	OnPropertyChanged(nameof(ChartList));
+		// 	
+		// }
 
-			chartFamilies = rvtSelect.FindGenericAnnotationByName(RevitDoc.Doc, "SpreadSheetData");
-
-			if (chartFamilies == null && chartFamilies.Count == 0)
-			{
-				td = new TaskDialog("Spread Sheets");
-				td.MainContent = "No charts found";
-				td.MainIcon = TaskDialogIcon.TaskDialogIconError;
-				td.CommonButtons = TaskDialogCommonButtons.Ok;
-				td.Show();
-
-				return;
-			}
-
-			getCharts(chartFamilies);
-
-			OnPropertyChanged(nameof(ChartList));
-			
-		}
 
 
-
-		public string getChart(Document doc, int whichChart = 0)
-		{
-
-			TaskDialog td;
-
-			chartFamilies = rvtSelect.FindGenericAnnotationByName(doc, "SpreadSheetData");
-
-			if (chartFamilies == null && chartFamilies.Count == 0)
-			{
-				td = new TaskDialog("Spread Sheets");
-				td.MainContent = "No charts found";
-				td.MainIcon = TaskDialogIcon.TaskDialogIconError;
-				td.CommonButtons = TaskDialogCommonButtons.Ok;
-				td.Show();
-
-				return null;
-			}
-
-			
-			getCharts(chartFamilies);
-
-			string chartPath = chartList.Charts[whichChart].ChartPath;
-			string chartWorkSheet = chartList.Charts[whichChart].ChartWorkSheet;
-
-			if (chartPath.IsVoid() || chartWorkSheet.IsVoid())
-			{
-				td = new TaskDialog("Spread Sheets");
-				td.MainContent = "Incomplete Chart Information";
-				td.MainIcon = TaskDialogIcon.TaskDialogIconError;
-				td.CommonButtons = TaskDialogCommonButtons.Ok;
-				td.Show();
-
-				return null;
-			}
-
-			selectedChart = chartList.Charts[whichChart];
-
-			return chartList.Charts[whichChart].ChartFamilyTypeName;
-		}
+		// public string getChart(Document doc, int whichChart = 0)
+		// {
+		//
+		// 	TaskDialog td;
+		//
+		// 	chartFamilies = rvtSelect.FindGenericAnnotationByName(doc, "SpreadSheetData");
+		//
+		// 	if (chartFamilies == null && chartFamilies.Count == 0)
+		// 	{
+		// 		td = new TaskDialog("Spread Sheets");
+		// 		td.MainContent = "No charts found";
+		// 		td.MainIcon = TaskDialogIcon.TaskDialogIconError;
+		// 		td.CommonButtons = TaskDialogCommonButtons.Ok;
+		// 		td.Show();
+		//
+		// 		return null;
+		// 	}
+		//
+		// 	
+		// 	getCharts(chartFamilies);
+		//
+		// 	string chartPath = chartList.Charts[whichChart].ChartPath;
+		// 	string chartWorkSheet = chartList.Charts[whichChart].ChartWorkSheet;
+		//
+		// 	if (chartPath.IsVoid() || chartWorkSheet.IsVoid())
+		// 	{
+		// 		td = new TaskDialog("Spread Sheets");
+		// 		td.MainContent = "Incomplete Chart Information";
+		// 		td.MainIcon = TaskDialogIcon.TaskDialogIconError;
+		// 		td.CommonButtons = TaskDialogCommonButtons.Ok;
+		// 		td.Show();
+		//
+		// 		return null;
+		// 	}
+		//
+		// 	selectedChart = chartList.Charts[whichChart];
+		//
+		// 	return chartList.Charts[whichChart].ChartFamilyTypeName;
+		// }
 
 		// create a list of annotation families of the proper type
 
@@ -200,33 +200,33 @@ namespace SpreadSheet01.RevitSupport
 
 	#region private methods
 
-		private void getCharts(ICollection<Element> charts)
-		{
-			foreach (Element e in charts)
-			{
-				int found = 0;
-
-				RevitChartItem cp = new RevitChartItem();
-
-				foreach (Parameter p in e.ParametersMap)
-				{
-					string name = p.Definition.Name;
-
-					foreach (KeyValuePair<string, int> kvp in RevitChartItem.ChartItemIds)
-					{
-						if (name.Equals(kvp.Key))
-						{
-							cp.Chart[kvp.Value] = p.AsString();
-							found++;
-						}
-					}
-
-					if (found == RevitChartItem.ItemIdCount) break;
-				}
-
-				if (cp != null) chartList.Add(cp);
-			}
-		}
+		// private void getCharts(ICollection<Element> charts)
+		// {
+		// 	foreach (Element e in charts)
+		// 	{
+		// 		int found = 0;
+		//
+		// 		RevitChartItem cp = new RevitChartItem();
+		//
+		// 		foreach (Parameter p in e.ParametersMap)
+		// 		{
+		// 			string name = p.Definition.Name;
+		//
+		// 			foreach (KeyValuePair<string, int> kvp in RevitChartItem.ChartItemIds)
+		// 			{
+		// 				if (name.Equals(kvp.Key))
+		// 				{
+		// 					cp.Chart[kvp.Value] = p.AsString();
+		// 					found++;
+		// 				}
+		// 			}
+		//
+		// 			if (found == RevitChartItem.ItemIdCount) break;
+		// 		}
+		//
+		// 		if (cp != null) chartList.Add(cp);
+		// 	}
+		// }
 
 		public void errorNoCells(string familyTypeName)
 		{
