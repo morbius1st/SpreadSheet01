@@ -183,7 +183,8 @@ namespace SpreadSheet01.RevitSupport
 				rvtAnnoSym.RvtElement = el;
 				rvtAnnoSym.AnnoSymbol = annoSym;
 
-				string key = RevitParamUtil.MakeAnnoSymKey(rvtAnnoSym, false);
+				string key = RevitParamUtil.MakeAnnoSymKey(rvtAnnoSym, 
+					(int) RevitCellParameters.NameIdx, (int) RevitCellParameters.SeqIdx, false);
 
 				annoSyms.Add(key, rvtAnnoSym);
 			}

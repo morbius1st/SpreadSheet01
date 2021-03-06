@@ -9,6 +9,7 @@ using UtilityLibrary;
 using SpreadSheet01.RevitSupport.RevitParamInfo;
 #if NOREVIT
 using Cells.CellsTests;
+using SpreadSheet01.RevitSupport.RevitChartInfo;
 using static SpreadSheet01.RevitSupport.RevitChartInfo.RevitChartParameters;
 
 #endif
@@ -124,7 +125,8 @@ namespace SpreadSheet01.RevitSupport
 				RevitChartSym chartSym = revitCat.CatagorizeChartSymParams(el, ParamClass.CHART);
 
 				chartSym.RvtElement = el;
-				chartSym.AnnoSymbol = null;
+				chartSym.AnnoSymbol = (AnnotationSymbol) el;
+
 				string key;
 
 				if (!chartSym.IsValid)
@@ -133,7 +135,8 @@ namespace SpreadSheet01.RevitSupport
 				}
 				else
 				{
-					key = RevitParamUtil.MakeAnnoSymKey(chartSym);
+					key = RevitParamUtil.MakeAnnoSymKey(chartSym, 
+						(int) RevitChartParameters.ChartNameIdx, (int) RevitChartParameters.ChartSeqIdx);
 				}
 
 				Charts.Add(key, chartSym);

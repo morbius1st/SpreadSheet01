@@ -14,13 +14,13 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			return KEY_IDX_BEGIN + paramIdx.ToString("D2") + KEY_IDX_END;
 		}
 
-		public static string MakeAnnoSymKey(IAnnoSymContainer aSym, bool asSeqName = true)
+		public static string MakeAnnoSymKey(   IAnnoSymContainer aSym, int nameIdex, int seqIndex, bool asSeqName = true)
 		{
-			string seq = aSym[RevitCellParameters.SeqIdx].GetValue();
+			string seq = aSym[seqIndex].GetValue();
 
 			seq = KEY_IDX_BEGIN + $"{(seq.IsVoid() ? "ZZZZZ" : seq),8}" + KEY_IDX_END;
 
-			string name = aSym[RevitCellParameters.NameIdx].GetValue();
+			string name = aSym[nameIdex].GetValue();
 			name = name.IsVoid() ? "un-named" : name;
 
 			string eid = aSym.AnnoSymbol?.Id.ToString() ?? "Null Symbol " + annoSymUniqueIdx++.ToString("D7");
