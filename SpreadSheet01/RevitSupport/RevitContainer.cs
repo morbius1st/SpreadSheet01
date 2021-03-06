@@ -5,11 +5,12 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
 using SpreadSheet01.RevitSupport.RevitChartInfo;
+// using SpreadSheet01.RevitSupport.RevitChartInfo;
 using SpreadSheet01.RevitSupport.RevitParamInfo;
 using UtilityLibrary;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using static SpreadSheet01.RevitSupport.RevitParamInfo.RevitCellParameters;
-using static SpreadSheet01.RevitSupport.RevitChartInfo.RevitChartParameters;
+// using static SpreadSheet01.RevitSupport.RevitChartInfo.RevitChartParameters;
 
 #endregion
 
@@ -88,7 +89,7 @@ namespace SpreadSheet01.RevitSupport
 	{
 		public override string ToString()
 		{
-			return "I am RevitAnnoSyms| ";
+			return "I am RevitAnnoSyms| " + GetValue();
 		}
 	}
 
@@ -97,7 +98,7 @@ namespace SpreadSheet01.RevitSupport
 		// a collection of Chart Families
 		public override string ToString()
 		{
-			return "I am RevitCharts| ";
+			return "I am RevitCharts| " + GetValue();
 		}
 	}
 
@@ -105,11 +106,11 @@ namespace SpreadSheet01.RevitSupport
 	{
 		public override string ToString()
 		{
-			return "I am RevitLabels| ";
+			return "I am RevitLabels| " + GetValue();
 		}
 	}
 
-	public class RevitContainer: INotifyPropertyChanged
+	public abstract class RevitContainer: ARevitParam, INotifyPropertyChanged
 	{
 		public ARevitParam[] RevitParamList { get; set; }
 
@@ -129,6 +130,8 @@ namespace SpreadSheet01.RevitSupport
 			}
 		}
 
+		public abstract override dynamic GetValue();
+
 		public void UpdateProperties()
 		{
 			OnPropertyChanged(nameof(RevitParamList));
@@ -143,12 +146,44 @@ namespace SpreadSheet01.RevitSupport
 
 		public override string ToString()
 		{
-			return "I am RevitContainer|";
+			return "I am RevitContainer| " + this[NameIdx];
 		}
 	}
 
-	public class RevitAnnoSym : RevitContainer
+	public class RevitLabel : RevitContainer
 	{
+
+		public RevitLabel()
+		{
+			RevitParamList = new ARevitParam[RevitCellParameters.ParamCounts[(int) ParamGroup.LABEL]];
+		}
+
+		public override dynamic GetValue()
+		{
+			return null;
+		}
+
+		public override string ToString()
+		{
+			return "I am RevitLabel| " + this[NameIdx];
+		}
+	}
+
+	public interface IAnnoSymContainer
+	{
+		AnnotationSymbol AnnoSymbol { get; set; }
+
+		ARevitParam[] RevitParamList { get; set; }
+
+		ARevitParam this[int idx] {get; set; }
+	}
+
+	public class RevitAnnoSym : RevitContainer, IAnnoSymContainer
+	{
+		public override dynamic GetValue()
+		{
+			return null;
+		}
 		public RevitAnnoSym()
 		{
 			RevitParamList = new ARevitParam[RevitCellParameters.ParamCounts[(int) ParamGroup.DATA]];
@@ -162,25 +197,16 @@ namespace SpreadSheet01.RevitSupport
 
 		public override string ToString()
 		{
-			return "I am RevitAnnoSym| ";
+			return "I am RevitAnnoSym| " + AnnoSymbol.Name;
 		}
 	}
 
-	public class RevitLabel : RevitContainer
+	public class RevitChartSym : RevitContainer, IAnnoSymContainer
 	{
-		public RevitLabel()
+		public override dynamic GetValue()
 		{
-			RevitParamList = new ARevitParam[RevitCellParameters.ParamCounts[(int) ParamGroup.LABEL]];
+			return null;
 		}
-
-		public override string ToString()
-		{
-			return "I am RevitLabel| ";
-		}
-	}
-
-	public class RevitChartSym : RevitContainer
-	{
 		public RevitChartSym()
 		{
 			RevitParamList = new ARevitParam[RevitChartParameters.ChartParamCounts[(int) ParamGroup.DATA]];
@@ -192,44 +218,8 @@ namespace SpreadSheet01.RevitSupport
 
 		public override string ToString()
 		{
-			return "I am RevitChart| ";
+			return "I am RevitChart| " + AnnoSymbol.Name;
 		}
 	}
 
-
-	/*
-	public class RevitContainerTest
-	{
-		private RevitAnnoSyms annoSyms = new RevitAnnoSyms();
-
-		public void test2()
-		{
-			RevitAnnoSym sym = new RevitAnnoSym();
-
-			string key = RevitParamUtil.MakeAnnoSymKey(sym, false);
-
-			annoSyms.Add(key, sym);
-		}
-
-
-		private RevitAnnoSym makeSym()
-		{
-			RevitAnnoSym sym = null;
-
-			// sym.ContentList.Add("asf", null);
-
-
-			return sym;
-		}
-
-		private void addParams(RevitAnnoSym sym)
-		{
-
-			ParamDesc pd = RevitCellParameters.Match("Name");
-
-
-			RevitParamBool rb = new RevitParamBool(true, pd);
-		}
-	}
-	*/
 }

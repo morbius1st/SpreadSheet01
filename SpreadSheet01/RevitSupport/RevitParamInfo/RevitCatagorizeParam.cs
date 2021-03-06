@@ -1,6 +1,10 @@
 ﻿using Autodesk.Revit.DB;
+using SpreadSheet01.RevitSupport.RevitChartInfo;
 using SpreadSheet01.RevitSupport.RevitParamInfo;
 using SpreadSheet01.RevitSupport.RevitParamValue;
+using static SpreadSheet01.RevitSupport.RevitParamValue.RevitCellErrorCode;
+
+
 
 // Solution:     SpreadSheet01
 // Project:       SpreadSheet01
@@ -8,18 +12,75 @@ using SpreadSheet01.RevitSupport.RevitParamValue;
 // Created:      2021-03-03 (7:31 PM)
 
 
-
 namespace SpreadSheet01.RevitSupport
 {
 	public class RevitCatagorizeParam
 	{
-		public RevitChartSym catagorizeChartSymParams(AnnotationSymbol aSym, ParamClass paramClass)
+		public RevitChartSym CatagorizeChartSymParams(Element elChart, ParamClass paramClass)
 		{
 			RevitChartSym rcs = new RevitChartSym();
+			ARevitParam rvtParam;
 
+			int dataParamCount = 0;
+			int mustExistParamCount = 0;
+
+			ParamDesc pd;
+
+			foreach (Parameter param in elChart.GetOrderedParameters())
+			{
+				string paramName = param.Definition.Name;
+
+				pd = RevitChartParameters.Match(paramName);
+
+				if (pd == null) continue;
+
+				if (pd.Exist == ParamExistReqmt.PARAM_MUST_EXIST) mustExistParamCount++;
+
+				switch (pd.Group)
+				{
+				case ParamGroup.DATA:
+					{
+						dataParamCount++;
+						if (pd.DataType == ParamDataType.IGNORE) continue;
+
+						rvtParam = catagorizeParameter(param, pd);
+
+						rcs.Add(pd.Index, rvtParam);
+						break;
+					}
+				default:
+					{
+						rvtParam = ARevitParam.Invalid;
+						rvtParam.ErrorCode = PARAM_CHART_INVALID_PROG_GRP_CS001140;
+						rcs.Add(pd.Index, rvtParam);
+
+						break;
+					}
+				}
+
+				if (!rvtParam.IsValid) rcs.ErrorCode = PARAM_CHART_PARAM_HAS_ERROR_CS001135;
+
+			}
+			validateChartSymParams(rcs, mustExistParamCount, mustExistParamCount);
 
 			return rcs;
 		}
+
+		private void validateChartSymParams(RevitChartSym rcs, 
+			int dataParamCount, int mustExistParamCount)
+		{
+			if (mustExistParamCount != RevitChartParameters.MustExistCount)
+			{
+				rcs.ErrorCode = PARAM_CHART_MUST_EXIST_MISSING_CS001138;
+			}
+
+			if (!rcs.IsValid)
+			{
+				rcs.ErrorCode = PARAM_CHART_PARAM_HAS_ERROR_CS001135;
+			}
+		}
+
+
 
 
 		public RevitAnnoSym catagorizeAnnoSymParams(AnnotationSymbol aSym, ParamClass paramClass)
@@ -37,7 +98,7 @@ namespace SpreadSheet01.RevitSupport
 
 			foreach (Parameter param in aSym.GetOrderedParameters())
 			{
-				string paramName = RevitParamUtil.GetParamName(param.Definition.Name, paramClass, 
+				string paramName = RevitParamUtil.GetParamName(param.Definition.Name, paramClass,
 					out labelId, out isLabel);
 
 				pd = RevitCellParameters.Match(paramName);
@@ -164,7 +225,30 @@ namespace SpreadSheet01.RevitSupport
 						ParamReadReqmt.READ_VALUE_IGNORE
 							? ""
 							: param.AsString(), pd);
-
+					break;
+				}
+			case ParamDataType.FILE_PATH:
+				{
+					p = new RevitParamFilePath(pd.ReadReqmt ==
+						ParamReadReqmt.READ_VALUE_IGNORE
+							? ""
+							: param.AsString(), pd);
+					break;
+				}
+			case ParamDataType.UPDATE_TYPE:
+				{
+					p = new RevitParamUpdateType(pd.ReadReqmt ==
+						ParamReadReqmt.READ_VALUE_IGNORE
+							? ""
+							: param.AsString(), pd);
+					break;
+				}
+			case ParamDataType.WORKSHEETNAME:
+				{
+					p = new RevitParamWkShtName(pd.ReadReqmt ==
+						ParamReadReqmt.READ_VALUE_IGNORE
+							? ""
+							: param.AsString(), pd);
 					break;
 				}
 			case ParamDataType.LABEL_TITLE:

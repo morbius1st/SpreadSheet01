@@ -256,7 +256,7 @@ namespace Tests.CellsTests
 			if (paramCount == 0 || paramCount != ParamCounts[(int) ParamGroup.DATA] ||
 				labelCount.Equals(0) || (labelCount % ParamCounts[(int) ParamGroup.LABEL]) != 0 )
 			{
-				cp.Error = RevitCellErrorCode.PARAM_MISSING_CS001102;
+				cp.Error = RevitCellErrorCode.PARAM_MISSING_CS001101;
 			}
 
 			return cp;

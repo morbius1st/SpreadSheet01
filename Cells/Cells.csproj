@@ -99,6 +99,9 @@
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitChartInfo\RevitChartManager.cs">
       <Link>RevitSupport\RevitChartInfo\RevitChartManager.cs</Link>
     </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitChartInfo\RevitChartParameters.cs">
+      <Link>RevitSupport\RevitChartInfo\RevitChartParameters.cs</Link>
+    </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitContainer.cs">
       <Link>RevitSupport\RevitContainer.cs</Link>
     </Compile>
@@ -107,6 +110,9 @@
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamInfo\RevitCellParameters.cs">
       <Link>RevitSupport\RevitParamInfo\RevitCellParameters.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamInfo\RevitParamUtil.cs">
+      <Link>RevitSupport\RevitParamInfo\RevitParamUtil.cs</Link>
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamManager.cs">
       <Link>RevitSupport\RevitParamManager.cs</Link>
@@ -126,6 +132,9 @@
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamBool.cs">
       <Link>RevitSupport\RevitParamValue\RevitParamBool.cs</Link>
     </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamFilePath.cs">
+      <Link>RevitSupport\RevitParamValue\RevitParamFilePath.cs</Link>
+    </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamLabel.cs">
       <Link>RevitSupport\RevitParamValue\RevitParamLabel.cs</Link>
     </Compile>
@@ -138,11 +147,16 @@
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamText.cs">
       <Link>RevitSupport\RevitParamValue\RevitParamText.cs</Link>
     </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamUpdateType.cs">
+      <Link>RevitSupport\RevitParamValue\RevitParamUpdateType.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamWkShtName.cs">
+      <Link>RevitSupport\RevitParamValue\RevitParamWkShtName.cs</Link>
+    </Compile>
     <Compile Include="CellsTests\RevitChartTests.cs" />
     <Compile Include="CellsTests\RevitParamTest.cs" />
     <Compile Include="RevitSupport\AutoDesk\AnnotationSymbol.cs" />
     <Compile Include="CellsTests\SampleAnnoSymbols.cs" />
-    <Compile Include="RevitSupport\RevitChartInfo\RevitChartParameters.cs" />
     <Compile Include="Settings\AppSettings.cs" />
     <Compile Include="Settings\DataSet.cs" />
     <Compile Include="Settings\HeadingSetting.cs" />

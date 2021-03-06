@@ -14,7 +14,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			return KEY_IDX_BEGIN + paramIdx.ToString("D2") + KEY_IDX_END;
 		}
 
-		public static string MakeAnnoSymKey(RevitAnnoSym aSym, bool asSeqName)
+		public static string MakeAnnoSymKey(IAnnoSymContainer aSym, bool asSeqName = true)
 		{
 			string seq = aSym[RevitCellParameters.SeqIdx].GetValue();
 

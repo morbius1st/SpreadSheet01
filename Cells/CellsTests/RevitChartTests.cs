@@ -28,6 +28,7 @@ namespace Cells.CellsTests
 
 			getChartSymbols(aSyms);
 
+			listSymbols(aSyms.Charts);
 
 
 		}

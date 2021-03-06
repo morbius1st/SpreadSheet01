@@ -1,16 +1,14 @@
-﻿// Solution:     SpreadSheet01
-// Project:       SpreadSheet01
-// File:             RevitParamAddr.cs
-// Created:      2021-02-22 (9:53 PM)
-
+﻿using System.IO;
 using SpreadSheet01.RevitSupport.RevitParamInfo;
 using UtilityLibrary;
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
-	public class RevitParamAddr : ARevitParam
+	public class RevitParamFilePath : ARevitParam
 	{
-		public RevitParamAddr(string value, ParamDesc paramDesc)
+		private FilePath<FileNameSimple> excelFilPath;
+
+		public RevitParamFilePath(string value, ParamDesc paramDesc)
 		{
 			this.paramDesc = paramDesc;
 
@@ -29,17 +27,25 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			{
 				ErrorCode = RevitCellErrorCode.PARAM_VALUE_MISSING_CS001102;
 				this.dynValue.Value = null;
+				excelFilPath = FilePath<FileNameSimple>.Invalid;
 			}
 			else
 			{
+				
+			#if NOREVIT
+
+				value = Path.Combine(@"B:\Programming\VisualStudioProjects\RevitProjects\SpreadSheet\Revit", Path.GetFileName(value));
+				
+			#endif
+
 				this.dynValue.Value = value;
 
-				// bool result = ExcelAssist.ParseExcelAddress(value, out row, out col);
-				//
-				// if (!result)
-				// {
-				// 	ErrorCode = RevitCellErrorCode.PARAM_VALUE_BAD_ADDR_CS001105;
-				// }
+				excelFilPath = new FilePath<FileNameSimple>(value);
+
+				if (!excelFilPath.IsValid || !excelFilPath.IsFound)
+				{
+					ErrorCode = RevitCellErrorCode.PARAM_CHART_BAD_FILE_PATH_CS001142;
+				}
 			}
 		}
 	}

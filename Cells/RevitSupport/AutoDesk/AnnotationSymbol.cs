@@ -11,13 +11,13 @@ using SpreadSheet01.RevitSupport.RevitParamValue;
 
 namespace Autodesk.Revit.DB
 {
-	public class Element
+	public class AnnotationSymbol : Element
 	{
 
 	}
 
 
-	public class AnnotationSymbol
+	public class Element
 	{
 		private static int id = 100000;
 		private int elementId = -1;
@@ -64,6 +64,11 @@ namespace Autodesk.Revit.DB
 			asString = strVal;
 			asDouble = dblVal;
 			asInteger = intVal;
+		}
+
+		public override string ToString()
+		{
+			return Definition.Name;
 		}
 	}
 

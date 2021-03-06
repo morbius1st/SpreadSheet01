@@ -3,9 +3,9 @@ using UtilityLibrary;
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
-	public class RevitParamText : ARevitParam
+	public class RevitParamUpdateType : ARevitParam
 	{
-		public RevitParamText(string value, ParamDesc paramDesc)
+		public RevitParamUpdateType(string value, ParamDesc paramDesc)
 		{
 			this.paramDesc = paramDesc;
 
@@ -15,6 +15,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		public override dynamic GetValue() => (string) dynValue.Value;
 
+		// provide a string
 		private void set(string value)
 		{
 			gotValue = false;
@@ -27,8 +28,16 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			}
 			else
 			{
-				this.dynValue.Value = value;
+				// got a string to validate
+				this.dynValue.Value = 
+					CellUpdateTypes.I.GetTypeCode(value);
+
+				if (this.dynValue.Value == CellUpdateTypeCode.INVALID)
+				{
+					ErrorCode = RevitCellErrorCode.PARAM_CHART_BAD_UPDATE_TYPE_CS001144;
+				}
 			}
 		}
+
 	}
 }

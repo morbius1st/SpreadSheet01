@@ -3,17 +3,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Autodesk.Revit.DB;
-using Cells.CellsTests;
-using SpreadSheet01.RevitSupport;
-using SpreadSheet01.RevitSupport.RevitChartInfo;
-using SpreadSheet01.RevitSupport.RevitParamValue;
 using UtilityLibrary;
+using SpreadSheet01.RevitSupport.RevitParamInfo;
+#if NOREVIT
+using Cells.CellsTests;
 using static SpreadSheet01.RevitSupport.RevitChartInfo.RevitChartParameters;
+
+#endif
 
 #endregion
 
@@ -26,14 +24,21 @@ namespace SpreadSheet01.RevitSupport
 	{
 	#region private fields
 
+		private const string CHART_FAMILY_NAME = "SpreadSheetData";
+
 		private const string KEY_IDX_BEGIN  = "《";
 		private const string KEY_IDX_END    = "》";
+
+		private ICollection<Element> chartFamilies;
 
 		private RevitParamManager paramMgr;
 
 		public RevitCharts Charts { get; private set; } = new RevitCharts();
 
-		private readonly RevitCatagorizeParam revitCat;
+		private int errorIdx;
+		private List<RevitChartSym> errorSyms = new List<RevitChartSym>();
+
+		private readonly RevitCatagorizeParam revitCat = new RevitCatagorizeParam();
 
 		private static int annoSymUniqueIdx = 0;
 
@@ -60,64 +65,82 @@ namespace SpreadSheet01.RevitSupport
 
 	#region public methods
 
-		public void GetCurrentCharts() { }
-
-		public string MakeChartSymKey(RevitChartSym cSym, bool asSeqName)
+		public void GetCurrentCharts()
 		{
-			string seq = cSym[ChartSeqIdx].GetValue();
+			// step 1 - select all of the chart cells - place them into: 'chartFamilies'
+			ICollection<Element> chartFamilies = findAllChartFamilies(CHART_FAMILY_NAME);
 
-			seq = KEY_IDX_BEGIN + $"{(seq.IsVoid() ? "ZZZZZ" : seq),8}" + KEY_IDX_END;
+			// step 2 - process 'chartFamilies' and process all of the parameters
+			getChartFamilyParameters(chartFamilies);
 
-			string name = cSym[ChartNameIdx].GetValue();
-			name = name.IsVoid() ? "un-named" : name;
-
-			string eid = cSym.AnnoSymbol?.Id.ToString() ?? "Null Symbol " + annoSymUniqueIdx++.ToString("D7");
-
-			if (asSeqName) return seq + name + eid;
-
-			return name + seq + eid;
+			RevitCharts c = Charts;
 		}
+
+
+		// #if NOREVIT
+		// 	public string MakeChartSymKey(RevitChartSym cSym, bool asSeqName = false)
+		// 	{
+		// 		string seq = cSym[ChartSeqIdx].GetValue();
+		//
+		// 		seq = KEY_IDX_BEGIN + $"{(seq.IsVoid() ? "ZZZZZ" : seq),8}" + KEY_IDX_END;
+		//
+		// 		string name = cSym[ChartNameIdx].GetValue();
+		// 		name = name.IsVoid() ? "un-named" : name;
+		//
+		// 		string eid = cSym.AnnoSymbol?.Id.ToString() ?? "Null Symbol " + annoSymUniqueIdx++.ToString("D7");
+		//
+		// 		if (asSeqName) return seq + name + eid;
+		//
+		// 		return name + seq + eid;
+		// 	}
+		// #endif
 
 	#endregion
 
 	#region private methods
 
-		private void selectChartFamilies()
+		private ICollection<Element> findAllChartFamilies(string chartFamilyName)
 		{
 		#if NOREVIT
 
-			SampleAnnoSymbols sample = new SampleAnnoSymbols();
+			SampleAnnoSymbols samples = new SampleAnnoSymbols();
 
-			foreach (AnnotationSymbol cSym in sample.Charts)
-			{
-				RevitChartSym chartSym = revitCat.catagorizeChartSymParams(cSym, ParamClass.CHART);
+			samples.Process();
 
-				chartSym.RvtElement = new Element();
-				chartSym.AnnoSymbol = cSym;
-
-				string key = MakeChartSymKey(chartSym);
-
-				Charts.Add(key, chartSym);
-			}
-
-
+			return samples.ChartElements;
 		#endif
 
 		#if REVIT
-			ICollection<Element> chartFamilies = null;
+			return null;
 
-			// chartFamilies = rvtSelect.FindGenericAnnotationByName(RevitDoc.Doc, "SpreadSheetData");
+		#endif
+		}
 
-			foreach (Element chartFamily in chartFamilies)
+		private void getChartFamilyParameters(ICollection<Element> chartFamilies)
+		{
+		#if NOREVIT
+			foreach (Element el in chartFamilies)
 			{
-				RevitChart c = new RevitChart();
+				RevitChartSym chartSym = revitCat.CatagorizeChartSymParams(el, ParamClass.CHART);
 
-				c.RvtElement = chartFamily;
+				chartSym.RvtElement = el;
+				chartSym.AnnoSymbol = null;
+				string key;
 
-				c.AnnoSymbol = (AnnotationSymbol) chartFamily;
+				if (!chartSym.IsValid)
+				{
+					key = "*** error *** (" + (++errorIdx).ToString("D3") + ")";
+				}
+				else
+				{
+					key = RevitParamUtil.MakeAnnoSymKey(chartSym);
+				}
+
+				Charts.Add(key, chartSym);
 			}
 		#endif
 		}
+
 
 		private void Reset()
 		{

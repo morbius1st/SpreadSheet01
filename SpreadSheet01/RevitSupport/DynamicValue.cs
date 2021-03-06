@@ -15,6 +15,13 @@ namespace SpreadSheet01.RevitSupport
 		private string formatString;  // 
 		private string preFormatted;  // as provided directly from excel
 
+		public DynamicValue(dynamic value)
+		{
+			dynamicValue = value;
+		}
+
+		public DynamicValue() { }
+
 		public dynamic Value
 		{
 			get => dynamicValue;

@@ -21,7 +21,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 				&& !value.HasValue
 				)
 			{
-				ErrorCode = RevitCellErrorCode.PARAM_VALUE_MISSING_CS001101;
+				ErrorCode = RevitCellErrorCode.PARAM_VALUE_MISSING_CS001102;
 				this.dynValue.Value = null;
 			}
 			else

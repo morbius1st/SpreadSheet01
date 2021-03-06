@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using Cells.CellsTests;
+using SpreadSheet01.RevitSupport;
 
 #endregion
 
@@ -25,6 +26,8 @@ namespace Cells.Windows
 		public RevitParamTest RevitParamTests { get; } = new RevitParamTest();
 
 		public RevitChartTests RevitChartTests { get; } = new RevitChartTests();
+
+		public RevitChartManager RevitChartMgr { get; } = new RevitChartManager();
 
 		private static MainWindow me;
 
@@ -86,7 +89,9 @@ namespace Cells.Windows
 
 			// RevitParamTests.Process();
 
-			RevitChartTests.Process();
+			// RevitChartTests.Process();
+
+			RevitChartMgr.GetCurrentCharts();
 
 			OnPropertyChange("RevitParamTests");
 		}

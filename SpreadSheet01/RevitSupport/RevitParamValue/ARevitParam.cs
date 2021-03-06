@@ -6,11 +6,25 @@ using UtilityLibrary;
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
+	public class RevitParamDefault : ARevitParam
+	{
+		public RevitParamDefault(dynamic dynValue)
+		{
+			this.dynValue = new DynamicValue(dynValue);
+			errors = new List<RevitCellErrorCode>();
+			paramDesc = ParamDesc.Empty;
+			gotValue = dynValue != null;
+			Assigned = gotValue;
+		}
+
+		public override dynamic GetValue() => dynValue;
+	}
+
 	public abstract class ARevitParam : INotifyPropertyChanged
 	{
 	#region private fields
 
-		protected DynamicValue dynValue;
+		protected DynamicValue dynValue = new DynamicValue();
 
 		protected List<RevitCellErrorCode> errors;
 
@@ -46,9 +60,18 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			}
 		}
 
-		public bool Assigned { get; private set; }
+		public bool Assigned { get; protected set; }
 
 		public bool IsValid => errors == null;
+
+		public static ARevitParam Invalid
+		{
+			get
+			{
+				ARevitParam result = new RevitParamDefault(null);
+				return result;
+			}
+		}
 
 	#endregion
 
@@ -98,5 +121,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		{
 			return "<" + (dynValue?.ToString() ?? "null value") + " >|< " + (IsValid ? "Valid" : "Invalid") + ">";
 		}
+
+
 	}
 }

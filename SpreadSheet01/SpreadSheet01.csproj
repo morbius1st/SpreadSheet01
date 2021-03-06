@@ -92,6 +92,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RevitSupport\DynamicValue.cs" />
     <Compile Include="RevitSupport\RevitChartInfo\RevitChartManager.cs" />
+    <Compile Include="RevitSupport\RevitChartInfo\RevitChartParameters.cs" />
     <Compile Include="RevitSupport\RevitParamInfo\RevitCatagorizeParam.cs" />
     <Compile Include="RevitSupport\RevitContainer.cs" />
     <Compile Include="RevitSupport\RevitParamInfo\RevitParamUtil.cs" />
@@ -108,6 +109,9 @@
     <Compile Include="RevitSupport\RevitParamValue\RevitParamLabelVoid.cs" />
     <Compile Include="RevitSupport\RevitParamValue\RevitCellSupport.cs" />
     <Compile Include="RevitSupport\RevitParamValue\RevitParamLabel.cs" />
+    <Compile Include="RevitSupport\RevitParamValue\RevitParamFilePath.cs" />
+    <Compile Include="RevitSupport\RevitParamValue\RevitParamWkShtName.cs" />
+    <Compile Include="RevitSupport\RevitParamValue\RevitParamUpdateType.cs" />
     <Compile Include="RevitSupport\RevitParamValue\RevitParamText.cs" />
     <Compile Include="RevitSupport\RevitParamValue\RevitParamTextVoid.cs" />
     <Compile Include="RevitSupport\RevitSelectSupport.cs" />

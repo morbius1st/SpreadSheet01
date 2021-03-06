@@ -16,6 +16,8 @@ namespace Cells.CellsTests
 {
 	public class SampleAnnoSymbols : INotifyPropertyChanged
 	{
+		public ICollection<Element> ChartElements { get; set; }
+
 		public AnnotationSymbol[] Charts {get; set; }
 
 		public AnnotationSymbol[] Symbols {get; set; }
@@ -37,37 +39,50 @@ namespace Cells.CellsTests
 
 		private void makeChartSyms()
 		{
+			Element el;
 			Charts = new AnnotationSymbol[5];
+			ChartElements = new List<Element>();
 
 			symbolIdx = 0;
 			Charts[symbolIdx] = new AnnotationSymbol();
 			Charts[symbolIdx].parameters = new List<Parameter>();
 			Charts[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
+
 			AddChart1();
+			el = (Element) Charts[symbolIdx];
+			ChartElements.Add(el);
 
 			symbolIdx = 1;
 			Charts[symbolIdx] = new AnnotationSymbol();
 			Charts[symbolIdx].parameters = new List<Parameter>();
 			Charts[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
 			AddChart2();
+			el = (Element) Charts[symbolIdx];
+			ChartElements.Add(el);
 
 			symbolIdx = 2;
 			Charts[symbolIdx] = new AnnotationSymbol();
 			Charts[symbolIdx].parameters = new List<Parameter>();
 			Charts[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
 			AddChart3();
+			el = (Element) Charts[symbolIdx];
+			ChartElements.Add(el);
 
 			symbolIdx = 3;
 			Charts[symbolIdx] = new AnnotationSymbol();
 			Charts[symbolIdx].parameters = new List<Parameter>();
 			Charts[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
 			AddChart4();
+			el = (Element) Charts[symbolIdx];
+			ChartElements.Add(el);
 
 			symbolIdx = 4;
 			Charts[symbolIdx] = new AnnotationSymbol();
 			Charts[symbolIdx].parameters = new List<Parameter>();
 			Charts[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
 			AddChart5();
+			el = (Element) Charts[symbolIdx];
+			ChartElements.Add(el);
 		}
 
 
