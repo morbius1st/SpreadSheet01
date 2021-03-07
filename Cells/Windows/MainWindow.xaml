@@ -8,6 +8,7 @@
 		xmlns:val="clr-namespace:SpreadSheet01.RevitSupport.RevitParamValue"
 		xmlns:local="clr-namespace:Cells.Windows"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:mgmt="clr-namespace:SpreadSheet01.RevitSupport.RevitCellsManagement"
 		Title="MainWindow"
 		Width="1100"
 		Height="900"
@@ -78,7 +79,7 @@
 				>
 			<ListView.ItemTemplate>
 				<DataTemplate x:Name="LvDt01"
-						DataType="{x:Type rvt:RevitAnnoSym}"
+						DataType="{x:Type mgmt:RevitCellSym}"
 						>
 					<DockPanel x:Name="Dok01">
 						<DockPanel DockPanel.Dock="Top">

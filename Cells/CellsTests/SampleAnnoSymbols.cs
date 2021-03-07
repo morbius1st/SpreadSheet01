@@ -17,6 +17,7 @@ namespace Cells.CellsTests
 	public class SampleAnnoSymbols : INotifyPropertyChanged
 	{
 		public ICollection<Element> ChartElements { get; set; }
+		public ICollection<Element> CellElements { get; set; }
 
 		public AnnotationSymbol[] Charts {get; set; }
 
@@ -40,8 +41,8 @@ namespace Cells.CellsTests
 		private void makeChartSyms()
 		{
 			Element el;
-			Charts = new AnnotationSymbol[5];
 			ChartElements = new List<Element>();
+			Charts = new AnnotationSymbol[5];
 
 			symbolIdx = 0;
 			Charts[symbolIdx] = new AnnotationSymbol();
@@ -89,24 +90,33 @@ namespace Cells.CellsTests
 		private void makeAnnoSyms()
 		{
 			Symbols = new AnnotationSymbol[3];
+			Element el;
+			CellElements = new List<Element>();
+
 
 			symbolIdx = 0;
 			Symbols[symbolIdx] = new AnnotationSymbol();
 			Symbols[symbolIdx].parameters = new List<Parameter>();
 			Symbols[symbolIdx].Name = "Symbol| " + symbolIdx.ToString("D2");
 			AddSymbol1();
+			el = (Element) Symbols[symbolIdx];
+			CellElements.Add(el);
 
 			symbolIdx = 1;
 			Symbols[symbolIdx] = new AnnotationSymbol();
 			Symbols[symbolIdx].parameters = new List<Parameter>();
 			Symbols[symbolIdx].Name = "Symbol| " + symbolIdx.ToString("D2");
 			AddSymbol2();
+			el = (Element) Symbols[symbolIdx];
+			CellElements.Add(el);
 
 			symbolIdx = 2;
 			Symbols[symbolIdx] = new AnnotationSymbol();
 			Symbols[symbolIdx].parameters = new List<Parameter>();
 			Symbols[symbolIdx].Name = "Symbol| " + symbolIdx.ToString("D2");
 			AddSymbol3();
+			el = (Element) Symbols[symbolIdx];
+			CellElements.Add(el);
 		}
 
 
@@ -136,10 +146,11 @@ namespace Cells.CellsTests
 			AddParameter(RevitCellParameters.SeqIdx           , 0, ParamDataType.TEXT, "1");
 			AddParameter(RevitCellParameters.CellAddrIdx      , 0, ParamDataType.TEXT, "@A2");
 			AddParameter(RevitCellParameters.FormattingInfoIdx, 0, ParamDataType.TEXT, "format info");
-			AddParameter(RevitCellParameters.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
 			AddParameter(RevitCellParameters.DataIsToCellIdx  , 0, ParamDataType.BOOL  , "", 0.0, 1);
 			AddParameter(RevitCellParameters.HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
-			AddParameter(RevitCellParameters.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
+
+			// AddParameter(RevitCellParameters.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
+			// AddParameter(RevitCellParameters.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
 
 			AddParameter(RevitCellParameters.LabelsIdx        , 0, ParamDataType.EMPTY, "", 0.0, 0, "All Labels");
 
@@ -174,10 +185,11 @@ namespace Cells.CellsTests
 			AddParameter(RevitCellParameters.SeqIdx           , 0, ParamDataType.TEXT, "1");
 			AddParameter(RevitCellParameters.CellAddrIdx      , 0, ParamDataType.TEXT, "@A4");
 			AddParameter(RevitCellParameters.FormattingInfoIdx, 0, ParamDataType.TEXT, "format info");
-			AddParameter(RevitCellParameters.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
 			AddParameter(RevitCellParameters.DataIsToCellIdx  , 0, ParamDataType.BOOL  , "", 0.0, 1);
 			AddParameter(RevitCellParameters.HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
-			AddParameter(RevitCellParameters.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
+
+			// AddParameter(RevitCellParameters.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
+			// AddParameter(RevitCellParameters.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
 
 			AddParameter(RevitCellParameters.LabelsIdx        , 0, ParamDataType.EMPTY, "", 0.0, 0, "All Labels");
 
@@ -203,10 +215,11 @@ namespace Cells.CellsTests
 			AddParameter(RevitCellParameters.SeqIdx           , 0, ParamDataType.TEXT, "1");
 			AddParameter(RevitCellParameters.CellAddrIdx      , 0, ParamDataType.TEXT, "@A6");
 			AddParameter(RevitCellParameters.FormattingInfoIdx, 0, ParamDataType.TEXT, "format info");
-			AddParameter(RevitCellParameters.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
 			AddParameter(RevitCellParameters.DataIsToCellIdx  , 0, ParamDataType.BOOL  , "", 0.0, 1);
 			AddParameter(RevitCellParameters.HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
-			AddParameter(RevitCellParameters.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
+
+			// AddParameter(RevitCellParameters.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
+			// AddParameter(RevitCellParameters.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
 
 			AddParameter(RevitCellParameters.LabelsIdx        , 0, ParamDataType.EMPTY, "", 0.0, 0, "All Labels");
 

@@ -140,6 +140,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		PARAM_VALUE_NAN_CS001103,				// as in, not a number
 		PARAM_VALUE_BAD_REL_ADDR_CS001104,		// relative address is no good
 		PARAM_VALUE_BAD_ADDR_CS001105,			// address is no good
+		PARAM_VALUE_BAD_FORMULA_CS001106,		// address is no good
 
 		PARAM_CHART_PARAM_HAS_ERROR_CS001135,
 		PARAM_CHART_MUST_EXIST_MISSING_CS001138,
@@ -153,6 +154,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		INVALID_ANNO_SYM_CS001140,
 
 		LOCATION_BAD_CS001150, // as in, coordinates are no good
+
+		NO_CELLS_FOUND_CS100200, // no cells of a specific family type were found
 
 		DUPLICATE_KEY_CS000I01,      // all programs - internal - duplicate key error
 		INVALID_DATA_FORMAT_CS000I10 // as in, not a proper number to parse

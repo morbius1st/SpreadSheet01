@@ -130,11 +130,12 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 		public static readonly int SeqIdx                    = ParamCounts[(int) DATA]++; // get - read from family
 		public static readonly int CellAddrIdx               = ParamCounts[(int) DATA]++; // get - read from family
 		public static readonly int FormattingInfoIdx         = ParamCounts[(int) DATA]++; // get - read from family
-		public static readonly int GraphicType               = ParamCounts[(int) DATA]++; // ignore
 		public static readonly int DataIsToCellIdx           = ParamCounts[(int) DATA]++; // get - read from family
 		public static readonly int HasErrorsIdx              = ParamCounts[(int) DATA]++; // set - created
-		public static readonly int DataVisibleIdx            = ParamCounts[(int) DATA]++; // ignore
 		public static readonly int LabelsIdx                 = ParamCounts[(int) DATA]++; // ignore
+
+		// public static readonly int DataVisibleIdx            = ParamCounts[(int) DATA]++; // ignore
+		// public static readonly int GraphicType               = ParamCounts[(int) DATA]++; // ignore
 
 		// public static readonly int
 			// LabelsIdx                 = ParamCounts[(int) DATA]; // the collection of label items
@@ -231,10 +232,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			pd = new ParamDesc("Value Formatting Information"  , FormattingInfoIdx, 0,    
 				DATA, PARAM_OPTIONAL, TEXT, READ_VALUE_OPTIONAL, CALCULATED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
-			// 4
-			pd = new ParamDesc("Cell Graphic Type"             , GraphicType      , 0,    
-				DATA, PARAM_OPTIONAL, IGNORE, READ_VALUE_IGNORE, NOT_USED);
-			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// 5
 			pd = new ParamDesc("Data Direction Is To This Cell", DataIsToCellIdx  , 0,    
 				DATA, PARAM_OPTIONAL, BOOL, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
@@ -243,16 +240,26 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			pd = new ParamDesc("Has Error"                     , HasErrorsIdx     , 0,    
 				DATA, PARAM_MUST_EXIST, BOOL, READ_VALUE_IGNORE, CALCULATED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
-			// 7
-			pd = new ParamDesc("Cell Data Visible"             , DataVisibleIdx   , 0,    
-				DATA, PARAM_OPTIONAL, IGNORE, READ_VALUE_IGNORE, NOT_USED);
-			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
+
+
+			// // 4
+			// pd = new ParamDesc("Cell Graphic Type"             , GraphicType      , 0,    
+			// 	DATA, PARAM_OPTIONAL, IGNORE, READ_VALUE_IGNORE, NOT_USED);
+			// assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
+			// // 7
+			// pd = new ParamDesc("Cell Data Visible"             , DataVisibleIdx   , 0,    
+			// 	DATA, PARAM_OPTIONAL, IGNORE, READ_VALUE_IGNORE, NOT_USED);
+			// assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
+
+
 
 
 			// // 8 - this parameter holds all of the labels which holds all of the label parameters
 			pd = new ParamDesc("Labels"                        , LabelsIdx        , 0,    
 				CONTAINER, PARAM_MUST_EXIST, IGNORE, READ_VALUE_IGNORE, NOT_USED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
+
+
 
 			// A
 			pd = new ParamDesc("Label"                         , LabelIdx         , adj2, 

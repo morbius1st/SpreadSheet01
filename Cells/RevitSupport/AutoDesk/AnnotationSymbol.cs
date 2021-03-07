@@ -7,10 +7,22 @@
 // created:   2/23/2021 6:39:44 PM
 
 using System.Collections.Generic;
+using Autodesk.Revit.DB;
 using SpreadSheet01.RevitSupport.RevitParamValue;
+
+namespace SpreadSheet01
+{
+	public static class RevitDoc
+	{
+		public static Document Doc { get; set; }
+	}
+}
 
 namespace Autodesk.Revit.DB
 {
+
+	public class Document {}
+
 	public class AnnotationSymbol : Element
 	{
 

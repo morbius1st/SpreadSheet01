@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
 using Cells.Windows;
 using SpreadSheet01.RevitSupport;
+using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using SpreadSheet01.RevitSupport.RevitParamInfo;
 using static SpreadSheet01.RevitSupport.RevitParamInfo.RevitCellParameters;
@@ -38,22 +39,22 @@ namespace Cells.CellsTests
 				MainWindow.WriteLine("\n");
 				MainWindow.WriteLine("process symbol| " + annoSym.Name);
 
-				RevitAnnoSym rvtAnnoSym = catagorizePAnnoSymParams(annoSym, ParamClass.CHART);
+				RevitCellSym rvtCellSym = catagorizePAnnoSymParams(annoSym, ParamClass.CHART);
 				
-				rvtAnnoSym.AnnoSymbol = annoSym;
+				rvtCellSym.AnnoSymbol = annoSym;
 
-				string key = RevitParamUtil.MakeAnnoSymKey(rvtAnnoSym, 
+				string key = RevitParamUtil.MakeAnnoSymKey(rvtCellSym, 
 					(int) RevitCellParameters.NameIdx,  (int) RevitCellParameters.SeqIdx, false);
 
 				MainWindow.WriteLine("   adding key| " + key);
 
-				AnnoSyms.Add(key, rvtAnnoSym);
+				AnnoSyms.Add(key, rvtCellSym);
 			}
 
 			OnPropertyChanged("AnnoSyms");
 			AnnoSyms.UpdateProperties();
 			
-			foreach (KeyValuePair<string, RevitAnnoSym> kvp in AnnoSyms.Containers)
+			foreach (KeyValuePair<string, RevitCellSym> kvp in AnnoSyms.Containers)
 			{
 				foreach (ARevitParam param in kvp.Value.RevitParamList)
 				{
@@ -73,9 +74,9 @@ namespace Cells.CellsTests
 		}
 
 
-		private RevitAnnoSym catagorizePAnnoSymParams(AnnotationSymbol aSym, ParamClass paramClass)
+		private RevitCellSym catagorizePAnnoSymParams(AnnotationSymbol aSym, ParamClass paramClass)
 		{
-			RevitAnnoSym ras = new RevitAnnoSym();
+			RevitCellSym ras = new RevitCellSym();
 			ARevitParam rvtParam;
 
 			int dataParamCount = 0;
@@ -290,9 +291,9 @@ namespace Cells.CellsTests
 			MainWindow.WriteLine("\nList symbols");
 
 
-			foreach (KeyValuePair<string, RevitAnnoSym> kvp in annoSyms.Containers)
+			foreach (KeyValuePair<string, RevitCellSym> kvp in annoSyms.Containers)
 			{
-				RevitAnnoSym symbol = kvp.Value;
+				RevitCellSym symbol = kvp.Value;
 
 				MainWindow.WriteLine("\nsymbols| " + symbol.AnnoSymbol.Name + "  (" + kvp.Key + ")");
 				MainWindow.WriteLine("parameters| count| " + symbol.RevitParamList.Length);

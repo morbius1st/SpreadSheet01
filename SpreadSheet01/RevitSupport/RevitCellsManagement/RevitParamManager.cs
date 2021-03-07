@@ -1,12 +1,5 @@
 ﻿#region using
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using SpreadSheet01.RevitSupport.RevitParamInfo;
 
 #endregion
@@ -14,7 +7,7 @@ using SpreadSheet01.RevitSupport.RevitParamInfo;
 // username: jeffs
 // created:  3/3/2021 7:51:06 PM
 
-namespace SpreadSheet01.RevitSupport
+namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 {
 	public enum ParamClass
 	{

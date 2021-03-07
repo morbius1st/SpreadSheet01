@@ -1,4 +1,5 @@
 ﻿using Autodesk.Revit.DB;
+using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SpreadSheet01.RevitSupport.RevitChartInfo;
 using SpreadSheet01.RevitSupport.RevitParamInfo;
 using SpreadSheet01.RevitSupport.RevitParamValue;
@@ -83,9 +84,9 @@ namespace SpreadSheet01.RevitSupport
 
 
 
-		public RevitAnnoSym catagorizeAnnoSymParams(AnnotationSymbol aSym, ParamClass paramClass)
+		public RevitCellSym catagorizeAnnoSymParams(AnnotationSymbol aSym, ParamClass paramClass)
 		{
-			RevitAnnoSym ras = new RevitAnnoSym();
+			RevitCellSym ras = new RevitCellSym();
 			ARevitParam rvtParam;
 
 			int dataParamCount = 0;
@@ -198,6 +199,14 @@ namespace SpreadSheet01.RevitSupport
 			case ParamDataType.TEXT:
 				{
 					p = new RevitParamText(pd.ReadReqmt ==
+						ParamReadReqmt.READ_VALUE_IGNORE
+							? ""
+							: param.AsString(), pd);
+					break;
+				}
+			case ParamDataType.FORMULA:
+				{
+					p = new RevitParamFormula(pd.ReadReqmt ==
 						ParamReadReqmt.READ_VALUE_IGNORE
 							? ""
 							: param.AsString(), pd);

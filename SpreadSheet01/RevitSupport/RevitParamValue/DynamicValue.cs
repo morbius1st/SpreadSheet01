@@ -7,7 +7,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace SpreadSheet01.RevitSupport
+namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
 	public class DynamicValue : INotifyPropertyChanged
 	{

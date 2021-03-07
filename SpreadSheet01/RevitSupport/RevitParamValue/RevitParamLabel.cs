@@ -15,7 +15,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		public string LabelValueName { get; set; }
 
-		public override dynamic GetValue() => (string) dynValue.Value;
+		public override dynamic GetValue() => dynValue.AsString();
 
 		private void set(string value)
 		{

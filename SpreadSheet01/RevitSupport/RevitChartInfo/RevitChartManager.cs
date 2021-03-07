@@ -5,12 +5,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
+using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using UtilityLibrary;
 using SpreadSheet01.RevitSupport.RevitParamInfo;
 #if NOREVIT
 using Cells.CellsTests;
 using SpreadSheet01.RevitSupport.RevitChartInfo;
-using static SpreadSheet01.RevitSupport.RevitChartInfo.RevitChartParameters;
+
 
 #endif
 
@@ -34,7 +35,7 @@ namespace SpreadSheet01.RevitSupport
 
 		private RevitParamManager paramMgr;
 
-		public RevitCharts Charts { get; private set; } = new RevitCharts();
+
 
 		private int errorIdx;
 		private List<RevitChartSym> errorSyms = new List<RevitChartSym>();
@@ -42,6 +43,10 @@ namespace SpreadSheet01.RevitSupport
 		private readonly RevitCatagorizeParam revitCat = new RevitCatagorizeParam();
 
 		private static int annoSymUniqueIdx = 0;
+
+		// collection of all revit charts  
+		// this holds a collection of individual charts
+		public RevitCharts Charts { get; private set; } = new RevitCharts();
 
 	#endregion
 
@@ -58,6 +63,8 @@ namespace SpreadSheet01.RevitSupport
 
 	#region public properties
 
+		public string RevitChartFamilyName => CHART_FAMILY_NAME;
+
 	#endregion
 
 	#region private properties
@@ -66,7 +73,7 @@ namespace SpreadSheet01.RevitSupport
 
 	#region public methods
 
-		public void GetCurrentCharts()
+		public int GetCurrentCharts()
 		{
 			// step 1 - select all of the chart cells - place them into: 'chartFamilies'
 			ICollection<Element> chartFamilies = findAllChartFamilies(CHART_FAMILY_NAME);
@@ -74,7 +81,8 @@ namespace SpreadSheet01.RevitSupport
 			// step 2 - process 'chartFamilies' and process all of the parameters
 			getChartFamilyParameters(chartFamilies);
 
-			RevitCharts c = Charts;
+			return chartFamilies != null ? chartFamilies.Count : 0;
+
 		}
 
 
@@ -139,7 +147,11 @@ namespace SpreadSheet01.RevitSupport
 						(int) RevitChartParameters.ChartNameIdx, (int) RevitChartParameters.ChartSeqIdx);
 				}
 
-				Charts.Add(key, chartSym);
+				RevitChart chart = new RevitChart();
+
+				chart.RvtChartSym = chartSym;
+
+				Charts.Add(key, chart);
 			}
 		#endif
 		}

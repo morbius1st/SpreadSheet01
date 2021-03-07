@@ -1,27 +1,14 @@
 ﻿#region using
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Autodesk.Revit.ApplicationServices;
-using Autodesk.Revit.Attributes;
-using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
-using Autodesk.Revit.UI.Selection;
-using SpreadSheet01.ExcelSupport;
-using SpreadSheet01.RevitSupport.RevitParamValue;
-using UtilityLibrary;
+using SpreadSheet01.RevitSupport;
+using SpreadSheet01.RevitSupport.RevitCellsManagement;
 
 #endregion
 
 // username: jeffs
 // created:  2/15/2021 9:20:31 PM
 
-namespace SpreadSheet01.RevitSupport
+namespace SpreadSheet01.Tests
 {
 	public class RevitTests
 	{
@@ -49,7 +36,6 @@ namespace SpreadSheet01.RevitSupport
 
 	#region public methods
 
-		
 		// public Result TestSpreadSheet1(Document doc)
 		// {
 		// 	rvtMgr = new RevitManager();

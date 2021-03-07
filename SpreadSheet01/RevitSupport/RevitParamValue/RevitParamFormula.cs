@@ -3,9 +3,9 @@ using UtilityLibrary;
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
-	public class RevitParamText : ARevitParam
+	public class RevitParamFormula : ARevitParam
 	{
-		public RevitParamText(string value, ParamDesc paramDesc)
+		public RevitParamFormula(string value, ParamDesc paramDesc)
 		{
 			this.paramDesc = paramDesc;
 
@@ -27,6 +27,13 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			}
 			else
 			{
+				value = value.Trim();
+
+				if (!value.StartsWith("="))
+				{
+					ErrorCode = RevitCellErrorCode.PARAM_VALUE_BAD_FORMULA_CS001106;
+				}
+
 				this.dynValue.Value = value;
 			}
 		}

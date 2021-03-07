@@ -38,7 +38,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		public abstract dynamic GetValue();
 
-		public dynamic DynValue => dynValue;
+		public DynamicValue DynValue => dynValue;
 
 		public ParamDesc ParamDesc
 		{

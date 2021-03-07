@@ -55,11 +55,15 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.4.0, Culture=neutral, PublicKeyToken=8985beaab7ea3f04, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft-WindowsAPICodePack-Core.1.1.4\lib\net48\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -90,20 +94,20 @@
     <Compile Include="..\SpreadSheet01\ExcelSupport\ExcelAssist.cs">
       <Link>ExcelSupport\ExcelAssist.cs</Link>
     </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\DynamicValue.cs">
-      <Link>RevitSupport\DynamicValue.cs</Link>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellsManagement\RevitContainer.cs">
+      <Link>RevitSupport\RevitCellsManagement\RevitContainer.cs</Link>
     </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitChartInfo\RevitChartItem.cs">
-      <Link>RevitSupport\RevitChartInfo\RevitChartItem.cs</Link>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellsManagement\RevitManager.cs">
+      <Link>RevitSupport\RevitCellsManagement\RevitManager.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellsManagement\RevitParamManager.cs">
+      <Link>RevitSupport\RevitCellsManagement\RevitParamManager.cs</Link>
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitChartInfo\RevitChartManager.cs">
       <Link>RevitSupport\RevitChartInfo\RevitChartManager.cs</Link>
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitChartInfo\RevitChartParameters.cs">
       <Link>RevitSupport\RevitChartInfo\RevitChartParameters.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitContainer.cs">
-      <Link>RevitSupport\RevitContainer.cs</Link>
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamInfo\RevitCatagorizeParam.cs">
       <Link>RevitSupport\RevitParamInfo\RevitCatagorizeParam.cs</Link>
@@ -114,11 +118,11 @@
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamInfo\RevitParamUtil.cs">
       <Link>RevitSupport\RevitParamInfo\RevitParamUtil.cs</Link>
     </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamManager.cs">
-      <Link>RevitSupport\RevitParamManager.cs</Link>
-    </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\ARevitParam.cs">
       <Link>RevitSupport\RevitParamValue\ARevitParam.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\DynamicValue.cs">
+      <Link>RevitSupport\RevitParamValue\DynamicValue.cs</Link>
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitCellParams.cs">
       <Link>RevitSupport\RevitParamValue\RevitCellParams.cs</Link>
@@ -134,6 +138,9 @@
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamFilePath.cs">
       <Link>RevitSupport\RevitParamValue\RevitParamFilePath.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamFormula.cs">
+      <Link>RevitSupport\RevitParamValue\RevitParamFormula.cs</Link>
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamLabel.cs">
       <Link>RevitSupport\RevitParamValue\RevitParamLabel.cs</Link>
@@ -157,6 +164,8 @@
     <Compile Include="CellsTests\RevitParamTest.cs" />
     <Compile Include="RevitSupport\AutoDesk\AnnotationSymbol.cs" />
     <Compile Include="CellsTests\SampleAnnoSymbols.cs" />
+    <Compile Include="RevitSupport\RevitCellsManagement\RevitManagementSupport.cs" />
+    <Compile Include="RevitSupport\RevitSelectionSupport\RevitSelectSupport.cs" />
     <Compile Include="Settings\AppSettings.cs" />
     <Compile Include="Settings\DataSet.cs" />
     <Compile Include="Settings\HeadingSetting.cs" />
@@ -222,6 +231,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

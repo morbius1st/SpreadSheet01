@@ -60,14 +60,8 @@
     <Compile Include="..\SpreadSheet01\ExcelSupport\ExcelAssist.cs">
       <Link>ExcelSupport\ExcelAssist.cs</Link>
     </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\DynamicValue.cs">
-      <Link>RevitSupport\DynamicValue.cs</Link>
-    </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitChartInfo\RevitChartParameters.cs">
       <Link>RevitSupport\RevitChartInfo\RevitChartParameters.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitContainer.cs">
-      <Link>RevitSupport\RevitContainer.cs</Link>
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamInfo\RevitCatagorizeParam.cs">
       <Link>RevitSupport\RevitParamInfo\RevitCatagorizeParam.cs</Link>
@@ -78,11 +72,11 @@
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamInfo\RevitParamUtil.cs">
       <Link>RevitSupport\RevitParamInfo\RevitParamUtil.cs</Link>
     </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamManager.cs">
-      <Link>RevitSupport\RevitParamManager.cs</Link>
-    </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\ARevitParam.cs">
       <Link>RevitSupport\RevitParamValue\ARevitParam.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\DynamicValue.cs">
+      <Link>RevitSupport\RevitParamValue\DynamicValue.cs</Link>
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitCellSupport.cs">
       <Link>RevitSupport\RevitParamValue\RevitCellSupport.cs</Link>
@@ -125,7 +119,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="RevitSupport\RevitElements\" />
+    <Folder Include="RevitSupport\RevitCellsManagement\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

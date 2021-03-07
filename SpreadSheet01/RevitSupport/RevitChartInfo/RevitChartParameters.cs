@@ -39,6 +39,8 @@ namespace SpreadSheet01.RevitSupport.RevitChartInfo
 		public static SortedDictionary<string, int> ChartParamIndex { get; private set; }
 		public static List<ParamDesc> ChartAllParams { get; private set; }
 
+		public static bool IsConfigured {get; private set;}
+
 		public RevitChartParameters()
 		{
 			
@@ -85,6 +87,12 @@ namespace SpreadSheet01.RevitSupport.RevitChartInfo
 
 		private static void assignParameters()
 		{
+			if (IsConfigured) return;
+
+			IsConfigured = true;
+
+			MustExistCount = 0;
+
 			AllChartParamCount = ChartParamCounts[(int) DATA];
 
 			ChartParamIndex= new SortedDictionary<string, int>();
@@ -123,7 +131,7 @@ namespace SpreadSheet01.RevitSupport.RevitChartInfo
 			assignParameter(pd.ParamIndex              , pd.ShortName     , pd);
 			// 7
 			pd = new ParamDesc("Cells With Errors"     , ChartHasErrorsIdx, 0,    
-				DATA, PARAM_MUST_EXIST, IGNORE, READ_VALUE_IGNORE, NOT_USED);
+				DATA, PARAM_MUST_EXIST, BOOL, READ_VALUE_IGNORE, NOT_USED);
 			assignParameter(pd.ParamIndex              , pd.ShortName     , pd);
 
 

@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Linq;
 using SpreadSheet01.ExcelSupport;
 using SpreadSheet01.RevitSupport;
+using SpreadSheet01.Tests;
 using SpreadSheet01.Windows;
 using UtilityLibrary;
 
@@ -28,6 +29,13 @@ namespace SpreadSheet01
 	{
 		public static Document Doc { get; set; }
 	}
+
+
+
+	/// <summary>
+	/// revit command entry point.  this command will automatically update all
+	/// cells according to its "update type"
+	/// </summary>
 
 	[Transaction(TransactionMode.Manual)]
 	public class Command : IExternalCommand
