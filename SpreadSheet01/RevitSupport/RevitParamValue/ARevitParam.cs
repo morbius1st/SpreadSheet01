@@ -62,7 +62,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		public bool Assigned { get; protected set; }
 
-		public bool IsValid => errors == null;
+		public bool IsValid => errors == null || errors.Count == 0;
 
 		public static ARevitParam Invalid
 		{
@@ -90,6 +90,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 				gotValue = false;
 				return;
 			}
+
+			dynValue.Value = value;
 
 			gotValue = true;
 			Assigned = true;
@@ -119,7 +121,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		public override string ToString()
 		{
-			return "<" + (dynValue?.ToString() ?? "null value") + " >|< " + (IsValid ? "Valid" : "Invalid") + ">";
+			return	"<" + ParamDesc.ParameterName + ">|<" + (dynValue?.ToString() ?? "null value") + " >|< " + (IsValid ? "Valid" : "Invalid") + ">";
 		}
 
 

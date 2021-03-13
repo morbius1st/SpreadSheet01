@@ -9,7 +9,9 @@ using SpreadSheet01.RevitSupport;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using SpreadSheet01.RevitSupport.RevitParamInfo;
-using static SpreadSheet01.RevitSupport.RevitParamInfo.RevitCellParameters;
+using static SpreadSheet01.RevitSupport.RevitParamValue.ParamType;
+using static SpreadSheet01.RevitSupport.RevitCellsManagement.RevitParamManager;
+
 
 // Solution:     SpreadSheet01
 // Project:       Tests
@@ -25,28 +27,54 @@ namespace Cells.CellsTests
 
 		public RevitAnnoSyms AnnoSyms { get; private set; } = new RevitAnnoSyms();
 
+		public RevitCatagorizeParam catParam;
+
 		public void Process()
+		{
+			// chart params created
+			ChartFamily a = ChartParams;
+
+			// test - get the name
+			ParamDesc pd = ChartParams[INSTANCE, NameIdx];
+			string name = pd.ParameterName;
+
+			// cell params created
+			CellFamily b = CellParams;
+
+			// test - get the name
+			pd = CellParams[INSTANCE, NameIdx];
+
+			// get the parameter name
+			name = pd.ParameterName;
+
+			// list the parameters
+			listParams();
+
+
+		}
+
+		public void Process2()
 		{
 			aSyms = new SampleAnnoSymbols();
 			aSyms.Process();
 
-			MainWindow.WriteLine("start process symbols");
+			MainWindow.WriteLineTab("start process symbols");
 
 			listSymbols(aSyms.Symbols);
 
 			foreach (AnnotationSymbol annoSym in aSyms.Symbols)
 			{
-				MainWindow.WriteLine("\n");
-				MainWindow.WriteLine("process symbol| " + annoSym.Name);
+				MainWindow.WriteLineTab("\n");
+				MainWindow.WriteLineTab("process symbol| " + annoSym.Name);
 
-				RevitCellSym rvtCellSym = catagorizePAnnoSymParams(annoSym, ParamClass.CHART);
+				RevitCellSym rvtCellSym = catParam.catagorizeAnnoSymParams(annoSym);
 				
 				rvtCellSym.AnnoSymbol = annoSym;
 
 				string key = RevitParamUtil.MakeAnnoSymKey(rvtCellSym, 
-					(int) RevitCellParameters.NameIdx,  (int) RevitCellParameters.SeqIdx, false);
+					(int) RevitParamManager.NameIdx,  (int) RevitParamManager.SeqIdx, false);
 
-				MainWindow.WriteLine("   adding key| " + key);
+				MainWindow.WriteLineTab("   adding key| " + key);
 
 				AnnoSyms.Add(key, rvtCellSym);
 			}
@@ -54,203 +82,256 @@ namespace Cells.CellsTests
 			OnPropertyChanged("AnnoSyms");
 			AnnoSyms.UpdateProperties();
 			
-			foreach (KeyValuePair<string, RevitCellSym> kvp in AnnoSyms.Containers)
-			{
-				foreach (ARevitParam param in kvp.Value.RevitParamList)
-				{
-					if (param != null)
-					{
-						param.UpdateProperties();
-					}
-				}
-
-				kvp.Value.UpdateProperties();
-			}
+			// foreach (KeyValuePair<string, RevitCellSym> kvp in AnnoSyms.Containers)
+			// {
+			// 	foreach (ARevitParam param in kvp.Value.RevitParamList)
+			// 	{
+			// 		if (param != null)
+			// 		{
+			// 			param.UpdateProperties();
+			// 		}
+			// 	}
+			//
+			// 	kvp.Value.UpdateProperties();
+			// }
 
 			RevitAnnoSyms annoSymsEnd = AnnoSyms;
 
-			MainWindow.WriteLine("process symbols complete");
-			MainWindow.WriteLine("\n");
+			MainWindow.WriteLineTab("process symbols complete");
+			MainWindow.WriteLineTab("\n");
 		}
 
+//
+// 		private RevitCellSym catagorizePAnnoSymParams(AnnotationSymbol aSym)
+// 		{
+// 			RevitCellSym ras = new RevitCellSym();
+// 			ARevitParam rvtParam;
+//
+// 			int dataParamCount = 0;
+// 			int labelParamCount = 0;
+// 			int containerParamCount = 0;
+//
+// 			int labelId;
+// 			bool isLabel;
+// 			ParamDesc2 pd;
+//
+// 			foreach (Parameter param in aSym.GetOrderedParameters())
+// 			{
+// 				if (param.Definition.Type == ParamDataType.ERROR) break;
+// 				if (param.Definition.Type == ParamDataType.EMPTY) continue;
+//
+// 				string paramName = RevitParamUtil.GetParamName(param.Definition.Name, out labelId, out isLabel);
+//
+// 				pd = RevitCellParameters.Match(paramName);
+//
+// 				switch (pd.Group)
+// 				{
+// 				case ParamGroup.DATA:
+// 					{
+// 						
+// 						dataParamCount++;
+// 						if (pd.DataType == ParamDataType.IGNORE) continue;
+//
+// 						rvtParam = catagorizeParameter(param, pd);
+//
+// 						ras.Add(pd.Index, rvtParam);
+// 						break;
+// 					}
+// 				case ParamGroup.CONTAINER:
+// 					{
+// 						MainWindow.WriteLine("got container");
+// 						containerParamCount++;
+// 						if (pd.DataType == ParamDataType.IGNORE) continue;
+// // todo: fix
+// 						// RevitLabels labels = (RevitLabels) ras[LabelsIdx];
+//
+// 						// RevitLabel label = getLabel(labelId, labels);
+// 						//
+// 						// ARevitParam labelParam = catagorizeParameter(param, pd);
+// 						//
+// 						// label.Add(pd.Index, labelParam);
+//
+// 						// saveLabelParam(labelId, param, pd, labels);
+//
+// 						break;
+// 					}
+// 				case ParamGroup.LABEL_GRP:
+// 					{
+// 						labelParamCount++;
+//
+// 						if (labelId < 0 || pd.DataType == ParamDataType.IGNORE) continue;
+// // todo: fix
+// 						// RevitLabels labels = (RevitLabels) ras[LabelsIdx];
+//
+// 						// RevitLabel label = getLabel(labelId, labels);
+// 						//
+// 						// ARevitParam labelParam = catagorizeParameter(param, pd);
+// 						//
+// 						// label.Add(pd.Index, labelParam);
+//
+// 						// saveLabelParam(labelId, param, pd, labels);
+//
+// 						break;
+// 					}
+// 				}
+// 			}
+//
+// 			return ras;
+// 		}
 
-		private RevitCellSym catagorizePAnnoSymParams(AnnotationSymbol aSym, ParamClass paramClass)
+		// private void saveLabelParam(int labelId, Parameter param, ParamDesc2 pd, RevitLabels labels)
+		// {
+		// 	RevitLabel label = getLabel(labelId, labels);
+		//
+		// 	ARevitParam labelParam = catagorizeParameter(param, pd);
+		//
+		// 	label.Add(pd.Index, labelParam);
+		// }
+		//
+		// private RevitLabel getLabel(int idx, RevitLabels labels)
+		// {
+		// 	RevitLabel label = null;
+		//
+		// 	string key = RevitParamUtil.MakeLabelKey(idx);
+		//
+		// 	bool result = labels.Containers.TryGetValue(key, out label);
+		//
+		// 	if (!result)
+		// 	{
+		// 		label = new RevitLabel();
+		// 		labels.Containers.Add(key, label);
+		// 	}
+		//
+		// 	return label;
+		// }
+
+		// private ARevitParam catagorizeParameter(Parameter param, ParamDesc2 pd, string name = "")
+		// {
+		// 	ARevitParam p = null;
+		//
+		// 	switch (pd.DataType)
+		// 	{
+		// 	case ParamDataType.BOOL:
+		// 		{
+		// 			p = new RevitParamBool(
+		// 				pd.ReadReqmt ==
+		// 				ParamReadReqmt.READ_VALUE_IGNORE
+		// 					? (bool?) false
+		// 					: param.AsInteger() == 1, pd);
+		// 			break;
+		// 		}
+		// 	case ParamDataType.NUMBER:
+		// 		{
+		// 			p = new RevitParamNumber(
+		// 				pd.ReadReqmt ==
+		// 				ParamReadReqmt.READ_VALUE_IGNORE
+		// 					? double.NaN
+		// 					: param.AsDouble(), pd);
+		// 			break;
+		// 		}
+		// 	case ParamDataType.TEXT:
+		// 		{
+		// 			p = new RevitParamText(pd.ReadReqmt ==
+		// 				ParamReadReqmt.READ_VALUE_IGNORE
+		// 					? ""
+		// 					: param.AsString(), pd);
+		// 			break;
+		// 		}
+		// 	case ParamDataType.DATATYPE:
+		// 		{
+		// 			p = new RevitParamText(pd.ReadReqmt ==
+		// 				ParamReadReqmt.READ_VALUE_IGNORE
+		// 					? ""
+		// 					: param.AsString(), pd);
+		// 			break;
+		// 		}
+		// 	case ParamDataType.ADDRESS:
+		// 		{
+		// 			p = new RevitParamText(pd.ReadReqmt ==
+		// 				ParamReadReqmt.READ_VALUE_IGNORE
+		// 					? ""
+		// 					: param.AsString(), pd);
+		// 			break;
+		// 		}
+		// 	case ParamDataType.RELATIVEADDRESS:
+		// 		{
+		// 			p = new RevitParamText(pd.ReadReqmt ==
+		// 				ParamReadReqmt.READ_VALUE_IGNORE
+		// 					? ""
+		// 					: param.AsString(), pd);
+		// 			break;
+		// 		}
+		// 	}
+		//
+		// 	return p;
+		// }
+
+
+		private void listParams()
 		{
-			RevitCellSym ras = new RevitCellSym();
-			ARevitParam rvtParam;
+			MainWindow.WriteLineTab("\nList param descriptions");
 
-			int dataParamCount = 0;
-			int labelParamCount = 0;
-			int containerParamCount = 0;
+			MainWindow.WriteLineTab("\nList chart param descriptions");
+			MainWindow.WriteTab("\n");
 
-			int labelId;
-			bool isLabel;
-			ParamDesc pd;
-
-			foreach (Parameter param in aSym.GetOrderedParameters())
+			listParamHeader(ChartParams);
+			MainWindow.WriteTab("\n");
+			
+			foreach (ParamDesc pd in ChartParams.InstanceParams)
 			{
-				if (param.Definition.Type == ParamDataType.ERROR) break;
-				if (param.Definition.Type == ParamDataType.EMPTY) continue;
+				listAParam(pd);
 
-				string paramName = RevitParamUtil.GetParamName(param.Definition.Name, paramClass, out labelId, out isLabel);
-
-				pd = RevitCellParameters.Match(paramName);
-
-				switch (pd.Group)
-				{
-				case ParamGroup.DATA:
-					{
-						
-						dataParamCount++;
-						if (pd.DataType == ParamDataType.IGNORE) continue;
-
-						rvtParam = catagorizeParameter(param, pd);
-
-						ras.Add(pd.Index, rvtParam);
-						break;
-					}
-				case ParamGroup.CONTAINER:
-					{
-						MainWindow.WriteLine("got container");
-						containerParamCount++;
-						if (pd.DataType == ParamDataType.IGNORE) continue;
-
-						RevitLabels labels = (RevitLabels) ras[LabelsIdx];
-
-						// RevitLabel label = getLabel(labelId, labels);
-						//
-						// ARevitParam labelParam = catagorizeParameter(param, pd);
-						//
-						// label.Add(pd.Index, labelParam);
-
-						saveLabelParam(labelId, param, pd, labels);
-
-						break;
-					}
-				case ParamGroup.LABEL:
-					{
-						labelParamCount++;
-
-						if (labelId < 0 || pd.DataType == ParamDataType.IGNORE) continue;
-
-						RevitLabels labels = (RevitLabels) ras[LabelsIdx];
-
-						// RevitLabel label = getLabel(labelId, labels);
-						//
-						// ARevitParam labelParam = catagorizeParameter(param, pd);
-						//
-						// label.Add(pd.Index, labelParam);
-
-						saveLabelParam(labelId, param, pd, labels);
-
-						break;
-					}
-				}
 			}
+			
+			MainWindow.WriteLineTab("\nList cell param descriptions");
+			MainWindow.WriteTab("\n");
 
-			return ras;
-		}
+			listParamHeader(CellParams);
+			MainWindow.WriteTab("\n");
 
-		private void saveLabelParam(int labelId, Parameter param, ParamDesc pd, RevitLabels labels)
-		{
-			RevitLabel label = getLabel(labelId, labels);
-
-			ARevitParam labelParam = catagorizeParameter(param, pd);
-
-			label.Add(pd.Index, labelParam);
-		}
-
-		private RevitLabel getLabel(int idx, RevitLabels labels)
-		{
-			RevitLabel label = null;
-
-			string key = RevitParamUtil.MakeLabelKey(idx);
-
-			bool result = labels.Containers.TryGetValue(key, out label);
-
-			if (!result)
+			foreach (ParamDesc pd in CellParams.InstanceParams)
 			{
-				label = new RevitLabel();
-				labels.Containers.Add(key, label);
+				listAParam(pd);
 			}
+			MainWindow.WriteTab("\n");
 
-			return label;
-		}
-
-		private ARevitParam catagorizeParameter(Parameter param, ParamDesc pd, string name = "")
-		{
-			ARevitParam p = null;
-
-			switch (pd.DataType)
+			foreach (ParamDesc pd in CellParams.LabelParams)
 			{
-			case ParamDataType.BOOL:
-				{
-					p = new RevitParamBool(
-						pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
-							? (bool?) false
-							: param.AsInteger() == 1, pd);
-					break;
-				}
-			case ParamDataType.NUMBER:
-				{
-					p = new RevitParamNumber(
-						pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
-							? double.NaN
-							: param.AsDouble(), pd);
-					break;
-				}
-			case ParamDataType.TEXT:
-				{
-					p = new RevitParamText(pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
-							? ""
-							: param.AsString(), pd);
-					break;
-				}
-			case ParamDataType.DATATYPE:
-				{
-					p = new RevitParamText(pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
-							? ""
-							: param.AsString(), pd);
-					break;
-				}
-			case ParamDataType.ADDRESS:
-				{
-					p = new RevitParamText(pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
-							? ""
-							: param.AsString(), pd);
-					break;
-				}
-			case ParamDataType.RELATIVEADDRESS:
-				{
-					p = new RevitParamText(pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
-							? ""
-							: param.AsString(), pd);
-					break;
-				}
+				listAParam(pd);
 			}
-
-			return p;
 		}
+
+		private void listParamHeader(Family f)
+		{
+			MainWindow.WriteLineTab("fam name| " + f.FamilyName);
+			MainWindow.WriteLineTab("cat     | "      + f.Category);
+			MainWindow.WriteLineTab("subcat  | "   + f.SubCategory);
+			MainWindow.WriteLineTab("type    | "     + f.GetType());
+		}
+
+		private void listAParam(ParamDesc pd)
+		{
+			MainWindow.WriteTab("name| " + pd.ParameterName.PadRight(32));
+			MainWindow.WriteTab("Type| " + pd.DataType.ToString().PadRight(12));
+			MainWindow.WriteTab("Mode| " + pd.Mode.ToString().PadRight(10));
+			MainWindow.WriteTab("\n");
+		}
+
+
 
 		private void listSymbols(AnnotationSymbol[] annoSyms)
 		{
-			MainWindow.WriteLine("\nList symbols");
+			MainWindow.WriteLineTab("\nList symbols");
 
 			foreach (AnnotationSymbol symbol in annoSyms)
 			{
-				MainWindow.WriteLine("\nsymbols| " + symbol.Name);
-				MainWindow.WriteLine("parameters| count| " + symbol.parameters.Count);
+				MainWindow.WriteLineTab("\nsymbols| " + symbol.Name);
+				MainWindow.WriteLineTab("parameters| count| " + symbol.parameters.Count);
 
 				for (var i = 0; i < symbol.parameters.Count; i++)
 				{
-					MainWindow.Write("   type| ");
-					MainWindow.Write(symbol.parameters[i].Definition.Type.ToString());
+					MainWindow.WriteTab("   type| ");
+					MainWindow.WriteTab(symbol.parameters[i].Definition.Type.ToString());
 
 					string result = "unknown";
 
@@ -274,41 +355,40 @@ namespace Cells.CellsTests
 					}
 
 
-					MainWindow.Write("   val| >");
-					MainWindow.Write(result);
+					MainWindow.WriteTab("   val| >");
+					MainWindow.WriteTab(result);
 
-					MainWindow.Write("<   name| ");
-					MainWindow.WriteLine(symbol.parameters[i].Definition.Name);
+					MainWindow.WriteTab("<   name| ");
+					MainWindow.WriteLineTab(symbol.parameters[i].Definition.Name);
 				}
 
-				MainWindow.WriteLine("\nComplete\n");
+				MainWindow.WriteLineTab("\nComplete\n");
 			}
 		}
 
-
 		private void listSymbols(RevitAnnoSyms annoSyms)
 		{
-			MainWindow.WriteLine("\nList symbols");
+			MainWindow.WriteLineTab("\nList symbols");
 
 
 			foreach (KeyValuePair<string, RevitCellSym> kvp in annoSyms.Containers)
 			{
 				RevitCellSym symbol = kvp.Value;
 
-				MainWindow.WriteLine("\nsymbols| " + symbol.AnnoSymbol.Name + "  (" + kvp.Key + ")");
-				MainWindow.WriteLine("parameters| count| " + symbol.RevitParamList.Length);
+				MainWindow.WriteLineTab("\nsymbols| " + symbol.AnnoSymbol.Name + "  (" + kvp.Key + ")");
+				MainWindow.WriteLineTab("parameters| count| " + symbol.RevitParamList.Length);
 
 				foreach (ARevitParam param in symbol.RevitParamList)
 				{
-					MainWindow.Write("   ");
-					MainWindow.Write(param.ParamDesc.Index.ToString("###"));
-					MainWindow.Write("  val| ");
-					MainWindow.Write(param.GetValue());
-					MainWindow.Write("  name| ");
-					MainWindow.Write(param.ParamDesc.ParameterName);
+					MainWindow.WriteTab("   ");
+					MainWindow.WriteTab(param.ParamDesc.Index.ToString("###"));
+					MainWindow.WriteTab("  val| ");
+					MainWindow.WriteTab(param.GetValue());
+					MainWindow.WriteTab("  name| ");
+					MainWindow.WriteTab(param.ParamDesc.ParameterName);
 				}
 
-				MainWindow.WriteLine("\nComplete\n");
+				MainWindow.WriteLineTab("\nComplete\n");
 			}
 		}
 

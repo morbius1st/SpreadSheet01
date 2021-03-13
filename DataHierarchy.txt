@@ -1,0 +1,54 @@
+Charts {RevitCharts}  [Containers]  dictionary<string, chart symbol> 
+	** Collection of charts
+	+-> DynValue (null)
+	+-> ParamDesc (null)
+	+-> Containers
+		|	+> collection of RevitChart
+		|	+> {RevitChart}
+		|
+		+-> Chart {RevitChart}  [Containers] dictionary<string, cell family> 
+			** a single chart 
+			** with a collection of cell families
+			+-> DynValue
+			+-> ParamDesc
+			+-> RvtChartSym  {RevitChartSym}
+				+-> RevitParamList
+					+> RevitParam{type}
+			+-> Containers
+				|	**  collection of cell families
+				|	+>  {RevitCellsym}
+				|	
+				+-> {RevitCellsym}  [Container] ARevitParam[]
+					** a single cell family
+					** with a collection of parameters
+						+-> AnnoSymbol  {revit anno symbol}
+						+-> DynValue    
+						+-> ParamDesc
+						+-> RvtElement  {revit element}
+							// 	+-> CellElement {revit element}
+							// 	+-> CellParameters (same as RevitParamList)
+							// 	+-> CellSymbol  {revit anno symbol}
+						+-> RevitParamList 
+							+> {ARevitParam{type}[]}
+						+-> LabelList {RevitLabels}
+								** collection of revit labels
+								+-> {RevitLabel}
+									** collection of parameters
+									+> {ARevitParam{type}[]}
+
+
+
+family categories  {FamilyCategories} [containers] dictionary<string, families>
+	* holds a collection families
+		e.g. (annotation, walls)
+	+-> families (Families}  [containers]  dictionary<string, family>
+		e.g. (generic annotation, curtain walls)
+		+-> family  {Family}    [containers] dictionary<string, familyType>
+			e.g (spreadsheetchart
+			* holds information about a single family
+			* holds a collection of family types associated with a family
+		+-> family type parameters  [ARevitDesc[]]
+		+-> family instance parameters  [ARevitDesc[]]
+
+
+

@@ -97,6 +97,9 @@
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellsManagement\RevitContainer.cs">
       <Link>RevitSupport\RevitCellsManagement\RevitContainer.cs</Link>
     </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellsManagement\RevitFamilies.cs">
+      <Link>RevitSupport\RevitCellsManagement\RevitFamilies.cs</Link>
+    </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellsManagement\RevitManager.cs">
       <Link>RevitSupport\RevitCellsManagement\RevitManager.cs</Link>
     </Compile>
@@ -108,6 +111,15 @@
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitChartInfo\RevitChartParameters.cs">
       <Link>RevitSupport\RevitChartInfo\RevitChartParameters.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamInfo\ParamCategories.cs">
+      <Link>RevitSupport\RevitParamInfo\ParamCategories.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamInfo\ParamDescription.cs">
+      <Link>RevitSupport\RevitParamInfo\ParamDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamInfo\ParamDescription2.cs">
+      <Link>RevitSupport\RevitParamInfo\ParamDescription2.cs</Link>
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamInfo\RevitCatagorizeParam.cs">
       <Link>RevitSupport\RevitParamInfo\RevitCatagorizeParam.cs</Link>

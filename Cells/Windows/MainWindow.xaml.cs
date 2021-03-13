@@ -7,6 +7,8 @@ using System.Windows;
 using Cells.CellsTests;
 using SpreadSheet01.RevitSupport;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
+using SpreadSheet01.RevitSupport.RevitParamValue;
+using UtilityLibrary;
 
 #endregion
 
@@ -26,11 +28,11 @@ namespace Cells.Windows
 
 		public RevitParamTest RevitParamTests { get; } = new RevitParamTest();
 
-		public RevitChartTests RevitChartTests { get; } = new RevitChartTests();
-
 		public RevitChartManager RevitChartMgr { get; } = new RevitChartManager();
 
 		public RevitManager RevitMgr { get; } = new RevitManager();
+
+		public RevitChartTests RevitChartTests { get; } = new RevitChartTests();
 
 		private static MainWindow me;
 
@@ -58,6 +60,55 @@ namespace Cells.Windows
 
 	#region public methods
 
+		private static int tabs = 0;
+		private static string tabId = null;
+
+		private static void listTabId()
+		{
+			if (tabId != null)
+			{
+				WriteLine(tabId);
+			}
+		}
+
+		public static  void TabUp(int id = -1)
+		{
+			tabs++;
+			tabId = id.ToString("D3") + " up";
+			listTabId();
+		}
+
+		public static void TabDn(int id = -1)
+		{
+			tabs--;
+			tabId = id.ToString("D3") + " dn";
+			listTabId();
+		}
+
+		public static void TabClr(int id = -1)
+		{
+			tabs = 0;
+			tabId = id.ToString("D3") + " clr";
+			listTabId();
+		}
+
+		public static void TabSet(int t)
+		{
+			tabs = t;
+		}
+
+		public static void WriteLineTab(string msg)
+		{
+			WriteTab(msg + "\n");
+		}
+
+		public static void WriteTab(string msg)
+		{
+			me.TbxMsg.Text += 
+				// (tabId > 0 ? tabId.ToString("D3") : "") + 
+				(tabs > 0 ? "    ".Repeat(tabs) : "" ) + msg;
+		}
+		
 		public static void WriteLine(string msg)
 		{
 			Write(msg + "\n");
@@ -88,15 +139,34 @@ namespace Cells.Windows
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			WriteLine("Loaded...");
+			WriteLineTab("Loaded...");
 
+			bool result;
+
+			// test that the params have been defined
 			// RevitParamTests.Process();
 
+			// get all of the revit chart families and 
+			// process each to get its parameters
+			result = RevitChartMgr.GetCurrentCharts();
+
+			if (!result) return;
+
+			// RevitChartMgr.listCharts();
+
+
+			RevitMgr.ProcessCharts(RevitChartMgr.Charts, CellUpdateTypeCode.ALL);
+
+			RevitChartMgr.listCharts2();
+
+			// old - load the parameter descriptions
 			// RevitChartTests.Process();
 
-			// RevitChartMgr.GetCurrentCharts();
+			// test the refit parameters
+			// RevitParamTests.Process();
 
-			RevitMgr.ProcessAlwaysCharts();
+
+			// RevitMgr.ProcessAlwaysCharts();
 
 			OnPropertyChange("RevitParamTests");
 		}
@@ -122,5 +192,7 @@ namespace Cells.Windows
 		}
 
 	#endregion
+
+
 	}
 }

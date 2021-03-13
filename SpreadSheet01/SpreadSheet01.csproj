@@ -94,9 +94,13 @@
     <Compile Include="ExcelSupport\ExcelManager.cs" />
     <Compile Include="ExcelSupport\ExcelAssist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RevitSupport\RevitCellsManagement\RevitFamilies.cs" />
     <Compile Include="RevitSupport\RevitCellsManagement\RevitManagementSupport.cs" />
     <Compile Include="RevitSupport\RevitChartInfo\RevitChartManager.cs" />
     <Compile Include="RevitSupport\RevitChartInfo\RevitChartParameters.cs" />
+    <Compile Include="RevitSupport\RevitParamInfo\ParamCategories.cs" />
+    <Compile Include="RevitSupport\RevitParamInfo\ParamDescription.cs" />
+    <Compile Include="RevitSupport\RevitParamInfo\ParamDescription2.cs" />
     <Compile Include="RevitSupport\RevitParamInfo\RevitCatagorizeParam.cs" />
     <Compile Include="RevitSupport\RevitCellsManagement\RevitContainer.cs" />
     <Compile Include="RevitSupport\RevitParamInfo\RevitParamUtil.cs" />

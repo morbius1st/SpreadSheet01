@@ -56,79 +56,80 @@ namespace SpreadSheet01.ExcelSupport
 	#endregion
 
 	#region public methods
-
-		public bool UpdateValues(Document doc, string excelFilePath, 
-			string excelWorkSheetName, 
-			RevitAnnoSyms cells)
-		{
-			Configure(excelFilePath, excelWorkSheetName);
-
-			if (!configured) return false;
-
-			string cellName;
-			string value;
-			int fails = 0;
-
-			string anchorCellName;
-			string relativeAddr;
-			string cellAddr;
-
-
-			foreach (KeyValuePair<string, RevitCellSym> rvtAnnoSym in cells.Containers)
-			{
-				Element e = rvtAnnoSym.Value.RvtElement;
-
-				anchorCellName = rvtAnnoSym.Value.RevitParamList[RevitCellParameters.CellAddrIdx].GetValue();
-
-				RevitLabels labels = (RevitLabels) rvtAnnoSym.Value.RevitParamList[RevitCellParameters.LabelsIdx];
-
-				foreach (KeyValuePair<string, RevitLabel> kvp in labels.Containers)
-				{
-					RevitLabel label = (RevitLabel) kvp.Value;
-
-					RevitParamRelativeAddr relAddr = (RevitParamRelativeAddr) label[RevitCellParameters.lblRelAddrIdx];
-
-					cellAddr = ExcelAssist.AddToCellAddr(anchorCellName, relAddr.Row, relAddr.Col);
-
-					if (!exMgr.GetValue(cellAddr, out value))
-					{
-						fails++;
-						value = "%ERROR%";
-					}
-
-					string labelValueTitle = ((RevitParamLabel) label[RevitCellParameters.LabelIdx]).LabelValueName;
-
-					Parameter p = e.LookupParameter(labelValueTitle);
-					p.Set(value);
-				}
-
-			}
-/*
-			foreach (Element e in cells)
-			{
-				try
-				{
-					cellName = e.ParametersMap.get_Item(CELL_NAME_STR).AsString();
-
-					if (!exMgr.GetValue(cellName, out value))
-					{
-						fails++;
-						value = "%error%";
-					}
-
-					Parameter p = e.LookupParameter(VALUE);
-					p.Set(value);
-				}
-				catch 
-				{
-					continue;
-				}
-			}
-*/
-
-			return true;
-		}
-
+//
+// 		public bool UpdateValues(Document doc, string excelFilePath, 
+// 			string excelWorkSheetName, 
+// 			RevitAnnoSyms cells)
+// 		{
+// 			Configure(excelFilePath, excelWorkSheetName);
+//
+// 			if (!configured) return false;
+//
+// 			string cellName;
+// 			string value;
+// 			int fails = 0;
+//
+// 			string anchorCellName;
+// 			string relativeAddr;
+// 			string cellAddr;
+//
+//
+// 			foreach (KeyValuePair<string, RevitCellSym> rvtAnnoSym in cells.Containers)
+// 			{
+// 				Element e = rvtAnnoSym.Value.RvtElement;
+//
+// 				anchorCellName = rvtAnnoSym.Value.RevitParamList[RevitCellParameters.CellAddrIdx].GetValue();
+//
+// 				RevitLabels labels = (RevitLabels) rvtAnnoSym.Value.RevitParamList[RevitCellParameters.LabelsIdx];
+//
+// 				foreach (KeyValuePair<string, RevitLabel> kvp in labels.Containers)
+// 				{
+// 					RevitLabel label = (RevitLabel) kvp.Value;
+//
+// 					RevitParamRelativeAddr relAddr = (RevitParamRelativeAddr) label[RevitCellParameters.lblRelAddrIdx];
+//
+// 					cellAddr = ExcelAssist.AddToCellAddr(anchorCellName, relAddr.Row, relAddr.Col);
+//
+// 					if (!exMgr.GetValue(cellAddr, out value))
+// 					{
+// 						fails++;
+// 						value = "%ERROR%";
+// 					}
+//
+// 					string labelValueTitle = ((RevitParamLabel) label[RevitCellParameters.LabelIdx]).LabelValueName;
+//
+// 					Parameter p = e.LookupParameter(labelValueTitle);
+// 					p.Set(value);
+// 				}
+//
+// 				exMgr.CloseExcelCloseFile();
+// 			}
+// /*
+// 			foreach (Element e in cells)
+// 			{
+// 				try
+// 				{
+// 					cellName = e.ParametersMap.get_Item(CELL_NAME_STR).AsString();
+//
+// 					if (!exMgr.GetValue(cellName, out value))
+// 					{
+// 						fails++;
+// 						value = "%error%";
+// 					}
+//
+// 					Parameter p = e.LookupParameter(VALUE);
+// 					p.Set(value);
+// 				}
+// 				catch 
+// 				{
+// 					continue;
+// 				}
+// 			}
+// */
+//
+// 			return true;
+// 		}
+//
 
 
 

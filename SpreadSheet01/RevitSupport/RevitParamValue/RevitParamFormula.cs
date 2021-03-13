@@ -3,6 +3,15 @@ using UtilityLibrary;
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
+/*
+	=$[A8] = cell address
+	=$$name = system variable
+	=$!name = global parameter
+	=$@name = cells label
+
+
+
+*/
 	public class RevitParamFormula : ARevitParam
 	{
 		public RevitParamFormula(string value, ParamDesc paramDesc)

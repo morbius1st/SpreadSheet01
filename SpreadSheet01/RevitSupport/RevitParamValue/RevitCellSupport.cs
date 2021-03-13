@@ -14,6 +14,14 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
 #region enums
 
+	public enum ParamType
+	{
+		INTERNAL,
+		TYPE,
+		INSTANCE,
+		LABEL
+	}
+
 	public enum ParamExistReqmt
 	{
 		PARAM_MUST_EXIST,
@@ -31,11 +39,13 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 	public enum ParamMode
 	{
+
 		NOT_USED,
 		CALCULATED,          // and written to parameter
 		READ_FROM_PARAMETER, // and into collection only
 		READ_FROM_EXCEL,     // and write to parameter only
 		WRITE_TO_EXCEL,      // after being read from parameter
+		INTERNAL
 	}
 
 	public enum ParamDataType
@@ -56,12 +66,12 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		WORKSHEETNAME
 	}
 
-	public enum ParamGroup
-	{
-		DATA,
-		CONTAINER,
-		LABEL
-	}
+	// public enum ParamGroup
+	// {
+	// 	DATA,
+	// 	LABEL_GRP,
+	// 	CONTAINER,
+	// }
 
 	public enum ValueStatus
 	{
@@ -78,6 +88,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		CONSTANT,
 		ON_DEMAND,
 		BEFORE_PLOT,
+		ALL,
 		INVALID
 	}
 

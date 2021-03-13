@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
+using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SpreadSheet01.RevitSupport.RevitChartInfo;
 using SpreadSheet01.RevitSupport.RevitParamInfo;
 using SpreadSheet01.RevitSupport.RevitParamValue;
@@ -23,8 +24,8 @@ namespace Cells.CellsTests
 
 		public AnnotationSymbol[] Symbols {get; set; }
 
-		public RevitCellParameters rcp = new RevitCellParameters();
-		public RevitChartParameters rcpx = new RevitChartParameters();
+		// public RevitParamManager rcp = new RevitParamManager();
+		// public RevitParamManager rcpx = new RevitParamManager();
 
 		private int symbolIdx = 0;
 
@@ -122,13 +123,34 @@ namespace Cells.CellsTests
 
 
 
-		public void AddParameter( int index, int adjIdx,
+		public void AddInstParameter( int index, int adjIdx,
 			ParamDataType type,
 			string strVal, double dblVal = 0.0, int intVal = 0,
 			string name = null)
 		{
-			string paramName = RevitCellParameters.CellAllParams[index + adjIdx].ParameterName;
+			string paramName = RevitParamManager.CellInstParam(index).ParameterName;
+			// string paramName = RevitParamManager.CellAllParams[index + adjIdx].ParameterName;
 			paramName = name.IsVoid() ? paramName : name + " " + paramName;
+
+			Parameter p = new Parameter(paramName, type, strVal, dblVal, intVal);
+			Symbols[symbolIdx].parameters.Add(p);
+		}
+
+		public void AddLabelParameter( int index, int adjIdx,
+			ParamDataType type,
+			string strVal, double dblVal = 0.0, int intVal = 0,
+			string name = null, bool isMainLabel = false)
+		{
+			string paramName = RevitParamManager.CellLabelParam(index).ParameterName;
+
+			if (isMainLabel)
+			{
+				paramName = name.IsVoid() ? paramName : paramName  + " " + name;
+			}
+			else
+			{
+				paramName = name.IsVoid() ? paramName : name + " " + paramName;
+			}
 
 			Parameter p = new Parameter(paramName, type, strVal, dblVal, intVal);
 			Symbols[symbolIdx].parameters.Add(p);
@@ -136,111 +158,147 @@ namespace Cells.CellsTests
 
 		private void AddSymbol1()
 		{
-			int adj1 = RevitCellParameters.ParamCounts[(int) ParamGroup.DATA];
-			int adj2 = adj1 + RevitCellParameters.ParamCounts[(int) ParamGroup.CONTAINER];
-			int adj3 = adj2 + RevitCellParameters.ParamCounts[(int) ParamGroup.LABEL];
-			int adj4 = adj3 + RevitCellParameters.ParamCounts[(int) ParamGroup.LABEL];
+			// int adj1 = RevitParamManager.ParamCounts[(int) ParamGroup.DATA];
+			// int 0 = adj1 + RevitParamManager.ParamCounts[(int) ParamGroup.CONTAINER];
+			// int adj3 = 0 + RevitParamManager.ParamCounts[(int) ParamGroup.LABEL_GRP];
+			// int adj4 = adj3 + RevitParamManager.ParamCounts[(int) ParamGroup.LABEL_GRP];
 
 
-			AddParameter(RevitCellParameters.NameIdx          , 0, ParamDataType.TEXT, "Myname1");
-			AddParameter(RevitCellParameters.SeqIdx           , 0, ParamDataType.TEXT, "1");
-			AddParameter(RevitCellParameters.CellAddrIdx      , 0, ParamDataType.TEXT, "@A2");
-			AddParameter(RevitCellParameters.FormattingInfoIdx, 0, ParamDataType.TEXT, "format info");
-			AddParameter(RevitCellParameters.DataIsToCellIdx  , 0, ParamDataType.BOOL  , "", 0.0, 1);
-			AddParameter(RevitCellParameters.HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
+			AddInstParameter(RevitParamManager.NameIdx          , 0, ParamDataType.TEXT, "Myname1");
+			AddInstParameter(RevitParamManager.SeqIdx           , 0, ParamDataType.TEXT, "1");
+			// AddParameter(RevitParamManager.CellAddrIdx      , 0, ParamDataType.TEXT, "@A2");
+			AddInstParameter(RevitParamManager.HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
 
-			// AddParameter(RevitCellParameters.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
-			// AddParameter(RevitCellParameters.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
+			// AddParameter(RevitParamManager.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
+			// AddParameter(RevitParamManager.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
 
-			AddParameter(RevitCellParameters.LabelsIdx        , 0, ParamDataType.EMPTY, "", 0.0, 0, "All Labels");
+			// AddParameter(RevitParamManager.LabelsIdx        , 0, ParamDataType.EMPTY, "", 0.0, 0, "All Labels");
 
-			AddParameter(RevitCellParameters.LabelIdx         , adj2, ParamDataType.TEXT, "", 0.0, 0, "Label #1 info 1");
+			AddLabelParameter(RevitParamManager.LblLabelIdx         , 0, ParamDataType.TEXT, "", 0.0, 0, "#1", true);
 
-			AddParameter(RevitCellParameters.lblRelAddrIdx    , adj2, ParamDataType.RELATIVEADDRESS, "(1,1)"   , 0.0, 0, "#1");
-			AddParameter(RevitCellParameters.lblDataTypeIdx   , adj2, ParamDataType.DATATYPE       , "length"  , 0.0, 0, "#1");
-			AddParameter(RevitCellParameters.lblFormulaIdx    , adj2, ParamDataType.FORMULA        , "=A+B"    , 0.0, 0, "#1");
-			AddParameter(RevitCellParameters.lblIgnoreIdx     , adj2, ParamDataType.BOOL           , null      , 0.0, 1, "#1");
-			AddParameter(RevitCellParameters.lblAsLengthIdx   , adj2, ParamDataType.IGNORE         , "A11.3"   , 0.0, 0, "#1");
-			AddParameter(RevitCellParameters.lblAsNumberIdx   , adj2, ParamDataType.IGNORE         , "A11.4"   , 0.0, 0, "#1");
-			AddParameter(RevitCellParameters.lblAsYesNoIdx    , adj2, ParamDataType.IGNORE         , "A11.5"   , 0.0, 0, "#1");
+			// AddParameter(RevitParamManager.LblRelAddrIdx    , 0, ParamDataType.RELATIVEADDRESS, "(1,1)"   , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblNameIdx       , 0, ParamDataType.TEXT           , "Myname1-1 "  , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblDataTypeIdx   , 0, ParamDataType.DATATYPE       , "length"      , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblFormulaIdx    , 0, ParamDataType.FORMULA        , "=[A1]"       , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblIgnoreIdx     , 0, ParamDataType.BOOL           , null          , 0.0, 1, "#1");
+			AddLabelParameter(RevitParamManager.LblFormatInfoIdx , 0, ParamDataType.TEXT           , "#,###"       , 0.0, 0, "#1");
+			// AddLabelParameter(RevitParamManager.LblAsLengthIdx   , 0, ParamDataType.IGNORE         , "A11.3"       , 0.0, 0, "#1");
+			// AddLabelParameter(RevitParamManager.LblAsNumberIdx   , 0, ParamDataType.IGNORE         , "A11.4"       , 0.0, 0, "#1");
+			// AddLabelParameter(RevitParamManager.LblAsYesNoIdx    , 0, ParamDataType.IGNORE         , "A11.5"       , 0.0, 0, "#1");
 
-			AddParameter(RevitCellParameters.LabelIdx         , adj2, ParamDataType.TEXT, "", 0.0, 0, "Label #2 info");
+			AddLabelParameter(RevitParamManager.LblLabelIdx         , 0, ParamDataType.TEXT, "", 0.0, 0, "#2", true);
 
-			AddParameter(RevitCellParameters.lblRelAddrIdx    , adj2, ParamDataType.RELATIVEADDRESS, "(1,1)"   , 0.0, 0, "#2");
-			AddParameter(RevitCellParameters.lblDataTypeIdx   , adj2, ParamDataType.DATATYPE       , "text"    , 0.0, 0, "#2");
-			AddParameter(RevitCellParameters.lblFormulaIdx    , adj2, ParamDataType.FORMULA        , "=C+D"    , 0.0, 0, "#2");
-			AddParameter(RevitCellParameters.lblIgnoreIdx     , adj2, ParamDataType.BOOL           , null      , 0.0, 1, "#2");
-			AddParameter(RevitCellParameters.lblAsLengthIdx   , adj2, ParamDataType.IGNORE         , "A12.3"   , 0.0, 0, "#2");
-			AddParameter(RevitCellParameters.lblAsNumberIdx   , adj2, ParamDataType.IGNORE         , "A12.4"   , 0.0, 0, "#2");
-			AddParameter(RevitCellParameters.lblAsYesNoIdx    , adj2, ParamDataType.IGNORE         , "A12.5"   , 0.0, 0, "#2");
+			// AddParameter(RevitParamManager.LblRelAddrIdx    , 0, ParamDataType.RELATIVEADDRESS, "(1,1)"   , 0.0, 0, "#2");
+			AddLabelParameter(RevitParamManager.LblNameIdx       , 0, ParamDataType.TEXT           , "Myname1-2 "  , 0.0, 0, "#2");
+			AddLabelParameter(RevitParamManager.LblDataTypeIdx   , 0, ParamDataType.DATATYPE       , "text"        , 0.0, 0, "#2");
+			AddLabelParameter(RevitParamManager.LblFormulaIdx    , 0, ParamDataType.FORMULA        , "=[A2]"       , 0.0, 0, "#2");
+			AddLabelParameter(RevitParamManager.LblFormatInfoIdx , 0, ParamDataType.TEXT           , "#,###"       , 0.0, 0, "#2");
+			AddLabelParameter(RevitParamManager.LblIgnoreIdx     , 0, ParamDataType.BOOL           , null          , 0.0, 1, "#2");
+			// AddLabelParameter(RevitParamManager.LblAsLengthIdx   , 0, ParamDataType.IGNORE         , "A12.3"       , 0.0, 0, "#2");
+			// AddLabelParameter(RevitParamManager.LblAsNumberIdx   , 0, ParamDataType.IGNORE         , "A12.4"       , 0.0, 0, "#2");
+			// AddLabelParameter(RevitParamManager.LblAsYesNoIdx    , 0, ParamDataType.IGNORE         , "A12.5"       , 0.0, 0, "#2");
 
 		}
+
 
 		private void AddSymbol2()
 		{
-			int adj1 = RevitCellParameters.ParamCounts[(int) ParamGroup.DATA];
-			int adj2 = adj1 + RevitCellParameters.ParamCounts[(int) ParamGroup.CONTAINER];
+			// int adj1 = RevitParamManager.ParamCounts[(int) ParamGroup.DATA];
+			// int 0 = adj1 + RevitParamManager.ParamCounts[(int) ParamGroup.CONTAINER];
 
-			AddParameter(RevitCellParameters.NameIdx          , 0, ParamDataType.TEXT, "Myname2");
-			AddParameter(RevitCellParameters.SeqIdx           , 0, ParamDataType.TEXT, "1");
-			AddParameter(RevitCellParameters.CellAddrIdx      , 0, ParamDataType.TEXT, "@A4");
-			AddParameter(RevitCellParameters.FormattingInfoIdx, 0, ParamDataType.TEXT, "format info");
-			AddParameter(RevitCellParameters.DataIsToCellIdx  , 0, ParamDataType.BOOL  , "", 0.0, 1);
-			AddParameter(RevitCellParameters.HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
+			AddInstParameter(RevitParamManager.NameIdx          , 0, ParamDataType.TEXT, "Myname2");
+			AddInstParameter(RevitParamManager.SeqIdx           , 0, ParamDataType.TEXT, "1");
+			// AddParameter(RevitParamManager.CellAddrIdx      , 0, ParamDataType.TEXT, "@A4");
+			AddInstParameter(RevitParamManager.HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
 
-			// AddParameter(RevitCellParameters.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
-			// AddParameter(RevitCellParameters.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
+			// AddParameter(RevitParamManager.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
+			// AddParameter(RevitParamManager.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
 
-			AddParameter(RevitCellParameters.LabelsIdx        , 0, ParamDataType.EMPTY, "", 0.0, 0, "All Labels");
+			// AddParameter(RevitParamManager.LabelsIdx        , 0, ParamDataType.EMPTY, "", 0.0, 0, "All Labels");
 
-			AddParameter(RevitCellParameters.LabelIdx         , adj2, ParamDataType.TEXT, "", 0.0, 0, name: "Label #1 info 2");
+			AddLabelParameter(RevitParamManager.LblLabelIdx         , 0, ParamDataType.TEXT, "", 0.0, 0, "#1", true);
 
-			AddParameter(RevitCellParameters.lblRelAddrIdx    , adj2, ParamDataType.RELATIVEADDRESS, "(1,2)"   , 0.0, 0, "#1");
-			AddParameter(RevitCellParameters.lblDataTypeIdx   , adj2, ParamDataType.DATATYPE       , "length"  , 0.0, 0, "#1");
-			AddParameter(RevitCellParameters.lblFormulaIdx    , adj2, ParamDataType.FORMULA        , "=E+F"    , 0.0, 0, "#1");
-			AddParameter(RevitCellParameters.lblIgnoreIdx     , adj2, ParamDataType.BOOL           , null      , 0.0, 1, "#1");
-			AddParameter(RevitCellParameters.lblAsLengthIdx   , adj2, ParamDataType.IGNORE         , "A2.3"    , 0.0, 0, "#1");
-			AddParameter(RevitCellParameters.lblAsNumberIdx   , adj2, ParamDataType.IGNORE         , "A2.4"    , 0.0, 0, "#1");
-			AddParameter(RevitCellParameters.lblAsYesNoIdx    , adj2, ParamDataType.IGNORE         , "A2.5"    , 0.0, 0, "#1");
+			// AddParameter(RevitParamManager.LblRelAddrIdx    , 0, ParamDataType.RELATIVEADDRESS, "(1,2)"   , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblNameIdx       , 0, ParamDataType.TEXT           , "Myname2-1 "  , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblDataTypeIdx   , 0, ParamDataType.DATATYPE       , "length"  , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblFormulaIdx    , 0, ParamDataType.FORMULA        , "=E+F"    , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblFormatInfoIdx , 0, ParamDataType.TEXT           , "#,##0"   , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblIgnoreIdx     , 0, ParamDataType.BOOL           , null      , 0.0, 1, "#1");
+			// AddLabelParameter(RevitParamManager.LblAsLengthIdx   , 0, ParamDataType.IGNORE         , "A2.3"    , 0.0, 0, "#1");
+			// AddLabelParameter(RevitParamManager.LblAsNumberIdx   , 0, ParamDataType.IGNORE         , "A2.4"    , 0.0, 0, "#1");
+			// AddLabelParameter(RevitParamManager.LblAsYesNoIdx    , 0, ParamDataType.IGNORE         , "A2.5"    , 0.0, 0, "#1");
 
-			AddParameter(RevitCellParameters.LabelIdx         , 0, ParamDataType.ERROR, "", 0.0, 0, "end of list");
+			AddLabelParameter(RevitParamManager.LblLabelIdx       , 0, ParamDataType.ERROR, "", 0.0, 0, "end of list");
 		}
+
 
 		private void AddSymbol3()
 		{
-			int adj1 = RevitCellParameters.ParamCounts[(int) ParamGroup.DATA];
-			int adj2 = adj1 + RevitCellParameters.ParamCounts[(int) ParamGroup.CONTAINER];
+			// int adj1 = RevitParamManager.ParamCounts[(int) ParamGroup.DATA];
+			// int 0 = adj1 + RevitParamManager.ParamCounts[(int) ParamGroup.CONTAINER];
 
-			AddParameter(RevitCellParameters.NameIdx          , 0, ParamDataType.TEXT, "Myname3");
-			AddParameter(RevitCellParameters.SeqIdx           , 0, ParamDataType.TEXT, "1");
-			AddParameter(RevitCellParameters.CellAddrIdx      , 0, ParamDataType.TEXT, "@A6");
-			AddParameter(RevitCellParameters.FormattingInfoIdx, 0, ParamDataType.TEXT, "format info");
-			AddParameter(RevitCellParameters.DataIsToCellIdx  , 0, ParamDataType.BOOL  , "", 0.0, 1);
-			AddParameter(RevitCellParameters.HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
+			AddInstParameter(RevitParamManager.NameIdx          , 0, ParamDataType.TEXT, "Myname3");
+			AddInstParameter(RevitParamManager.SeqIdx           , 0, ParamDataType.TEXT, "1");
+			// AddParameter(RevitParamManager.CellAddrIdx      , 0, ParamDataType.TEXT, "@A6");
+			AddInstParameter(RevitParamManager.HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
 
-			// AddParameter(RevitCellParameters.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
-			// AddParameter(RevitCellParameters.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
+			// AddParameter(RevitParamManager.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
+			// AddParameter(RevitParamManager.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
 
-			AddParameter(RevitCellParameters.LabelsIdx        , 0, ParamDataType.EMPTY, "", 0.0, 0, "All Labels");
+			// AddParameter(RevitParamManager.LabelsIdx        , 0, ParamDataType.EMPTY, "", 0.0, 0, "All Labels");
 
-			AddParameter(RevitCellParameters.LabelIdx         , adj2, ParamDataType.TEXT, "", 0.0, 0, "Label #1 info 3");
-			AddParameter(RevitCellParameters.lblRelAddrIdx    , adj2, ParamDataType.RELATIVEADDRESS, "(1,3)"   , 0.0, 0, "#1");
-			AddParameter(RevitCellParameters.lblDataTypeIdx   , adj2, ParamDataType.DATATYPE       , "length"  , 0.0, 0, "#1");
-			AddParameter(RevitCellParameters.lblFormulaIdx    , adj2, ParamDataType.FORMULA        , "=G+H"    , 0.0, 0, "#1");
-			AddParameter(RevitCellParameters.lblIgnoreIdx     , adj2, ParamDataType.BOOL           , null      , 0.0, 1, "#1");
-			AddParameter(RevitCellParameters.lblAsLengthIdx   , adj2, ParamDataType.IGNORE         , "A3.3"    , 0.0, 0, "#1");
-			AddParameter(RevitCellParameters.lblAsNumberIdx   , adj2, ParamDataType.IGNORE         , "A3.4"    , 0.0, 0, "#1");
-			AddParameter(RevitCellParameters.lblAsYesNoIdx    , adj2, ParamDataType.IGNORE         , "A3.5"    , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblLabelIdx         , 0, ParamDataType.TEXT, "", 0.0, 0, "#1", true);
 
-			AddParameter(RevitCellParameters.LabelIdx         , 0, ParamDataType.ERROR, "", 0.0, 0, "end of list");
+			// AddParameter(RevitParamManager.LblRelAddrIdx    , 0, ParamDataType.RELATIVEADDRESS, "(1,3)"   , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblNameIdx       , 0, ParamDataType.TEXT           , "Myname3-1 "  , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblDataTypeIdx   , 0, ParamDataType.DATATYPE       , "length"  , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblFormulaIdx    , 0, ParamDataType.FORMULA        , "=G+H"    , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblIgnoreIdx     , 0, ParamDataType.BOOL           , null      , 0.0, 1, "#1");
+			// AddLabelParameter(RevitParamManager.LblAsLengthIdx   , 0, ParamDataType.IGNORE         , "A3.3"    , 0.0, 0, "#1");
+			// AddLabelParameter(RevitParamManager.LblAsNumberIdx   , 0, ParamDataType.IGNORE         , "A3.4"    , 0.0, 0, "#1");
+			// AddLabelParameter(RevitParamManager.LblAsYesNoIdx    , 0, ParamDataType.IGNORE         , "A3.5"    , 0.0, 0, "#1");
+
+			AddLabelParameter(RevitParamManager.LblLabelIdx         , 0, ParamDataType.ERROR, "", 0.0, 0, "end of list");
 		}
+
+		
+
+		private void AddSymbol4()
+		{
+			// int adj1 = RevitParamManager.ParamCounts[(int) ParamGroup.DATA];
+			// int 0 = adj1 + RevitParamManager.ParamCounts[(int) ParamGroup.CONTAINER];
+
+			AddInstParameter(RevitParamManager.NameIdx          , 0, ParamDataType.TEXT, "Myname4");
+			AddInstParameter(RevitParamManager.SeqIdx           , 0, ParamDataType.TEXT, "1");
+			// AddParameter(RevitParamManager.CellAddrIdx      , 0, ParamDataType.TEXT, "@A4");
+			AddInstParameter(RevitParamManager.HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
+
+			// AddParameter(RevitParamManager.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
+			// AddParameter(RevitParamManager.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
+
+			// AddParameter(RevitParamManager.LabelsIdx        , 0, ParamDataType.EMPTY, "", 0.0, 0, "All Labels");
+
+			AddLabelParameter(RevitParamManager.LblLabelIdx         , 0, ParamDataType.TEXT, "", 0.0, 0, "#1", true);
+
+			// AddParameter(RevitParamManager.LblRelAddrIdx    , 0, ParamDataType.RELATIVEADDRESS, "(1,2)"   , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblNameIdx       , 0, ParamDataType.TEXT           , "Myname4-1 "  , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblDataTypeIdx   , 0, ParamDataType.DATATYPE       , "length"  , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblFormulaIdx    , 0, ParamDataType.FORMULA        , "=E+F"    , 0.0, 0, "#1");
+			AddLabelParameter(RevitParamManager.LblIgnoreIdx     , 0, ParamDataType.BOOL           , null      , 0.0, 1, "#1");
+			// AddLabelParameter(RevitParamManager.LblAsLengthIdx   , 0, ParamDataType.IGNORE         , "A2.3"    , 0.0, 0, "#1");
+			// AddLabelParameter(RevitParamManager.LblAsNumberIdx   , 0, ParamDataType.IGNORE         , "A2.4"    , 0.0, 0, "#1");
+			// AddLabelParameter(RevitParamManager.LblAsYesNoIdx    , 0, ParamDataType.IGNORE         , "A2.5"    , 0.0, 0, "#1");
+
+			AddLabelParameter(RevitParamManager.LblLabelIdx       , 0, ParamDataType.ERROR, "", 0.0, 0, "end of list");
+		}
+
 
 		public void AddChart( int index, int adjIdx,
 			ParamDataType type,
 			string strVal, double dblVal = 0.0, int intVal = 0,
 			string name = null)
 		{
-			string paramName = RevitChartParameters.ChartAllParams[index + adjIdx].ParameterName;
+			string paramName = RevitParamManager.ChartInstParam(index).ParameterName;
 			paramName = name.IsVoid() ? paramName : name + " " + paramName;
 
 			Parameter p = new Parameter(paramName, type, strVal, dblVal, intVal);
@@ -250,66 +308,66 @@ namespace Cells.CellsTests
 		private void AddChart1()
 		{
 
-			AddChart(RevitChartParameters.ChartNameIdx        , 0, ParamDataType.TEXT, "Myname1");
-			AddChart(RevitChartParameters.ChartDescIdx        , 0, ParamDataType.TEXT, "Description 1");
-			AddChart(RevitChartParameters.ChartSeqIdx         , 0, ParamDataType.TEXT, "1");
-			AddChart(RevitChartParameters.ChartFilePathIdx    , 0, ParamDataType.TEXT, @".\CsSampleChart_01_02.xlsx");
-			AddChart(RevitChartParameters.ChartWorkSheetIdx   , 0, ParamDataType.TEXT, "CsSheet 1");
-			AddChart(RevitChartParameters.ChartFamilyNameIdx  , 0, ParamDataType.TEXT, "CsCellFamily01");
-			AddChart(RevitChartParameters.ChartUpdateTypeIdx  , 0, ParamDataType.UPDATE_TYPE, "Alyways");
-			AddChart(RevitChartParameters.ChartHasErrorsIdx   , 0, ParamDataType.IGNORE, "");
+			AddChart(RevitParamManager.NameIdx             , 0, ParamDataType.TEXT, "Myname1");
+			// AddChart(RevitParamManager.ChartDescIdx        , 0, ParamDataType.TEXT, "Description 1");
+			AddChart(RevitParamManager.SeqIdx              , 0, ParamDataType.TEXT, "1");
+			AddChart(RevitParamManager.ChartFilePathIdx    , 0, ParamDataType.TEXT, @".\CsSampleChart_01_02.xlsx");
+			AddChart(RevitParamManager.ChartWorkSheetIdx   , 0, ParamDataType.TEXT, "CsSheet 1");
+			AddChart(RevitParamManager.ChartFamilyNameIdx  , 0, ParamDataType.TEXT, "CsCellFamily01");
+			AddChart(RevitParamManager.ChartUpdateTypeIdx  , 0, ParamDataType.UPDATE_TYPE, "Alyways");
+			AddChart(RevitParamManager.ChartHasErrorsIdx   , 0, ParamDataType.TEXT, "");
 		}
 
 		private void AddChart2()
 		{
 
-			AddChart(RevitChartParameters.ChartNameIdx        , 0, ParamDataType.TEXT, "Myname2");
-			AddChart(RevitChartParameters.ChartDescIdx        , 0, ParamDataType.TEXT, "Description 2");
-			AddChart(RevitChartParameters.ChartSeqIdx         , 0, ParamDataType.TEXT, "2");
-			AddChart(RevitChartParameters.ChartFilePathIdx    , 0, ParamDataType.TEXT, @".\CsSampleChart_01_02.xlsx");
-			AddChart(RevitChartParameters.ChartWorkSheetIdx   , 0, ParamDataType.TEXT, "CsSheet 2");
-			AddChart(RevitChartParameters.ChartFamilyNameIdx  , 0, ParamDataType.TEXT, "CsCellFamily02");
-			AddChart(RevitChartParameters.ChartUpdateTypeIdx  , 0, ParamDataType.UPDATE_TYPE, "Alyways");
-			AddChart(RevitChartParameters.ChartHasErrorsIdx   , 0, ParamDataType.IGNORE, "");
+			AddChart(RevitParamManager.NameIdx                , 0, ParamDataType.TEXT, "Myname2");
+			// AddChart(RevitParamManager.ChartDescIdx        , 0, ParamDataType.TEXT, "Description 2");
+			AddChart(RevitParamManager.SeqIdx                 , 0, ParamDataType.TEXT, "2");
+			AddChart(RevitParamManager.ChartFilePathIdx       , 0, ParamDataType.TEXT, @".\CsSampleChart_01_02.xlsx");
+			AddChart(RevitParamManager.ChartWorkSheetIdx      , 0, ParamDataType.TEXT, "CsSheet 2");
+			AddChart(RevitParamManager.ChartFamilyNameIdx     , 0, ParamDataType.TEXT, "CsCellFamily02");
+			AddChart(RevitParamManager.ChartUpdateTypeIdx     , 0, ParamDataType.UPDATE_TYPE, "Alyways");
+			AddChart(RevitParamManager.ChartHasErrorsIdx      , 0, ParamDataType.TEXT, "");
 		}
 
 		private void AddChart3()
 		{
 
-			AddChart(RevitChartParameters.ChartNameIdx        , 0, ParamDataType.TEXT, "Myname3");
-			AddChart(RevitChartParameters.ChartDescIdx        , 0, ParamDataType.TEXT, "Description 3");
-			AddChart(RevitChartParameters.ChartSeqIdx         , 0, ParamDataType.TEXT, "3");
-			AddChart(RevitChartParameters.ChartFilePathIdx    , 0, ParamDataType.TEXT, @".\CsSampleChart_03_04.xlsx");
-			AddChart(RevitChartParameters.ChartWorkSheetIdx   , 0, ParamDataType.TEXT, "CsSheet 1");
-			AddChart(RevitChartParameters.ChartFamilyNameIdx  , 0, ParamDataType.TEXT, "CsCellFamily03");
-			AddChart(RevitChartParameters.ChartUpdateTypeIdx  , 0, ParamDataType.UPDATE_TYPE, "Alyways");
-			AddChart(RevitChartParameters.ChartHasErrorsIdx   , 0, ParamDataType.IGNORE, "");
+			AddChart(RevitParamManager.NameIdx                , 0, ParamDataType.TEXT, "Myname3");
+			// AddChart(RevitParamManager.ChartDescIdx        , 0, ParamDataType.TEXT, "Description 3");
+			AddChart(RevitParamManager.SeqIdx                 , 0, ParamDataType.TEXT, "3");
+			AddChart(RevitParamManager.ChartFilePathIdx       , 0, ParamDataType.TEXT, @".\CsSampleChart_03_04.xlsx");
+			AddChart(RevitParamManager.ChartWorkSheetIdx      , 0, ParamDataType.TEXT, "CsSheet 1");
+			AddChart(RevitParamManager.ChartFamilyNameIdx     , 0, ParamDataType.TEXT, "CsCellFamily03");
+			AddChart(RevitParamManager.ChartUpdateTypeIdx     , 0, ParamDataType.UPDATE_TYPE, "Alyways");
+			AddChart(RevitParamManager.ChartHasErrorsIdx      , 0, ParamDataType.TEXT, "");
 		}
 		
 		private void AddChart4()
 		{
 
-			AddChart(RevitChartParameters.ChartNameIdx        , 0, ParamDataType.TEXT, "Myname4");
-			AddChart(RevitChartParameters.ChartDescIdx        , 0, ParamDataType.TEXT, "Description 4 (not found worksheet)");
-			AddChart(RevitChartParameters.ChartSeqIdx         , 0, ParamDataType.TEXT, "4");
-			AddChart(RevitChartParameters.ChartFilePathIdx    , 0, ParamDataType.TEXT, @".\CsSampleChart_03_04.xlsx");
-			AddChart(RevitChartParameters.ChartWorkSheetIdx   , 0, ParamDataType.TEXT, "CsSheet 2");
-			AddChart(RevitChartParameters.ChartFamilyNameIdx  , 0, ParamDataType.TEXT, "CsCellFamily04");
-			AddChart(RevitChartParameters.ChartUpdateTypeIdx  , 0, ParamDataType.UPDATE_TYPE, "Alyways");
-			AddChart(RevitChartParameters.ChartHasErrorsIdx   , 0, ParamDataType.IGNORE, "");
+			AddChart(RevitParamManager.NameIdx                , 0, ParamDataType.TEXT, "Myname4");
+			// AddChart(RevitParamManager.ChartDescIdx        , 0, ParamDataType.TEXT, "Description 4 (not found worksheet)");
+			AddChart(RevitParamManager.SeqIdx                 , 0, ParamDataType.TEXT, "4");
+			AddChart(RevitParamManager.ChartFilePathIdx       , 0, ParamDataType.TEXT, @".\CsSampleChart_03_04.xlsx");
+			AddChart(RevitParamManager.ChartWorkSheetIdx      , 0, ParamDataType.TEXT, "CsSheet 2");
+			AddChart(RevitParamManager.ChartFamilyNameIdx     , 0, ParamDataType.TEXT, "CsCellFamily04");
+			AddChart(RevitParamManager.ChartUpdateTypeIdx     , 0, ParamDataType.UPDATE_TYPE, "Alyways");
+			AddChart(RevitParamManager.ChartHasErrorsIdx      , 0, ParamDataType.TEXT, "");
 		}
 		
 		private void AddChart5()
 		{
 
-			AddChart(RevitChartParameters.ChartNameIdx        , 0, ParamDataType.TEXT, "Myname5");
-			AddChart(RevitChartParameters.ChartDescIdx        , 0, ParamDataType.TEXT, "Description 5 (not found chart)");
-			AddChart(RevitChartParameters.ChartSeqIdx         , 0, ParamDataType.TEXT, "5");
-			AddChart(RevitChartParameters.ChartFilePathIdx    , 0, ParamDataType.TEXT, @".\CsSampleChart_04.xlsx");
-			AddChart(RevitChartParameters.ChartWorkSheetIdx   , 0, ParamDataType.TEXT, "CsSheet 1");
-			AddChart(RevitChartParameters.ChartFamilyNameIdx  , 0, ParamDataType.TEXT, "CsCellFamily05");
-			AddChart(RevitChartParameters.ChartUpdateTypeIdx  , 0, ParamDataType.UPDATE_TYPE, "Alyways");
-			AddChart(RevitChartParameters.ChartHasErrorsIdx   , 0, ParamDataType.IGNORE, "");
+			AddChart(RevitParamManager.NameIdx                , 0, ParamDataType.TEXT, "Myname5");
+			// AddChart(RevitParamManager.ChartDescIdx        , 0, ParamDataType.TEXT, "Description 5 (not found chart)");
+			AddChart(RevitParamManager.SeqIdx                 , 0, ParamDataType.TEXT, "5");
+			AddChart(RevitParamManager.ChartFilePathIdx       , 0, ParamDataType.TEXT, @".\CsSampleChart_04.xlsx");
+			AddChart(RevitParamManager.ChartWorkSheetIdx      , 0, ParamDataType.TEXT, "CsSheet 1");
+			AddChart(RevitParamManager.ChartFamilyNameIdx     , 0, ParamDataType.TEXT, "CsCellFamily05");
+			AddChart(RevitParamManager.ChartUpdateTypeIdx     , 0, ParamDataType.UPDATE_TYPE, "Alyways");
+			AddChart(RevitParamManager.ChartHasErrorsIdx      , 0, ParamDataType.TEXT, "");
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

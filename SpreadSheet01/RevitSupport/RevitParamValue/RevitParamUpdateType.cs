@@ -13,7 +13,9 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			set(value);
 		}
 
-		public override dynamic GetValue() => (string) dynValue.Value;
+		public override dynamic GetValue() => dynValue.Value;
+
+		public CellUpdateTypeCode UpdateType => (CellUpdateTypeCode) dynValue.Value;
 
 		// provide a string
 		private void set(string value)

@@ -1,10 +1,10 @@
-﻿using Autodesk.Revit.DB;
+﻿using System.Diagnostics;
+using Autodesk.Revit.DB;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SpreadSheet01.RevitSupport.RevitChartInfo;
 using SpreadSheet01.RevitSupport.RevitParamInfo;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using static SpreadSheet01.RevitSupport.RevitParamValue.RevitCellErrorCode;
-
 
 
 // Solution:     SpreadSheet01
@@ -17,7 +17,7 @@ namespace SpreadSheet01.RevitSupport
 {
 	public class RevitCatagorizeParam
 	{
-		public RevitChartSym CatagorizeChartSymParams(Element elChart, ParamClass paramClass)
+		public RevitChartSym CatagorizeChartSymParams(Element elChart)
 		{
 			RevitChartSym rcs = new RevitChartSym();
 			ARevitParam rvtParam;
@@ -27,19 +27,28 @@ namespace SpreadSheet01.RevitSupport
 
 			ParamDesc pd;
 
+			rcs.RvtElement = elChart;
+			rcs.AnnoSymbol = (AnnotationSymbol) elChart;
+
 			foreach (Parameter param in elChart.GetOrderedParameters())
 			{
 				string paramName = param.Definition.Name;
 
-				pd = RevitChartParameters.Match(paramName);
+				pd = RevitParamManager.MatchChartInstance(paramName);
+				// pd = RevitChartParameters.Match(paramName);
 
-				if (pd == null) continue;
+				if (pd == null || pd.Mode == ParamMode.NOT_USED) continue;
+
+				Debug.WriteLine("pd=" + pd.ParameterName + " (" + paramName + ") "
+					
+					+ " must exist? " + (pd.Exist == ParamExistReqmt.PARAM_MUST_EXIST).ToString());
+
 
 				if (pd.Exist == ParamExistReqmt.PARAM_MUST_EXIST) mustExistParamCount++;
 
-				switch (pd.Group)
+				switch (pd.Type)
 				{
-				case ParamGroup.DATA:
+				case ParamType.INSTANCE:
 					{
 						dataParamCount++;
 						if (pd.DataType == ParamDataType.IGNORE) continue;
@@ -60,17 +69,20 @@ namespace SpreadSheet01.RevitSupport
 				}
 
 				if (!rvtParam.IsValid) rcs.ErrorCode = PARAM_CHART_PARAM_HAS_ERROR_CS001135;
-
 			}
+
 			validateChartSymParams(rcs, mustExistParamCount, mustExistParamCount);
 
 			return rcs;
 		}
 
-		private void validateChartSymParams(RevitChartSym rcs, 
+		private void validateChartSymParams(RevitChartSym rcs,
 			int dataParamCount, int mustExistParamCount)
 		{
-			if (mustExistParamCount != RevitChartParameters.MustExistCount)
+
+
+			// if (mustExistParamCount != RevitChartParameters.MustExistCount)
+			if (mustExistParamCount != RevitParamManager.MustExistChartInstance)
 			{
 				rcs.ErrorCode = PARAM_CHART_MUST_EXIST_MISSING_CS001138;
 			}
@@ -82,15 +94,13 @@ namespace SpreadSheet01.RevitSupport
 		}
 
 
-
-
-		public RevitCellSym catagorizeAnnoSymParams(AnnotationSymbol aSym, ParamClass paramClass)
+		public RevitCellSym catagorizeAnnoSymParams(AnnotationSymbol aSym)
 		{
 			RevitCellSym ras = new RevitCellSym();
 			ARevitParam rvtParam;
 
 			int dataParamCount = 0;
-			int labelParamCount = 0;
+			int[] labelParamCount = new int[12];
 			int containerParamCount = 0;
 
 			int labelId;
@@ -99,16 +109,24 @@ namespace SpreadSheet01.RevitSupport
 
 			foreach (Parameter param in aSym.GetOrderedParameters())
 			{
-				string paramName = RevitParamUtil.GetParamName(param.Definition.Name, paramClass,
+				string paramName = RevitParamUtil.GetRootName(param.Definition.Name,
 					out labelId, out isLabel);
 
-				pd = RevitCellParameters.Match(paramName);
+				if (isLabel)
+				{
+					pd = RevitParamManager.MatchCellLabel(paramName);
+
+				} 
+				else
+				{
+					pd = RevitParamManager.MatchCellInstance(paramName);
+				}
 
 				if (pd == null) continue;
 
-				switch (pd.Group)
+				switch (pd.Type)
 				{
-				case ParamGroup.DATA:
+				case ParamType.INSTANCE:
 					{
 						dataParamCount++;
 						if (pd.DataType == ParamDataType.IGNORE) continue;
@@ -118,28 +136,46 @@ namespace SpreadSheet01.RevitSupport
 						ras.Add(pd.Index, rvtParam);
 						break;
 					}
-				case ParamGroup.CONTAINER:
+				case ParamType.LABEL:
 					{
-						containerParamCount++;
+						labelParamCount[labelId]++;
+
 						if (pd.DataType == ParamDataType.IGNORE) continue;
 
-						RevitLabels labels = (RevitLabels) ras[RevitCellParameters.LabelsIdx];
+						RevitLabels labels = ras.LabelList;
 
 						saveLabelParam(labelId, param, pd, labels);
 
+						// rvtParam = catagorizeParameter(param, pd);
+						//
+						// ras.Add(pd.Index, rvtParam);
 						break;
 					}
-				case ParamGroup.LABEL:
-					{
-						labelParamCount++;
-						if (labelId < 0 || pd.DataType == ParamDataType.IGNORE) continue;
 
-						RevitLabels labels = (RevitLabels) ras[RevitCellParameters.LabelsIdx];
 
-						saveLabelParam(labelId, param, pd, labels);
 
-						break;
-					}
+				// case ParamGroup.CONTAINER:
+				// 	{
+				// 		containerParamCount++;
+				// 		if (pd.DataType == ParamDataType.IGNORE) continue;
+				//
+				// 		RevitLabels labels = (RevitLabels) ras[RevitCellParameters.LabelsIdx];
+				//
+				// 		saveLabelParam(labelId, param, pd, labels);
+				//
+				// 		break;
+				// 	}
+				// case ParamGroup.LABEL_GRP:
+				// 	{
+				// 		labelParamCount++;
+				// 		if (labelId < 0 || pd.DataType == ParamDataType.IGNORE) continue;
+				//
+				// 		RevitLabels labels = (RevitLabels) ras[RevitCellParameters.LabelsIdx];
+				//
+				// 		saveLabelParam(labelId, param, pd, labels);
+				//
+				// 		break;
+				// 	}
 				}
 			}
 
@@ -171,6 +207,9 @@ namespace SpreadSheet01.RevitSupport
 
 			return label;
 		}
+
+
+
 
 		private ARevitParam catagorizeParameter(Parameter param, ParamDesc pd, string name = "")
 		{
@@ -270,5 +309,125 @@ namespace SpreadSheet01.RevitSupport
 
 			return p;
 		}
+
+		/*
+
+		
+		public RevitCellSym catagorizeAnnoSymParams2(AnnotationSymbol aSym)
+		{
+			RevitCellSym ras = new RevitCellSym();
+			ARevitParam rvtParam;
+
+			int dataParamCount = 0;
+			int labelParamCount = 0;
+			int containerParamCount = 0;
+
+			int labelId;
+			bool isLabel;
+			ParamDesc2 pd;
+
+			foreach (Parameter param in aSym.GetOrderedParameters())
+			{
+				string paramName = RevitParamUtil.GetParamName(param.Definition.Name,
+					out labelId, out isLabel);
+
+				pd = RevitCellParameters.Match(paramName);
+
+				if (pd == null) continue;
+
+				switch (pd.Group)
+				{
+				case ParamGroup.DATA:
+					{
+						dataParamCount++;
+						if (pd.DataType == ParamDataType.IGNORE) continue;
+
+						rvtParam = catagorizeParameter(param, pd);
+
+						ras.Add(pd.Index, rvtParam);
+						break;
+					}
+				case ParamGroup.CONTAINER:
+					{
+						containerParamCount++;
+						if (pd.DataType == ParamDataType.IGNORE) continue;
+
+						RevitLabels labels = (RevitLabels) ras[RevitCellParameters.LabelsIdx];
+
+						saveLabelParam(labelId, param, pd, labels);
+
+						break;
+					}
+				case ParamGroup.LABEL_GRP:
+					{
+						labelParamCount++;
+						if (labelId < 0 || pd.DataType == ParamDataType.IGNORE) continue;
+
+						RevitLabels labels = (RevitLabels) ras[RevitCellParameters.LabelsIdx];
+
+						saveLabelParam(labelId, param, pd, labels);
+
+						break;
+					}
+				}
+			}
+
+			return ras;
+		}
+
+
+
+
+
+		public RevitChartSym CatagorizeChartSymParams2(Element elChart)
+		{
+			RevitChartSym rcs = new RevitChartSym();
+			ARevitParam rvtParam;
+
+			int dataParamCount = 0;
+			int mustExistParamCount = 0;
+
+			ParamDesc pd;
+
+			foreach (Parameter param in elChart.GetOrderedParameters())
+			{
+				string paramName = param.Definition.Name;
+
+				pd = RevitChartParameters.Match(paramName);
+
+				if (pd == null) continue;
+
+				if (pd.Exist == ParamExistReqmt.PARAM_MUST_EXIST) mustExistParamCount++;
+
+				switch (pd.Group)
+				{
+				case ParamGroup.DATA:
+					{
+						dataParamCount++;
+						if (pd.DataType == ParamDataType.IGNORE) continue;
+
+						rvtParam = catagorizeParameter(param, pd);
+
+						rcs.Add(pd.Index, rvtParam);
+						break;
+					}
+				default:
+					{
+						rvtParam = ARevitParam.Invalid;
+						rvtParam.ErrorCode = PARAM_CHART_INVALID_PROG_GRP_CS001140;
+						rcs.Add(pd.Index, rvtParam);
+
+						break;
+					}
+				}
+
+				if (!rvtParam.IsValid) rcs.ErrorCode = PARAM_CHART_PARAM_HAS_ERROR_CS001135;
+
+			}
+			validateChartSymParams(rcs, mustExistParamCount, mustExistParamCount);
+
+			return rcs;
+		}
+		*/
 	}
 }

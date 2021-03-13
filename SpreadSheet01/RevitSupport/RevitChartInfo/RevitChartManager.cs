@@ -8,11 +8,11 @@ using Autodesk.Revit.DB;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using UtilityLibrary;
 using SpreadSheet01.RevitSupport.RevitParamInfo;
+using SpreadSheet01.RevitSupport.RevitParamValue;
 #if NOREVIT
+using Cells.Windows;
 using Cells.CellsTests;
 using SpreadSheet01.RevitSupport.RevitChartInfo;
-
-
 #endif
 
 #endregion
@@ -26,27 +26,25 @@ namespace SpreadSheet01.RevitSupport
 	{
 	#region private fields
 
-		private const string CHART_FAMILY_NAME = "SpreadSheetData";
+		private static string CHART_FAMILY_NAME = "SpreadSheetData";
 
 		private const string KEY_IDX_BEGIN  = "《";
 		private const string KEY_IDX_END    = "》";
 
-		private ICollection<Element> chartFamilies;
-
-		private RevitParamManager paramMgr;
-
-
-
-		private int errorIdx;
-		private List<RevitChartSym> errorSyms = new List<RevitChartSym>();
-
-		private readonly RevitCatagorizeParam revitCat = new RevitCatagorizeParam();
-
-		private static int annoSymUniqueIdx = 0;
-
 		// collection of all revit charts  
 		// this holds a collection of individual charts
 		public RevitCharts Charts { get; private set; } = new RevitCharts();
+
+		private readonly RevitCatagorizeParam revitCat = new RevitCatagorizeParam();
+
+		private int errorIdx;
+
+		// private RevitParamManager paramMgr;
+		//
+		// private List<RevitChartSym> errorSyms = new List<RevitChartSym>();
+		//
+		// private static int annoSymUniqueIdx = 0;
+
 
 	#endregion
 
@@ -56,14 +54,15 @@ namespace SpreadSheet01.RevitSupport
 		{
 			Reset();
 
-			paramMgr = new RevitParamManager();
+			// paramMgr = new RevitParamManager();
 		}
 
 	#endregion
 
 	#region public properties
 
-		public string RevitChartFamilyName => CHART_FAMILY_NAME;
+		public static string RevitChartFamilyName => CHART_FAMILY_NAME;
+
 
 	#endregion
 
@@ -73,16 +72,17 @@ namespace SpreadSheet01.RevitSupport
 
 	#region public methods
 
-		public int GetCurrentCharts()
+		public bool GetCurrentCharts()
 		{
+			ICollection<Element> chartFamilies;
+
 			// step 1 - select all of the chart cells - place them into: 'chartFamilies'
-			ICollection<Element> chartFamilies = findAllChartFamilies(CHART_FAMILY_NAME);
+			chartFamilies = findAllChartFamilies(CHART_FAMILY_NAME);
 
 			// step 2 - process 'chartFamilies' and process all of the parameters
-			getChartFamilyParameters(chartFamilies);
+			getChartParams(chartFamilies);
 
-			return chartFamilies != null ? chartFamilies.Count : 0;
-
+			return chartFamilies != null && chartFamilies.Count > 0;
 		}
 
 
@@ -125,12 +125,12 @@ namespace SpreadSheet01.RevitSupport
 		#endif
 		}
 
-		private void getChartFamilyParameters(ICollection<Element> chartFamilies)
+		private void getChartParams(ICollection<Element> chartFamilies)
 		{
 		#if NOREVIT
 			foreach (Element el in chartFamilies)
 			{
-				RevitChartSym chartSym = revitCat.CatagorizeChartSymParams(el, ParamClass.CHART);
+				RevitChartSym chartSym = revitCat.CatagorizeChartSymParams(el);
 
 				chartSym.RvtElement = el;
 				chartSym.AnnoSymbol = (AnnotationSymbol) el;
@@ -143,8 +143,10 @@ namespace SpreadSheet01.RevitSupport
 				}
 				else
 				{
-					key = RevitParamUtil.MakeAnnoSymKey(chartSym, 
-						(int) RevitChartParameters.ChartNameIdx, (int) RevitChartParameters.ChartSeqIdx);
+					// fixed this
+					// 	why 8 parameters
+					key = RevitParamUtil.MakeAnnoSymKey(chartSym,
+						(int) RevitParamManager.NameIdx, (int) RevitParamManager.SeqIdx);
 				}
 
 				RevitChart chart = new RevitChart();
@@ -187,5 +189,163 @@ namespace SpreadSheet01.RevitSupport
 		}
 
 	#endregion
+
+	#if NOREVIT
+
+		public void listCharts()
+		{
+			MainWindow.TabClr();
+			MainWindow.WriteLineTab("list charts");
+
+			listOneRevitParam(Charts);
+
+			foreach (KeyValuePair<string, RevitChart> kvp in Charts.Containers)
+			{
+				MainWindow.TabUp();
+
+				MainWindow.WriteLineTab("\n*** list one chart");
+				MainWindow.WriteLineTab("key 1  | " + kvp.Key);
+				RevitChart chart = kvp.Value;
+
+				listOneRevitParam(chart);
+
+				MainWindow.WriteLineTab("charts| containers.count| " + chart.Containers.Count);
+				MainWindow.WriteTab("\n");
+
+				MainWindow.WriteLineTab("  *** list one family");
+
+				foreach (ARevitParam p in chart.RvtChartSym.RevitParamList)
+				{
+					MainWindow.TabUp();
+
+					MainWindow.WriteLineTab("*** root paramdesc| " + p.ParamDesc.ParameterName);
+					listOneRevitParam(p);
+
+					MainWindow.TabDn();
+				}
+
+				MainWindow.TabDn();
+			}
+		}
+
+		private void listOneRevitParam(ARevitParam p)
+		{
+			if (p.DynValue.Value == null) return;
+
+			MainWindow.TabUp();
+
+			MainWindow.WriteLineTab("p| paramdesc.paramname| " + p.ParamDesc.ParameterName);
+			MainWindow.WriteLineTab("p| DynValue.value| " + p.DynValue.Value?.ToString() ?? "is null");
+			// MainWindow.WriteLine("p| Assigned| " + p.Assigned);
+			// MainWindow.WriteLine("p| isvalid| " + p.IsValid);
+
+			MainWindow.TabDn();
+		}
+
+		public void listCharts2()
+		{
+			int tabid = 0;
+
+			MainWindow.TabClr(tabid);
+			
+			MainWindow.WriteLineTab("list charts");
+
+			MainWindow.TabUp(++tabid);
+
+			// start with a list of charts
+			foreach (KeyValuePair<string, RevitChart> kvp1 in Charts.Containers)
+			{
+				// process a single chart
+				MainWindow.Write("\n");
+				MainWindow.WriteLineTab("list a chart| " + kvp1.Key);
+				
+				MainWindow.TabUp(++tabid);
+				{
+					MainWindow.WriteLineTab("updateType| " + kvp1.Value.RvtChartSym.UpdateType);
+					MainWindow.WriteLineTab("chart parameters| ");
+
+					MainWindow.TabUp(++tabid);
+
+					// list a single chart's parameters
+					foreach (ARevitParam p1 in kvp1.Value.RvtChartSym.RevitParamList)
+					{
+						MainWindow.WriteLineTab("p1| " + p1.ParamDesc.ParameterName.PadRight(15)
+							+ "  value| " + p1.GetValue() );
+					}
+					MainWindow.TabDn(tabid--);
+
+					MainWindow.Write("\n");
+					MainWindow.WriteLineTab("families| ");
+
+					MainWindow.TabUp(++tabid);
+
+					// list the collection of cell families
+					foreach (KeyValuePair<string, RevitCellSym> kvp2 in kvp1.Value.Containers)
+					{
+						// list a single family
+						MainWindow.Write("\n");
+						MainWindow.WriteLineTab("family key| " + kvp2.Key);
+
+						MainWindow.WriteLineTab("family parameters| value| " + kvp2.Value.GetValue() ?? " is null");
+
+						MainWindow.TabUp(++tabid);
+
+						foreach (ARevitParam p2 in kvp2.Value.RevitParamList)
+						{
+							MainWindow.WriteLineTab("p2| " + p2.ParamDesc.ParameterName.PadRight(15)
+								+ "  value| " + p2.GetValue() );
+						}
+
+						MainWindow.TabDn(tabid--);
+
+						MainWindow.Write("\n");
+
+						MainWindow.WriteLineTab("labels| ");
+
+						MainWindow.TabUp(++tabid);
+
+						MainWindow.WriteLineTab("labels value| " + kvp2.Value.LabelList.DynValue.Value?.ToString() ?? "is null");
+
+						foreach (KeyValuePair<string, RevitLabel> kvp3 in kvp2.Value.LabelList.Containers)
+						{
+							MainWindow.WriteLineTab("label key| " + kvp3.Key);
+							MainWindow.WriteLineTab("label parameters| value| " + kvp3.Value.GetValue() ?? "is null");
+
+							MainWindow.TabUp(++tabid);
+
+							ARevitParam p3;
+
+							for (var i = 0; i < kvp3.Value.RevitParamList.Length; i++)
+							{
+								MainWindow.WriteTab("p3| " + i + "| ");
+
+								p3 = kvp3.Value.RevitParamList[i];
+
+								if (p3 == null)
+								{
+									MainWindow.WriteLine("is null\n");
+								} 
+								else
+								{
+									MainWindow.WriteLine(p3.ParamDesc.ParameterName.PadRight(15)
+										+ "  value| " + p3.GetValue() );
+								}
+							}
+
+							MainWindow.TabDn(tabid--);
+						}
+						MainWindow.TabDn(tabid--);
+					}
+					MainWindow.TabDn(tabid--);
+				}
+				MainWindow.TabDn(tabid--);
+			}
+			MainWindow.TabClr();
+		}
+
+
+#endif
+
+
 	}
 }

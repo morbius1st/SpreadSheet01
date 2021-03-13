@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using SpreadSheet01.RevitSupport.RevitParamValue;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamReadReqmt;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamDataType;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamMode;
-using static SpreadSheet01.RevitSupport.RevitParamValue.ParamGroup;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamExistReqmt;
-using UtilityLibrary;
 
 // Solution:     SpreadSheet01
 // Project:       SpreadSheet01
@@ -19,102 +14,7 @@ using UtilityLibrary;
 namespace SpreadSheet01.RevitSupport.RevitParamInfo
 {
 
-	public class ParamDesc : INotifyPropertyChanged
-	{
-		private const string TEXT_SHORT_NAME = "Text";
-		private string parameterName;
-
-		private string shortName;
-
-		public ParamDesc(string paramName,
-			int index,
-			int indexAdjust,
-			ParamGroup paramGroup,
-			ParamExistReqmt paramExist,
-			ParamDataType dataType,
-			ParamReadReqmt paramReadReqmt,
-			ParamMode paramMode)
-		{
-			Index = index;
-			ParameterName = paramName;
-			shortName = GetShortName(paramName);
-
-			DataType = dataType;
-			Exist = paramExist;
-			ReadReqmt = paramReadReqmt;
-			Group = paramGroup;
-			Mode = paramMode;
-			ParamIndex = index + indexAdjust;
-		}
-
-		public static ParamDesc Empty => new ParamDesc("", -1, -1, 
-			DATA, PARAM_MUST_EXIST, IGNORE, READ_VALUE_IGNORE, NOT_USED);
-
-		public string ParameterName {
-			get => parameterName;
-
-			private set
-			{
-				parameterName = value;
-				OnPropertyChanged();
-			}
-		}
-
-		public string ShortName => shortName;
-		public int Index { get; private set; }
-
-		public int ParamIndex { get; private set; }
-
-
-		public ParamDataType DataType { get; private set; }
-		public ParamExistReqmt Exist { get; private set; }
-		public ParamReadReqmt ReadReqmt { get; private set; }
-		public ParamMode Mode { get; private set; }
-		public ParamGroup Group { get; private set; }
-
-		public static string GetShortNameSimple(string name)
-		{
-			return name.Substring(0, Math.Min(name.Length, 8));
-		}
-		
-		public static string GetShortName(string name)
-		{
-			if (name.IsVoid()) return "";
-			string test = name;
-
-			int pos1 = name.IndexOf('#');
-			int pos2 = -1;
-
-			if (pos1 == 0 )
-			{
-				pos2 = name.IndexOf(' ');
-
-				if (pos2 > pos1 + 1)
-				{
-					test = name.Substring(pos2 + 1).Trim();
-				}
-			}
-			else if (pos1 > 0)
-			{
-				test = name.Substring(0, pos1 - 1);
-			}
-
-			return name.Substring(0, Math.Min(name.Length, 8));
-		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		private void OnPropertyChanged([CallerMemberName] string memberName = "")
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(memberName));
-		}
-
-		public override string ToString()
-		{
-			return Index.ToString("##0") + " <|> "+ DataType.ToString() + " <|> "+ ShortName + " <|> " + ParameterName;
-		}
-	}
-
+/*
 	public class RevitCellParameters
 	{
 		// public const int PARAM_IDX = 0;
@@ -144,17 +44,17 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 
 		// public static int CollectGroupCount = 0;
 
-		public static readonly int LabelIdx                  = ParamCounts[(int) LABEL]++; // 
+		public static readonly int LabelIdx                  = ParamCounts[(int) LABEL_GRP]++; // 
 
 		// public static int LabelParamCount = 0;
 
-		public static readonly int lblRelAddrIdx             = ParamCounts[(int) LABEL]++; // 
-		public static readonly int lblDataTypeIdx            = ParamCounts[(int) LABEL]++; // 
-		public static readonly int lblFormulaIdx             = ParamCounts[(int) LABEL]++; // 
-		public static readonly int lblIgnoreIdx              = ParamCounts[(int) LABEL]++; // 
-		public static readonly int lblAsLengthIdx            = ParamCounts[(int) LABEL]++; // 
-		public static readonly int lblAsNumberIdx            = ParamCounts[(int) LABEL]++; // 
-		public static readonly int lblAsYesNoIdx             = ParamCounts[(int) LABEL]++; // 
+		public static readonly int lblRelAddrIdx             = ParamCounts[(int) LABEL_GRP]++; // 
+		public static readonly int lblDataTypeIdx            = ParamCounts[(int) LABEL_GRP]++; // 
+		public static readonly int lblFormulaIdx             = ParamCounts[(int) LABEL_GRP]++; // 
+		public static readonly int lblIgnoreIdx              = ParamCounts[(int) LABEL_GRP]++; // 
+		public static readonly int lblAsLengthIdx            = ParamCounts[(int) LABEL_GRP]++; // 
+		public static readonly int lblAsNumberIdx            = ParamCounts[(int) LABEL_GRP]++; // 
+		public static readonly int lblAsYesNoIdx             = ParamCounts[(int) LABEL_GRP]++; // 
 
 
 		// public static readonly int TextIdx                   = DataParamCount++; // set - read from excel (special)
@@ -165,7 +65,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 		// public static readonly int GlobalParamNameIdx        = DataParamCount++; // get - read from family
 
 		public static SortedDictionary<string, int> CellParamIndex { get; private set; }
-		public static ParamDesc[] CellAllParams { get; private set; }
+		public static ParamDesc2[] CellAllParams { get; private set; }
 
 		static RevitCellParameters()
 		{
@@ -173,11 +73,11 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			listParameterDefs();
 		}
 
-		public static ParamDesc Match(string name)
+		public static ParamDesc2 Match(string name)
 		{
-			string shortName = ParamDesc.GetShortNameSimple(name);
+			string shortName = ParamDesc2.GetShortNameSimple(name);
 
-			ParamDesc pd = null;
+			ParamDesc2 pd = null;
 			int idx;
 
 			bool result = CellParamIndex.TryGetValue(shortName, out idx);
@@ -190,7 +90,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			return pd;
 		}
 
-		private static void assignParameter(int idx, string shortName, ParamDesc pd)
+		private static void assignParameter(int idx, string shortName, ParamDesc2 pd)
 		{
 			Console.WriteLine("  add parameter| (" + idx + ") "+ shortName);
 
@@ -203,41 +103,41 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			int adj1 = ParamCounts[(int) DATA];
 			int adj2 = adj1 + ParamCounts[(int) CONTAINER];
 
-			AllParamDefCount = adj2 + ParamCounts[(int) LABEL];
+			AllParamDefCount = adj2 + ParamCounts[(int) LABEL_GRP];
 
 
-			AllParamCount = AllParamDefCount + ParamCounts[(int) LABEL];
+			AllParamCount = AllParamDefCount + ParamCounts[(int) LABEL_GRP];
 
 			CellParamIndex = new SortedDictionary<string, int>();
 
 			// CellAllParams = new ParamDesc[ParamCounts[(int) DATA]];
-			CellAllParams = new ParamDesc[AllParamCount];
+			CellAllParams = new ParamDesc2[AllParamCount];
 
-			ParamDesc pd;
+			ParamDesc2 pd;
 
 			// data parameters
 			// 0
-			pd = new ParamDesc("Name"                          , NameIdx          , 0,    
+			pd = new ParamDesc2("Name"                          , NameIdx          , 0,    
 				DATA, PARAM_MUST_EXIST, TEXT, READ_VALUE_REQUIRED, READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// 1
-			pd = new ParamDesc("Sequence"                      , SeqIdx           , 0,    
+			pd = new ParamDesc2("Sequence"                      , SeqIdx           , 0,    
 				DATA, PARAM_OPTIONAL, TEXT, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// 2
-			pd = new ParamDesc("Excel Cell Address"            , CellAddrIdx      , 0,    
+			pd = new ParamDesc2("Excel Cell Address"            , CellAddrIdx      , 0,    
 				DATA, PARAM_MUST_EXIST, ADDRESS, READ_VALUE_SET_REQUIRED, READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// 3
-			pd = new ParamDesc("Value Formatting Information"  , FormattingInfoIdx, 0,    
+			pd = new ParamDesc2("Value Formatting Information"  , FormattingInfoIdx, 0,    
 				DATA, PARAM_OPTIONAL, TEXT, READ_VALUE_OPTIONAL, CALCULATED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// 5
-			pd = new ParamDesc("Data Direction Is To This Cell", DataIsToCellIdx  , 0,    
+			pd = new ParamDesc2("Data Direction Is To This Cell", DataIsToCellIdx  , 0,    
 				DATA, PARAM_OPTIONAL, BOOL, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// 6
-			pd = new ParamDesc("Has Error"                     , HasErrorsIdx     , 0,    
+			pd = new ParamDesc2("Has Error"                     , HasErrorsIdx     , 0,    
 				DATA, PARAM_MUST_EXIST, BOOL, READ_VALUE_IGNORE, CALCULATED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 
@@ -255,45 +155,53 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 
 
 			// // 8 - this parameter holds all of the labels which holds all of the label parameters
-			pd = new ParamDesc("Labels"                        , LabelsIdx        , 0,    
+			pd = new ParamDesc2("Labels"                        , LabelsIdx        , 0,    
 				CONTAINER, PARAM_MUST_EXIST, IGNORE, READ_VALUE_IGNORE, NOT_USED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 
 
 
 			// A
-			pd = new ParamDesc("Label"                         , LabelIdx         , adj2, 
-				LABEL, PARAM_MUST_EXIST, LABEL_TITLE, READ_VALUE_REQUIRED, READ_FROM_EXCEL);
+			pd = new ParamDesc2("Label"                         , LabelIdx         , adj2, 
+				LABEL_GRP, 
+				PARAM_MUST_EXIST, LABEL_TITLE, READ_VALUE_REQUIRED, READ_FROM_EXCEL);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 
 			// the parameters associated with a label
 			// A
-			pd = new ParamDesc("Relative Address"              , lblRelAddrIdx    , adj2, 
-				LABEL, PARAM_MUST_EXIST, RELATIVEADDRESS, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
+			pd = new ParamDesc2("Relative Address"              , lblRelAddrIdx    , adj2, 
+				LABEL_GRP, 
+				PARAM_MUST_EXIST, RELATIVEADDRESS, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// B
-			pd = new ParamDesc("Data Type"                     , lblDataTypeIdx   , adj2, 
-				LABEL, PARAM_MUST_EXIST, DATATYPE, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
-			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// C
-			pd = new ParamDesc("Formula"                       , lblFormulaIdx    , adj2, 
-				LABEL, PARAM_OPTIONAL, FORMULA, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
+			pd = new ParamDesc2("Formula"                       , lblFormulaIdx    , adj2, 
+				LABEL_GRP, 
+				PARAM_OPTIONAL, FORMULA, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
+			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
+			pd = new ParamDesc2("Data Type"                     , lblDataTypeIdx   , adj2, 
+				LABEL_GRP, 
+				PARAM_MUST_EXIST, DATATYPE, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// D
-			pd = new ParamDesc("Ignore"                        , lblIgnoreIdx     , adj2, 
-				LABEL, PARAM_OPTIONAL, BOOL, READ_VALUE_REQUIRED, READ_FROM_PARAMETER);
+			pd = new ParamDesc2("Ignore"                        , lblIgnoreIdx     , adj2, 
+				LABEL_GRP, 
+				PARAM_OPTIONAL, BOOL, READ_VALUE_REQUIRED, READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// E
-			pd = new ParamDesc("As Length"                     , lblAsLengthIdx   , adj2, 
-				LABEL, PARAM_OPTIONAL, NUMBER, READ_VALUE_IGNORE, CALCULATED);
+			pd = new ParamDesc2("As Length"                     , lblAsLengthIdx   , adj2, 
+				LABEL_GRP, 
+				PARAM_OPTIONAL, NUMBER, READ_VALUE_IGNORE, CALCULATED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// F
-			pd = new ParamDesc("As Number"                     , lblAsNumberIdx   , adj2, 
-				LABEL, PARAM_OPTIONAL, NUMBER, READ_VALUE_IGNORE, CALCULATED);
+			pd = new ParamDesc2("As Number"                     , lblAsNumberIdx   , adj2, 
+				LABEL_GRP, 
+				PARAM_OPTIONAL, NUMBER, READ_VALUE_IGNORE, CALCULATED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 			// G
-			pd = new ParamDesc("As Yes-No"                     , lblAsYesNoIdx    , adj2, 
-				LABEL, PARAM_OPTIONAL, NUMBER, READ_VALUE_IGNORE, CALCULATED);
+			pd = new ParamDesc2("As Yes-No"                     , lblAsYesNoIdx    , adj2, 
+				LABEL_GRP, 
+				PARAM_OPTIONAL, NUMBER, READ_VALUE_IGNORE, CALCULATED);
 			assignParameter(pd.ParamIndex                      , pd.ShortName     , pd);
 		}
 
@@ -319,4 +227,5 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			Console.WriteLine("list parameters definitions done\n");
 		}
 	}
+	*/
 }

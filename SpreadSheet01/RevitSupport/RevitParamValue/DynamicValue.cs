@@ -34,18 +34,17 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		public string AsPreFormatted() => preFormatted;
 
-		public string AsFormatted() => dynamicValue.ToString(formatString);
+		public string AsFormatted() => dynamicValue?.ToString(formatString);
 
-		public string AsString() => dynamicValue.ToString();
+		public string AsString() => dynamicValue?.ToString() ?? null;
 
-		public double AsDouble() => dynamicValue == typeof(double) ? dynamicValue : Double.NaN;
+		public double AsDouble() => (dynamicValue ?? null) == typeof(double) ? dynamicValue : Double.NaN;
 
-		public double AsInteger() => dynamicValue == typeof(int) ? dynamicValue : Int32.MaxValue;
+		public double AsInteger() => (dynamicValue ?? null) == typeof(int) ? dynamicValue : Int32.MaxValue;
 
-		public double AsBool() => dynamicValue == typeof(bool) ? dynamicValue : false;
+		public double AsBool() => (dynamicValue ?? null) == typeof(bool) ? dynamicValue : false;
 
-		public Type BaseType() => dynamicValue.GetType();
-
+		public Type BaseType() => dynamicValue?.GetType() ?? null;
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -56,7 +55,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		public override string ToString()
 		{
-			return "this is DynamicValue";
+			return "DynamicValue| " + dynamicValue.ToString();
 		}
 	}
 }

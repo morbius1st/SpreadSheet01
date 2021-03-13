@@ -31,7 +31,6 @@ namespace Cells.CellsTests
 
 			listSymbols(aSyms.Charts);
 
-
 		}
 
 		private void getChartSymbols(SampleAnnoSymbols aSyms)
@@ -45,17 +44,17 @@ namespace Cells.CellsTests
 
 		private void listSymbols(AnnotationSymbol[] annoSyms)
 		{
-			MainWindow.WriteLine("\nList symbols");
+			MainWindow.WriteLineTab("\nList symbols");
 
 			foreach (AnnotationSymbol symbol in annoSyms)
 			{
-				MainWindow.WriteLine("\nsymbols| " + symbol.Name);
-				MainWindow.WriteLine("parameters| count| " + symbol.parameters.Count);
+				MainWindow.WriteLineTab("\nsymbols| " + symbol.Name);
+				MainWindow.WriteLineTab("parameters| count| " + symbol.parameters.Count);
 
 				for (var i = 0; i < symbol.parameters.Count; i++)
 				{
-					MainWindow.Write("   type| ");
-					MainWindow.Write(symbol.parameters[i].Definition.Type.ToString());
+					MainWindow.WriteTab("   type| ");
+					MainWindow.WriteTab(symbol.parameters[i].Definition.Type.ToString());
 
 					string result = "unknown";
 
@@ -79,14 +78,14 @@ namespace Cells.CellsTests
 					}
 
 
-					MainWindow.Write("   val| >");
-					MainWindow.Write(result);
+					MainWindow.WriteTab("   val| >");
+					MainWindow.WriteTab(result);
 
-					MainWindow.Write("<   name| ");
-					MainWindow.WriteLine(symbol.parameters[i].Definition.Name);
+					MainWindow.WriteTab("<   name| ");
+					MainWindow.WriteLineTab(symbol.parameters[i].Definition.Name);
 				}
 
-				MainWindow.WriteLine("\nComplete\n");
+				MainWindow.WriteLineTab("\nComplete\n");
 			}
 		}
 

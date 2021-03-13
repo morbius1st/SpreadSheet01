@@ -73,6 +73,12 @@ namespace SpreadSheet01.ExcelSupport
 			return true;
 		}
 
+
+		public void CloseExcelCloseFile()
+		{
+			excelFile.Close(true);
+		}
+
 		public bool GetValue(string cellName, out string value)
 		{
 			value = null;

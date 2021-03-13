@@ -1,4 +1,5 @@
-﻿using SpreadSheet01.RevitSupport.RevitCellsManagement;
+﻿using System.Text.RegularExpressions;
+using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using UtilityLibrary;
 
 namespace SpreadSheet01.RevitSupport.RevitParamInfo
@@ -34,10 +35,45 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 
 		public static string LABEL_ID_PREFIX = "#";
 
+		public static string GetRootName(string name, out int id, out bool isLabel)
+		{
+			id = -1;
+			isLabel = false;
+
+			if (name.IsVoid()) return "";
+
+			string test = name.Trim();
+
+			// Regex rx = new Regex(@"(?<=^\#\d|^\#\d\d)(\s+)(.*[^\s])|^(.*)(?=\s\#\d{1,2}\s*$)");
+			Regex rx = new Regex(@"((?>^(?<name>.*)(?=\s\#(?<digits>\d{1,2})\s*$).*)|(?>(?>^\s*\#(?<digits>\d{1,2})\s+)(?<name>.*[^\s]))|(?<name>.*[^\s]))", RegexOptions.ExplicitCapture);
+			Match m = rx.Match(name);
+
+			if (!m.Success) return name;
+
+			if (m.Groups.Count > 1)
+			{
+				bool result = int.TryParse(m.Groups["digits"].Value, out id);
+
+				if (!result)
+				{
+					id = -1;
+				}
+				else
+				{
+					isLabel = true;
+				}
+			}
+
+			return m.Groups["name"].Value;
+
+		}
+
+
+
 		// provide a "clean" parameter name
 		// provide label parameter id (as out)
 		// provide bool if the info provided is for the label
-		public static string GetParamName(  string paramName, ParamClass paramClass, out int id, out bool isLabel)
+		public static string GetParamName(string paramName, out int id, out bool isLabel)
 		{
 			int idx1;
 			int idx2;

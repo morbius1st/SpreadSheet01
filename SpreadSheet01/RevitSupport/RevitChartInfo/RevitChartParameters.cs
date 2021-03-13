@@ -3,11 +3,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using SpreadSheet01.RevitSupport;
-using SpreadSheet01.RevitSupport.RevitParamValue;
+using SpreadSheet01.RevitSupport.RevitParamInfo;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamReadReqmt;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamDataType;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamMode;
-using static SpreadSheet01.RevitSupport.RevitParamValue.ParamGroup;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamExistReqmt;
 
 using SpreadSheet01.RevitSupport.RevitParamInfo;
@@ -19,7 +18,8 @@ using SpreadSheet01.RevitSupport.RevitParamInfo;
 namespace SpreadSheet01.RevitSupport.RevitChartInfo
 {
 
-	public class RevitChartParameters
+
+/*	public class RevitChartParameters
 	{
 		public static int[] ChartParamCounts = new int[3];
 		public static int AllChartParamCount;
@@ -37,7 +37,7 @@ namespace SpreadSheet01.RevitSupport.RevitChartInfo
 		public static readonly int ChartHasErrorsIdx              = ChartParamCounts[(int) DATA]++;
 
 		public static SortedDictionary<string, int> ChartParamIndex { get; private set; }
-		public static List<ParamDesc> ChartAllParams { get; private set; }
+		public static List<ParamDesc2> ChartAllParams { get; private set; }
 
 		public static bool IsConfigured {get; private set;}
 
@@ -47,11 +47,11 @@ namespace SpreadSheet01.RevitSupport.RevitChartInfo
 			assignParameters();
 		}
 
-		public static ParamDesc Match(string name)
+		public static ParamDesc2 Match(string name)
 		{
-			string shortName = ParamDesc.GetShortNameSimple(name);
+			string shortName = ParamDesc2.GetShortNameSimple(name);
 
-			ParamDesc pd = null;
+			ParamDesc2 pd = null;
 			int idx;
 
 			bool result = ChartParamIndex.TryGetValue(shortName, out idx);
@@ -66,15 +66,15 @@ namespace SpreadSheet01.RevitSupport.RevitChartInfo
 
 		private static void configureChartList()
 		{
-			ChartAllParams = new List<ParamDesc>();
+			ChartAllParams = new List<ParamDesc2>();
 
 			for (int i = 0; i < AllChartParamCount; i++)
 			{
-				ChartAllParams.Add(ParamDesc.Empty);
+				ChartAllParams.Add(ParamDesc2.Empty);
 			}
 		}
 
-		private static void assignParameter(int idx, string shortName, ParamDesc pd)
+		private static void assignParameter(int idx, string shortName, ParamDesc2 pd)
 		{
 			Debug.WriteLine("  add parameter| (" + idx + ") "+ shortName);
 
@@ -98,43 +98,44 @@ namespace SpreadSheet01.RevitSupport.RevitChartInfo
 			ChartParamIndex= new SortedDictionary<string, int>();
 			configureChartList();
 
-			ParamDesc pd;
+			ParamDesc2 pd;
 
 			// data parameters
 			// 0
-			pd = new ParamDesc("Name"                  , ChartNameIdx     , 0,    
+			pd = new ParamDesc2("Name"                  , ChartNameIdx     , 0,    
 				DATA, PARAM_MUST_EXIST, TEXT, READ_VALUE_REQUIRED, READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex              , pd.ShortName     , pd);
 			// 1
-			pd = new ParamDesc("Description"           , ChartDescIdx     , 0,    
+			pd = new ParamDesc2("Description"           , ChartDescIdx     , 0,    
 				DATA, PARAM_OPTIONAL, TEXT, READ_VALUE_REQUIRED, READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex              , pd.ShortName     , pd);
 			// 2
-			pd = new ParamDesc("Sequence"              , ChartSeqIdx      , 0,    
+			pd = new ParamDesc2("Sequence"              , ChartSeqIdx      , 0,    
 				DATA, PARAM_OPTIONAL, TEXT, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex              , pd.ShortName     , pd);
 			// 3
-			pd = new ParamDesc("Excel File Path"       , ChartFilePathIdx , 0,    
+			pd = new ParamDesc2("Excel File Path"       , ChartFilePathIdx , 0,    
 				DATA, PARAM_MUST_EXIST, FILE_PATH, READ_VALUE_REQUIRED, READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex              , pd.ShortName     , pd);
 			// 4
-			pd = new ParamDesc("Excel WorkSheet Name"  , ChartWorkSheetIdx, 0,    
+			pd = new ParamDesc2("Excel WorkSheet Name"  , ChartWorkSheetIdx, 0,    
 				DATA, PARAM_MUST_EXIST, TEXT, READ_VALUE_REQUIRED, READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex              , pd.ShortName     , pd);
 			// 5
-			pd = new ParamDesc("Cell Family Name"      , ChartFamilyNameIdx, 0,    
+			pd = new ParamDesc2("Cell Family Name"      , ChartFamilyNameIdx, 0,    
 				DATA, PARAM_MUST_EXIST, TEXT, READ_VALUE_REQUIRED, READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex              , pd.ShortName     , pd);
 			// 6
-			pd = new ParamDesc("Update Scheme"         , ChartUpdateTypeIdx, 0,    
+			pd = new ParamDesc2("Update Type"         , ChartUpdateTypeIdx, 0,    
 				DATA, PARAM_OPTIONAL, UPDATE_TYPE, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER);
 			assignParameter(pd.ParamIndex              , pd.ShortName     , pd);
 			// 7
-			pd = new ParamDesc("Cells With Errors"     , ChartHasErrorsIdx, 0,    
+			pd = new ParamDesc2("Cells With Errors"     , ChartHasErrorsIdx, 0,    
 				DATA, PARAM_MUST_EXIST, BOOL, READ_VALUE_IGNORE, NOT_USED);
 			assignParameter(pd.ParamIndex              , pd.ShortName     , pd);
 
 
 		}
 	}
+*/
 }

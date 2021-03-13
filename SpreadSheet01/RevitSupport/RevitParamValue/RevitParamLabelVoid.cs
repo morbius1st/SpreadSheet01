@@ -2,8 +2,6 @@
 using SpreadSheet01.RevitSupport.RevitParamInfo;
 using UtilityLibrary;
 
-using static SpreadSheet01.RevitSupport.RevitParamInfo.RevitCellParameters;
-
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
 	// each of the title #idx parameters are stored in the dictionary;

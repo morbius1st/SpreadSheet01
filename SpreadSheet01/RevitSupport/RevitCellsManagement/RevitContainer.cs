@@ -1,15 +1,16 @@
 ﻿#region + Using Directives
 
-// using SpreadSheet01.RevitSupport.RevitChartInfo;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Printing;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
 using SpreadSheet01.RevitSupport.RevitChartInfo;
 using SpreadSheet01.RevitSupport.RevitParamInfo;
 using SpreadSheet01.RevitSupport.RevitParamValue;
-using static SpreadSheet01.RevitSupport.RevitParamInfo.RevitCellParameters;
-// using static SpreadSheet01.RevitSupport.RevitChartInfo.RevitChartParameters;
+using static SpreadSheet01.RevitSupport.RevitCellsManagement.RevitParamManager;
 
 #endregion
 
@@ -19,30 +20,22 @@ using static SpreadSheet01.RevitSupport.RevitParamInfo.RevitCellParameters;
 
 namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 {
-	/*
-		chart symbols {RevitCharts}  [Containers]  dictionary<string, chart symbol> 
-		+-> chart symbol  {RevitChart}  [Containers] dictionary<string, cell family> 
-			+-> cell family  {RevitCellsym}  [Container] ARevitParam[]
-				+-> parameters
-	*/
-
 
 #region Containers
 
-	public class RevitContainers<T> : ARevitParam, INotifyPropertyChanged
+	public abstract class RevitContainers<TU, TV> : ARevitParam, INotifyPropertyChanged
 	{
-		public Dictionary<string, T> Containers { get; set; }
+		public Dictionary<TU, TV> Containers { get; set; }
 
 		public RevitContainers()
 		{
-			Containers = new Dictionary<string, T>();
+			Containers = new Dictionary<TU, TV>();
 		}
 
 		public override dynamic GetValue() => null;
 
-		public void Add(string key, T container) 
+		protected void Add(TU key, TV container)
 		{
-			
 			Containers.Add(key, container);
 			OnPropertyChanged(nameof(Containers));
 		}
@@ -61,20 +54,31 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public override string ToString()
 		{
-			return "I am RevitContainers<T>| " + typeof(T).Name;
+			return "I am RevitContainers<TU,TV>| " + typeof(TU).Name + ">|<" + typeof(TU).Name ;
 		}
 	}
 
-	public class RevitAnnoSyms : RevitContainers<RevitCellSym>
+	public class RevitAnnoSyms : RevitContainers<string, RevitCellSym>
 	{
+
+		public new void Add(string key, RevitCellSym container)
+		{
+			base.Add(key, container);
+		}
+
 		public override string ToString()
 		{
 			return "I am RevitAnnoSyms| " + GetValue();
 		}
 	}
 
-	public class RevitLabels : RevitContainers<RevitLabel>
+	public class RevitLabels : RevitContainers<string, RevitLabel>
 	{
+		public new void Add(string key, RevitLabel container)
+		{
+			base.Add(key, container);
+		}
+
 		public override string ToString()
 		{
 			return "I am RevitLabels| " + GetValue();
@@ -82,42 +86,56 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	}
 
 	// root with a collection of Chart Families
-	public class RevitCharts : RevitContainers<RevitChart>
+	public class RevitCharts : RevitContainers<string, RevitChart>
 	{
+		public new void Add(string key, RevitChart container)
+		{
+			base.Add(key, container);
+		}
+
 		public override string ToString()
 		{
-			return "I am RevitCharts| " + GetValue();
+			return "I am RevitCharts| " + GetValue() ?? "no value";
 		}
 	}
 
 	// one chart family with a collection of cell families
-	public class RevitChart : RevitContainers<RevitCellSym>
+	public class RevitChart : RevitContainers<string, RevitCellSym>
 	{
+		public new void Add(string key, RevitCellSym container)
+		{
+			base.Add(key, container);
+		}
+
 		// parameter information for the chart symbol
 		public RevitChartSym RvtChartSym { get; set; }
 
+		public CellUpdateTypeCode UpdateType => RvtChartSym.UpdateType;
+
 		public override string ToString()
 		{
-			return "I am RevitChart| " + GetValue();
+			return "I am RevitChart| " + GetValue() ?? "no value";
 		}
 	}
+
+	// parameter system
 
 #endregion
 
 
 #region Container
 
-	public abstract class RevitContainer: ARevitParam, INotifyPropertyChanged
+	public abstract class RevitContainer<T> : ARevitParam, INotifyPropertyChanged
 	{
-		public ARevitParam[] RevitParamList { get; set; }
+		public T[] RevitParamList { get; set; }
 
-		public void Add(int idx, ARevitParam content)
+		public void Add(int idx, T content)
 		{
 			RevitParamList[idx] = content;
 			OnPropertyChanged(nameof(RevitParamList));
 		}
 
-		public ARevitParam this[int idx]
+		public T this[int idx]
 		{
 			get => RevitParamList[idx];
 			set
@@ -147,12 +165,12 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		}
 	}
 
-	public class RevitLabel : RevitContainer
+	
+	public class RevitLabel : RevitContainer<ARevitParam>
 	{
-
 		public RevitLabel()
 		{
-			RevitParamList = new ARevitParam[ParamCounts[(int) ParamGroup.LABEL]];
+			RevitParamList = new ARevitParam[CellLabelParamCount];
 		}
 
 		public override dynamic GetValue()
@@ -172,10 +190,10 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		ARevitParam[] RevitParamList { get; set; }
 
-		ARevitParam this[int idx] {get; set; }
+		ARevitParam this[int idx] { get; set; }
 	}
 
-	public class RevitChartSym : RevitContainer, IAnnoSymContainer
+	public class RevitChartSym : RevitContainer<ARevitParam>, IAnnoSymContainer
 	{
 		public override dynamic GetValue()
 		{
@@ -184,54 +202,54 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public RevitChartSym()
 		{
-			RevitParamList = new ARevitParam[RevitChartParameters.ChartParamCounts[(int) ParamGroup.DATA]];
+			RevitParamList = new ARevitParam[AllChartParamCount];
 		}
+
+		public CellUpdateTypeCode UpdateType => ((RevitParamUpdateType) RevitParamList[ChartUpdateTypeIdx]).UpdateType;
 
 		public AnnotationSymbol AnnoSymbol { get; set; }
 
-		public AnnotationSymbol ChartSymbol => AnnoSymbol;
+		public Element RvtElement { get; set; }
 
-		public Element RvtElement {get; set; }
-
-		public Element ChartElement => RvtElement;
-
-		public ARevitParam[] ChartParameters => RevitParamList;
+		// public ARevitParam[] ChartParameters => RevitParamList;
 
 		public override string ToString()
 		{
 			return "I am RevitChart| " + AnnoSymbol.Name;
 		}
 	}
-	
-	public class RevitCellSym : RevitContainer, IAnnoSymContainer
+
+	public class RevitCellSym : RevitContainer<ARevitParam>, IAnnoSymContainer
 	{
 		public override dynamic GetValue()
 		{
 			return null;
 		}
-		
+
 		public RevitCellSym()
 		{
-			RevitParamList = new ARevitParam[ParamCounts[(int) ParamGroup.DATA]];
+			RevitParamList = new ARevitParam[CellBasicParamCount];
 
-			RevitParamList[LabelsIdx] = new RevitLabels();
+			LabelList = new RevitLabels();
 		}
 
-		public ARevitParam[] CellParameters => RevitParamList;
+		public RevitLabels LabelList { get; private set; }
 
 		public AnnotationSymbol AnnoSymbol { get; set; }
+		
+		public Element RvtElement { get; set; }
 
-		public AnnotationSymbol CellSymbol => AnnoSymbol;
-
-		public Element RvtElement {get; set; }
-
-		public Element CellElement => RvtElement;
+		// public AnnotationSymbol CellSymbol => AnnoSymbol;
+		// public Element CellElement => RvtElement;
+		// public ARevitParam[] CellParameters => RevitParamList;
 
 		public override string ToString()
 		{
-			return "I am RevitCell| " + this[RevitCellParameters.NameIdx];
+			return "I am RevitCellSym| " + this[NameIdx] ?? "null name";
 		}
 	}
 
+
 #endregion
+
 }

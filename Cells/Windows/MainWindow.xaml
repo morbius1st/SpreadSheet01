@@ -62,7 +62,8 @@
 				Background="Transparent"
 				Foreground="White"
 				VerticalScrollBarVisibility="Visible"
-				HorizontalScrollBarVisibility="Visible"
+				HorizontalScrollBarVisibility="Visible" 
+				FontFamily="Droid Sans Mono"
 				/>
 
 

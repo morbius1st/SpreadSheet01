@@ -38,8 +38,9 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		private RevitAnnoSyms annoSyms;
 
+		private RevitParamManager rvtParamMgr = new RevitParamManager();
 		private RevitManagementSupport rvtMgmtSupport = new RevitManagementSupport();
-		private RevitChartManager rvtChartMgr = new RevitChartManager();
+		// private RevitChartManager rvtChartMgr = new RevitChartManager();
 		private RevitCatagorizeParam revitCat;
 		private RevitSelectSupport rvtSelect;
 
@@ -51,8 +52,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public RevitManager()
 		{
-			// chartList = new ChartList();
-			// errorList = new List<RevitCellParams>();
 			annoSyms = new RevitAnnoSyms();
 			revitCat = new RevitCatagorizeParam();
 			rvtSelect = new RevitSelectSupport();
@@ -85,109 +84,91 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 	#region public methods
 
-		// process all "always" charts / cells
-		public bool ProcessAlwaysCharts()
-		{
-			// get the list of charts to process
-			if (! getAllCharts()) return false;
-
-			RevitCharts c = rvtCharts;
-			Dictionary<string, RevitChart> cx = c.Containers;
-
-			return true;
-		}
+		// // process all "always" charts / cells
+		// public bool ProcessAlwaysCharts()
+		// {
+		// 	// get the list of charts to process
+		// 	if (! getAllCharts()) return false;
+		//
+		// 	RevitCharts c = rvtCharts;
+		// 	Dictionary<string, RevitChart> cx = c.Containers;
+		//
+		// 	return true;
+		// }
 
 	#endregion
 
 	#region private methods
 
-		private bool getAllCharts()
-		{
-			int count = rvtChartMgr.GetCurrentCharts();
+		// private bool getAllCharts()
+		// {
+		// 	int count = rvtChartMgr.GetCurrentCharts();
+		//
+		// 	if (count == 0)
+		// 	{
+		// 		rvtMgmtSupport.ErrorNoChartsFound(RevitChartManager.RevitChartFamilyName);
+		// 		return false;
+		// 	}
+		//
+		// 	rvtCharts = rvtChartMgr.Charts;
+		//
+		// 	bool result = processAllCharts2();
+		//
+		// 	return true;
+		// }
 
-			if (count == 0)
-			{
-				rvtMgmtSupport.ErrorNoChartsFound(rvtChartMgr.RevitChartFamilyName);
-				return false;
-			}
-
-			rvtCharts = rvtChartMgr.Charts;
-
-			bool result = processAllCharts2();
-
-			return true;
-		}
-
-		private bool processAllCharts2()
+		public bool ProcessCharts(RevitCharts Charts, CellUpdateTypeCode which)
 		{
 			int fail = 0;
 			// process all charts and add to list
-			foreach (KeyValuePair<string, RevitChart> kvp in rvtCharts.Containers)
+			foreach (KeyValuePair<string, RevitChart> kvp in Charts.Containers)
 			{
 				// chart has all parameters retreived
 				RevitChart chart = kvp.Value;
 
-				processOneChart2(chart);
+				if (which != CellUpdateTypeCode.ALL && 
+					kvp.Value.UpdateType != which) continue;
+
+				processOneChart(kvp.Value);
 			}
-
 			return true;
 		}
 
-		private bool processOneChart2(RevitChart chart)
-		{
-			// get a list of the associated cell families
-			// process this list
-			chart.Containers = processOneCellFamilyType(chart.RvtChartSym.GetValue());
-
-			return true;
-		}
 
 		// provide the list of cell families
-		private Dictionary<string, RevitCellSym> processOneCellFamilyType(string cellFamilyTypeName)
+		// process a chart and get the parameters for a family
+		private bool processOneChart(RevitChart chart)
 		{
+			string cellFamilyTypeName = chart.RvtChartSym.GetValue();
+
 			ICollection<Element> cellElements = RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName);
 
-			if (cellElements == null || cellElements.Count == 0) return null;
+			if (cellElements == null || cellElements.Count == 0) return false;
 
-			Dictionary<string, RevitCellSym> cellFamilies = new Dictionary<string, RevitCellSym>();
+			chart.Containers = new Dictionary<string, RevitCellSym>();
 
 			foreach (Element cell in cellElements)
 			{
 				RevitCellSym rvtCellSym = processCellFamily2(cell);
 
 				string key = RevitParamUtil.MakeAnnoSymKey(rvtCellSym,
-					(int) RevitCellParameters.NameIdx, (int) RevitCellParameters.SeqIdx, false);
+					(int) RevitParamManager.NameIdx, (int) RevitParamManager.SeqIdx, false);
 
-				cellFamilies.Add(key, rvtCellSym);
+				chart.Add(key, rvtCellSym);
 			}
 
-			return cellFamilies;
+			return true;
 		}
+
 
 		private RevitCellSym processCellFamily2(Element el)
 		{
-			RevitCellSym rvtCellSym = revitCat.catagorizeAnnoSymParams(el as AnnotationSymbol, ParamClass.LABEL);
+			RevitCellSym rvtCellSym = revitCat.catagorizeAnnoSymParams(el as AnnotationSymbol);
 
 			if (!rvtCellSym.IsValid) return null;
 
 			return rvtCellSym;
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 		// private ICollection<Element> getCellFamilies(string familyTypeName)
