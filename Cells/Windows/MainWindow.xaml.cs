@@ -28,7 +28,7 @@ namespace Cells.Windows
 
 		public RevitParamTest RevitParamTests { get; } = new RevitParamTest();
 
-		public RevitChartManager RevitChartMgr { get; } = new RevitChartManager();
+		public RevitCellSystManager RevitChartMgr { get; } = new RevitCellSystManager();
 
 		public RevitManager RevitMgr { get; } = new RevitManager();
 
@@ -63,9 +63,11 @@ namespace Cells.Windows
 		private static int tabs = 0;
 		private static string tabId = null;
 
+		public static bool showTabId = true;
+
 		private static void listTabId()
 		{
-			if (tabId != null)
+			if (tabId != null && showTabId)
 			{
 				WriteLine(tabId);
 			}

@@ -40,9 +40,9 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		public double AsDouble() => (dynamicValue ?? null) == typeof(double) ? dynamicValue : Double.NaN;
 
-		public double AsInteger() => (dynamicValue ?? null) == typeof(int) ? dynamicValue : Int32.MaxValue;
+		public int AsInteger() => (dynamicValue ?? null) == typeof(int) ? dynamicValue : Int32.MaxValue;
 
-		public double AsBool() => (dynamicValue ?? null) == typeof(bool) ? dynamicValue : false;
+		public bool AsBool() => (dynamicValue ?? null) == typeof(bool) ? dynamicValue : false;
 
 		public Type BaseType() => dynamicValue?.GetType() ?? null;
 

@@ -45,7 +45,7 @@
 			<TreeView.ItemTemplate>
 				<HierarchicalDataTemplate
 
-						ItemsSource="{Binding Path=Containers}">
+						ItemsSource="{Binding Path=ListOfRevitCellSym}">
 						<TextBlock Text="{Binding Path=ParamDesc.ParameterName}"/>
 				</HierarchicalDataTemplate>
 			</TreeView.ItemTemplate>

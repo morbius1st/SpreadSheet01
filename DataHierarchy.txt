@@ -1,42 +1,49 @@
-Charts {RevitCharts}  [Containers]  dictionary<string, chart symbol> 
-	** Collection of charts
-	+-> DynValue (null)
-	+-> ParamDesc (null)
-	+-> Containers
-		|	+> collection of RevitChart
-		|	+> {RevitChart}
+RevitCharts : Containers {}
+	** Collection of charts (of RevitChart)
+	|	+-> Add(key, RevitChart)
+	|
+	+-> [ListOfCharts   (dictionary<string, RevitChart> )
+		|	** collection of charts
 		|
-		+-> Chart {RevitChart}  [Containers] dictionary<string, cell family> 
-			** a single chart 
-			** with a collection of cell families
-			+-> DynValue
-			+-> ParamDesc
-			+-> RvtChartSym  {RevitChartSym}
-				+-> RevitParamList
-					+> RevitParam{type}
-			+-> Containers
+		+-> RevitChart : Containers {}
+			|	|	** a single chart 
+			|	|	** with a collection of cell families
+			|	|
+			|	+-> Add(key, RevitCellsym)
+			|	+-> [updatetype]
+			|	+-> RevitChartData  {RevitChartData}
+			|		+-> RevitParamList
+			|			+> RevitParam{type}
+			|	+-> allCellLabels  (Dictionary<key, RevitLabel>)
+			|		** master shortcut list to erery cell label
+			|
+			+-> {ListOfCellSyms}  (dictionary<string, RevitCellsym> )
 				|	**  collection of cell families
-				|	+>  {RevitCellsym}
-				|	
-				+-> {RevitCellsym}  [Container] ARevitParam[]
-					** a single cell family
-					** with a collection of parameters
-						+-> AnnoSymbol  {revit anno symbol}
-						+-> DynValue    
-						+-> ParamDesc
-						+-> RvtElement  {revit element}
-							// 	+-> CellElement {revit element}
-							// 	+-> CellParameters (same as RevitParamList)
-							// 	+-> CellSymbol  {revit anno symbol}
-						+-> RevitParamList 
-							+> {ARevitParam{type}[]}
-						+-> LabelList {RevitLabels}
-								** collection of revit labels
-								+-> {RevitLabel}
-									** collection of parameters
-									+> {ARevitParam{type}[]}
-
-
+				|
+				+-> RevitCell : Container : ARevitParam {}
+					|	** a single cell family
+					|	** with a collection of parameters
+					|	+-> AnnoSymbol  {revit anno symbol}
+					|	+-> DynValue    
+					|	+-> ParamDesc
+					|	+-> RvtElement  {revit element}
+					|	+-> RevitParamList 
+					|		+> {ARevitParam{type}[]}
+					|	+-> CellLabels  (Dictionary<key, RevitLabel>)
+					|		** shortcut list to each label
+					|	
+					|
+					+-> [ListOfLabels]  Dictionary<key, RevitLabel>
+						|	** collection of parameters
+						|	Key == RevitParamUtil.MakeLabelKey(idx) == 《0x》
+						|
+						+-> [RevitLabel] : container 
+							|	** info for a single label
+							|	** paramlist holds the info for a label
+							|	+-> Name
+							|	+->GetValue() (null)
+							|
+							+->	[RevitParamList]  ARevitParam[]
 
 family categories  {FamilyCategories} [containers] dictionary<string, families>
 	* holds a collection families

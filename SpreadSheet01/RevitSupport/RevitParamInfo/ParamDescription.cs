@@ -2,8 +2,10 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using Autodesk.Revit.DB;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using UtilityLibrary;
@@ -35,7 +37,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			ParamExistReqmt paramExist,
 			ParamDataType dataType,
 			ParamReadReqmt paramReadReqmt,
-			ParamMode paramMode)
+			ParamMode paramMode,
+			RevitCatagorizeParam.MakeParamDelegate makeParam = null)
 		{
 			Index = index;
 			ParameterName = paramName;
@@ -47,6 +50,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			Exist = paramExist;
 			ReadReqmt = paramReadReqmt;
 			Mode = paramMode;
+
+			MakeParam = makeParam;
 		}
 
 	#endregion
@@ -76,6 +81,10 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 		public ParamExistReqmt Exist    { get; protected set; }
 		public ParamReadReqmt ReadReqmt { get; protected set; }
 		public ParamMode Mode           { get; protected set; }
+
+		public RevitCatagorizeParam.MakeParamDelegate MakeParam { get; private set; }
+
+
 		// public ParamGroup Group         { get; protected set; }
 
 	#endregion
@@ -86,6 +95,16 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 
 
 	#region public methods
+
+		public void InvokeDelegate(Parameter param)
+		{
+			Debug.WriteLine("got invoke");
+
+			if (MakeParam != null)
+			{
+				MakeParam.Invoke(param, this);
+			}
+		}
 
 		public void SetShortName()
 		{

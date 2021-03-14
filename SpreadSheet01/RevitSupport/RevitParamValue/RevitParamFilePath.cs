@@ -18,6 +18,11 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		public override dynamic GetValue() => dynValue.AsString();
 
+		public FilePath<FileNameSimple> FilePath => excelFilPath;
+
+		public string FullFilePath => excelFilPath.FullFilePath;
+		public bool Exists => excelFilPath.Exists;
+
 		private void set(string value)
 		{
 			gotValue = false;

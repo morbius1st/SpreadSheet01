@@ -16,7 +16,19 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			return KEY_IDX_BEGIN + paramIdx.ToString("D2") + KEY_IDX_END;
 		}
 
-		public static string MakeAnnoSymKey(   IAnnoSymContainer aSym, int nameIdex, int seqIndex, bool asSeqName = true)
+		public static string MakeSeqNameKey(string nameIn, string seqIn)
+		{
+			string seq = KEY_IDX_BEGIN + $"{(seqIn.IsVoid() ? "ZZZZZ" : seqIn),8}" + KEY_IDX_END;
+
+			string name = nameIn.IsVoid() ? "un-named" : nameIn;
+
+			return seq + name;
+		}
+
+
+
+		
+		public static string MakeAnnoSymKey(IAnnoSymContainer aSym, int nameIdex, int seqIndex, bool asSeqName = true)
 		{
 			string seq = aSym[seqIndex].GetValue();
 

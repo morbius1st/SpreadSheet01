@@ -106,8 +106,8 @@
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellsManagement\RevitParamManager.cs">
       <Link>RevitSupport\RevitCellsManagement\RevitParamManager.cs</Link>
     </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitChartInfo\RevitChartManager.cs">
-      <Link>RevitSupport\RevitChartInfo\RevitChartManager.cs</Link>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitChartInfo\RevitCellsSysManager.cs">
+      <Link>RevitSupport\RevitChartInfo\RevitCellsSysManager.cs</Link>
     </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitChartInfo\RevitChartParameters.cs">
       <Link>RevitSupport\RevitChartInfo\RevitChartParameters.cs</Link>

@@ -76,11 +76,11 @@
 				Background="Transparent"
 				Foreground="White"
 				ScrollViewer.VerticalScrollBarVisibility="Visible"
-				ItemsSource="{Binding AnnoSyms.Containers}"
+				ItemsSource="{Binding AnnoSyms.ListOfRevitCellSym}"
 				>
 			<ListView.ItemTemplate>
 				<DataTemplate x:Name="LvDt01"
-						DataType="{x:Type mgmt:RevitCellSym}"
+						DataType="{x:Type mgmt:RevitCell}"
 						>
 					<DockPanel x:Name="Dok01">
 						<DockPanel DockPanel.Dock="Top">

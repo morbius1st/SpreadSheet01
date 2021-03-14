@@ -25,7 +25,7 @@ namespace Cells.CellsTests
 	{
 		private SampleAnnoSymbols aSyms;
 
-		public RevitAnnoSyms AnnoSyms { get; private set; } = new RevitAnnoSyms();
+		// public RevitAnnoSyms AnnoSyms { get; private set; } = new RevitAnnoSyms();
 
 		public RevitCatagorizeParam catParam;
 
@@ -53,53 +53,53 @@ namespace Cells.CellsTests
 
 		}
 
-		public void Process2()
-		{
-			aSyms = new SampleAnnoSymbols();
-			aSyms.Process();
-
-			MainWindow.WriteLineTab("start process symbols");
-
-			listSymbols(aSyms.Symbols);
-
-			foreach (AnnotationSymbol annoSym in aSyms.Symbols)
-			{
-				MainWindow.WriteLineTab("\n");
-				MainWindow.WriteLineTab("process symbol| " + annoSym.Name);
-
-				RevitCellSym rvtCellSym = catParam.catagorizeAnnoSymParams(annoSym);
-				
-				rvtCellSym.AnnoSymbol = annoSym;
-
-				string key = RevitParamUtil.MakeAnnoSymKey(rvtCellSym, 
-					(int) RevitParamManager.NameIdx,  (int) RevitParamManager.SeqIdx, false);
-
-				MainWindow.WriteLineTab("   adding key| " + key);
-
-				AnnoSyms.Add(key, rvtCellSym);
-			}
-
-			OnPropertyChanged("AnnoSyms");
-			AnnoSyms.UpdateProperties();
-			
-			// foreach (KeyValuePair<string, RevitCellSym> kvp in AnnoSyms.Containers)
-			// {
-			// 	foreach (ARevitParam param in kvp.Value.RevitParamList)
-			// 	{
-			// 		if (param != null)
-			// 		{
-			// 			param.UpdateProperties();
-			// 		}
-			// 	}
-			//
-			// 	kvp.Value.UpdateProperties();
-			// }
-
-			RevitAnnoSyms annoSymsEnd = AnnoSyms;
-
-			MainWindow.WriteLineTab("process symbols complete");
-			MainWindow.WriteLineTab("\n");
-		}
+		// public void Process2()
+		// {
+		// 	aSyms = new SampleAnnoSymbols();
+		// 	aSyms.Process();
+		//
+		// 	MainWindow.WriteLineTab("start process symbols");
+		//
+		// 	listSymbols(aSyms.Symbols);
+		//
+		// 	foreach (AnnotationSymbol annoSym in aSyms.Symbols)
+		// 	{
+		// 		MainWindow.WriteLineTab("\n");
+		// 		MainWindow.WriteLineTab("process symbol| " + annoSym.Name);
+		//
+		// 		RevitCellSym rvtCellSym = catParam.catagorizeAnnoSymParams(annoSym);
+		// 		
+		// 		rvtCellSym.AnnoSymbol = annoSym;
+		//
+		// 		string key = RevitParamUtil.MakeAnnoSymKey(rvtCellSym, 
+		// 			(int) RevitParamManager.NameIdx,  (int) RevitParamManager.SeqIdx, false);
+		//
+		// 		MainWindow.WriteLineTab("   adding key| " + key);
+		//
+		// 		AnnoSyms.Add(key, rvtCellSym);
+		// 	}
+		//
+		// 	OnPropertyChanged("AnnoSyms");
+		// 	// AnnoSyms.UpdateProperties();
+		// 	
+		// 	// foreach (KeyValuePair<string, RevitCellSym> kvp in AnnoSyms.Containers)
+		// 	// {
+		// 	// 	foreach (ARevitParam param in kvp.Value.RevitParamList)
+		// 	// 	{
+		// 	// 		if (param != null)
+		// 	// 		{
+		// 	// 			param.UpdateProperties();
+		// 	// 		}
+		// 	// 	}
+		// 	//
+		// 	// 	kvp.Value.UpdateProperties();
+		// 	// }
+		//
+		// 	// RevitAnnoSyms annoSymsEnd = AnnoSyms;
+		//
+		// 	MainWindow.WriteLineTab("process symbols complete");
+		// 	MainWindow.WriteLineTab("\n");
+		// }
 
 //
 // 		private RevitCellSym catagorizePAnnoSymParams(AnnotationSymbol aSym)
@@ -366,31 +366,31 @@ namespace Cells.CellsTests
 			}
 		}
 
-		private void listSymbols(RevitAnnoSyms annoSyms)
-		{
-			MainWindow.WriteLineTab("\nList symbols");
-
-
-			foreach (KeyValuePair<string, RevitCellSym> kvp in annoSyms.Containers)
-			{
-				RevitCellSym symbol = kvp.Value;
-
-				MainWindow.WriteLineTab("\nsymbols| " + symbol.AnnoSymbol.Name + "  (" + kvp.Key + ")");
-				MainWindow.WriteLineTab("parameters| count| " + symbol.RevitParamList.Length);
-
-				foreach (ARevitParam param in symbol.RevitParamList)
-				{
-					MainWindow.WriteTab("   ");
-					MainWindow.WriteTab(param.ParamDesc.Index.ToString("###"));
-					MainWindow.WriteTab("  val| ");
-					MainWindow.WriteTab(param.GetValue());
-					MainWindow.WriteTab("  name| ");
-					MainWindow.WriteTab(param.ParamDesc.ParameterName);
-				}
-
-				MainWindow.WriteLineTab("\nComplete\n");
-			}
-		}
+		// private void listSymbols(RevitAnnoSyms annoSyms)
+		// {
+		// 	MainWindow.WriteLineTab("\nList symbols");
+		//
+		//
+		// 	foreach (KeyValuePair<string, RevitCellSym> kvp in annoSyms.ListOfRevitCellSym)
+		// 	{
+		// 		RevitCellSym symbol = kvp.Value;
+		//
+		// 		MainWindow.WriteLineTab("\nsymbols| " + symbol.AnnoSymbol.Name + "  (" + kvp.Key + ")");
+		// 		MainWindow.WriteLineTab("parameters| count| " + symbol.RevitParamList.Length);
+		//
+		// 		foreach (ARevitParam param in symbol.RevitParamList)
+		// 		{
+		// 			MainWindow.WriteTab("   ");
+		// 			MainWindow.WriteTab(param.ParamDesc.Index.ToString("###"));
+		// 			MainWindow.WriteTab("  val| ");
+		// 			MainWindow.WriteTab(param.GetValue());
+		// 			MainWindow.WriteTab("  name| ");
+		// 			MainWindow.WriteTab(param.ParamDesc.ParameterName);
+		// 		}
+		//
+		// 		MainWindow.WriteLineTab("\nComplete\n");
+		// 	}
+		// }
 
 		public event PropertyChangedEventHandler PropertyChanged;
 

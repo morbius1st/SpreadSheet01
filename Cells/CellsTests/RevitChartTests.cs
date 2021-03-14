@@ -21,7 +21,7 @@ namespace Cells.CellsTests
 	{
 		private SampleAnnoSymbols aSyms;
 
-		public RevitAnnoSyms Charts { get; private set; } = new RevitAnnoSyms();
+		// public RevitAnnoSyms Charts { get; private set; } = new RevitAnnoSyms();
 
 		public void Process()
 		{

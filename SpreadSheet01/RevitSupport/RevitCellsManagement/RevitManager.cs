@@ -1,5 +1,6 @@
 ﻿#region using
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -36,7 +37,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		// private List<RevitCellParams> errorList;
 
-		private RevitAnnoSyms annoSyms;
+		// private RevitAnnoSyms annoSyms;
 
 		private RevitParamManager rvtParamMgr = new RevitParamManager();
 		private RevitManagementSupport rvtMgmtSupport = new RevitManagementSupport();
@@ -52,7 +53,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public RevitManager()
 		{
-			annoSyms = new RevitAnnoSyms();
+			// annoSyms = new RevitAnnoSyms();
 			revitCat = new RevitCatagorizeParam();
 			rvtSelect = new RevitSelectSupport();
 		}
@@ -63,7 +64,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public bool GotCellFamilies { get; set; }
 
-		public RevitAnnoSyms Symbols => annoSyms;
+		// public RevitAnnoSyms Symbols => annoSyms;
 
 		public RevitSelectSupport RvtSelect
 		{
@@ -121,7 +122,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		{
 			int fail = 0;
 			// process all charts and add to list
-			foreach (KeyValuePair<string, RevitChart> kvp in Charts.Containers)
+			foreach (KeyValuePair<string, RevitChart> kvp in Charts.ListOfCharts)
 			{
 				// chart has all parameters retreived
 				RevitChart chart = kvp.Value;
@@ -134,40 +135,48 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			return true;
 		}
 
-
 		// provide the list of cell families
 		// process a chart and get the parameters for a family
 		private bool processOneChart(RevitChart chart)
 		{
-			string cellFamilyTypeName = chart.RvtChartSym.GetValue();
+			string cellFamilyTypeName = chart.RevitChartData.GetValue();
 
-			ICollection<Element> cellElements = RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName);
+		#if REVIT
+			ICollection<Element> cellElements 
+				= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName);
+		#endif
+
+		#if NOREVIT
+			int i = Int32.Parse(chart[RevitParamManager.SeqIdx].GetValue());
+
+			ICollection<Element> cellElements 
+				= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName, i);
+			
+		#endif
+
 
 			if (cellElements == null || cellElements.Count == 0) return false;
 
-			chart.Containers = new Dictionary<string, RevitCellSym>();
+			chart.ListOfCellSyms = new Dictionary<string, RevitCell>();
 
 			foreach (Element cell in cellElements)
 			{
-				RevitCellSym rvtCellSym = processCellFamily2(cell);
+				RevitCell rvtCell = processCellFamily2(cell);
 
-				string key = RevitParamUtil.MakeAnnoSymKey(rvtCellSym,
-					(int) RevitParamManager.NameIdx, (int) RevitParamManager.SeqIdx, false);
-
-				chart.Add(key, rvtCellSym);
+				chart.Add(rvtCell);
 			}
 
 			return true;
 		}
 
 
-		private RevitCellSym processCellFamily2(Element el)
+		private RevitCell processCellFamily2(Element el)
 		{
-			RevitCellSym rvtCellSym = revitCat.catagorizeAnnoSymParams(el as AnnotationSymbol);
+			RevitCell rvtCell = revitCat.catagorizeCellParams(el as AnnotationSymbol);
 
-			if (!rvtCellSym.IsValid) return null;
+			if (!rvtCell.IsValid) return null;
 
-			return rvtCellSym;
+			return rvtCell;
 		}
 
 

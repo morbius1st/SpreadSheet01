@@ -23,7 +23,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	#region private fields
 
 		public static string CELL_FAMILY_NAME = "CellData";
-		public static string CHART_FAMILY_NAME = RevitChartManager.RevitChartFamilyName;
+		public static string CHART_FAMILY_NAME = RevitCellSystManager.RevitChartFamilyName;
 
 		private static Families families = new Families();
 
@@ -235,7 +235,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			
 			f.AddParam(new ParamDesc("Ignore", 
 				LblIgnoreIdx, snLen, LABEL, 
-				PARAM_OPTIONAL, BOOL, READ_VALUE_REQUIRED, READ_FROM_PARAMETER));
+				PARAM_OPTIONAL, BOOL, READ_VALUE_REQUIRED, READ_FROM_PARAMETER, RevitCatagorizeParam.ParamBool));
 			
 			// f.AddParam(new ParamDesc("As Length", 
 			// 	LblAsLengthIdx, snLen, LABEL, 

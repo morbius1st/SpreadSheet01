@@ -1,15 +1,16 @@
-﻿using SpreadSheet01.RevitSupport.RevitParamInfo;
+﻿using System;
+using SpreadSheet01.RevitSupport.RevitParamInfo;
 using UtilityLibrary;
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
 /*
-	=$[A8] = cell address
-	=$$name = system variable
-	=$!name = global parameter
-	=$@name = cells label
-
-
+	={[A8]}  = excel cell address
+	={$name} = system variable	
+	={#name} = revit variable	
+	={%name} = project parameter
+	={!name} = global parameter
+	={@name} = label name
 
 */
 	public class RevitParamFormula : ARevitParam
@@ -45,6 +46,25 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 				this.dynValue.Value = value;
 			}
+		}
+
+		public string AsString => GetValue();
+		public double AsDouble => dynValue.AsDouble();
+		public bool AsBool => dynValue.AsBool();
+		public int AsInteger => dynValue.AsInteger();
+		public dynamic AsValue => dynValue.Value;
+
+		public Type GetType => dynValue.BaseType();
+
+		public bool Evaluate()
+		{
+			return true;
+		}
+
+
+		public override string ToString()
+		{
+			return "I am " + nameof(RevitParamFormula) + "| " + GetValue();
 		}
 	}
 }

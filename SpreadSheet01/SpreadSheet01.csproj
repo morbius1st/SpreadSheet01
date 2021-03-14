@@ -96,7 +96,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RevitSupport\RevitCellsManagement\RevitFamilies.cs" />
     <Compile Include="RevitSupport\RevitCellsManagement\RevitManagementSupport.cs" />
-    <Compile Include="RevitSupport\RevitChartInfo\RevitChartManager.cs" />
+    <Compile Include="RevitSupport\RevitChartInfo\RevitCellsSysManager.cs" />
     <Compile Include="RevitSupport\RevitChartInfo\RevitChartParameters.cs" />
     <Compile Include="RevitSupport\RevitParamInfo\ParamCategories.cs" />
     <Compile Include="RevitSupport\RevitParamInfo\ParamDescription.cs" />
@@ -139,6 +139,7 @@
     <Content Include=".Other\SpreadSheet01.addin" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

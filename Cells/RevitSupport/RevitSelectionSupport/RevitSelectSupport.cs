@@ -18,11 +18,12 @@ namespace SpreadSheet01.RevitSupport.RevitSelectionSupport
 	{
 		private SampleAnnoSymbols sample = new SampleAnnoSymbols();
 
-		public ICollection<Element> GetCellFamilies(Document doc, string familyTypeName)
+		// public ICollection<Element> GetCellFamilies(Document doc, string familyTypeName)
+		public ICollection<Element> GetCellFamilies(Document doc, string familyTypeName, int seq)
 		{
 			sample.Process();
 
-			return sample.CellElements;
+			return sample.CellElements[seq];
 		}
 	}
 }
