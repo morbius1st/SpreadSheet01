@@ -136,6 +136,9 @@
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\DynamicValue.cs">
       <Link>RevitSupport\RevitParamValue\DynamicValue.cs</Link>
     </Compile>
+    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitCellErrorCode.cs">
+      <Link>RevitSupport\RevitParamValue\RevitCellErrorCode.cs</Link>
+    </Compile>
     <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitCellParams.cs">
       <Link>RevitSupport\RevitParamValue\RevitCellParams.cs</Link>
     </Compile>

@@ -1,19 +1,13 @@
 ﻿#region + Using Directives
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 #endregion
 
 // user name: jeffs
 // created:   3/7/2021 4:03:16 PM
 
-namespace SpreadSheet01.RevitSupport.RevitParamInfo
+namespace SpreadSheet01.RevitSupport
 {
-	public enum FamilyType
+/*	public enum FamilyType
 	{
 		CHART,
 		CELL
@@ -25,19 +19,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 		SUBCATEGORY,
 		FAMILYTYPE
 	}
-
-	public enum ParamCat
-	{
-		CT_ANNOTATION,
-		CT_WALLS
-	}
-
-	public enum ParamSubCat
-	{
-		SC_GENERIC_ANNOTATION,
-		SC_CURTAIN_WALLS
-	}
-	
+*/
 
 	// public class ParamCats
 	// {

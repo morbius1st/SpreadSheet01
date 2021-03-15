@@ -7,6 +7,7 @@ using System.Drawing.Printing;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
+using SpreadSheet01.RevitSupport;
 using SpreadSheet01.RevitSupport.RevitChartInfo;
 using SpreadSheet01.RevitSupport.RevitParamInfo;
 using SpreadSheet01.RevitSupport.RevitParamValue;
@@ -275,39 +276,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			return "I am RevitLabel| " + Name;
 		}
 	}
-		
-	// public class RevitAnnoSyms : RevitContainers<string, RevitCellSym>
-	// {
-	// 	public Dictionary<string, RevitCellSym> ListOfRevitCellSym => Containers;
-	//
-	// 	public new void Add(string key, RevitCellSym container)
-	// 	{
-	// 		base.Add(key, container);
-	// 	}
-	//
-	// 	public override string ToString()
-	// 	{
-	// 		return "I am RevitAnnoSyms| " /*+ GetValue()*/;
-	// 	}
-	// }
-
-	
-	// public class RevitLabels : RevitContainers<string, RevitLabel>
-	// {
-	// 	public Dictionary<string, RevitLabel> ListOfLabels => Containers;
-	//
-	// 	public new void Add(string key, RevitLabel container)
-	// 	{
-	// 		base.Add(key, container);
-	// 	}
-	//
-	// 	public override string ToString()
-	// 	{
-	// 		return "I am RevitLabels| " /*+ GetValue()*/;
-	// 	}
-	// }
-
-
 
 #endregion
 

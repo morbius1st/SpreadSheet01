@@ -1,14 +1,15 @@
 ﻿#region using
 
-using SpreadSheet01.RevitSupport.RevitParamInfo;
-using SpreadSheet01.RevitSupport.RevitParamValue;
+using SpreadSheet01.RevitSupport;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamReadReqmt;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamDataType;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamMode;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamType;
 using static SpreadSheet01.RevitSupport.RevitParamValue.ParamExistReqmt;
-using static SpreadSheet01.RevitSupport.RevitParamInfo.ParamCat;
-using static SpreadSheet01.RevitSupport.RevitParamInfo.ParamSubCat;
+using static SpreadSheet01.RevitSupport.RevitParamValue.ParamCat;
+using static SpreadSheet01.RevitSupport.RevitParamValue.ParamSubCat;
+using SpreadSheet01.RevitSupport.RevitChartInfo;
+using SpreadSheet01.RevitSupport.RevitParamInfo;
 
 #endregion
 
@@ -63,6 +64,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		// common indices
 		public static readonly int NameIdx				= CommonParameters++;
 		public static readonly int SeqIdx				= CommonParameters++;
+		public static readonly int Descdx				= CommonParameters++;
 
 		public static int AllChartParamCount			= CommonParameters;
 
@@ -78,7 +80,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		// cell indices (basic)
 		public static readonly int HasErrorsIdx         = CellBasicParamCount++;
-		// public static readonly int LabelsIdx            = CellBasicParamCount++;
 		// end of list
 
 		public static int CellLabelParamCount			= 0;
@@ -90,11 +91,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		public static readonly int LblDataTypeIdx       = CellLabelParamCount++;
 		public static readonly int LblFormatInfoIdx     = CellLabelParamCount++;
 		public static readonly int LblIgnoreIdx         = CellLabelParamCount++;
-		// public static readonly int LblAsLengthIdx       = CellLabelParamCount++;
-		// public static readonly int LblAsNumberIdx       = CellLabelParamCount++; 
-		// public static readonly int LblAsYesNoIdx        = CellLabelParamCount++; 
 
-		// public static int AllCellParamCount				= CellBasicParamCount + CellLabelParamCount;
 
 	#endregion
 
@@ -137,11 +134,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			return CellParams.Match(LABEL, paramName);
 		}
 
-
-
-
-
-
 	#endregion
 
 	#region private methods
@@ -164,18 +156,21 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			f.AddParam(new ParamDesc("Sequence", 
 				SeqIdx, snLen, INSTANCE, PARAM_OPTIONAL, TEXT, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER));
 			// 2
+			f.AddParam(new ParamDesc("Description", 
+				Descdx, snLen, INSTANCE, PARAM_OPTIONAL, TEXT, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER));
+			// 3
 			f.AddParam(new ParamDesc("Excel File Path", 
 				ChartFilePathIdx, snLen, INSTANCE, PARAM_MUST_EXIST, FILE_PATH, READ_VALUE_REQUIRED, READ_FROM_PARAMETER));
-			// 3
+			// 4
 			f.AddParam(new ParamDesc("Excel WorkSheet Name", 
 				ChartWorkSheetIdx, snLen, INSTANCE, PARAM_MUST_EXIST, TEXT, READ_VALUE_REQUIRED, READ_FROM_PARAMETER));
-			// 4
+			// 5
 			f.AddParam(new ParamDesc("Cell Family Name", 
 				ChartFamilyNameIdx, snLen, INSTANCE, PARAM_MUST_EXIST, TEXT, READ_VALUE_REQUIRED, READ_FROM_PARAMETER));
-			// 5
+			// 6
 			f.AddParam(new ParamDesc("Update Type", 
 				ChartUpdateTypeIdx, snLen, INSTANCE, PARAM_OPTIONAL, UPDATE_TYPE, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER));
-			// 6
+			// 7
 			f.AddParam(new ParamDesc("Cells With Errors", 
 				ChartHasErrorsIdx, snLen, INSTANCE, PARAM_MUST_EXIST, TEXT, READ_VALUE_IGNORE, CALCULATED));
 
@@ -192,13 +187,16 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			int snLen = f.ShortNameLength(LABEL);
 
 			f.ConfigureLists(new [] {5, 5, CellBasicParamCount, CellLabelParamCount});
-
+			//0
 			f.AddParam(new ParamDesc("Name", 
 				NameIdx, snLen, INSTANCE, PARAM_MUST_EXIST, TEXT, READ_VALUE_REQUIRED, READ_FROM_PARAMETER));
-
+			//1
 			f.AddParam(new ParamDesc("Sequence", 
 				SeqIdx, snLen, INSTANCE, PARAM_OPTIONAL, TEXT, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER));
-
+			// 2
+			f.AddParam(new ParamDesc("Description", 
+				Descdx, snLen, INSTANCE, PARAM_OPTIONAL, TEXT, READ_VALUE_OPTIONAL, READ_FROM_PARAMETER));
+			//3
 			f.AddParam(new ParamDesc("Has Error", 
 				HasErrorsIdx , snLen, INSTANCE, PARAM_MUST_EXIST, BOOL, READ_VALUE_IGNORE, CALCULATED));
 
@@ -235,19 +233,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			
 			f.AddParam(new ParamDesc("Ignore", 
 				LblIgnoreIdx, snLen, LABEL, 
-				PARAM_OPTIONAL, BOOL, READ_VALUE_REQUIRED, READ_FROM_PARAMETER, RevitCatagorizeParam.ParamBool));
-			
-			// f.AddParam(new ParamDesc("As Length", 
-			// 	LblAsLengthIdx, snLen, LABEL, 
-			// 	PARAM_OPTIONAL, NUMBER, READ_VALUE_IGNORE, CALCULATED));
-			//
-			// f.AddParam(new ParamDesc("As Number", 
-			// 	LblAsNumberIdx, snLen, LABEL, 
-			// 	PARAM_OPTIONAL, NUMBER, READ_VALUE_IGNORE, CALCULATED));
-			//
-			// f.AddParam(new ParamDesc("As Yes-No", 
-			// 	LblAsYesNoIdx, snLen, LABEL, 
-			// 	PARAM_OPTIONAL, NUMBER, READ_VALUE_IGNORE, CALCULATED));
+				PARAM_OPTIONAL, BOOL, READ_VALUE_REQUIRED, READ_FROM_PARAMETER));
 		}
 
 

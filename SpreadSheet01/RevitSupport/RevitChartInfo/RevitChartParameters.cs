@@ -1,21 +1,11 @@
 ﻿#region + Using Directives
 
-using System.Collections.Generic;
-using System.Diagnostics;
-using SpreadSheet01.RevitSupport;
-using SpreadSheet01.RevitSupport.RevitParamInfo;
-using static SpreadSheet01.RevitSupport.RevitParamValue.ParamReadReqmt;
-using static SpreadSheet01.RevitSupport.RevitParamValue.ParamDataType;
-using static SpreadSheet01.RevitSupport.RevitParamValue.ParamMode;
-using static SpreadSheet01.RevitSupport.RevitParamValue.ParamExistReqmt;
-
-using SpreadSheet01.RevitSupport.RevitParamInfo;
 #endregion
 
 // user name: jeffs
 // created:   3/1/2021 10:42:06 PM
 
-namespace SpreadSheet01.RevitSupport.RevitChartInfo
+namespace SpreadSheet01.RevitSupport
 {
 
 

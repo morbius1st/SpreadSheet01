@@ -4,9 +4,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using Cells.CellsTests;
-using SpreadSheet01.RevitSupport;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
+using SpreadSheet01.RevitSupport.RevitChartInfo;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using UtilityLibrary;
 
@@ -26,13 +25,13 @@ namespace Cells.Windows
 	{
 	#region private fields
 
-		public RevitParamTest RevitParamTests { get; } = new RevitParamTest();
+		// public RevitParamTest RevitParamTests { get; } = new RevitParamTest();
 
 		public RevitCellSystManager RevitChartMgr { get; } = new RevitCellSystManager();
 
 		public RevitManager RevitMgr { get; } = new RevitManager();
 
-		public RevitChartTests RevitChartTests { get; } = new RevitChartTests();
+		// public RevitChartTests RevitChartTests { get; } = new RevitChartTests();
 
 		private static MainWindow me;
 

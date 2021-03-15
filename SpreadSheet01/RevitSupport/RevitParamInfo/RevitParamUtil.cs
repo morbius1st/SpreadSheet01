@@ -26,8 +26,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 		}
 
 
-
-		
 		public static string MakeAnnoSymKey(IAnnoSymContainer aSym, int nameIdex, int seqIndex, bool asSeqName = true)
 		{
 			string seq = aSym[seqIndex].GetValue();
@@ -38,7 +36,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			name = name.IsVoid() ? "un-named" : name;
 
 			string eid = aSym.AnnoSymbol?.Id.ToString() ?? "Null Symbol " + annoSymUniqueIdx++.ToString("D7");
-			
+
 			if (asSeqName) return seq + name + eid;
 
 			return name + seq + eid;
@@ -57,7 +55,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			string test = name.Trim();
 
 			// Regex rx = new Regex(@"(?<=^\#\d|^\#\d\d)(\s+)(.*[^\s])|^(.*)(?=\s\#\d{1,2}\s*$)");
-			Regex rx = new Regex(@"((?>^(?<name>.*)(?=\s\#(?<digits>\d{1,2})\s*$).*)|(?>(?>^\s*\#(?<digits>\d{1,2})\s+)(?<name>.*[^\s]))|(?<name>.*[^\s]))", RegexOptions.ExplicitCapture);
+			Regex rx = new Regex(@"((?>^(?<name>.*)(?=\s\#(?<digits>\d{1,2})\s*$).*)|(?>(?>^\s*\#(?<digits>\d{1,2})\s+)(?<name>.*[^\s]))|(?<name>.*[^\s]))",
+				RegexOptions.ExplicitCapture);
 			Match m = rx.Match(name);
 
 			if (!m.Success) return name;
@@ -79,57 +78,5 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			return m.Groups["name"].Value;
 
 		}
-
-
-
-		// provide a "clean" parameter name
-		// provide label parameter id (as out)
-		// provide bool if the info provided is for the label
-		public static string GetParamName(string paramName, out int id, out bool isLabel)
-		{
-			int idx1;
-			int idx2;
-
-			string name;
-
-			isLabel = false;
-
-			id = GetLabelIndex(paramName, out idx1, out idx2);
-
-			if (id < 0) return paramName;
-
-			if (idx1 == 1)
-			{
-				name = paramName.Substring(idx2 + 1).Trim();
-				isLabel = true;
-			}
-			else
-			{
-				name = paramName.Substring(0, idx1-1).Trim();
-			}
-
-			return name;
-		}
-
-		public static int GetLabelIndex(string paramName, out int idx1, out int idx2)
-		{
-			idx2 = -1;
-			idx1 = paramName.IndexOf(LABEL_ID_PREFIX) + 1;
-
-			if (idx1 <= 0) return -1;
-
-			idx2 = paramName.IndexOf(' ', idx1);
-
-			idx2 = idx2 > 0 ? idx2 - idx1 : paramName.Length - idx1;
-
-			bool result;
-			int index;
-			string test = paramName.Substring(idx1, idx2);
-
-			result = int.TryParse(paramName.Substring(idx1, idx2), out index);
-
-			return result ? index : -1;
-		}
-
 	}
 }

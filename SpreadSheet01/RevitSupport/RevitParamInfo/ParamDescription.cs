@@ -2,11 +2,7 @@
 
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using Autodesk.Revit.DB;
-using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using UtilityLibrary;
 
@@ -37,8 +33,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			ParamExistReqmt paramExist,
 			ParamDataType dataType,
 			ParamReadReqmt paramReadReqmt,
-			ParamMode paramMode,
-			RevitCatagorizeParam.MakeParamDelegate makeParam = null)
+			ParamMode paramMode)
+			// RevitCatagorizeParam.MakeParamDelegate makeParam = null)
 		{
 			Index = index;
 			ParameterName = paramName;
@@ -51,7 +47,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 			ReadReqmt = paramReadReqmt;
 			Mode = paramMode;
 
-			MakeParam = makeParam;
+			// MakeParam = makeParam;
 		}
 
 	#endregion
@@ -82,7 +78,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 		public ParamReadReqmt ReadReqmt { get; protected set; }
 		public ParamMode Mode           { get; protected set; }
 
-		public RevitCatagorizeParam.MakeParamDelegate MakeParam { get; private set; }
+		// public RevitCatagorizeParam.MakeParamDelegate MakeParam { get; private set; }
 
 
 		// public ParamGroup Group         { get; protected set; }
@@ -96,15 +92,15 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 
 	#region public methods
 
-		public void InvokeDelegate(Parameter param)
-		{
-			Debug.WriteLine("got invoke");
-
-			if (MakeParam != null)
-			{
-				MakeParam.Invoke(param, this);
-			}
-		}
+		// public void InvokeDelegate(Parameter param)
+		// {
+		// 	Debug.WriteLine("got invoke");
+		//
+		// 	if (MakeParam != null)
+		// 	{
+		// 		MakeParam.Invoke(param, this);
+		// 	}
+		// }
 
 		public void SetShortName()
 		{
@@ -152,45 +148,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamInfo
 		}
 
 	#endregion
-
-
-
-		
-		// public string GetRootName(string name)
-		// {
-		// 	if (name.IsVoid()) return "";
-		//
-		// 	string test = name.Trim();
-		//
-		// 	// Regex rx = new Regex(@"(?<=^\#\d|^\#\d\d)(\s+)(.*[^\s])|^(.*)(?=\s\#\d{1,2}\s*$)");
-		// 	Regex rx = new Regex(@"((?>^(?<name>.*)(?=\s\#(?<digits>\d{1,2})\s*$).*)|(?>(?>^\s*\#(?<digits>\d{1,2})\s+)(?<name>.*[^\s]))|(?<name>.*[^\s]))", RegexOptions.ExplicitCapture);
-		// 	Match m = rx.Match(name);
-		//
-		// 	if (!m.Success) return name;
-		//
-		// 	return m.Groups["name"].Value;
-		//
-		// 	// int pos1 = name.IndexOf('#');
-		// 	// int pos2 = name.IndexOf(' ');
-		// 	//
-		// 	// if (pos1 == -1 || pos2 == -1) return name;
-		// 	//
-		// 	// if (pos1 < pos2)
-		// 	// {
-		// 	// 	test = test.Substring(pos2 + 1).Trim();
-		// 	// } 
-		// 	// else
-		// 	// {
-		// 	// 	test = test.Substring(0, pos2).Trim();
-		// 	// }
-		// 	//
-		// 	// return test;
-		// }
-
-		// public string GetShortName(string rootName)
-		// {
-		// 	return GetShortName(rootName, ShortNameLen);
-		// }
 
 	}
 }

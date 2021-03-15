@@ -18,10 +18,7 @@ namespace SpreadSheet01.RevitSupport.RevitSelectionSupport
 			return this.SelectbyCatAndMatchStringParameter(doc,
 				BuiltInCategory.OST_GenericAnnotation, familyTypeName);
 
-
 		}
-
-
 
 		// public bool GetCellFamilies(Document doc, string familyTypeName, RevitManager revitManager)
 		// {

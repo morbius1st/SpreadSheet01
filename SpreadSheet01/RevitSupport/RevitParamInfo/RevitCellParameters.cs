@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using static SpreadSheet01.RevitSupport.RevitParamValue.ParamReadReqmt;
-using static SpreadSheet01.RevitSupport.RevitParamValue.ParamDataType;
-using static SpreadSheet01.RevitSupport.RevitParamValue.ParamMode;
-using static SpreadSheet01.RevitSupport.RevitParamValue.ParamExistReqmt;
+﻿
 
 // Solution:     SpreadSheet01
 // Project:       SpreadSheet01
@@ -11,7 +6,7 @@ using static SpreadSheet01.RevitSupport.RevitParamValue.ParamExistReqmt;
 // Created:      2021-02-20 (5:36 AM)
 
 
-namespace SpreadSheet01.RevitSupport.RevitParamInfo
+namespace SpreadSheet01.RevitSupport
 {
 
 /*

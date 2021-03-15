@@ -5,7 +5,6 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:data="clr-namespace:Cells.CellsTests"
 		xmlns:rvt="clr-namespace:SpreadSheet01.RevitSupport"
-		xmlns:val="clr-namespace:SpreadSheet01.RevitSupport.RevitParamValue"
 		xmlns:local="clr-namespace:Cells.Windows"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:mgmt="clr-namespace:SpreadSheet01.RevitSupport.RevitCellsManagement"

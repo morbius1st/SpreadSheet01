@@ -6,6 +6,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using SpreadSheet01.RevitSupport;
 using SpreadSheet01.RevitSupport.RevitParamInfo;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 
@@ -127,13 +128,13 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			return paramLists[(int) type][idx];
 		}
 
-		public dynamic GetClassification(FamilyClassificationType type)
-		{
-			if (type == FamilyClassificationType.CATEGORY) return Category;
-			if (type == FamilyClassificationType.SUBCATEGORY) return SubCategory;
-			if (type == FamilyClassificationType.FAMILYTYPE) return FamilyName;
-			return null;
-		}
+		// public dynamic GetClassification(FamilyClassificationType type)
+		// {
+		// 	if (type == FamilyClassificationType.CATEGORY) return Category;
+		// 	if (type == FamilyClassificationType.SUBCATEGORY) return SubCategory;
+		// 	if (type == FamilyClassificationType.FAMILYTYPE) return FamilyName;
+		// 	return null;
+		// }
 
 		public List<ParamDesc> ParamList(ParamType type)
 		{

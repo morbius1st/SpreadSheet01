@@ -3,15 +3,11 @@
 // File:             RevitParamAddr.cs
 // Created:      2021-02-22 (9:53 PM)
 
-using SpreadSheet01.ExcelSupport;
-using SpreadSheet01.RevitSupport.RevitParamInfo;
-using UtilityLibrary;
-
-namespace SpreadSheet01.RevitSupport.RevitParamValue
+namespace SpreadSheet01.RevitSupport
 {
-	public class RevitParamRelativeAddr : ARevitParam
+/*	public class RevitParamRelativeAddr : ARevitParam
 	{
-		
+
 		public int Row { get; private set; }
 		public int Col { get; private set; }
 
@@ -54,5 +50,5 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 			}
 		}
-	}
+	}*/
 }

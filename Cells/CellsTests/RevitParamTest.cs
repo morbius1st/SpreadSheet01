@@ -7,9 +7,7 @@ using Autodesk.Revit.DB;
 using Cells.Windows;
 using SpreadSheet01.RevitSupport;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
-using SpreadSheet01.RevitSupport.RevitParamValue;
-using SpreadSheet01.RevitSupport.RevitParamInfo;
-using static SpreadSheet01.RevitSupport.RevitParamValue.ParamType;
+
 using static SpreadSheet01.RevitSupport.RevitCellsManagement.RevitParamManager;
 
 
@@ -21,6 +19,7 @@ using static SpreadSheet01.RevitSupport.RevitCellsManagement.RevitParamManager;
 
 namespace Cells.CellsTests
 {
+/*
 	public class RevitParamTest : INotifyPropertyChanged
 	{
 		private SampleAnnoSymbols aSyms;
@@ -399,4 +398,5 @@ namespace Cells.CellsTests
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(memberName));
 		}
 	}
+*/
 }

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using Autodesk.Revit.DB;
+
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
-using SpreadSheet01.RevitSupport.RevitParamInfo;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using static SpreadSheet01.RevitSupport.RevitParamValue.RevitCellErrorCode;
 
@@ -13,7 +13,7 @@ using static SpreadSheet01.RevitSupport.RevitParamValue.RevitCellErrorCode;
 // Created:      2021-03-03 (7:31 PM)
 
 
-namespace SpreadSheet01.RevitSupport
+namespace SpreadSheet01.RevitSupport.RevitParamInfo
 {
 	public class RevitCatagorizeParam
 	{
@@ -184,23 +184,17 @@ namespace SpreadSheet01.RevitSupport
 		}
 
 
-		public delegate ARevitParam MakeParamDelegate(Parameter param, ParamDesc pd);
-
-
-		MakeParamDelegate ParamBoolDelegate = ParamBool;
-
-		public static ARevitParam ParamBool(Parameter param, ParamDesc pd)
-		{
-			// return new RevitParamBool(
-			// 	pd.ReadReqmt ==
-			// 	ParamReadReqmt.READ_VALUE_IGNORE
-			// 		? (bool?) false
-			// 		: param.AsInteger() == 1, pd);
-
-			Debug.WriteLine("got bool delegate");
-
-			return null;
-		}
+		// public delegate ARevitParam MakeParamDelegate(Parameter param, ParamDesc pd);
+		//
+		//
+		// MakeParamDelegate ParamBoolDelegate = ParamBool;
+		//
+		// public static ARevitParam ParamBool(Parameter param, ParamDesc pd)
+		// {
+		// 	Debug.WriteLine("got bool delegate");
+		//
+		// 	return null;
+		// }
 
 
 		private ARevitParam catagorizeParameter(Parameter param, ParamDesc pd, string name = "")
@@ -253,22 +247,6 @@ namespace SpreadSheet01.RevitSupport
 							: param.AsString(), pd);
 					break;
 				}
-			case ParamDataType.ADDRESS:
-				{
-					p = new RevitParamText(pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
-							? ""
-							: param.AsString(), pd);
-					break;
-				}
-			case ParamDataType.RELATIVEADDRESS:
-				{
-					p = new RevitParamRelativeAddr(pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
-							? ""
-							: param.AsString(), pd);
-					break;
-				}
 			case ParamDataType.FILE_PATH:
 				{
 					p = new RevitParamFilePath(pd.ReadReqmt ==
@@ -304,124 +282,5 @@ namespace SpreadSheet01.RevitSupport
 			return p;
 		}
 
-		/*
-
-		
-		public RevitCellSym catagorizeAnnoSymParams2(AnnotationSymbol aSym)
-		{
-			RevitCellSym ras = new RevitCellSym();
-			ARevitParam rvtParam;
-
-			int dataParamCount = 0;
-			int labelParamCount = 0;
-			int containerParamCount = 0;
-
-			int labelId;
-			bool isLabel;
-			ParamDesc2 pd;
-
-			foreach (Parameter param in aSym.GetOrderedParameters())
-			{
-				string paramName = RevitParamUtil.GetParamName(param.Definition.Name,
-					out labelId, out isLabel);
-
-				pd = RevitCellParameters.Match(paramName);
-
-				if (pd == null) continue;
-
-				switch (pd.Group)
-				{
-				case ParamGroup.DATA:
-					{
-						dataParamCount++;
-						if (pd.DataType == ParamDataType.IGNORE) continue;
-
-						rvtParam = catagorizeParameter(param, pd);
-
-						ras.Add(pd.Index, rvtParam);
-						break;
-					}
-				case ParamGroup.CONTAINER:
-					{
-						containerParamCount++;
-						if (pd.DataType == ParamDataType.IGNORE) continue;
-
-						RevitLabels labels = (RevitLabels) ras[RevitCellParameters.LabelsIdx];
-
-						saveLabelParam(labelId, param, pd, labels);
-
-						break;
-					}
-				case ParamGroup.LABEL_GRP:
-					{
-						labelParamCount++;
-						if (labelId < 0 || pd.DataType == ParamDataType.IGNORE) continue;
-
-						RevitLabels labels = (RevitLabels) ras[RevitCellParameters.LabelsIdx];
-
-						saveLabelParam(labelId, param, pd, labels);
-
-						break;
-					}
-				}
-			}
-
-			return ras;
-		}
-
-
-
-
-
-		public RevitChartSym CatagorizeChartSymParams2(Element elChart)
-		{
-			RevitChartSym rcs = new RevitChartSym();
-			ARevitParam rvtParam;
-
-			int dataParamCount = 0;
-			int mustExistParamCount = 0;
-
-			ParamDesc pd;
-
-			foreach (Parameter param in elChart.GetOrderedParameters())
-			{
-				string paramName = param.Definition.Name;
-
-				pd = RevitChartParameters.Match(paramName);
-
-				if (pd == null) continue;
-
-				if (pd.Exist == ParamExistReqmt.PARAM_MUST_EXIST) mustExistParamCount++;
-
-				switch (pd.Group)
-				{
-				case ParamGroup.DATA:
-					{
-						dataParamCount++;
-						if (pd.DataType == ParamDataType.IGNORE) continue;
-
-						rvtParam = catagorizeParameter(param, pd);
-
-						rcs.Add(pd.Index, rvtParam);
-						break;
-					}
-				default:
-					{
-						rvtParam = ARevitParam.Invalid;
-						rvtParam.ErrorCode = PARAM_CHART_INVALID_PROG_GRP_CS001140;
-						rcs.Add(pd.Index, rvtParam);
-
-						break;
-					}
-				}
-
-				if (!rvtParam.IsValid) rcs.ErrorCode = PARAM_CHART_PARAM_HAS_ERROR_CS001135;
-
-			}
-			validateChartSymParams(rcs, mustExistParamCount, mustExistParamCount);
-
-			return rcs;
-		}
-		*/
 	}
 }

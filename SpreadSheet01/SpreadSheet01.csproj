@@ -106,6 +106,7 @@
     <Compile Include="RevitSupport\RevitParamInfo\RevitParamUtil.cs" />
     <Compile Include="RevitSupport\RevitCellsManagement\RevitParamManager.cs" />
     <Compile Include="RevitSupport\RevitParamValue\DynamicValue.cs" />
+    <Compile Include="RevitSupport\RevitParamValue\RevitCellErrorCode.cs" />
     <Compile Include="RevitSupport\RevitParamValue\RevitCellParams.cs" />
     <Compile Include="RevitSupport\RevitParamInfo\RevitCellParameters.cs" />
     <Compile Include="RevitSupport\RevitChartInfo\RevitChartItem.cs" />

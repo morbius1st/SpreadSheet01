@@ -3,13 +3,7 @@
 // File:             ParamDescription.cs
 // Created:      2021-03-07 (6:02 AM)
 
-using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using SpreadSheet01.RevitSupport.RevitParamValue;
-using UtilityLibrary;
-
-namespace SpreadSheet01.RevitSupport.RevitParamInfo
+namespace SpreadSheet01.RevitSupport
 {
 /*
 	public class ParamDesc2 : INotifyPropertyChanged

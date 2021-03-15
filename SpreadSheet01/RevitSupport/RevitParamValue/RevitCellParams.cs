@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Autodesk.Revit.DB;
+﻿
 
 
 // Solution:     SpreadSheet01
@@ -7,7 +6,7 @@ using Autodesk.Revit.DB;
 // File:             RevitCellParams.cs
 // Created:      2021-02-17 (6:43 PM)
 
-namespace SpreadSheet01.RevitSupport.RevitParamValue
+namespace SpreadSheet01.RevitSupport
 {
 	// public class RevitCellParams
 	// {

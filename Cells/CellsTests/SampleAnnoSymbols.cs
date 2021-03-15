@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
+
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
+using SpreadSheet01.RevitSupport.RevitParamInfo;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using static SpreadSheet01.RevitSupport.RevitCellsManagement.RevitParamManager;
 
@@ -229,7 +231,8 @@ namespace Cells.CellsTests
 
 			AddInstParameter(SeqIdx           , 0, ParamDataType.TEXT, "0");
 			AddInstParameter(NameIdx          , 0, ParamDataType.TEXT, "MyCellname1"+ chartIdx.ToString("D2"));
-			// AddParameter(RevitParamManager.CellAddrIdx      , 0, ParamDataType.TEXT, "@A2");
+			AddInstParameter(Descdx           , 0, ParamDataType.TEXT, "Description 0");
+			
 			AddInstParameter(HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
 
 			// AddParameter(RevitParamManager.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
@@ -370,6 +373,7 @@ namespace Cells.CellsTests
 		{
 			AddChart(SeqIdx              , 0, ParamDataType.TEXT, "0");
 			AddChart(NameIdx             , 0, ParamDataType.TEXT, "MyChartname0");
+			AddChart(Descdx              , 0, ParamDataType.TEXT, "Description 0");
 			AddChart(ChartFilePathIdx    , 0, ParamDataType.TEXT, @".\CsSampleChart_01_02.xlsx");
 			AddChart(ChartWorkSheetIdx   , 0, ParamDataType.TEXT, "CsSheet 1");
 			AddChart(ChartFamilyNameIdx  , 0, ParamDataType.TEXT, "CsCellFamily01");
