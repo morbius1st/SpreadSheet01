@@ -14,6 +14,7 @@ using SpreadSheet01.RevitSupport.RevitSelectionSupport;
 
 namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 {
+/*
 	public class RevitManager : INotifyPropertyChanged
 	{
 	#region private fields
@@ -145,4 +146,5 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	#endregion
 
 	}
+*/
 }

@@ -16,7 +16,7 @@ namespace SpreadSheet01.ExcelSupport
 		private const string UNIT_FORMAT_STR = "Unit Format";
 		private const string VALUE = "Value";
 
-		private RevitManager rvtMgr;
+		// private RevitManager rvtMgr;
 
 		private ExcelManager exMgr = new ExcelManager();
 

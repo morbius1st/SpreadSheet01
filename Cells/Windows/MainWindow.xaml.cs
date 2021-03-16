@@ -27,9 +27,9 @@ namespace Cells.Windows
 
 		// public RevitParamTest RevitParamTests { get; } = new RevitParamTest();
 
-		public RevitCellSystManager RevitChartMgr { get; } = new RevitCellSystManager();
+		public RevitCellSystManager RevitCellsSystMgr { get; } = new RevitCellSystManager();
 
-		public RevitManager RevitMgr { get; } = new RevitManager();
+		// public RevitManager RevitMgr { get; } = new RevitManager();
 
 		// public RevitChartTests RevitChartTests { get; } = new RevitChartTests();
 
@@ -149,16 +149,16 @@ namespace Cells.Windows
 
 			// get all of the revit chart families and 
 			// process each to get its parameters
-			result = RevitChartMgr.GetCurrentCharts();
+			result = RevitCellsSystMgr.GetCurrentCharts();
 
 			if (!result) return;
 
 			// RevitChartMgr.listCharts();
 
 
-			RevitMgr.ProcessCharts(RevitChartMgr.Charts, CellUpdateTypeCode.ALL);
+			RevitCellsSystMgr.ProcessCharts(RevitCellsSystMgr.Charts, CellUpdateTypeCode.ALL);
 
-			RevitChartMgr.listCharts2();
+			RevitCellsSystMgr.listCharts2();
 
 			// old - load the parameter descriptions
 			// RevitChartTests.Process();

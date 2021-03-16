@@ -24,13 +24,13 @@ namespace SpreadSheet01.Windows
 	/// </summary>
 	public partial class SelectCharts : Window, INotifyPropertyChanged
 	{
-		private RevitManager rvtMgr;
+		// private RevitManager rvtMgr;
 
 		public SelectCharts()
 		{
 			InitializeComponent();
 
-			rvtMgr = new RevitManager();
+			// rvtMgr = new RevitManager();
 		}
 
 		// public RevitManager RevitMgr => rvtMgr;

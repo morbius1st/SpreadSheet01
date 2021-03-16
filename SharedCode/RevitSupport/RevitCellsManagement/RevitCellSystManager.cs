@@ -1,11 +1,13 @@
 ﻿#region using directives
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
 using SpreadSheet01.RevitSupport.RevitParamValue;
+using SpreadSheet01.RevitSupport.RevitSelectionSupport;
 using UtilityLibrary;
 #if NOREVIT
 using Cells.Windows;
@@ -27,6 +29,8 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		private static string CHART_FAMILY_NAME = "SpreadSheetData";
 
+		private const string ROOT_TRANSACTION_NAME = "Transaction Name";
+
 		private const string KEY_IDX_BEGIN  = "《";
 		private const string KEY_IDX_END    = "》";
 
@@ -34,7 +38,8 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		// this holds a collection of individual charts
 		public RevitCharts Charts { get; private set; } = new RevitCharts();
 
-		private readonly RevitParamCatagorize revitCat = new RevitParamCatagorize();
+		private readonly RevitParamCatagorize revitCat;
+		private RevitSelectSupport rvtSelect;
 
 		private int errorIdx;
 
@@ -44,6 +49,9 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public RevitCellSystManager()
 		{
+			revitCat = new RevitParamCatagorize();
+			rvtSelect = new RevitSelectSupport();
+
 			Reset();
 		}
 
@@ -53,6 +61,12 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public static string RevitChartFamilyName => CHART_FAMILY_NAME;
 
+		public RevitSelectSupport RvtSelect
+		{
+			get { return rvtSelect; }
+		}
+
+
 	#endregion
 
 	#region private properties
@@ -60,6 +74,25 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	#endregion
 
 	#region public methods
+
+		public bool ProcessCharts(RevitCharts Charts, CellUpdateTypeCode which)
+		{
+			int fail = 0;
+			// process all charts and add to list
+			foreach (KeyValuePair<string, RevitChart> kvp in Charts.ListOfCharts)
+			{
+				// chart has all parameters retreived
+				RevitChart chart = kvp.Value;
+
+				if (which != CellUpdateTypeCode.ALL &&
+					kvp.Value.UpdateType != which) continue;
+
+				processOneChart(kvp.Value);
+			}
+
+			return true;
+		}
+
 
 		public bool GetCurrentCharts()
 		{
@@ -127,6 +160,52 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			}
 		#endif
 		}
+
+		// provide the list of cell families
+		// process a chart and get the parameters for a family
+		private bool processOneChart(RevitChart chart)
+		{
+			string cellFamilyTypeName = chart.RevitChartData.GetValue();
+
+		#if REVIT
+			ICollection<Element> cellElements
+				= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName);
+		#endif
+
+		#if NOREVIT
+			int i = Int32.Parse(chart[RevitParamManager.SeqIdx].GetValue());
+
+			ICollection<Element> cellElements
+				= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName, i);
+
+		#endif
+
+
+			if (cellElements == null || cellElements.Count == 0) return false;
+
+			chart.ListOfCellSyms = new Dictionary<string, RevitCell>();
+
+			foreach (Element cell in cellElements)
+			{
+				RevitCell rvtCell = processCellFamily2(cell);
+
+				chart.Add(rvtCell);
+			}
+
+			return true;
+		}
+
+
+		private RevitCell processCellFamily2(Element el)
+		{
+			RevitCell rvtCell = revitCat.catagorizeCellParams(el as AnnotationSymbol);
+
+			if (!rvtCell.IsValid) return null;
+
+			return rvtCell;
+		}
+
+
 
 		private void Reset()
 		{
