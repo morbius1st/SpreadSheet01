@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>557cabdb-d47a-4d55-b914-603f13e0e6ee</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>SharedCode</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory).External\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Management\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitCellsManagement\RevitCellSystManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitCellsManagement\RevitContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitCellsManagement\RevitFamilies.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitCellsManagement\RevitManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\ParamDescription.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\RevitParamCatagorize.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\RevitParamManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\RevitParamSupport.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\RevitParamUtil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\ARevitParam.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\DynamicValue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamBool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamFilePath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamFormula.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamInteger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamLabel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamNumber.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamText.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamUpdateType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamWkShtName.cs" />
+    <Compile Include="D:\Users\Jeff\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\CsExtensions.cs">
+      <Link>.External\CsExtensions.cs</Link>
+    </Compile>
+    <Compile Include="D:\Users\Jeff\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\CsUtilities.cs">
+      <Link>.External\CsUtilities.cs</Link>
+    </Compile>
+    <Compile Include="D:\Users\Jeff\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\MessageUtilities.cs">
+      <Link>.External\MessageUtilities.cs</Link>
+    </Compile>
+    <Compile Include="D:\Users\Jeff\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\SettingManager\v7.4\SettingsMgr.cs">
+      <Link>.External\SettingsMgr.cs</Link>
+    </Compile>
+    <Compile Include="D:\Users\Jeff\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\CsObservableDictionary.cs">
+      <Link>.External\CsObservableDictionary.cs</Link>
+    </Compile>
+    <Compile Include="D:\Users\Jeff\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\CsXmlUtilities.cs">
+      <Link>.External\CsXmlUtilities.cs</Link>
+    </Compile>
+    <Compile Include="D:\Users\Jeff\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\FilePath\V3.0\CsFilePath.cs">
+      <Link>.External\CsFilePath.cs</Link>
+    </Compile>
+    <Compile Include="D:\Users\Jeff\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\CsUtilitiesMedia.cs">
+      <Link>.External\CsUtilitiesMedia.cs</Link>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ExcelSupport\ExcelAssist.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExcelSupport\ExcelExchange.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExcelSupport\ExcelManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Management\ErrorCodes.cs" />
+  </ItemGroup>
+</Project>

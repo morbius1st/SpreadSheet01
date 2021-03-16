@@ -55,6 +55,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.4.0, Culture=neutral, PublicKeyToken=8985beaab7ea3f04, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft-WindowsAPICodePack-Core.1.1.4\lib\net48\Microsoft.WindowsAPICodePack.dll</HintPath>
     </Reference>
@@ -82,81 +85,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="..\..\..\..\UtilityLibrary\UtilityLibrary\CsObservableDictionary.cs">
-      <Link>.Linked\CsObservableDictionary.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\UtilityLibrary\UtilityLibrary\CsXmlUtilities.cs">
-      <Link>.Linked\CsXmlUtilities.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\UtilityLibrary\UtilityLibrary\FilePath\V3.0\CsFilePath.cs">
-      <Link>.Linked\CsFilePath.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\ExcelSupport\ExcelAssist.cs">
-      <Link>ExcelSupport\ExcelAssist.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellsManagement\RevitContainer.cs">
-      <Link>RevitSupport\RevitCellsManagement\RevitContainer.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellsManagement\RevitFamilies.cs">
-      <Link>RevitSupport\RevitCellsManagement\RevitFamilies.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellsManagement\RevitManager.cs">
-      <Link>RevitSupport\RevitCellsManagement\RevitManager.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitCellsManagement\RevitParamManager.cs">
-      <Link>RevitSupport\RevitCellsManagement\RevitParamManager.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitChartInfo\RevitCellsSysManager.cs">
-      <Link>RevitSupport\RevitChartInfo\RevitCellsSysManager.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamInfo\ParamDescription.cs">
-      <Link>RevitSupport\RevitParamInfo\ParamDescription.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamInfo\RevitCatagorizeParam.cs">
-      <Link>RevitSupport\RevitParamInfo\RevitCatagorizeParam.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamInfo\RevitParamUtil.cs">
-      <Link>RevitSupport\RevitParamInfo\RevitParamUtil.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\ARevitParam.cs">
-      <Link>RevitSupport\RevitParamValue\ARevitParam.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\DynamicValue.cs">
-      <Link>RevitSupport\RevitParamValue\DynamicValue.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitCellErrorCode.cs">
-      <Link>RevitSupport\RevitParamValue\RevitCellErrorCode.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitCellSupport.cs">
-      <Link>RevitSupport\RevitParamValue\RevitCellSupport.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamBool.cs">
-      <Link>RevitSupport\RevitParamValue\RevitParamBool.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamFilePath.cs">
-      <Link>RevitSupport\RevitParamValue\RevitParamFilePath.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamFormula.cs">
-      <Link>RevitSupport\RevitParamValue\RevitParamFormula.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamLabel.cs">
-      <Link>RevitSupport\RevitParamValue\RevitParamLabel.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamNumber.cs">
-      <Link>RevitSupport\RevitParamValue\RevitParamNumber.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamText.cs">
-      <Link>RevitSupport\RevitParamValue\RevitParamText.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamUpdateType.cs">
-      <Link>RevitSupport\RevitParamValue\RevitParamUpdateType.cs</Link>
-    </Compile>
-    <Compile Include="..\SpreadSheet01\RevitSupport\RevitParamValue\RevitParamWkShtName.cs">
-      <Link>RevitSupport\RevitParamValue\RevitParamWkShtName.cs</Link>
-    </Compile>
-    <Compile Include="RevitSupport\AutoDesk\AnnotationSymbol.cs" />
+    <Compile Include="AutoDesk\AnnotationSymbol.cs" />
+    <Compile Include="Management\ManagementSupport.cs" />
     <Compile Include="CellsTests\SampleAnnoSymbols.cs" />
-    <Compile Include="RevitSupport\RevitCellsManagement\RevitManagementSupport.cs" />
     <Compile Include="RevitSupport\RevitSelectionSupport\RevitSelectSupport.cs" />
     <Compile Include="Settings\AppSettings.cs" />
     <Compile Include="Settings\DataSet.cs" />
@@ -172,18 +103,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="D:\Users\Jeff\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\CsExtensions.cs">
-      <Link>.Linked\CsExtensions.cs</Link>
-    </Compile>
-    <Compile Include="D:\Users\Jeff\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\CsUtilities.cs">
-      <Link>.Linked\CsUtilities.cs</Link>
-    </Compile>
-    <Compile Include="D:\Users\Jeff\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\MessageUtilities.cs">
-      <Link>.Linked\MessageUtilities.cs</Link>
-    </Compile>
-    <Compile Include="D:\Users\Jeff\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\SettingManager\v7.2\SettingsMgr.cs">
-      <Link>.Linked\SettingsMgr.cs</Link>
-    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -230,8 +149,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include=".Linked\" />
+    <Folder Include="ExcelSupport\" />
     <Folder Include="Windows\ResourceFiles\ImageResources\" />
     <Folder Include="Windows\Support\" />
   </ItemGroup>
+  <Import Project="..\SharedCode\SharedCode.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

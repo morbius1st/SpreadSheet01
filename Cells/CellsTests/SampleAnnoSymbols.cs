@@ -7,11 +7,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
-
-using SpreadSheet01.RevitSupport.RevitCellsManagement;
-using SpreadSheet01.RevitSupport.RevitParamInfo;
 using SpreadSheet01.RevitSupport.RevitParamValue;
-using static SpreadSheet01.RevitSupport.RevitCellsManagement.RevitParamManager;
+using SpreadSheet01.RevitSupport.RevitCellsManagement;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.RevitParamManager;
+using SpreadSheet01.RevitSupport.RevitParamManagement;
 
 using UtilityLibrary;
 
@@ -88,47 +87,6 @@ namespace Cells.CellsTests
 			el = (Element) Charts[symbolIdx];
 			ChartElements.Add(el);
 		}
-
-		//
-		// private void makeAnnoSyms()
-		// {
-		// 	Symbols = new AnnotationSymbol[4];
-		// 	Element el;
-		// 	CellElements = new List<Element>();
-		//
-		//
-		// 	symbolIdx = 0;
-		// 	Symbols[symbolIdx] = new AnnotationSymbol();
-		// 	Symbols[symbolIdx].parameters = new List<Parameter>();
-		// 	Symbols[symbolIdx].Name = "Symbol| " + symbolIdx.ToString("D2");
-		// 	AddSymbol0();
-		// 	el = (Element) Symbols[symbolIdx];
-		// 	CellElements.Add(el);
-		//
-		// 	++symbolIdx;
-		// 	Symbols[symbolIdx] = new AnnotationSymbol();
-		// 	Symbols[symbolIdx].parameters = new List<Parameter>();
-		// 	Symbols[symbolIdx].Name = "Symbol| " + symbolIdx.ToString("D2");
-		// 	AddSymbol1();
-		// 	el = (Element) Symbols[symbolIdx];
-		// 	CellElements.Add(el);
-		//
-		// 	++symbolIdx;
-		// 	Symbols[symbolIdx] = new AnnotationSymbol();
-		// 	Symbols[symbolIdx].parameters = new List<Parameter>();
-		// 	Symbols[symbolIdx].Name = "Symbol| " + symbolIdx.ToString("D2");
-		// 	AddSymbol2();
-		// 	el = (Element) Symbols[symbolIdx];
-		// 	CellElements.Add(el);
-		//
-		// 	++symbolIdx;
-		// 	Symbols[symbolIdx] = new AnnotationSymbol();
-		// 	Symbols[symbolIdx].parameters = new List<Parameter>();
-		// 	Symbols[symbolIdx].Name = "Symbol| " + symbolIdx.ToString("D2");
-		// 	AddSymbol3();
-		// 	el = (Element) Symbols[symbolIdx];
-		// 	CellElements.Add(el);
-		// }
 
 		private void makeAnnoSyms()
 		{
@@ -223,137 +181,77 @@ namespace Cells.CellsTests
 
 		private void AddSymbol0()
 		{
-			// int adj1 = RevitParamManager.ParamCounts[(int) ParamGroup.DATA];
-			// int 0 = adj1 + RevitParamManager.ParamCounts[(int) ParamGroup.CONTAINER];
-			// int adj3 = 0 + RevitParamManager.ParamCounts[(int) ParamGroup.LABEL_GRP];
-			// int adj4 = adj3 + RevitParamManager.ParamCounts[(int) ParamGroup.LABEL_GRP];
-
-
 			AddInstParameter(SeqIdx           , 0, ParamDataType.TEXT, "0");
 			AddInstParameter(NameIdx          , 0, ParamDataType.TEXT, "MyCellname1"+ chartIdx.ToString("D2"));
 			AddInstParameter(Descdx           , 0, ParamDataType.TEXT, "Description 0");
 			
 			AddInstParameter(HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
 
-			// AddParameter(RevitParamManager.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
-			// AddParameter(RevitParamManager.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
-
-			// AddParameter(RevitParamManager.LabelsIdx        , 0, ParamDataType.EMPTY, "", 0.0, 0, "All Labels");
-
 			AddLabelParameter(LblLabelIdx         , 0, ParamDataType.TEXT        , "", "#1", 0.0, 0, true);
 
-			// AddParameter(RevitParamManager.LblRelAddrIdx    , 0, ParamDataType.RELATIVEADDRESS, "(1,1)"   , 0.0, 0, "#1");
 			AddLabelParameter(LblDataTypeIdx   , 0, ParamDataType.DATATYPE       , "length"			 , "#1");
 			AddLabelParameter(LblNameIdx       , 0, ParamDataType.TEXT           , "MyLabelname 0-1 "+ chartIdx.ToString("D2")   , "#1");
 			AddLabelParameter(LblFormulaIdx    , 0, ParamDataType.FORMULA        , "={[A1]}"			 , "#1");
 			AddLabelParameter(LblIgnoreIdx     , 0, ParamDataType.BOOL           , null				 , "#1", 0.0, 1);
 			AddLabelParameter(LblFormatInfoIdx , 0, ParamDataType.TEXT           , "#,###"			 , "#1");
-			// AddLabelParameter(RevitParamManager.LblAsLengthIdx   , 0, ParamDataType.IGNORE         , "A11.3"       , 0.0, 0, "#1");
-			// AddLabelParameter(RevitParamManager.LblAsNumberIdx   , 0, ParamDataType.IGNORE         , "A11.4"       , 0.0, 0, "#1");
-			// AddLabelParameter(RevitParamManager.LblAsYesNoIdx    , 0, ParamDataType.IGNORE         , "A11.5"       , 0.0, 0, "#1");
 
 			AddLabelParameter(LblLabelIdx         , 0, ParamDataType.TEXT, "", "#2", 0.0, 0, true);
 
-			// AddParameter(RevitParamManager.LblRelAddrIdx    , 0, ParamDataType.RELATIVEADDRESS, "(1,1)"   , 0.0, 0, "#2");
 			AddLabelParameter(LblNameIdx       , 0, ParamDataType.TEXT           , "MyLabelname 0-2 "+ chartIdx.ToString("D2")   , "#2");
 			AddLabelParameter(LblDataTypeIdx   , 0, ParamDataType.DATATYPE       , "text"				 , "#2");
 			AddLabelParameter(LblFormulaIdx    , 0, ParamDataType.FORMULA        , "={[A2]}"			 , "#2");
 			AddLabelParameter(LblFormatInfoIdx , 0, ParamDataType.TEXT           , "#,###"			 , "#2");
 			AddLabelParameter(LblIgnoreIdx     , 0, ParamDataType.BOOL           , null				 , "#2", 0.0, 1);
-			// AddLabelParameter(RevitParamManager.LblAsLengthIdx   , 0, ParamDataType.IGNORE         , "A12.3"       , 0.0, 0, "#2");
-			// AddLabelParameter(RevitParamManager.LblAsNumberIdx   , 0, ParamDataType.IGNORE         , "A12.4"       , 0.0, 0, "#2");
-			// AddLabelParameter(RevitParamManager.LblAsYesNoIdx    , 0, ParamDataType.IGNORE         , "A12.5"       , 0.0, 0, "#2");
 		}
 
 
 		private void AddSymbol1()
 		{
-			// int adj1 = RevitParamManager.ParamCounts[(int) ParamGroup.DATA];
-			// int 0 = adj1 + RevitParamManager.ParamCounts[(int) ParamGroup.CONTAINER];
 
 			AddInstParameter(SeqIdx           , 0, ParamDataType.TEXT, "1");
 			AddInstParameter(NameIdx          , 0, ParamDataType.TEXT, "MyCellname2"+ chartIdx.ToString("D2"));
-			// AddParameter(RevitParamManager.CellAddrIdx      , 0, ParamDataType.TEXT, "@A4");
+
 			AddInstParameter(HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
-
-			// AddParameter(RevitParamManager.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
-			// AddParameter(RevitParamManager.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
-
-			// AddParameter(RevitParamManager.LabelsIdx        , 0, ParamDataType.EMPTY, "", 0.0, 0, "All Labels");
 
 			AddLabelParameter(LblLabelIdx         , 0, ParamDataType.TEXT        , "", "#1", 0.0, 0, true);
 
-			// AddParameter(RevitParamManager.LblRelAddrIdx    , 0, ParamDataType.RELATIVEADDRESS, "(1,2)"   , 0.0, 0, "#1");
 			AddLabelParameter(LblDataTypeIdx   , 0, ParamDataType.DATATYPE       , "length"			 , "#1");
 			AddLabelParameter(LblNameIdx       , 0, ParamDataType.TEXT           , "MyLabelname 1-1 "+ chartIdx.ToString("D2")   , "#1");
 			AddLabelParameter(LblFormulaIdx    , 0, ParamDataType.FORMULA        , "={#SheetName}"    , "#1");
 			AddLabelParameter(LblFormatInfoIdx , 0, ParamDataType.TEXT           , "#,##0"			 , "#1");
 			AddLabelParameter(LblIgnoreIdx     , 0, ParamDataType.BOOL           , null				 , "#1", 0.0, 1);
-			// AddLabelParameter(RevitParamManager.LblAsLengthIdx   , 0, ParamDataType.IGNORE         , "A2.3"    , 0.0, 0, "#1");
-			// AddLabelParameter(RevitParamManager.LblAsNumberIdx   , 0, ParamDataType.IGNORE         , "A2.4"    , 0.0, 0, "#1");
-			// AddLabelParameter(RevitParamManager.LblAsYesNoIdx    , 0, ParamDataType.IGNORE         , "A2.5"    , 0.0, 0, "#1");
-
-			// AddLabelParameter(RevitParamManager.LblLabelIdx       , 0, ParamDataType.ERROR, "", "end of list");
 		}
 
 
 		private void AddSymbol2()
 		{
-			// int adj1 = RevitParamManager.ParamCounts[(int) ParamGroup.DATA];
-			// int 0 = adj1 + RevitParamManager.ParamCounts[(int) ParamGroup.CONTAINER];
 
 			AddInstParameter(SeqIdx           , 0, ParamDataType.TEXT, "2");
 			AddInstParameter(NameIdx          , 0, ParamDataType.TEXT, "MyCellname3"+ chartIdx.ToString("D2"));
-			// AddParameter(RevitParamManager.CellAddrIdx      , 0, ParamDataType.TEXT, "@A6");
 			AddInstParameter(HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
-
-			// AddParameter(RevitParamManager.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
-			// AddParameter(RevitParamManager.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
-
-			// AddParameter(RevitParamManager.LabelsIdx        , 0, ParamDataType.EMPTY, "", 0.0, 0, "All Labels");
 
 			AddLabelParameter(LblLabelIdx         , 0, ParamDataType.TEXT        , "", "#1", 0.0, 0, true);
 
-			// AddParameter(RevitParamManager.LblRelAddrIdx    , 0, ParamDataType.RELATIVEADDRESS, "(1,3)"   , 0.0, 0, "#1");
 			AddLabelParameter(LblDataTypeIdx   , 0, ParamDataType.DATATYPE       , "length"           , "#1");
 			AddLabelParameter(LblNameIdx       , 0, ParamDataType.TEXT           , "MyLabelname 2-1 "+ chartIdx.ToString("D2")  , "#1");
 			AddLabelParameter(LblFormulaIdx    , 0, ParamDataType.FORMULA        , "={$Date(yyyy-mm-dd)}" , "#1");
 			AddLabelParameter(LblIgnoreIdx     , 0, ParamDataType.BOOL           , null               , "#1", 0.0, 1);
-			// AddLabelParameter(RevitParamManager.LblAsLengthIdx   , 0, ParamDataType.IGNORE         , "A3.3"    , 0.0, 0, "#1");
-			// AddLabelParameter(RevitParamManager.LblAsNumberIdx   , 0, ParamDataType.IGNORE         , "A3.4"    , 0.0, 0, "#1");
-			// AddLabelParameter(RevitParamManager.LblAsYesNoIdx    , 0, ParamDataType.IGNORE         , "A3.5"    , 0.0, 0, "#1");
-
-			// AddLabelParameter(RevitParamManager.LblLabelIdx         , 0, ParamDataType.ERROR, "", "end of list");
 		}
 
 
 		private void AddSymbol3()
 		{
-			// int adj1 = RevitParamManager.ParamCounts[(int) ParamGroup.DATA];
-			// int 0 = adj1 + RevitParamManager.ParamCounts[(int) ParamGroup.CONTAINER];
 
 			AddInstParameter(SeqIdx           , 0, ParamDataType.TEXT, "3");
 			AddInstParameter(NameIdx          , 0, ParamDataType.TEXT, "MyCellname4"+ chartIdx.ToString("D2"));
-			// AddParameter(RevitParamManager.CellAddrIdx      , 0, ParamDataType.TEXT, "@A4");
 			AddInstParameter(HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
-
-			// AddParameter(RevitParamManager.GraphicType      , 0, ParamDataType.IGNORE, "graphic type");
-			// AddParameter(RevitParamManager.DataVisibleIdx   , 0, ParamDataType.IGNORE, "", 0.0, 1);
-
-			// AddParameter(RevitParamManager.LabelsIdx        , 0, ParamDataType.EMPTY, "", 0.0, 0, "All Labels");
 
 			AddLabelParameter(LblLabelIdx         , 0, ParamDataType.TEXT        , "", "#1", 0.0, 0, true);
 
-			// AddParameter(RevitParamManager.LblRelAddrIdx    , 0, ParamDataType.RELATIVEADDRESS, "(1,2)"   , 0.0, 0, "#1");
 			AddLabelParameter(LblDataTypeIdx   , 0, ParamDataType.DATATYPE       , "length"	        , "#1");
 			AddLabelParameter(LblFormulaIdx    , 0, ParamDataType.FORMULA        , "={[A5]}"	        , "#1");
 			AddLabelParameter(LblNameIdx       , 0, ParamDataType.TEXT           , "MyLabelname 3-1 "+ chartIdx.ToString("D2")  , "#1");
 			AddLabelParameter(LblIgnoreIdx     , 0, ParamDataType.BOOL           , null		        , "#1", 0.0, 1);
-			// AddLabelParameter(RevitParamManager.LblAsLengthIdx   , 0, ParamDataType.IGNORE         , "A2.3"    , 0.0, 0, "#1");
-			// AddLabelParameter(RevitParamManager.LblAsNumberIdx   , 0, ParamDataType.IGNORE         , "A2.4"    , 0.0, 0, "#1");
-			// AddLabelParameter(RevitParamManager.LblAsYesNoIdx    , 0, ParamDataType.IGNORE         , "A2.5"    , 0.0, 0, "#1");
-
-			// AddLabelParameter(RevitParamManager.LblLabelIdx       , 0, ParamDataType.ERROR, "", "end of list");
 		}
 
 

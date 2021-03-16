@@ -10,39 +10,29 @@
 
 namespace SettingsManager
 {
-	#region info class
-
-	[DataContract(Name = "SuiteSettings", Namespace = "")]
-	public class SuiteSettingInfo<T> : SuiteSettingInfoBase<T>
-		where T : new()
-	{
-		public SuiteSettingInfo()
-		{
-			// these are specific to this data file
-			DataClassVersion = "suite 7.2su";
-			Description = "suite setting file for SettingsManager v7.2";
-			Notes = "any notes go here";
-		}
-
-		public override void UpgradeFromPrior(SettingInfoBase<T> prior) { }
-	}
-
-	#endregion
-
-	#region user data class
+#region suite data class
 
 	// this is the actual data set saved to the user's configuration file
 	// this is unique for each program
 	[DataContract(Namespace = "")]
-	public class SuiteSettingData
+	public class SuiteSettingDataFile : IDataFile
 	{
+		[IgnoreDataMember]
+		public string DataFileVersion => "suite 7.4su";
+
+		[IgnoreDataMember]
+		public string DataFileDescription => "suite setting file for SettingsManager v7.4";
+
+		[IgnoreDataMember]
+		public string DataFileNotes => "suite / any notes go here";
+
 		[DataMember(Order = 1)]
 		public int SuiteSettingsValue { get; set; } = 7;
 
 		[DataMember(Order = 2)]
 		public string SiteRootPath { get; set; }
-			= @"C:\Users\jeffs\AppData\Roaming\CyberStudio\SettingsManager\SettingsManagerV72\SiteSettings";
+			= @"C:\Users\jeffs\AppData\Roaming\CyberStudio\SettingsManager\SettingsManagerv74\SiteSettings" ;
 	}
 
-	#endregion
+#endregion
 }

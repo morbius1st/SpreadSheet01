@@ -5,16 +5,7 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using SpreadSheet01.ExcelSupport;
-using SpreadSheet01.RevitSupport;
-using SpreadSheet01.Tests;
 using SpreadSheet01.Windows;
-using UtilityLibrary;
 
 #endregion
 
@@ -63,7 +54,7 @@ namespace SpreadSheet01
 			// Access current selection
 			Selection sel = uidoc.Selection;
 
-			RevitTests rt = new RevitTests();
+			// RevitTests rt = new RevitTests();
 
 			Result result;
 

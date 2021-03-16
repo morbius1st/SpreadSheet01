@@ -11,6 +11,9 @@ using System.Diagnostics;
 
 using UtilityLibrary;
 
+using static UtilityLibrary.CsUtilities;
+using static UtilityLibrary.CsExtensions;
+
 #endregion
 
 // projname: SpreadSheet01

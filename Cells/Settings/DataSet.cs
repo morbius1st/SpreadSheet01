@@ -1,8 +1,6 @@
 ﻿#region using directives
-using SettingsManager;
-
 using System.Runtime.Serialization;
-
+using SettingsManager;
 #endregion
 
 // in code, after creating the data file for the first time, set the
@@ -15,7 +13,8 @@ using System.Runtime.Serialization;
 
 namespace SettingsManager
 {
-	#region data class
+
+#region data class
 
 	// this is the actual data set saved to the user's configuration file
 	// this is unique for each program
@@ -24,14 +23,14 @@ namespace SettingsManager
 	{
 		[DataMember(Order = 1)]
 		public string SampleDataString1 { get; set; } = "this is a sample string";
-
+		
 		[DataMember(Order = 2)]
 		public int SampleDataInt1 { get; set; } = 72;
-
+		
 		[DataMember(Order = 3)]
-		public double SampleDataDouble1 { get; set; } = 7.2;
+		public double SampleDataDouble1 { get; set; } = 7.4;
 
 	}
 
-	#endregion
+#endregion
 }
