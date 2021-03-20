@@ -94,10 +94,10 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		// end of chart list
 
 
-		// start of cell internal parameters
-		public static int CI_ParamCount		= 0;
-
-		public static readonly int CI_CurrError			= CI_ParamCount++;
+		// // start of cell internal parameters
+		// public static int CI_ParamCount		= 0;
+		//
+		// public static readonly int CI_CurrError			= CI_ParamCount++;
 
 
 	#endregion
@@ -244,44 +244,44 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		}
 
 
-		private static void ddeineCellInternalParameters(Family F)
-		{
-			int snLen = 8;
+		// private static void ddeineCellInternalParameters(Family F)
+		// {
+		// 	int snLen = 8;
+		//
+		// 	paramDef[] pdf = new []
+		// 	{
+		// 		new paramDef("Current Error", CI_CurrError, snLen, INTERNAL, PARAM_INTERNAL, INTEGER, READ_VALUE_IGNORE, PRIVATE)
+		//
+		// 	};
+		// }
 
-			paramDef[] pdf = new []
-			{
-				new paramDef("Current Error", CI_CurrError, snLen, INTERNAL, PARAM_INTERNAL, INTEGER, READ_VALUE_IGNORE, PRIVATE)
 
-			};
-		}
-
-
-		private struct paramDef
-		{
-			public paramDef(string name, int index, int shortnamelen, 
-				ParamType type, ParamExistReqmt exist, ParamDataType data, 
-				ParamReadReqmt read, ParamMode mode)
-			{
-				this.name = name;
-				this.index = index;
-				this.shortnamelen = shortnamelen;
-				this.type = type;
-				this.exist = exist;
-				this.data = data;
-				this.read = read;
-				this.mode = mode;
-			}
-
-			public string name {get; set; }
-			public int index { get; set; }
-			public int shortnamelen { get; set; }
-			public ParamType type {get; set; }
-			public ParamExistReqmt exist {get; set; }
-			public ParamDataType data {get; set; }
-			public ParamReadReqmt read {get; set; }
-			public ParamMode mode {get; set; }
-
-		}
+		// private struct paramDef
+		// {
+		// 	public paramDef(string name, int index, int shortnamelen, 
+		// 		ParamType type, ParamExistReqmt exist, ParamDataType data, 
+		// 		ParamReadReqmt read, ParamMode mode)
+		// 	{
+		// 		this.name = name;
+		// 		this.index = index;
+		// 		this.shortnamelen = shortnamelen;
+		// 		this.type = type;
+		// 		this.exist = exist;
+		// 		this.data = data;
+		// 		this.read = read;
+		// 		this.mode = mode;
+		// 	}
+		//
+		// 	public string name {get; set; }
+		// 	public int index { get; set; }
+		// 	public int shortnamelen { get; set; }
+		// 	public ParamType type {get; set; }
+		// 	public ParamExistReqmt exist {get; set; }
+		// 	public ParamDataType data {get; set; }
+		// 	public ParamReadReqmt read {get; set; }
+		// 	public ParamMode mode {get; set; }
+		//
+		// }
 
 
 

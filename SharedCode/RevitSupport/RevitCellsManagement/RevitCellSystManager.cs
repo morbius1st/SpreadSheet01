@@ -75,7 +75,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 	#region public methods
 
-		public bool ProcessCharts(RevitCharts Charts, CellUpdateTypeCode which)
+		public bool ProcessLabels(CellUpdateTypeCode which)
 		{
 			int fail = 0;
 			// process all charts and add to list
@@ -87,12 +87,30 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 				if (which != CellUpdateTypeCode.ALL &&
 					kvp.Value.UpdateType != which) continue;
 
-				processOneChart(kvp.Value);
+				processOneChartLabels(kvp.Value);
 			}
 
 			return true;
 		}
 
+		// scan revit and get all chart and label information
+		public bool ProcessCharts(CellUpdateTypeCode which)
+		{
+			int fail = 0;
+			// process all charts and add to list
+			foreach (KeyValuePair<string, RevitChart> kvp in Charts.ListOfCharts)
+			{
+				// chart has all parameters retreived
+				RevitChart chart = kvp.Value;
+
+				if (which != CellUpdateTypeCode.ALL &&
+					kvp.Value.UpdateType != which) continue;
+
+				if (!processOneChart(kvp.Value)) fail++;
+			}
+
+			return true;
+		}
 
 		public bool GetCurrentCharts()
 		{
@@ -110,6 +128,83 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	#endregion
 
 	#region private methods
+
+		// provide the list of cell families
+		// process a chart and get the parameters for a family
+		private bool processOneChartLabels(RevitChart chart)
+		{
+			string cellFamilyTypeName = chart.RevitChartData.GetValue();
+
+		#if REVIT
+			ICollection<Element> cellElements
+				= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName);
+		#endif
+
+
+
+		#if NOREVIT
+			MainWindow.WriteLine("");
+			MainWindow.WriteLine("Process one chart's labels");
+			foreach (KeyValuePair<string, RevitLabel> kvp in chart.AllCellLabels)
+			{
+				MainWindow.WriteLine("");
+				MainWindow.WriteLine("Process one label| " + kvp.Value.Name);
+			}
+
+			int i = Int32.Parse(chart[RevitParamManager.SeqIdx].GetValue());
+
+			ICollection<Element> cellElements
+				= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName, i);
+
+		#endif
+
+			if (cellElements == null || cellElements.Count == 0) return false;
+
+			chart.ListOfCellSyms = new Dictionary<string, RevitCell>();
+
+			foreach (Element cell in cellElements)
+			{
+				RevitCell rvtCell = processCellFamily2(cell);
+
+				chart.Add(rvtCell);
+			}
+
+			return true;
+		}
+
+
+		// provide the list of cell families
+		// process a chart and get the parameters for a family
+		private bool processOneChart(RevitChart chart)
+		{
+			string cellFamilyTypeName = chart.RevitChartData.GetValue();
+
+		#if REVIT
+			ICollection<Element> cellElements
+				= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName);
+		#endif
+
+		#if NOREVIT
+			int i = Int32.Parse(chart[RevitParamManager.SeqIdx].GetValue());
+
+			ICollection<Element> cellElements
+				= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName, i);
+
+		#endif
+
+			if (cellElements == null || cellElements.Count == 0) return false;
+
+			chart.ListOfCellSyms = new Dictionary<string, RevitCell>();
+
+			foreach (Element cell in cellElements)
+			{
+				RevitCell rvtCell = processCellFamily2(cell);
+
+				chart.Add(rvtCell);
+			}
+
+			return true;
+		}
 
 		private ICollection<Element> findAllChartFamilies(string chartFamilyName)
 		{
@@ -161,40 +256,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		#endif
 		}
 
-		// provide the list of cell families
-		// process a chart and get the parameters for a family
-		private bool processOneChart(RevitChart chart)
-		{
-			string cellFamilyTypeName = chart.RevitChartData.GetValue();
-
-		#if REVIT
-			ICollection<Element> cellElements
-				= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName);
-		#endif
-
-		#if NOREVIT
-			int i = Int32.Parse(chart[RevitParamManager.SeqIdx].GetValue());
-
-			ICollection<Element> cellElements
-				= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName, i);
-
-		#endif
-
-
-			if (cellElements == null || cellElements.Count == 0) return false;
-
-			chart.ListOfCellSyms = new Dictionary<string, RevitCell>();
-
-			foreach (Element cell in cellElements)
-			{
-				RevitCell rvtCell = processCellFamily2(cell);
-
-				chart.Add(rvtCell);
-			}
-
-			return true;
-		}
-
 
 		private RevitCell processCellFamily2(Element el)
 		{
@@ -204,8 +265,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 			return rvtCell;
 		}
-
-
 
 		private void Reset()
 		{

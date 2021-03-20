@@ -13,10 +13,11 @@
     <Folder Include="$(MSBuildThisFileDirectory)Management\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)FormulaSupport\ParseFormula.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FormulaSupport\ProcessFormula.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitCellsManagement\RevitCellSystManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitCellsManagement\RevitContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitCellsManagement\RevitFamilies.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitCellsManagement\RevitManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\ParamDescription.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\RevitParamCatagorize.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\RevitParamManager.cs" />
