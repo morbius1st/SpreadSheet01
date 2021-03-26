@@ -3,6 +3,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using UtilityLibrary;
 
 #endregion
@@ -17,17 +18,15 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 	#region private fields
 
 		private string parameterName;
-		private string shortName;
 
 	#endregion
 
 	#region ctor
 
-		protected ParamDesc() {}
-
-		public ParamDesc(string paramName,
+		public ParamDesc(
+			string paramName,
+			string shortName,
 			int index,
-			int shortNameLen,
 			ParamType paramType,
 			ParamExistReqmt paramExist,
 			ParamDataType dataType,
@@ -37,8 +36,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		{
 			Index = index;
 			ParameterName = paramName;
-			ShortNameLen = shortNameLen;
-			shortName = GetShortName(paramName, shortNameLen);
+			ShortName = shortName;
 
 			Type = paramType;
 			DataType = dataType;
@@ -53,10 +51,10 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 	#region public properties
 
-		public static ParamDesc Empty => new ParamDesc("", -1, 8,
-			ParamType.INTERNAL, ParamExistReqmt.PARAM_MUST_EXIST, 
-			ParamDataType.IGNORE, ParamReadReqmt.READ_VALUE_IGNORE, 
-			ParamMode.NOT_USED);
+		public static ParamDesc Empty => new ParamDesc("", "", -1,
+			ParamType.PT_INTERNAL, ParamExistReqmt.EX_PARAM_MUST_EXIST, 
+			ParamDataType.IGNORE, ParamReadReqmt.RD_VALUE_IGNORE, 
+			ParamMode.PM_NOT_USED);
 
 
 		public string ParameterName {
@@ -68,9 +66,9 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				OnPropertyChanged();
 			}
 		}
-		public string ShortName => shortName;
+		public string ShortName	        { get; set; }
 		public int Index                { get; protected set; }
-		public int ShortNameLen         { get; set; }
+		// public int ShortNameLen         { get; set; }
 		public ParamType Type           { get; protected set; }
 		public ParamDataType DataType   { get; protected set; }
 		public ParamExistReqmt Exist    { get; protected set; }
@@ -101,22 +99,14 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		// 	}
 		// }
 
-		public void SetShortName()
-		{
-			shortName = GetShortName(parameterName, ShortNameLen);
-		}
 
-		public static string GetShortName(string name, int shortNameLen)
-		{
-			return name.Substring(0, Math.Min(name.Length, shortNameLen));
-		}
 
-		public bool Match(string testShortName)
-		{
-			if (testShortName.IsVoid()) return false;
-
-			return testShortName.Equals(shortName);
-		}
+		// public bool Match(string testShortName)
+		// {
+		// 	if (testShortName.IsVoid()) return false;
+		//
+		// 	return testShortName.Equals(shortName);
+		// }
 
 	#endregion
 

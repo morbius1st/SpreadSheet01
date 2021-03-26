@@ -14,7 +14,7 @@ using SpreadSheet01.RevitSupport.RevitParamManagement;
 
 using UtilityLibrary;
 
-namespace Cells.CellsTests
+namespace CellsTest.CellsTests
 {
 	public class SampleAnnoSymbols : INotifyPropertyChanged
 	{

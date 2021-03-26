@@ -172,7 +172,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public RevitChartData()
 		{
-			RevitParamList = new ARevitParam[AllChartParamCount];
+			RevitParamList = new ARevitParam[ChartTotalInstParamCount];
 		}
 
 		public string Name => this[NameIdx].GetValue();
@@ -213,7 +213,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	{
 		public RevitCell()
 		{
-			RevitParamList = new ARevitParam[CellBasicParamCount];
+			RevitParamList = new ARevitParam[CellBasicInstParamCount];
 		}
 
 		public Dictionary<string, RevitLabel> ListOfLabels { get; set; } 
@@ -261,7 +261,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public RevitLabel()
 		{
-			RevitParamList = new ARevitParam[CellLabelParamCount];
+			RevitParamList = new ARevitParam[CellLabelInstParamCount];
 		}
 
 		public override dynamic GetValue()

@@ -1,5 +1,6 @@
 #region using
 
+using System.Collections.Generic;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
@@ -54,11 +55,9 @@ namespace SpreadSheet01
 			// Access current selection
 			Selection sel = uidoc.Selection;
 
-			// RevitTests rt = new RevitTests();
-
 			Result result;
 
-			SelectCharts charts = new SelectCharts();
+			SelectCharts charts = new SelectCharts(app, doc);
 
 			charts.ShowDialog();
 

@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Cells.Windows
+namespace CellsTest.Windows
 {
 	/// <summary>
 	/// Interaction logic for SelectChart.xaml

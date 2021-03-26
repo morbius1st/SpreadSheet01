@@ -3,11 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using SharedCode.FormulaSupport.ParseSupport;
 using UtilityLibrary;
 
 #endregion
@@ -28,102 +30,49 @@ namespace SharedCode.FormulaSupport
 		LABEL_NAME			// @, <ln>
 	}
 
-/*
- final
-@"(?<E>=)|(?<eq>.*?)(?<v>\{(\[(?<ca>(?i:[a-z]{1,3}[1-9]\d{0,6}))\]|\$(?<sv>.+?)|\@(?<ln>.+?)|\!(?<gp>.+?)|\%(?<pp>.+?)|\#(?<rp>.+?))\})|(?<eq>.+$)";
-except gets a "correct" excel address
-@"(?<E>=)|(?<eq>.*?)(?<v>\{(\[(?<ca>(([a-wA-W]{0,1}[a-zA-Z]{1,2}|[xX][a-eA-E][a-zA-Z]|[xX][fF][a-dA-D])[1-9]\d{0,6}))\]|\$(?<sv>.+?)|\@(?<ln>.+?)|\!(?<gp>.+?)|\%(?<pp>.+?)|\#(?<rp>.+?))\})|(?<eq>.+$)";
- */
+	public class ValuePair<T,U>
+	{
+		public T Key { get; set; }
+		public U Value { get; set; }
+
+		public ValuePair()
+		{
+			Key = default(T);
+			Value = default(U);
+		}
+
+		public ValuePair(T key, U value)
+		{
+			Key = key;
+			Value = value;
+		}
+	}
+
+
 	public class ProcessFormula
 	{
-		public struct Var_Id
-		{
-			public Var_Id(string id, char prefix, char sufix = (char) 0)
-			{
-				this.prefix = prefix;
-				this.suffix = sufix;
-				varType = FormulaVariableType.UNASSIGNED;
-
-				Id = id;
-			}
-
-			public string this[bool b]
-			{
-				get
-				{
-					if (b) return char.ToString(prefix);
-					return char.ToString(suffix);
-				}
-			}
-
-			public char this[int idx]
-			{
-				get
-				{
-					if (idx < 0 || idx % 2 == 0) return prefix;
-
-					return suffix;
-				}
-			}
-
-			private readonly FormulaVariableType varType;
-			private readonly char prefix;
-			private readonly char suffix;
-			
-
-			public string Prefix => new string(new char[] {ID_STR_pfx, prefix});
-
-			public string PrefixStr => prefix.ToString();
-
-			public int PrefixLen => Prefix.Length;
-
-			public string Suffix => new string(new char[] {suffix, ID_STR_sfx});
-
-			public int SuffixLen => Suffix.Length;
-
-			public string Id { get; private set; }
-		}
 
 	#region private fields
 
-		private const char ID_STR_pfx = '{';
-		private const char ID_STR_sfx = '}';
-
-		private readonly Var_Id EXCEL_ADDR     = new Var_Id("ca", '[', ']');	// CA cell address
-		private readonly Var_Id SYST_VAR       = new Var_Id("sv", '$');	// SA
-		private readonly Var_Id REVIT_PARAM    = new Var_Id("rp", '#');	// RP
-		private readonly Var_Id PROJ_PARAM     = new Var_Id("pp", '%');	// PP
-		private readonly Var_Id GLOBAL_PARAM   = new Var_Id("gp", '!');	// GP
-		private readonly Var_Id LABEL_NAME     = new Var_Id("ln", '@');	// LN
-
+		private ProcessFormulaSupport pfs = new ProcessFormulaSupport();
 
 	#endregion
 
 	#region ctor
 
 		// public ProcessFormula()
-		// {
-		// }
+		// { }
 
 	#endregion
 
 	#region public properties
 
-		// public int CatagorizeVariable(string variableString)
-		// {
-		// 	string testCode = variableString.Trim().Substring(0, 2);
-		//
-		// 	Var_Id? vId = GetCode(testCode);
-		//
-		// 	if (vId == null) return -1;
-		// }
+		public bool Processed { get; private set; }
 
 
 	#endregion
 
 	#region private properties
-
-
 
 	#endregion
 
@@ -131,13 +80,75 @@ except gets a "correct" excel address
 
 		public bool Process(string formula)
 		{
+			Processed = false;
+
 			string f = formula.Trim();
 
-			if (f[0] != '=') return false;
+			pfs.Clear();
 
+			if (!pfs.FormulaParse(f)) return false;
+
+			Processed = true;
 
 			return true;
 		}
+
+		public bool GetKeyVars(string formula, out bool gotLeftSide,
+			out ValuePair<String, string> leftSide, 
+			out ValuePair<String, string> rightSide )
+		{
+			gotLeftSide = false;
+
+			leftSide = new ValuePair<string, string>();
+			rightSide = new ValuePair<string, string>();
+
+			List<ValuePair<string, string>> bothSides = pfs.GetKeyVar(formula);
+
+			Debug.WriteLine("results are| " + (bothSides == null ? "null" : " count| " + bothSides.Count));
+
+			if (bothSides == null) return false;
+
+			if (bothSides.Count !=2 && bothSides.Count != 1)
+			{
+				return false;
+			}
+
+			int rightSideIdx = 0;
+
+			if (bothSides.Count == 2)
+			{
+				leftSide.Key = bothSides[0].Key;
+				leftSide.Value = bothSides[0].Value;
+				gotLeftSide = true;
+				rightSideIdx = 1;
+			} 
+
+			rightSide.Key = bothSides[rightSideIdx].Key;
+			rightSide.Value = bothSides[rightSideIdx].Value;
+
+			return true;
+		}
+
+		public bool GetKeyVars2(string formula,
+			out List<ValuePair<int, string>> keyVars )
+		{
+			// parse formula / create complete token list
+			pfs.FormulaParse(formula);
+
+			return pfs.GetKeyVars2(out keyVars);
+		}
+
+		public Tuple<int, char, TestType, TestStatusCode> GetKeyVars3(string formula,
+			out ValuePair<int, string> keyVar )
+		{
+			// parse formula / create complete token list
+			pfs.FormulaParse(formula);
+
+			if (!pfs.GetKeyVars3(out keyVar)) return AStringValidate.GeneralFail;
+
+			return pfs.ValidateKeyVar(keyVar);
+		}
+
 
 	#endregion
 

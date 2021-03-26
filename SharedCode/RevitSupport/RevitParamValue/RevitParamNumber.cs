@@ -20,8 +20,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		{
 			gotValue = false;
 
-			if (paramDesc.ReadReqmt == ParamReadReqmt.READ_VALUE_REQUIRED
-				|| paramDesc.ReadReqmt == ParamReadReqmt.READ_VALUE_REQD_IF_NUMBER
+			if (paramDesc.ReadReqmt == ParamReadReqmt.RD_VALUE_REQUIRED
+				|| paramDesc.ReadReqmt == ParamReadReqmt.RD_VALUE_REQD_IF_NUMBER
 				|| double.IsNaN(value))
 			{
 				ErrorCodes = ErrorCodes.PARAM_VALUE_NAN_CS001103;

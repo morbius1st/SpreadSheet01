@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Autodesk.Revit.DB;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
+using Family = SpreadSheet01.RevitSupport.RevitCellsManagement.Family;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using static SpreadSheet01.Management.ErrorCodes;
 
@@ -33,20 +34,20 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			{
 				string paramName = param.Definition.Name;
 
-				pd = RevitParamManager.MatchChartInstance(paramName);
+				pd = Family.Match(paramName, ParamClass.PC_CHART);
 				// pd = RevitChartParameters.Match(paramName);
 
-				if (pd == null || pd.Mode == ParamMode.NOT_USED) continue;
+				if (pd == null || pd.Mode == ParamMode.PM_NOT_USED) continue;
 
 				Debug.WriteLine("pd=" + pd.ParameterName + " (" + paramName + ") "
-					+ " must exist? " + (pd.Exist == ParamExistReqmt.PARAM_MUST_EXIST).ToString());
+					+ " must exist? " + (pd.Exist == ParamExistReqmt.EX_PARAM_MUST_EXIST).ToString());
 
 
-				if (pd.Exist == ParamExistReqmt.PARAM_MUST_EXIST) mustExistParamCount++;
+				if (pd.Exist == ParamExistReqmt.EX_PARAM_MUST_EXIST) mustExistParamCount++;
 
 				switch (pd.Type)
 				{
-				case ParamType.INSTANCE:
+				case ParamType.PT_INSTANCE:
 					{
 						dataParamCount++;
 						if (pd.DataType == ParamDataType.IGNORE) continue;
@@ -77,6 +78,9 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		private void validateChartSymParams(RevitChartData rcs,
 			int dataParamCount, int mustExistParamCount)
 		{
+			return;
+			
+		/*
 			// if (mustExistParamCount != RevitChartParameters.MustExistCount)
 			if (mustExistParamCount != RevitParamManager.MustExistChartInstance)
 			{
@@ -87,6 +91,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			{
 				rcs.ErrorCodes = PARAM_CHART_PARAM_HAS_ERROR_CS001135;
 			}
+
+		*/
 		}
 
 
@@ -97,7 +103,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 			int dataParamCount = 0;
 			int[] labelParamCount = new int[12];
-			int containerParamCount = 0;
+
 
 			int labelId;
 			bool isLabel;
@@ -105,23 +111,28 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 			foreach (Parameter param in aSym.GetOrderedParameters())
 			{
+				
+
 				string paramName = RevitParamUtil.GetRootName(param.Definition.Name,
 					out labelId, out isLabel);
 
-				if (isLabel)
-				{
-					pd = RevitParamManager.MatchCellLabel(paramName);
-				}
-				else
-				{
-					pd = RevitParamManager.MatchCellInstance(paramName);
-				}
+
+				pd = Family.Match(paramName, ParamClass.PC_CELL);
+				//
+				// if (isLabel)
+				// {
+				// 	pd = RevitParamManager.MatchCellLabel(paramName);
+				// }
+				// else
+				// {
+				// 	pd = RevitParamManager.MatchCellInstance(paramName);
+				// }
 
 				if (pd == null) continue;
 
 				switch (pd.Type)
 				{
-				case ParamType.INSTANCE:
+				case ParamType.PT_INSTANCE:
 					{
 						dataParamCount++;
 						if (pd.DataType == ParamDataType.IGNORE) continue;
@@ -131,7 +142,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 						rvtCell.Add(pd.Index, rvtParam);
 						break;
 					}
-				case ParamType.LABEL:
+				case ParamType.PT_LABEL:
 					{
 						labelParamCount[labelId]++;
 						if (pd.DataType == ParamDataType.IGNORE) continue;
@@ -208,7 +219,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				{
 					p = new RevitParamBool(
 						pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
+						ParamReadReqmt.RD_VALUE_IGNORE
 							? (bool?) false
 							: param.AsInteger() == 1, pd);
 					break;
@@ -217,7 +228,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				{
 					p = new RevitParamNumber(
 						pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
+						ParamReadReqmt.RD_VALUE_IGNORE
 							? double.NaN
 							: param.AsDouble(), pd);
 					break;
@@ -225,7 +236,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			case ParamDataType.TEXT:
 				{
 					p = new RevitParamText(pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
+						ParamReadReqmt.RD_VALUE_IGNORE
 							? ""
 							: param.AsString(), pd);
 					break;
@@ -233,7 +244,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			case ParamDataType.FORMULA:
 				{
 					p = new RevitParamFormula(pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
+						ParamReadReqmt.RD_VALUE_IGNORE
 							? ""
 							: param.AsString(), pd);
 					break;
@@ -241,7 +252,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			case ParamDataType.DATATYPE:
 				{
 					p = new RevitParamText(pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
+						ParamReadReqmt.RD_VALUE_IGNORE
 							? ""
 							: param.AsString(), pd);
 					break;
@@ -249,7 +260,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			case ParamDataType.FILE_PATH:
 				{
 					p = new RevitParamFilePath(pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
+						ParamReadReqmt.RD_VALUE_IGNORE
 							? ""
 							: param.AsString(), pd);
 					break;
@@ -257,7 +268,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			case ParamDataType.UPDATE_TYPE:
 				{
 					p = new RevitParamUpdateType(pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
+						ParamReadReqmt.RD_VALUE_IGNORE
 							? ""
 							: param.AsString(), pd);
 					break;
@@ -265,7 +276,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			case ParamDataType.WORKSHEETNAME:
 				{
 					p = new RevitParamWkShtName(pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
+						ParamReadReqmt.RD_VALUE_IGNORE
 							? ""
 							: param.AsString(), pd);
 					break;
@@ -280,7 +291,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				{
 					p = new RevitParamNumber(
 						pd.ReadReqmt ==
-						ParamReadReqmt.READ_VALUE_IGNORE
+						ParamReadReqmt.RD_VALUE_IGNORE
 							? double.NaN
 							: param.AsDouble(), pd);
 					break;

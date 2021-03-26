@@ -32,6 +32,14 @@
 				Orientation="Horizontal">
 							
 			<Button
+					x:Name="BtnReOrder"
+					Margin="5"
+					Width="90"
+					Click="BtnReOrder_OnClick"
+					Content="Re-Order"
+					/>	
+												
+			<Button
 					x:Name="BtnDebug"
 					Margin="5"
 					Width="90"

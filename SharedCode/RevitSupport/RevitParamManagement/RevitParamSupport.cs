@@ -8,6 +8,12 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 {
 #region enums
 
+	public enum ParamClass
+	{
+		PC_CHART,
+		PC_CELL
+	}
+
 	public enum ParamCat
 	{
 		CT_ANNOTATION,
@@ -22,36 +28,36 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 	public enum ParamType
 	{
-		INTERNAL,
-		TYPE,
-		INSTANCE,
-		LABEL
+		PT_INTERNAL,
+		PT_TYPE,
+		PT_INSTANCE,
+		PT_LABEL
 	}
 
 	public enum ParamExistReqmt
 	{
-		PARAM_MUST_EXIST,
-		PARAM_OPTIONAL,
-		PARAM_INTERNAL
+		EX_PARAM_MUST_EXIST,
+		EX_PARAM_OPTIONAL,
+		EX_PARAM_INTERNAL
 	}
 
 	public enum ParamReadReqmt
 	{
-		READ_VALUE_IGNORE,
-		READ_VALUE_OPTIONAL,
-		READ_VALUE_REQUIRED,
-		READ_VALUE_SET_REQUIRED,
-		READ_VALUE_REQD_IF_NUMBER
+		RD_VALUE_IGNORE,
+		RDVALUE_OPTIONAL,
+		RD_VALUE_REQUIRED,
+		RD_VALUE_SET_REQUIRED,
+		RD_VALUE_REQD_IF_NUMBER
 	}
 
 	public enum ParamMode
 	{
-		NOT_USED,
-		CALCULATED,          // and written to parameter
-		READ_FROM_PARAMETER, // and into collection only
-		READ_FROM_EXCEL,     // and write to parameter only
-		WRITE_TO_EXCEL,      // after being read from parameter
-		PRIVATE
+		PM_NOT_USED,
+		PM_CALCULATED,          // and written to parameter
+		PM_READ_FROM_FAMILY, // and into collection only
+		PM_READ_FROM_EXCEL,     // and write to parameter only
+		PM_WRITE_TO_EXCEL,      // after being read from parameter
+		PM_INTERNAL
 	}
 
 	public enum ParamDataType

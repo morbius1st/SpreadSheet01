@@ -10,8 +10,8 @@ using SpreadSheet01.RevitSupport.RevitParamValue;
 using SpreadSheet01.RevitSupport.RevitSelectionSupport;
 using UtilityLibrary;
 #if NOREVIT
-using Cells.Windows;
-using Cells.CellsTests;
+using CellsTest.Windows;
+using CellsTest.CellsTests;
 
 
 #endif
@@ -75,27 +75,52 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 	#region public methods
 
-		public bool ProcessLabels(CellUpdateTypeCode which)
+		// public bool ProcessLabels(CellUpdateTypeCode which)
+		// {
+		// 	int fail = 0;
+		// 	// process all charts and add to list
+		// 	foreach (KeyValuePair<string, RevitChart> kvp in Charts.ListOfCharts)
+		// 	{
+		// 		// chart has all parameters retreived
+		// 		RevitChart chart = kvp.Value;
+		//
+		// 		if (which != CellUpdateTypeCode.ALL &&
+		// 			kvp.Value.UpdateType != which) continue;
+		//
+		// 		processOneChartLabels(kvp.Value);
+		// 	}
+		//
+		// 	return true;
+		// }
+
+
+		public bool GetCurrentCharts()
 		{
-			int fail = 0;
-			// process all charts and add to list
-			foreach (KeyValuePair<string, RevitChart> kvp in Charts.ListOfCharts)
-			{
-				// chart has all parameters retreived
-				RevitChart chart = kvp.Value;
+			Families Fams = RevitParamManager.Fams;
+			ChartFamily ChartParams = RevitParamManager.ChartParams;
+			CellFamily CellParams = RevitParamManager.CellParams;
 
-				if (which != CellUpdateTypeCode.ALL &&
-					kvp.Value.UpdateType != which) continue;
 
-				processOneChartLabels(kvp.Value);
-			}
 
-			return true;
+			ICollection<Element> chartFamilies;
+
+			// step 1 - select all of the chart cells - place them into: 'chartFamilies'
+			chartFamilies = findAllChartFamilies(CHART_FAMILY_NAME);
+
+			// step 2 - process 'chartFamilies' and process all of the parameters
+			getChartParams(chartFamilies);
+
+			return chartFamilies != null && chartFamilies.Count > 0;
 		}
+
 
 		// scan revit and get all chart and label information
 		public bool ProcessCharts(CellUpdateTypeCode which)
 		{
+			Families Fams = RevitParamManager.Fams;
+			ChartFamily ChartParams = RevitParamManager.ChartParams;
+			CellFamily CellParams = RevitParamManager.CellParams;
+
 			int fail = 0;
 			// process all charts and add to list
 			foreach (KeyValuePair<string, RevitChart> kvp in Charts.ListOfCharts)
@@ -112,65 +137,52 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			return true;
 		}
 
-		public bool GetCurrentCharts()
-		{
-			ICollection<Element> chartFamilies;
-
-			// step 1 - select all of the chart cells - place them into: 'chartFamilies'
-			chartFamilies = findAllChartFamilies(CHART_FAMILY_NAME);
-
-			// step 2 - process 'chartFamilies' and process all of the parameters
-			getChartParams(chartFamilies);
-
-			return chartFamilies != null && chartFamilies.Count > 0;
-		}
-
 	#endregion
 
 	#region private methods
 
 		// provide the list of cell families
 		// process a chart and get the parameters for a family
-		private bool processOneChartLabels(RevitChart chart)
-		{
-			string cellFamilyTypeName = chart.RevitChartData.GetValue();
-
-		#if REVIT
-			ICollection<Element> cellElements
-				= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName);
-		#endif
-
-
-
-		#if NOREVIT
-			MainWindow.WriteLine("");
-			MainWindow.WriteLine("Process one chart's labels");
-			foreach (KeyValuePair<string, RevitLabel> kvp in chart.AllCellLabels)
-			{
-				MainWindow.WriteLine("");
-				MainWindow.WriteLine("Process one label| " + kvp.Value.Name);
-			}
-
-			int i = Int32.Parse(chart[RevitParamManager.SeqIdx].GetValue());
-
-			ICollection<Element> cellElements
-				= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName, i);
-
-		#endif
-
-			if (cellElements == null || cellElements.Count == 0) return false;
-
-			chart.ListOfCellSyms = new Dictionary<string, RevitCell>();
-
-			foreach (Element cell in cellElements)
-			{
-				RevitCell rvtCell = processCellFamily2(cell);
-
-				chart.Add(rvtCell);
-			}
-
-			return true;
-		}
+		// private bool processOneChartLabels(RevitChart chart)
+		// {
+		// 	string cellFamilyTypeName = chart.RevitChartData.GetValue();
+		//
+		// #if REVIT
+		// 	ICollection<Element> cellElements
+		// 		= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName);
+		// #endif
+		//
+		//
+		//
+		// #if NOREVIT
+		// 	MainWindow.WriteLine("");
+		// 	MainWindow.WriteLine("Process one chart's labels");
+		// 	foreach (KeyValuePair<string, RevitLabel> kvp in chart.AllCellLabels)
+		// 	{
+		// 		MainWindow.WriteLine("");
+		// 		MainWindow.WriteLine("Process one label| " + kvp.Value.Name);
+		// 	}
+		//
+		// 	int i = Int32.Parse(chart[RevitParamManager.SeqIdx].GetValue());
+		//
+		// 	ICollection<Element> cellElements
+		// 		= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName, i);
+		//
+		// #endif
+		//
+		// 	if (cellElements == null || cellElements.Count == 0) return false;
+		//
+		// 	chart.ListOfCellSyms = new Dictionary<string, RevitCell>();
+		//
+		// 	foreach (Element cell in cellElements)
+		// 	{
+		// 		RevitCell rvtCell = processCellFamily2(cell);
+		//
+		// 		chart.Add(rvtCell);
+		// 	}
+		//
+		// 	return true;
+		// }
 
 
 		// provide the list of cell families
@@ -205,6 +217,8 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 			return true;
 		}
+
+
 
 		private ICollection<Element> findAllChartFamilies(string chartFamilyName)
 		{
@@ -307,6 +321,16 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			MainWindow.TabClr(tabid);
 
 			MainWindow.WriteLineTab("list charts (list of {RevitChart}");
+
+
+			MainWindow.WriteLine("");
+			// MainWindow.WriteLineTab("Chart must exist type count| " + RevitParamManager.MustExistChartType);
+			// MainWindow.WriteLineTab("Chart must exist inst count| " + RevitParamManager.MustExistChartInstance);
+			//
+			// MainWindow.WriteLineTab("Cell must exist type count | " + RevitParamManager.MustExistCellType);
+			// MainWindow.WriteLineTab("Cell must exist inst count | " + RevitParamManager.MustExistCellInstance);
+			// MainWindow.WriteLineTab("Cell must exist labl count | " + RevitParamManager.MustExistCellLabel);
+			MainWindow.WriteLine("");
 
 			MainWindow.TabUp(5);
 

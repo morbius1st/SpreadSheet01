@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -7,15 +8,15 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
+using Autodesk.Revit.ApplicationServices;
+using Application = Autodesk.Revit.ApplicationServices.Application;
+using Autodesk.Revit.DB;
 using SpreadSheet01.RevitSupport;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
+using SpreadSheet01.RevitSupport.RevitParamManagement;
+
+using SharedRevitCode.ShParamUtils;
 
 namespace SpreadSheet01.Windows
 {
@@ -26,9 +27,21 @@ namespace SpreadSheet01.Windows
 	{
 		// private RevitManager rvtMgr;
 
-		public SelectCharts()
+		private Application app;
+		private Document doc;
+
+		private ParamUtils util;
+
+		private string tempFile;
+
+		public SelectCharts(Application app, Document doc)
 		{
 			InitializeComponent();
+
+			this.app = app;
+			this.doc = doc;
+
+			util = new ParamUtils(app, doc);
 
 			// rvtMgr = new RevitManager();
 		}
@@ -43,9 +56,28 @@ namespace SpreadSheet01.Windows
 			this.Close();
 		}
 
+		private void BtnReOrder_OnClick(object sender, RoutedEventArgs e)
+		{
+			bool result = util.ReOrderParameters();
+
+
+			Debug.WriteLine("@Debug");
+		}
 
 		private void BtnDebug_OnClick(object sender, RoutedEventArgs e)
 		{
+			
+
+			// bool result;
+			// bool resultOut;
+			//
+			// if (util.LoadSharedParametersFromFile(out resultOut))
+			// {
+			// 	result = !util.AddSharedParameter();
+			// }
+
+			bool result = util.CreateSharedParametersFromTempFile(out tempFile);
+
 			Debug.WriteLine("@Debug");
 		}
 

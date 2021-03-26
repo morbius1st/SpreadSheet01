@@ -14,7 +14,7 @@ using System.Windows;
 // username: jeffs
 // created:  2/28/2021 5:54:07 AM
 
-namespace Cells
+namespace CellsTest
 {
 	public partial class App : Application
 	{

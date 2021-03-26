@@ -31,7 +31,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		{
 			gotValue = false;
 
-			if (paramDesc.ReadReqmt == ParamReadReqmt.READ_VALUE_REQUIRED
+			if (paramDesc.ReadReqmt == ParamReadReqmt.RD_VALUE_REQUIRED
 				&& value.IsVoid() )
 			{
 				ErrorCodes = ErrorCodes.PARAM_VALUE_MISSING_CS001102;
