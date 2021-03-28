@@ -13,9 +13,9 @@ using System.Threading.Tasks;
 // username: jeffs
 // created:  3/28/2021 6:43:42 AM
 
-/* ---------------- /
- *  Shared code
- -----------------*/
+/* ------------------------ /
+ *  Shared Code
+ * ----------------------- */
 
 namespace SharedCode.RevitSupport.RevitSystemManagement
 {

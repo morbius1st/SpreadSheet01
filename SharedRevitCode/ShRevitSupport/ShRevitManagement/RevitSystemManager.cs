@@ -22,6 +22,10 @@ using CellsTest.CellsTests;
 // username: jeffs
 // created:  3/1/2021 10:29:39 PM
 
+/* ------------------------ /
+ *  Shared Revit Code
+ * ----------------------- */
+
 namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 {
 	public class RevitSystemManager : INotifyPropertyChanged

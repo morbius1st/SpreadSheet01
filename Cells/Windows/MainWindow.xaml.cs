@@ -11,7 +11,7 @@ using UtilityLibrary;
 
 #endregion
 
-// projname: Cells
+// projname: CellsTest
 // itemname: MainWindow
 // username: jeffs
 // created:  2/28/2021 5:54:07 AM

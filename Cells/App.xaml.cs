@@ -9,7 +9,7 @@ using System.Windows;
 
 #endregion
 
-// projname: Cells
+// projname: CellsTest
 // itemname: App
 // username: jeffs
 // created:  2/28/2021 5:54:07 AM

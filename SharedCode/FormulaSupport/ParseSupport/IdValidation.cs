@@ -1,6 +1,5 @@
 ﻿// Solution:     SpreadSheet01
-// Project:       Cells
-// File:             IdValidation.cs
+// // projname: CellsTest// File:             IdValidation.cs
 // Created:      2021-03-20 (2:52 PM)
 
 using System;

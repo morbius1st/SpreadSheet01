@@ -1,6 +1,5 @@
 ﻿// Solution:     SpreadSheet01
-// Project:       Cells
-// File:             charValidation.cs
+// // projname: CellsTest// File:             charValidation.cs
 // Created:      2021-03-20 (2:53 PM)
 
 using System;

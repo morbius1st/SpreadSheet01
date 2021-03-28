@@ -1,6 +1,5 @@
 ﻿// Solution:     SpreadSheet01
-// Project:       Cells
-// File:             IStringValidate.cs
+// // projname: CellsTest// File:             IStringValidate.cs
 // Created:      2021-03-20 (2:53 PM)
 
 using System;

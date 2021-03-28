@@ -1,6 +1,5 @@
 ﻿// Solution:     SpreadSheet01
-// Project:       Cells
-// File:             RevitCellErrorCode.cs
+// // projname: CellsTest// File:             RevitCellErrorCode.cs
 // Created:      2021-03-14 (6:38 PM)
 
 namespace SpreadSheet01.Management

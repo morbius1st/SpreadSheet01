@@ -1,6 +1,5 @@
 ﻿// Solution:     SpreadSheet01
-// Project:       Cells
-// File:             ParseSupport.cs
+// // projname: CellsTest// File:             ParseSupport.cs
 // Created:      2021-03-20 (2:52 PM)
 
 namespace SharedCode.FormulaSupport.ParseSupport

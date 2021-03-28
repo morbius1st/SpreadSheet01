@@ -1,6 +1,5 @@
 ﻿// Solution:     SpreadSheet01
-// Project:       Cells
-// File:             SampleAnnoSymbols.cs
+// // projname: CellsTest// File:             SampleAnnoSymbols.cs
 // Created:      2021-03-03 (10:13 PM)
 
 using System.Collections.Generic;
