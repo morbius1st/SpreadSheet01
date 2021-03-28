@@ -27,7 +27,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			if (paramDesc.ReadReqmt == ParamReadReqmt.RD_VALUE_REQUIRED
 				&& value.IsVoid() )
 			{
-				ErrorCodes = ErrorCodes.PARAM_VALUE_MISSING_CS001102;
+				ErrorCode = ErrorCodes.PARAM_VALUE_MISSING_CS001102;
 				this.dynValue.Value = null;
 			}
 			else
@@ -38,7 +38,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 				if (this.dynValue.Value == CellUpdateTypeCode.INVALID)
 				{
-					ErrorCodes = ErrorCodes.PARAM_CHART_BAD_UPDATE_TYPE_CS001144;
+					ErrorCode = ErrorCodes.PARAM_CHART_BAD_UPDATE_TYPE_CS001144;
 				}
 			}
 		}

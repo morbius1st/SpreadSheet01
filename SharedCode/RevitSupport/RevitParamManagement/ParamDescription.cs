@@ -23,10 +23,10 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 	#region ctor
 
-		public ParamDesc(
-			string paramName,
+		public ParamDesc(string paramName,
 			string shortName,
 			int index,
+			ParamClass paramClass,
 			ParamType paramType,
 			ParamExistReqmt paramExist,
 			ParamDataType dataType,
@@ -37,7 +37,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			Index = index;
 			ParameterName = paramName;
 			ShortName = shortName;
-
+			ParamClass = paramClass;
 			Type = paramType;
 			DataType = dataType;
 			Exist = paramExist;
@@ -51,10 +51,9 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 	#region public properties
 
-		public static ParamDesc Empty => new ParamDesc("", "", -1,
-			ParamType.PT_INTERNAL, ParamExistReqmt.EX_PARAM_MUST_EXIST, 
-			ParamDataType.IGNORE, ParamReadReqmt.RD_VALUE_IGNORE, 
-			ParamMode.PM_NOT_USED);
+		public static ParamDesc Empty => new ParamDesc("", "", -1, 
+			ParamClass.PC_INTERNAL, ParamType.PT_INTERNAL, ParamExistReqmt.EX_PARAM_MUST_EXIST, 
+			ParamDataType.DT_IGNORE, ParamReadReqmt.RD_VALUE_IGNORE, ParamMode.PM_NOT_USED);
 
 
 		public string ParameterName {
@@ -68,7 +67,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		}
 		public string ShortName	        { get; set; }
 		public int Index                { get; protected set; }
-		// public int ShortNameLen         { get; set; }
+		
+		public ParamClass ParamClass    { get; protected set; }
 		public ParamType Type           { get; protected set; }
 		public ParamDataType DataType   { get; protected set; }
 		public ParamExistReqmt Exist    { get; protected set; }

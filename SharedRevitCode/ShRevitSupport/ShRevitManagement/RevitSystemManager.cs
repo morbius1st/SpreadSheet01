@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.DB;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
 using SpreadSheet01.RevitSupport.RevitParamValue;
@@ -23,7 +24,7 @@ using CellsTest.CellsTests;
 
 namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 {
-	public class RevitCellSystManager : INotifyPropertyChanged
+	public class RevitSystemManager : INotifyPropertyChanged
 	{
 	#region private fields
 
@@ -39,14 +40,20 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		private readonly RevitParamCatagorize revitCat;
 		private RevitSelectSupport rvtSelect;
 
+		private Application app;
+		private Document doc;
+
 		private int errorIdx;
 
 	#endregion
 
 	#region ctor
 
-		public RevitCellSystManager()
+		public RevitSystemManager(Application app, Document doc)
 		{
+			this.app = app;
+			this.doc = doc;
+
 			revitCat = new RevitParamCatagorize();
 			rvtSelect = new RevitSelectSupport();
 
@@ -57,10 +64,10 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 	#region public properties
 
-		public RevitSelectSupport RvtSelect
-		{
-			get { return rvtSelect; }
-		}
+		// public RevitSelectSupport RvtSelect
+		// {
+		// 	get { return rvtSelect; }
+		// }
 
 
 	#endregion
@@ -70,24 +77,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	#endregion
 
 	#region public methods
-
-		// public bool ProcessLabels(CellUpdateTypeCode which)
-		// {
-		// 	int fail = 0;
-		// 	// process all charts and add to list
-		// 	foreach (KeyValuePair<string, RevitChart> kvp in Charts.ListOfCharts)
-		// 	{
-		// 		// chart has all parameters retreived
-		// 		RevitChart chart = kvp.Value;
-		//
-		// 		if (which != CellUpdateTypeCode.ALL &&
-		// 			kvp.Value.UpdateType != which) continue;
-		//
-		// 		processOneChartLabels(kvp.Value);
-		// 	}
-		//
-		// 	return true;
-		// }
 
 
 		public bool GetCurrentCharts()
@@ -135,25 +124,14 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		private ICollection<Element> findAllChartFamilies(string chartFamilyName)
 		{
-		#if NOREVIT
 
-			SampleAnnoSymbols samples = new SampleAnnoSymbols();
+			return rvtSelect.FindGenericAnnotationByName(doc, chartFamilyName);
 
-			samples.Process();
-
-			return samples.ChartElements;
-		#endif
-
-		#if REVIT
-			return null;
-
-		#endif
 		}
 
 
 		private void getChartParams(ICollection<Element> chartFamilies)
 		{
-		#if NOREVIT
 			foreach (Element el in chartFamilies)
 			{
 				RevitChartData chartData = revitCat.CatagorizeChartSymParams(el);
@@ -181,7 +159,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 				Charts.Add(key, chart);
 			}
-		#endif
 		}
 
 
@@ -192,41 +169,31 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		{
 			string cellFamilyTypeName = chart.RevitChartData.GetValue();
 
-		#if REVIT
 			ICollection<Element> cellElements
-				= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName);
-		#endif
-
-		#if NOREVIT
-			int i = Int32.Parse(chart[RevitParamManager.SeqIdx].GetValue());
-
-			ICollection<Element> cellElements
-				= RvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName, i);
-
-		#endif
+				= rvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName);
 
 			if (cellElements == null || cellElements.Count == 0) return false;
 
-			chart.ListOfCellSyms = new Dictionary<string, RevitCell>();
+			chart.ListOfCellSyms = new Dictionary<string, RevitCellData>();
 
 			foreach (Element cell in cellElements)
 			{
-				RevitCell rvtCell = processCellFamily2(cell);
+				RevitCellData revitCellData = processCellFamily2(cell);
 
-				chart.Add(rvtCell);
+				chart.Add(revitCellData);
 			}
 
 			return true;
 		}
 
 
-		private RevitCell processCellFamily2(Element el)
+		private RevitCellData processCellFamily2(Element el)
 		{
-			RevitCell rvtCell = revitCat.catagorizeCellParams(el as AnnotationSymbol);
+			RevitCellData revitCellData = revitCat.catagorizeCellParams(el as AnnotationSymbol);
 
-			if (!rvtCell.IsValid) return null;
+			if (!revitCellData.IsValid) return null;
 
-			return rvtCell;
+			return revitCellData;
 		}
 
 

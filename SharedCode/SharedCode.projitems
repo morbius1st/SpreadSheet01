@@ -20,7 +20,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)FormulaSupport\ParseSupport\IStringValidate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FormulaSupport\ParseSupport\ParseUtil.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FormulaSupport\ProcessFormula.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitCellsManagement\RevitCellSystManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitCellsManagement\RevitContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitCellsManagement\RevitFamilies.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\ParamDescription.cs" />
@@ -39,6 +38,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamUpdateType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamWkShtName.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitManagement\RevitSystemManager.cs" />
     <Compile Include="D:\Users\Jeff\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\CsExtensions.cs">
       <Link>.External\CsExtensions.cs</Link>
     </Compile>

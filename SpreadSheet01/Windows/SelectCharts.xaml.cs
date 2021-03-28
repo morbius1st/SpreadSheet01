@@ -1,22 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-
-using Autodesk.Revit.ApplicationServices;
 using Application = Autodesk.Revit.ApplicationServices.Application;
 using Autodesk.Revit.DB;
-using SpreadSheet01.RevitSupport;
-using SpreadSheet01.RevitSupport.RevitCellsManagement;
-using SpreadSheet01.RevitSupport.RevitParamManagement;
-
 using SharedRevitCode.ShParamUtils;
+using SharedRevitCode.ShRevitManagement;
+using SpreadSheet01.RevitSupport.RevitCellsManagement;
+
 
 namespace SpreadSheet01.Windows
 {
@@ -30,6 +21,9 @@ namespace SpreadSheet01.Windows
 		private Application app;
 		private Document doc;
 
+		private RevitProcessManager rvtProcMgr;
+		public RevitSystemManager revitSystMgr;
+
 		private ParamUtils util;
 
 		private string tempFile;
@@ -41,6 +35,9 @@ namespace SpreadSheet01.Windows
 			this.app = app;
 			this.doc = doc;
 
+			rvtProcMgr = new RevitProcessManager();
+			revitSystMgr = new RevitSystemManager(app, doc);
+
 			util = new ParamUtils(app, doc);
 
 			// rvtMgr = new RevitManager();
@@ -50,10 +47,19 @@ namespace SpreadSheet01.Windows
 
 		// public List<RevitChartItem> Charts => rvtMgr.ChartList.Charts;
 
-
 		private void BtnDone_OnClick(object sender, RoutedEventArgs e)
 		{
 			this.Close();
+		}
+
+		private void BtnGetCharts_OnClick(object sender, RoutedEventArgs e)
+		{
+
+			bool result = revitSystMgr.GetCurrentCharts();
+
+			RevitCharts c = revitSystMgr.Charts;
+
+			Debug.WriteLine("@ BtnGetCharts_OnClick");
 		}
 
 		private void BtnReOrder_OnClick(object sender, RoutedEventArgs e)

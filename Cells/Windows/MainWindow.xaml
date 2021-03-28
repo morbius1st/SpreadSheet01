@@ -79,7 +79,7 @@
 				>
 			<ListView.ItemTemplate>
 				<DataTemplate x:Name="LvDt01"
-						DataType="{x:Type mgmt:RevitCell}"
+						DataType="{x:Type mgmt:RevitCellData}"
 						>
 					<DockPanel x:Name="Dok01">
 						<DockPanel DockPanel.Dock="Top">

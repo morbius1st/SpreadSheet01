@@ -36,8 +36,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 	#region public properties
 
-		public abstract dynamic GetValue();
-
 		public DynamicValue DynValue => dynValue;
 
 		public ParamDesc ParamDesc
@@ -49,8 +47,13 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 				OnPropertyChanged();
 			}
 		}
+
+		public List<ErrorCodes> ErrorCodeList
+		{
+			get => errors;
+		}
 		
-		public ErrorCodes ErrorCodes
+		public ErrorCodes ErrorCode
 		{
 			set
 			{
@@ -76,6 +79,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 	#endregion
 
 	#region public methods
+
+		public abstract dynamic GetValue();
 
 		public void UpdateProperties()
 		{

@@ -19,7 +19,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 	{
 		public RevitChartData CatagorizeChartSymParams(Element elChart)
 		{
-			RevitChartData rcs = new RevitChartData();
+			RevitChartData rcd = new RevitChartData();
 			ARevitParam rvtParam;
 
 			int dataParamCount = 0;
@@ -27,8 +27,15 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 			ParamDesc pd;
 
-			rcs.RevitElement = elChart;
-			rcs.AnnoSymbol = (AnnotationSymbol) elChart;
+			rcd.RevitElement = elChart;
+			rcd.AnnoSymbol = (AnnotationSymbol) elChart;
+
+		#if REVIT
+			IList<Parameter> p = elChart.GetOrderedParameters();
+			ParameterMap pm = elChart.ParametersMap;
+			ParameterSet ps = elChart.Parameters;
+		#endif
+
 
 			foreach (Parameter param in elChart.GetOrderedParameters())
 			{
@@ -47,32 +54,45 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 				switch (pd.Type)
 				{
-				case ParamType.PT_INSTANCE:
+				case ParamType.PT_PARAM:
 					{
 						dataParamCount++;
-						if (pd.DataType == ParamDataType.IGNORE) continue;
+						if (pd.DataType == ParamDataType.DT_IGNORE) continue;
 
 						rvtParam = catagorizeParameter(param, pd);
 
-						rcs.Add(pd.Index, rvtParam);
+						rcd.Add(pd.Index, rvtParam);
 						break;
 					}
+
+				case ParamType.PT_INTERNAL:
+					{
+						dataParamCount++;
+						if (pd.DataType == ParamDataType.DT_IGNORE) continue;
+
+						rvtParam = catagorizeParameter(param, pd);
+
+						rcd.AddInternal(pd.Index, rvtParam);
+
+						break;
+					}
+
 				default:
 					{
 						rvtParam = ARevitParam.Invalid;
-						rvtParam.ErrorCodes = PARAM_CHART_INVALID_PROG_GRP_CS001140;
-						rcs.Add(pd.Index, rvtParam);
+						rvtParam.ErrorCode = PARAM_CHART_INVALID_PROG_GRP_CS001140;
+						rcd.Add(pd.Index, rvtParam);
 
 						break;
 					}
 				}
 
-				if (!rvtParam.IsValid) rcs.ErrorCodes = PARAM_CHART_PARAM_HAS_ERROR_CS001135;
+				if (!rvtParam.IsValid) rcd.ErrorCode = PARAM_CHART_PARAM_HAS_ERROR_CS001135;
 			}
 
-			validateChartSymParams(rcs, mustExistParamCount, mustExistParamCount);
+			validateChartSymParams(rcd, mustExistParamCount, mustExistParamCount);
 
-			return rcs;
+			return rcd;
 		}
 
 		private void validateChartSymParams(RevitChartData rcs,
@@ -96,9 +116,9 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		}
 
 
-		public RevitCell catagorizeCellParams(AnnotationSymbol aSym)
+		public RevitCellData catagorizeCellParams(AnnotationSymbol aSym)
 		{
-			RevitCell rvtCell = new RevitCell();
+			RevitCellData rcd = new RevitCellData();
 			ARevitParam rvtParam;
 
 			int dataParamCount = 0;
@@ -111,8 +131,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 			foreach (Parameter param in aSym.GetOrderedParameters())
 			{
-				
-
 				string paramName = RevitParamUtil.GetRootName(param.Definition.Name,
 					out labelId, out isLabel);
 
@@ -132,40 +150,50 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 				switch (pd.Type)
 				{
-				case ParamType.PT_INSTANCE:
+				case ParamType.PT_PARAM:
 					{
 						dataParamCount++;
-						if (pd.DataType == ParamDataType.IGNORE) continue;
+						if (pd.DataType == ParamDataType.DT_IGNORE) continue;
 
 						rvtParam = catagorizeParameter(param, pd);
 
-						rvtCell.Add(pd.Index, rvtParam);
+						rcd.Add(pd.Index, rvtParam);
 						break;
 					}
 				case ParamType.PT_LABEL:
 					{
 						labelParamCount[labelId]++;
-						if (pd.DataType == ParamDataType.IGNORE) continue;
+						if (pd.DataType == ParamDataType.DT_IGNORE) continue;
 
-						RevitLabel label = saveLabelParam(labelId, param, pd, rvtCell);
+						RevitLabel label = saveLabelParam(labelId, param, pd, rcd);
 
 						if (pd.Index == RevitParamManager.LblNameIdx)
 						{
-							rvtCell.AddLabelRef(label);
+							rcd.AddLabelRef(label);
 						}
 
+						break;
+					}
+				case ParamType.PT_INTERNAL:
+					{
+						dataParamCount++;
+						if (pd.DataType == ParamDataType.DT_IGNORE) continue;
+
+						rvtParam = catagorizeParameter(param, pd);
+
+						rcd.AddInternal(pd.Index, rvtParam);
 						break;
 					}
 				}
 			}
 
-			return rvtCell;
+			return rcd;
 		}
 
 
-		private RevitLabel saveLabelParam(int labelId, Parameter param, ParamDesc pd, RevitCell rvtCell)
+		private RevitLabel saveLabelParam(int labelId, Parameter param, ParamDesc pd, RevitCellData revitCellData)
 		{
-			Dictionary<string, RevitLabel> labels = rvtCell.ListOfLabels;
+			Dictionary<string, RevitLabel> labels = revitCellData.ListOfLabels;
 
 			RevitLabel label = getLabel(labelId, labels);
 
@@ -215,7 +243,15 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 			switch (pd.DataType)
 			{
-			case ParamDataType.BOOL:
+			case ParamDataType.DT_TEXT:
+				{
+					p = new RevitParamText(pd.ReadReqmt ==
+						ParamReadReqmt.RD_VALUE_IGNORE
+							? ""
+							: param.AsString(), pd);
+					break;
+				}
+			case ParamDataType.DT_BOOL:
 				{
 					p = new RevitParamBool(
 						pd.ReadReqmt ==
@@ -224,7 +260,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 							: param.AsInteger() == 1, pd);
 					break;
 				}
-			case ParamDataType.NUMBER:
+			case ParamDataType.DT_NUMBER:
 				{
 					p = new RevitParamNumber(
 						pd.ReadReqmt ==
@@ -233,15 +269,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 							: param.AsDouble(), pd);
 					break;
 				}
-			case ParamDataType.TEXT:
-				{
-					p = new RevitParamText(pd.ReadReqmt ==
-						ParamReadReqmt.RD_VALUE_IGNORE
-							? ""
-							: param.AsString(), pd);
-					break;
-				}
-			case ParamDataType.FORMULA:
+			case ParamDataType.DT_FORMULA:
 				{
 					p = new RevitParamFormula(pd.ReadReqmt ==
 						ParamReadReqmt.RD_VALUE_IGNORE
@@ -249,7 +277,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 							: param.AsString(), pd);
 					break;
 				}
-			case ParamDataType.DATATYPE:
+			case ParamDataType.DT_DATATYPE:
 				{
 					p = new RevitParamText(pd.ReadReqmt ==
 						ParamReadReqmt.RD_VALUE_IGNORE
@@ -257,7 +285,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 							: param.AsString(), pd);
 					break;
 				}
-			case ParamDataType.FILE_PATH:
+			case ParamDataType.DT_FILE_PATH:
 				{
 					p = new RevitParamFilePath(pd.ReadReqmt ==
 						ParamReadReqmt.RD_VALUE_IGNORE
@@ -265,7 +293,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 							: param.AsString(), pd);
 					break;
 				}
-			case ParamDataType.UPDATE_TYPE:
+			case ParamDataType.DT_UPDATE_TYPE:
 				{
 					p = new RevitParamUpdateType(pd.ReadReqmt ==
 						ParamReadReqmt.RD_VALUE_IGNORE
@@ -273,7 +301,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 							: param.AsString(), pd);
 					break;
 				}
-			case ParamDataType.WORKSHEETNAME:
+			case ParamDataType.DT_WORKSHEETNAME:
 				{
 					p = new RevitParamWkShtName(pd.ReadReqmt ==
 						ParamReadReqmt.RD_VALUE_IGNORE
@@ -281,13 +309,13 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 							: param.AsString(), pd);
 					break;
 				}
-			case ParamDataType.LABEL_TITLE:
+			case ParamDataType.DT_LABEL_TITLE:
 				{
 					p = new RevitParamLabel("", pd);
 					((RevitParamLabel) p).LabelValueName = param.Definition.Name;
 					break;
 				}
-			case ParamDataType.INTEGER:
+			case ParamDataType.DT_INTEGER:
 				{
 					p = new RevitParamNumber(
 						pd.ReadReqmt ==

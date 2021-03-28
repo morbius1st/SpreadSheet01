@@ -45,7 +45,7 @@ namespace SharedRevitCode.ShParamUtils
 			this.app = app;
 			this.doc = doc;
 
-			famMgr = doc.FamilyManager;
+			// famMgr = doc.FamilyManager;
 		}
 
 	#endregion

@@ -4,10 +4,11 @@ using System;
 using System.Collections.Generic;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamClass;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamReadReqmt;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamDataType;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamMode;
-using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamExistReqmt;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamCat;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamSubCat;
@@ -27,8 +28,10 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 	#region private fields
 
+		public static string CHART_FAMILY_NAME = "CellSheetData";
+		// public static string CHART_FAMILY_NAME = "SpreadSheetData";
+
 		public static string CELL_FAMILY_NAME = "CellData";
-		public static string CHART_FAMILY_NAME = RevitCellSystManager.RevitChartFamilyName;
 
 		private static Families families = new Families();
 
@@ -57,12 +60,10 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 		public static bool IsConfigured => isConfigured;
 
-		public static Families Fams = families;
-
-		public static ChartFamily ChartParams => 
+		public static ChartFamily ChartFam => 
 			(ChartFamily) families.FamilyTypes[CHART_FAMILY_NAME];
 
-		public static CellFamily CellParams => 
+		public static CellFamily CellFam => 
 			(CellFamily) families.FamilyTypes[CELL_FAMILY_NAME];
 
 
@@ -74,71 +75,65 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		public static readonly int NameIdx				= CommonInstParams++;
 		public static readonly int SeqIdx				= CommonInstParams++;
 		public static readonly int Descdx				= CommonInstParams++;
+		public static readonly int IntNameIdx			= CommonInstParams++;
+		public static readonly int DevelopIdx			= CommonInstParams++;
 
 	#endregion
 
-		public static int ChartTotalInstParamCount			= CommonInstParams;
+		public static int ChartTotalParamCount			= CommonInstParams;
 
-		public static int CellBasicInstParamCount			= CommonInstParams;
+		public static int CellBasicTotalParamCount			= CommonInstParams;
 
 	#region cell specific instance params
 
 	#region cell basic instance params
 
 		// cell indices (cell basic)
-		public static readonly int HasErrorsIdx         = CellBasicInstParamCount++;
+		public static readonly int HasErrorsIdx         = CellBasicTotalParamCount++;
 		// end of cell basic list
 
 	#endregion
 
 	#region cell label instance params
 
-		public static int CellLabelInstParamCount			= 0;
+		public static int CellLabelTotalParamCount			= 0;
 
 		// cell label indices (cell label)
-		public static readonly int LblLabelIdx          = CellLabelInstParamCount++;
-		public static readonly int LblNameIdx           = CellLabelInstParamCount++;
-		public static readonly int LblFormulaIdx        = CellLabelInstParamCount++;
-		public static readonly int LblDataTypeIdx       = CellLabelInstParamCount++;
-		public static readonly int LblFormatInfoIdx     = CellLabelInstParamCount++;
-		public static readonly int LblIgnoreIdx         = CellLabelInstParamCount++;
+		public static readonly int LblLabelIdx          = CellLabelTotalParamCount++;
+		public static readonly int LblNameIdx           = CellLabelTotalParamCount++;
+		public static readonly int LblFormulaIdx        = CellLabelTotalParamCount++;
+		public static readonly int LblDataTypeIdx       = CellLabelTotalParamCount++;
+		public static readonly int LblFormatInfoIdx     = CellLabelTotalParamCount++;
+		public static readonly int LblIgnoreIdx         = CellLabelTotalParamCount++;
 		// end of cell label list
 
 	#endregion
 
-		public static readonly int CellTotalParamCount = CellBasicInstParamCount + CellLabelInstParamCount;
+		public static readonly int CellTotalParamCount = CellBasicTotalParamCount + CellLabelTotalParamCount;
 
 	#endregion
 
 	#region chart specific instance params
 
 		// chart indices
-		public static readonly int ChartFilePathIdx		= ChartTotalInstParamCount++;
-		public static readonly int ChartWorkSheetIdx	= ChartTotalInstParamCount++;
-		public static readonly int ChartFamilyNameIdx	= ChartTotalInstParamCount++;
-		public static readonly int ChartUpdateTypeIdx	= ChartTotalInstParamCount++;
-		public static readonly int ChartHasErrorsIdx	= ChartTotalInstParamCount++;
+		public static readonly int ChartFilePathIdx		= ChartTotalParamCount++;
+		public static readonly int ChartWorkSheetIdx	= ChartTotalParamCount++;
+		public static readonly int ChartCellFamilyNameIdx	= ChartTotalParamCount++;
+		public static readonly int ChartUpdateTypeIdx	= ChartTotalParamCount++;
+		public static readonly int ChartHasErrorsIdx	= ChartTotalParamCount++;
 		// end of chart list
 
 	#endregion
 
 
-	#region common type params
-
-		public static int CommonTypeParams	        = 0;
-
-		public static readonly int IntNameIdx			= CommonTypeParams++;
-		public static readonly int DevelopIdx			= CommonTypeParams++;
-
-	#endregion
-
 		
 	#region chart internal params
 
-		public static int ChartInternalParamCount	        = 0;
+		public static int ChartInternalParamCount	        = 0; // temp number until real internal params are created
+		public static readonly int ChartInternalTempIdx		= ChartInternalParamCount++;
 
-		public static readonly int CellParamsClassIdx		= ChartInternalParamCount++;
-
+		public static int CellInternalParamCount	        = 0; // temp number until real internal params are created
+		public static readonly int CellInternalTempIdx		= CellInternalParamCount++;
 
 	#endregion
 
@@ -162,37 +157,64 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			return name.Substring(0, Math.Min(name.Length, SHORT_NAME_LEN));
 		}
 
+		public static ParamDesc ChartParam(int idx)
+		{
+			return ChartFam.Params[idx];
+		}
+
+		public static ParamDesc ChartInternalParam(int idx)
+		{
+			return ChartFam.InternalParams[idx];
+		}
+
+
+
+		public static ParamDesc CellParam(int idx)
+		{
+			return CellFam.Params[idx];
+		}
+		
+		public static ParamDesc CellInternalParam(int idx)
+		{
+			return CellFam.InternalParams[idx];
+		}
+
+
+
+
+		public static ParamDesc CellLabelParam(int idx)
+		{
+			return CellFam.LabelParams[idx];
+		}
+
+
 
 		// public void SetShortName(string parameterName)
 		// {
 		// 	shortName = GetShortName(parameterName, Family.SHORT_NAME_LEN);
 		// }
-		
-		public static ParamDesc ChartInstParam(int idx)
-		{
-			return ChartParams.InstanceParams[idx];
-		}
-		
+		// public static ParamDesc ChartInstParam(int idx)
+		// {
+		// 	return ChartParams.InstanceParams[idx];
+		// }
+		// 		
+		// public static ParamDesc ChartTypeParam(int idx)
+		// {
+		// 	return ChartParams.TypeParams[idx];
+		// }
 		// public static ParamDesc MatchChartInstance(string paramName)
 		// {
 		// 	return ChartParams.Match(INSTANCE, paramName);
 		// }
-		
-		public static ParamDesc CellTypeParam(int idx)
-		{
-			return CellParams.TypeParams[idx];
-		}
-		
-		public static ParamDesc CellInstParam(int idx)
-		{
-			return CellParams.InstanceParams[idx];
-		}
-		
-		public static ParamDesc CellLabelParam(int idx)
-		{
-			return CellParams.LabelParams[idx];
-		}
-		
+		// public static ParamDesc CellTypeParam(int idx)
+		// {
+		// 	return CellParams.TypeParams[idx];
+		// }
+		//
+		// public static ParamDesc CellInstParam(int idx)
+		// {
+		// 	return CellParams.InstanceParams[idx];
+		// }
 		// public static ParamDesc MatchCellInstance(string paramName)
 		// {
 		// 	return CellParams.Match(INSTANCE, paramName);
@@ -223,45 +245,42 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			Family f = new ChartFamily(CHART_FAMILY_NAME,
 				CT_ANNOTATION, SC_GENERIC_ANNOTATION);
 
-			f.ConfigureLists(new []{5, 5, ChartTotalInstParamCount});
+			f.ConfigureLists(new []{5, ChartTotalParamCount});
 
 			// 0
-			defineParameter(f, new ParamDesc("Name", "", 
-				NameIdx, PT_INSTANCE, EX_PARAM_MUST_EXIST, TEXT, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
+			defineParameter(f     , new ParamDesc("Name"                , "",
+				NameIdx           , PC_CHART                            , PT_PARAM, EX_PARAM_MUST_EXIST, DT_TEXT, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
 			// 1
-			defineParameter(f, new ParamDesc("Sequence", "", 
-				SeqIdx, PT_INSTANCE, EX_PARAM_OPTIONAL, TEXT, RDVALUE_OPTIONAL, PM_READ_FROM_FAMILY));
+			defineParameter(f     , new ParamDesc("Sequence"            , "",
+				SeqIdx            , PC_CHART                            , PT_PARAM, EX_PARAM_OPTIONAL, DT_TEXT, RDVALUE_OPTIONAL, PM_READ_FROM_FAMILY));
 			// 2
-			defineParameter(f, new ParamDesc("Description", "", 
-				Descdx, PT_INSTANCE, EX_PARAM_OPTIONAL, TEXT, RDVALUE_OPTIONAL, PM_READ_FROM_FAMILY));
+			defineParameter(f     , new ParamDesc("Description"         , "",
+				Descdx            , PC_CHART                            , PT_PARAM, EX_PARAM_OPTIONAL, DT_TEXT, RDVALUE_OPTIONAL, PM_READ_FROM_FAMILY));
 			// 3
-			defineParameter(f, new ParamDesc("Excel File Path", "", 
-				ChartFilePathIdx, PT_INSTANCE, EX_PARAM_MUST_EXIST, FILE_PATH, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
+			defineParameter(f     , new ParamDesc("InternalName"        , "",
+				IntNameIdx        , PC_CHART                            , PT_PARAM, EX_PARAM_MUST_EXIST, DT_TEXT, RD_VALUE_IGNORE, PM_READ_FROM_FAMILY));
 			// 4
-			defineParameter(f, new ParamDesc("Excel WorkSheet Name", "", 
-				ChartWorkSheetIdx, PT_INSTANCE, EX_PARAM_MUST_EXIST, TEXT, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
+			defineParameter(f     , new ParamDesc("Developer"           , "",
+				DevelopIdx        , PC_CHART                            , PT_PARAM, EX_PARAM_MUST_EXIST, DT_TEXT, RD_VALUE_IGNORE, PM_READ_FROM_FAMILY));
 			// 5
-			defineParameter(f, new ParamDesc("Cell Family Name", "", 
-				ChartFamilyNameIdx, PT_INSTANCE, EX_PARAM_MUST_EXIST, TEXT, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
+			defineParameter(f     , new ParamDesc("Excel File Path"     , "",
+				ChartFilePathIdx  , PC_CHART                            , PT_PARAM, EX_PARAM_MUST_EXIST, DT_FILE_PATH, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
 			// 6
-			defineParameter(f, new ParamDesc("Update Scheme", "", 
-				ChartUpdateTypeIdx, PT_INSTANCE, EX_PARAM_OPTIONAL, UPDATE_TYPE, RDVALUE_OPTIONAL, PM_READ_FROM_FAMILY));
+			defineParameter(f     , new ParamDesc("Excel WorkSheet Name", "",
+				ChartWorkSheetIdx , PC_CHART                            , PT_PARAM, EX_PARAM_MUST_EXIST, DT_TEXT, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
 			// 7
-			defineParameter(f, new ParamDesc("Cells With Errors", "", 
-				ChartHasErrorsIdx, PT_INSTANCE, EX_PARAM_MUST_EXIST, TEXT, RD_VALUE_IGNORE, PM_CALCULATED));
-
-
-			// 0
-			defineParameter(f, new ParamDesc("InternalName", "", 
-				IntNameIdx, PT_TYPE, EX_PARAM_MUST_EXIST, TEXT, RD_VALUE_IGNORE, PM_READ_FROM_FAMILY));
-			// 1
-			defineParameter(f, new ParamDesc("Developer", "", 
-				DevelopIdx, PT_TYPE, EX_PARAM_MUST_EXIST, TEXT, RD_VALUE_IGNORE, PM_READ_FROM_FAMILY));
-
+			defineParameter(f     , new ParamDesc("Cell Family Name"    , "",
+				ChartCellFamilyNameIdx, PC_CHART                        , PT_PARAM, EX_PARAM_MUST_EXIST, DT_TEXT, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
+			// 8
+			defineParameter(f     , new ParamDesc("Update Scheme"       , "",
+				ChartUpdateTypeIdx, PC_CHART                            , PT_PARAM, EX_PARAM_OPTIONAL, DT_UPDATE_TYPE, RDVALUE_OPTIONAL, PM_READ_FROM_FAMILY));
+			// 9
+			defineParameter(f     , new ParamDesc("Cells With Errors"   , "",
+				ChartHasErrorsIdx , PC_CHART                            , PT_PARAM, EX_PARAM_MUST_EXIST, DT_TEXT, RD_VALUE_IGNORE, PM_CALCULATED));
 
 			// 0
-			defineParameter(f, new ParamDesc("Param Class Name", "", 
-				CellParamsClassIdx, PT_INTERNAL, EX_PARAM_INTERNAL, TEXT, RD_VALUE_IGNORE, PM_INTERNAL));
+			defineParameter(f     , new ParamDesc("Temp Internal"       , "",
+				ChartInternalTempIdx, PC_CHART                          , PT_INTERNAL, EX_PARAM_INTERNAL, DT_TEXT, RD_VALUE_IGNORE, PM_INTERNAL));
 
 
 
@@ -275,28 +294,30 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			Family f = new CellFamily(CELL_FAMILY_NAME,
 				CT_ANNOTATION, SC_GENERIC_ANNOTATION);
 
-			f.ConfigureLists(new [] {5, 5, CellBasicInstParamCount, CellLabelInstParamCount});
+			f.ConfigureLists(new [] {5, CellBasicTotalParamCount, CellLabelTotalParamCount});
+
 			//0
-			defineParameter(f, new ParamDesc("Cell Name", "", 
-				NameIdx, PT_INSTANCE, EX_PARAM_MUST_EXIST, TEXT, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
+			defineParameter(f , new ParamDesc("Cell Name"   , "", 
+				NameIdx       , PC_CELL                    , PT_PARAM, EX_PARAM_MUST_EXIST, DT_TEXT, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
 			//1
-			defineParameter(f, new ParamDesc("Sequence", "", 
-				SeqIdx, PT_INSTANCE, EX_PARAM_OPTIONAL, TEXT, RDVALUE_OPTIONAL, PM_READ_FROM_FAMILY));
+			defineParameter(f , new ParamDesc("Sequence"    , "", 
+				SeqIdx        , PC_CELL                    , PT_PARAM, EX_PARAM_OPTIONAL, DT_TEXT, RDVALUE_OPTIONAL, PM_READ_FROM_FAMILY));
 			// 2
-			defineParameter(f, new ParamDesc("Description", "", 
-				Descdx, PT_INSTANCE, EX_PARAM_OPTIONAL, TEXT, RDVALUE_OPTIONAL, PM_READ_FROM_FAMILY));
+			defineParameter(f , new ParamDesc("Description" , "", 
+				Descdx        , PC_CELL                    , PT_PARAM, EX_PARAM_OPTIONAL, DT_TEXT, RDVALUE_OPTIONAL, PM_READ_FROM_FAMILY));
 			// 3
-			defineParameter(f, new ParamDesc("Has Error", "", 
-				HasErrorsIdx , PT_INSTANCE, EX_PARAM_MUST_EXIST, BOOL, RD_VALUE_IGNORE, PM_CALCULATED));
+			defineParameter(f , new ParamDesc("InternalName", "", 
+				IntNameIdx    , PC_CELL                    , PT_PARAM, EX_PARAM_MUST_EXIST, DT_TEXT, RD_VALUE_IGNORE, PM_READ_FROM_FAMILY));
+			// 4
+			defineParameter(f , new ParamDesc("Developer"   , "", 
+				DevelopIdx    , PC_CELL                    , PT_PARAM, EX_PARAM_MUST_EXIST, DT_TEXT, RD_VALUE_IGNORE, PM_READ_FROM_FAMILY));
+			// 5
+			defineParameter(f , new ParamDesc("Has Error"   , "", 
+				HasErrorsIdx  , PC_CELL                    , PT_PARAM, EX_PARAM_MUST_EXIST, DT_BOOL, RD_VALUE_IGNORE, PM_CALCULATED));
 
 			// 0
-			defineParameter(f, new ParamDesc("InternalName", "", 
-				IntNameIdx, PT_TYPE, EX_PARAM_MUST_EXIST, TEXT, RD_VALUE_IGNORE, PM_READ_FROM_FAMILY));
-			// 1
-			defineParameter(f, new ParamDesc("Developer", "", 
-				DevelopIdx, PT_TYPE, EX_PARAM_MUST_EXIST, TEXT, RD_VALUE_IGNORE, PM_READ_FROM_FAMILY));
-
-
+			defineParameter(f , new ParamDesc("Temp Internal", "",
+				CellInternalTempIdx, PC_CELL               , PT_INTERNAL, EX_PARAM_INTERNAL, DT_TEXT, RD_VALUE_IGNORE, PM_INTERNAL));
 
 			defineCellLabelParameters(f);
 
@@ -307,29 +328,24 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		{
 			if (isConfigured) return;
 
-			defineParameter(f, new ParamDesc("Label", "", 
-				LblLabelIdx, PT_LABEL, 
-				EX_PARAM_MUST_EXIST, LABEL_TITLE, RD_VALUE_REQUIRED, PM_READ_FROM_EXCEL));
-
-			defineParameter(f, new ParamDesc("Label Name", "", 
-				LblNameIdx, PT_LABEL, 
-				EX_PARAM_MUST_EXIST, TEXT, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
-			
-			defineParameter(f, new ParamDesc("Formula", "", 
-				LblFormulaIdx, PT_LABEL, 
-				EX_PARAM_MUST_EXIST, FORMULA, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
-			
-			defineParameter(f, new ParamDesc("Data Type", "", 
-				LblDataTypeIdx, PT_LABEL, 
-				EX_PARAM_MUST_EXIST, DATATYPE, RDVALUE_OPTIONAL, PM_READ_FROM_FAMILY));
-						
-			defineParameter(f, new ParamDesc("Formatting Info", "", 
-				LblFormatInfoIdx, PT_LABEL, 
-				EX_PARAM_OPTIONAL, TEXT, RDVALUE_OPTIONAL, PM_READ_FROM_FAMILY));
-			
-			defineParameter(f, new ParamDesc("Ignore", "", 
-				LblIgnoreIdx, PT_LABEL, 
-				EX_PARAM_OPTIONAL, BOOL, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
+			// 0
+			defineParameter(f   , new ParamDesc("Label"          , "", 
+				LblLabelIdx     , PC_LABEL                       , PT_LABEL, EX_PARAM_MUST_EXIST, DT_LABEL_TITLE, RD_VALUE_REQUIRED, PM_READ_FROM_EXCEL));
+			// 1
+			defineParameter(f   , new ParamDesc("Label Name"     , "", 
+				LblNameIdx      , PC_LABEL                       , PT_LABEL, EX_PARAM_MUST_EXIST, DT_TEXT, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
+			// 2
+			defineParameter(f   , new ParamDesc("Formula"        , "", 
+				LblFormulaIdx   , PC_LABEL                       , PT_LABEL, EX_PARAM_MUST_EXIST, DT_FORMULA, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
+			// 3
+			defineParameter(f   , new ParamDesc("Data Type"      , "", 
+				LblDataTypeIdx  , PC_LABEL                       , PT_LABEL, EX_PARAM_MUST_EXIST, DT_DATATYPE, RDVALUE_OPTIONAL, PM_READ_FROM_FAMILY));
+			// 4
+			defineParameter(f   , new ParamDesc("Formatting Info", "", 
+				LblFormatInfoIdx, PC_LABEL                       , PT_LABEL, EX_PARAM_OPTIONAL, DT_TEXT, RDVALUE_OPTIONAL, PM_READ_FROM_FAMILY));
+			// 5
+			defineParameter(f   , new ParamDesc("Ignore"         , "", 
+				LblIgnoreIdx    , PC_LABEL                       , PT_LABEL, EX_PARAM_OPTIONAL, DT_BOOL, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
 		}
 
 

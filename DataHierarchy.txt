@@ -1,49 +1,147 @@
-RevitCharts : Containers {}
-	** Collection of charts (of RevitChart)
+
+
+These classes hold the parameter as read
+from the families placed in Revit
+
+Containers {}
+	v
+RevitCharts : 
+	|	** Collection of charts (of RevitChart)
+	|	** Data storage
+	|		RevitChart[] RevitParamList { get; set; }
+	|
+	|	** methods
 	|	+-> Add(key, RevitChart)
 	|
 	+-> [ListOfCharts   (dictionary<string, RevitChart> )
 		|	** collection of charts
 		|
-		+-> RevitChart : Containers {}
-			|	|	** a single chart 
-			|	|	** with a collection of cell families
-			|	|
-			|	+-> Add(key, RevitCellsym)
-			|	+-> [updatetype]
-			|	+-> RevitChartData  {RevitChartData}
-			|		+-> RevitParamList
-			|			+> RevitParam{type}
-			|	+-> allCellLabels  (Dictionary<key, RevitLabel>)
-			|		** master shortcut list to erery cell label
+		+-> RevitChart : RevitContainers<string, RevitCellData>
+			|	** a single chart 
+			|	** with a collection of cell families
+			|	>> parameters 
+			|		this[idx] => RevitChartData.RevitParamList[idx]			(RevitContainer)
+			|		Name => [].GetValue()									(RevitChart)
+			|		Sequence => [].GetValue()								(RevitChart)
+			|		UpdateType => RevitChartData.UpdateType					(RevitChart)
+			|		FilePath => [].FullFilePath								(RevitChart)
+			|		WorkSheet => [].GetValue()								(RevitChart)
+			|		Exists => [].Exists										(RevitChart)
+			|		Description												(RevitChart)
+			|		IntName													(RevitChart)
+			|		Developer												(RevitChart)
+			|
+			|		RevitChartData											(RevitChart)
+			|
+			|		ListOfCellSyms => Dictionary<string, RevitCellData>		(RevitChart)
+			|
+			|		// list of cell families associated to this chart
+			|		// shortcut list of every child cell label (recursive)
+			|		AllCellLabels => SortedDictionary<string, RevitLabel>	(RevitChart)
+			|
+			|	>> methods
+			|		Add(RevitCellData)
+			|		GetType()
+			|		makeCellSeqNamekey()
+			|		RevitChart()
 			|
 			+-> {ListOfCellSyms}  (dictionary<string, RevitCellsym> )
 				|	**  collection of cell families
 				|
-				+-> RevitCell : Container : ARevitParam {}
+				+-> RevitCellData : RevitContainer<ARevitParam> : ARevitParam
 					|	** a single cell family
-					|	** with a collection of parameters
-					|	+-> AnnoSymbol  {revit anno symbol}
-					|	+-> DynValue    
-					|	+-> ParamDesc
-					|	+-> RvtElement  {revit element}
-					|	+-> RevitParamList 
-					|		+> {ARevitParam{type}[]}
-					|	+-> CellLabels  (Dictionary<key, RevitLabel>)
-					|		** shortcut list to each label
-					|	
+					|	** Include the cell family's basic parameters
+					|	** and a collection of labels + parameters
+					|	>> fields
+					|		CellLabels => SortedDictionary<string RevitLabel>
+					|	>> properties (direct or from ARevitParam)
+					|		Name => this[] => [].GetValue   (ARevitParam)
+					|		Sequence => this[] => [].GetValue  (ARevitParam)
+					|		AnnoSymbol => AnnotationSymbol
+					|		ListOfLabels = Dictionary<string RevitLabel>
+					|		>> from RevitContainer
+					|		this[int idx] => RevitParamList[idx]
+					|		RevitParamList => ARevitParam[]
+					|		>> from ARevitParam
+					|		RevitElement => Element
+					|		DynValue => DynamicValue
+					|		ParamDesc => ParamDesc
+					|		ErrorCodes => ErrorCodes
+
+					|	>> methods
+					|		AddInternal()
+					|		AddLabelRef()
+					|		>> from ARevitParam
+					|		GetValue()
+					|		SetValue(T Value)
+					|		>> from RevitContainer
+					|		Add()
 					|
 					+-> [ListOfLabels]  Dictionary<key, RevitLabel>
 						|	** collection of parameters
 						|	Key == RevitParamUtil.MakeLabelKey(idx) == 《0x》
 						|
-						+-> [RevitLabel] : container 
+						+-> [RevitLabel] : RevitContainer<ARevitParam) : ARevitParam
 							|	** info for a single label
 							|	** paramlist holds the info for a label
+							|	>> properties (direct or from ARevitParam)
+							|		Name => this[]
+							|		Formula => this[]
+							|		DynValue => DynamicValue
+							|		ParamDesc => ParamDesc
+							|		ErrorCodes => ErrorCodes
+							|	>> methods 
+							|		GetValue() (due to RevitContainer)
+							|
+							|	>> from RevitContainer
+							|		>> properties
+							|		RevitParamList => ARevitParam[]
+							|		[int idx] => RevitParamList[idx]
+							|
+							|		>> methods
+							|		Add(int ARevitParam)
 							|	+-> Name
 							|	+->GetValue() (null)
 							|
 							+->	[RevitParamList]  ARevitParam[]
+
+
+
+RevitChartData   : RevitContainer<ARevitParam> : ARevitParam
+** holds info info for a single chart / contains the parameters for a single chart
+	>> properties
+		this[idx] => RevitParamList[idx]
+		AnnoSym => Annotation Symbol
+		DynValue => DynamicValue (ARevitParam)
+		ErrorCodes => (enum) (ARevitParam)
+		Name => [].GetValue
+		ParamDesc => ParamDesc.ParamDesc (ARevitParam)
+		RevitElement => Element
+		Sequence [].GetValue()
+		UpdateType []UpdateType
+
+		RevitParamList => ARevitParam[] (RevitContainer)
+		RevitParamListInternal => ARevitParam[]
+	>> methods
+		Add()
+		AddInternal()
+		Errors()
+		GetType
+		GetValue
+		RevitChartData()
+		SetValue<T>(T)
+
+
+ARevitParam (abstract)
+** holds a single parameter (as read from revit)
+>> properties
+	DynValue => DynamicValue
+	ParamDesc => ParamDesc
+	ErrorCodes => ErrorCodes
+>> methods
+	abstract GetValue()
+	abstract SetValue(T Value)
+
 
 family categories  {FamilyCategories} [containers] dictionary<string, families>
 	* holds a collection families
@@ -56,6 +154,76 @@ family categories  {FamilyCategories} [containers] dictionary<string, families>
 			* holds a collection of family types associated with a family
 		+-> family type parameters  [ARevitDesc[]]
 		+-> family instance parameters  [ARevitDesc[]]
+
+
+
+These classes hold the parameter descriptions
+Created and populated from RevitParamManager
+
+Families 
+	|	** holds a list of Family objects
+	|	** held in Dictionary<string, Family>
+	|	>> properties
+	|		FamilyTypes => Dictionary (above)
+	|		Category => ParamCat
+	|		SubCategory => ParamSubCat
+	|	>> methods
+	|		Add(Family)
+	|
+	+->	Family (abstract)
+		|		** holds the parameters for a single Family Type
+		|		** held in paramList -> List<List<ParamDesc>> 
+		|		** holds Parameter Status list in SortedDictionary<string ParameterStatusData>[]
+		|			- or
+		|			paramStatusList -> ParameterStatusData[][]
+		|
+		+-> ChartFamily : Family
+		|		** holds the parameters for the chart family
+		|		>> properties
+		|			InternalParams => paramList[PT_INTERNAL]	// internal parameters
+		|			Params => paramList[PT_PARAM]				// basic parameters
+		|			StatusData {ParamStatusData} => paramStatusList[PC_CHART]
+		|		>> from Family
+		|			FamilyName => string		(via ctor arg)
+		|			Category => ParamCat		(via ctor arg)
+		|			SubCategory => ParamSubCat	(via ctor arg)
+		|			ParamClass => ParamClass	(in ctor)
+		|			listCount => int			(in class)
+		|		>> methods
+		|			AddParam()
+		|			ConfigureLists()
+		|			Match()
+		|
+		+-> CellFamily : Family
+				** holds the parameters for the cell family
+				>> properties
+					StatusData {ParamStatusData} => paramStatusList[PC_CHART]
+					InternalParams => paramList[PT_INTERNAL]	// internal parameters
+					Params => paramList[PT_PARAM]				// basic parameters
+					LabelParams => paramList[PT_LABEL]			// label parameters
+				>> from Family
+					ParamClass => ParamClass
+					FamilyName => string
+					listCount => int
+					SubCategory => ParamSubCat
+					Category => ParamCat
+					Index => int
+				>> methods
+					AddParam()
+					ConfigureLists()
+					Match()					
+
+d
+
+RevitParamManager
+** holder of the Revit parameter descriptions i.e, holds Families / Family / ChartFamily / CellFamily
+
+
+
+
+
+
+
 
 
 

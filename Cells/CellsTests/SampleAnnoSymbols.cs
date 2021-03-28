@@ -21,7 +21,7 @@ namespace CellsTest.CellsTests
 		public ICollection<Element> ChartElements { get; set; }
 		public ICollection<Element>[] CellElements { get; set; }
 
-		public AnnotationSymbol[] Charts { get; set; }
+		public AnnotationSymbol[] ChartSymbols { get; set; }
 
 		public AnnotationSymbol[] Symbols { get; set; }
 
@@ -36,7 +36,7 @@ namespace CellsTest.CellsTests
 			makeAnnoSyms();
 			makeChartSyms();
 
-			OnPropertyChanged(nameof(Charts));
+			OnPropertyChanged(nameof(ChartSymbols));
 			OnPropertyChanged(nameof(Symbols));
 		}
 
@@ -44,47 +44,47 @@ namespace CellsTest.CellsTests
 		{
 			Element el;
 			ChartElements = new List<Element>();
-			Charts = new AnnotationSymbol[5];
+			ChartSymbols = new AnnotationSymbol[5];
 
 			symbolIdx = 0;
-			Charts[symbolIdx] = new AnnotationSymbol();
-			Charts[symbolIdx].parameters = new List<Parameter>();
-			Charts[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
+			ChartSymbols[symbolIdx] = new AnnotationSymbol();
+			ChartSymbols[symbolIdx].parameters = new List<Parameter>();
+			ChartSymbols[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
 
 			AddChart0();
-			el = (Element) Charts[symbolIdx];
+			el = (Element) ChartSymbols[symbolIdx];
 			ChartElements.Add(el);
 
 			symbolIdx = 1;
-			Charts[symbolIdx] = new AnnotationSymbol();
-			Charts[symbolIdx].parameters = new List<Parameter>();
-			Charts[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
+			ChartSymbols[symbolIdx] = new AnnotationSymbol();
+			ChartSymbols[symbolIdx].parameters = new List<Parameter>();
+			ChartSymbols[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
 			AddChart1();
-			el = (Element) Charts[symbolIdx];
+			el = (Element) ChartSymbols[symbolIdx];
 			ChartElements.Add(el);
 
 			symbolIdx = 2;
-			Charts[symbolIdx] = new AnnotationSymbol();
-			Charts[symbolIdx].parameters = new List<Parameter>();
-			Charts[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
+			ChartSymbols[symbolIdx] = new AnnotationSymbol();
+			ChartSymbols[symbolIdx].parameters = new List<Parameter>();
+			ChartSymbols[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
 			AddChart2();
-			el = (Element) Charts[symbolIdx];
+			el = (Element) ChartSymbols[symbolIdx];
 			ChartElements.Add(el);
 
 			symbolIdx = 3;
-			Charts[symbolIdx] = new AnnotationSymbol();
-			Charts[symbolIdx].parameters = new List<Parameter>();
-			Charts[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
+			ChartSymbols[symbolIdx] = new AnnotationSymbol();
+			ChartSymbols[symbolIdx].parameters = new List<Parameter>();
+			ChartSymbols[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
 			AddChart3();
-			el = (Element) Charts[symbolIdx];
+			el = (Element) ChartSymbols[symbolIdx];
 			ChartElements.Add(el);
 
 			symbolIdx = 4;
-			Charts[symbolIdx] = new AnnotationSymbol();
-			Charts[symbolIdx].parameters = new List<Parameter>();
-			Charts[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
+			ChartSymbols[symbolIdx] = new AnnotationSymbol();
+			ChartSymbols[symbolIdx].parameters = new List<Parameter>();
+			ChartSymbols[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
 			AddChart4();
-			el = (Element) Charts[symbolIdx];
+			el = (Element) ChartSymbols[symbolIdx];
 			ChartElements.Add(el);
 		}
 
@@ -146,19 +146,49 @@ namespace CellsTest.CellsTests
 		}
 
 
-		public void AddInstParameter( int index, int adjIdx,
-			ParamDataType type, string strVal, double dblVal = 0.0, int intVal = 0,
+		public void AddCellInstParam(int index, ParamDataType type, 
+			string strVal, double dblVal = 0.0, int intVal = 0,
 			string name = null)
 		{
-			string paramName = CellInstParam(index).ParameterName;
+			string paramName = CellParam(index).ParameterName;
 			// string paramName = RevitParamManager.CellAllParams[index + adjIdx].ParameterName;
 			paramName = name.IsVoid() ? paramName : name + " " + paramName;
 
-			Parameter p = new Parameter(paramName, type, strVal, dblVal, intVal);
+			addCellParam(paramName, index, type, strVal, dblVal, intVal );
+		}
+
+		public void AddCellTypeParam(int index, ParamDataType type, 
+			string strVal, double dblVal = 0.0, int intVal = 0,
+			string name = null)
+		{
+			string paramName = CellParam(index).ParameterName;
+			// string paramName = RevitParamManager.CellAllParams[index + adjIdx].ParameterName;
+			paramName = name.IsVoid() ? paramName : name + " " + paramName;
+
+			addCellParam(paramName, index, type, strVal, dblVal, intVal );
+		}
+		
+		public void AddCellInternalParam(int index, ParamDataType type, 
+			string strVal, double dblVal = 0.0, int intVal = 0,
+			string name = null)
+		{
+			string paramName = CellParam(index).ParameterName;
+			// string paramName = RevitParamManager.CellAllParams[index + adjIdx].ParameterName;
+			paramName = name.IsVoid() ? paramName : name + " " + paramName;
+
+			addCellParam(paramName, index, type, strVal, dblVal, intVal );
+		}
+
+
+		public void addCellParam(string name, int index, ParamDataType type, 
+			string strVal, double dblVal = 0.0, int intVal = 0)
+		{
+			Parameter p = new Parameter(name, type, strVal, dblVal, intVal);
 			Symbols[symbolIdx].parameters.Add(p);
 		}
 
-		public void AddLabelParameter( int index, int adjIdx,
+
+		public void AddLabelParam( int index, int adjIdx,
 			ParamDataType type,
 			string strVal,
 			string name = null,  double dblVal = 0.0, int intVal = 0, bool isMainLabel = false,
@@ -179,150 +209,210 @@ namespace CellsTest.CellsTests
 			Symbols[symbolIdx].parameters.Add(p);
 		}
 
+		private void addCommonCellParams()
+		{
+			AddCellTypeParam(IntNameIdx          , ParamDataType.DT_TEXT, "");
+			AddCellTypeParam(DevelopIdx          , ParamDataType.DT_TEXT, "CyberStudio");
+		}
+
+
 		private void AddSymbol0()
 		{
-			AddInstParameter(SeqIdx           , 0, ParamDataType.TEXT, "0");
-			AddInstParameter(NameIdx          , 0, ParamDataType.TEXT, "MyCellname1"+ chartIdx.ToString("D2"));
-			AddInstParameter(Descdx           , 0, ParamDataType.TEXT, "Description 0");
+			AddCellInstParam(SeqIdx           , ParamDataType.DT_TEXT, "0");
+			AddCellInstParam(NameIdx          , ParamDataType.DT_TEXT, "MyCellname1"+ chartIdx.ToString("D2"));
+			AddCellInstParam(Descdx           , ParamDataType.DT_TEXT, "Description 0");
 			
-			AddInstParameter(HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
+			AddCellInstParam(HasErrorsIdx     , ParamDataType.DT_IGNORE, "", 0.0, 1);
 
-			AddLabelParameter(LblLabelIdx         , 0, ParamDataType.TEXT        , "", "#1", 0.0, 0, true);
+			AddLabelParam(LblLabelIdx         , 0, ParamDataType.DT_TEXT        , "", "#1", 0.0, 0, true);
 
-			AddLabelParameter(LblDataTypeIdx   , 0, ParamDataType.DATATYPE       , "length"			 , "#1");
-			AddLabelParameter(LblNameIdx       , 0, ParamDataType.TEXT           , "MyLabelname 0-1 "+ chartIdx.ToString("D2")   , "#1");
-			AddLabelParameter(LblFormulaIdx    , 0, ParamDataType.FORMULA        , "={[A1]}"			 , "#1");
-			AddLabelParameter(LblIgnoreIdx     , 0, ParamDataType.BOOL           , null				 , "#1", 0.0, 1);
-			AddLabelParameter(LblFormatInfoIdx , 0, ParamDataType.TEXT           , "#,###"			 , "#1");
+			AddLabelParam(LblDataTypeIdx   , 0, ParamDataType.DT_DATATYPE       , "length"			 , "#1");
+			AddLabelParam(LblNameIdx       , 0, ParamDataType.DT_TEXT           , "MyLabelname 0-1 "+ chartIdx.ToString("D2")   , "#1");
+			AddLabelParam(LblFormulaIdx    , 0, ParamDataType.DT_FORMULA        , "={[A1]}"			 , "#1");
+			AddLabelParam(LblIgnoreIdx     , 0, ParamDataType.DT_BOOL           , null				 , "#1", 0.0, 1);
+			AddLabelParam(LblFormatInfoIdx , 0, ParamDataType.DT_TEXT           , "#,###"			 , "#1");
 
-			AddLabelParameter(LblLabelIdx         , 0, ParamDataType.TEXT, "", "#2", 0.0, 0, true);
+			AddLabelParam(LblLabelIdx         , 0, ParamDataType.DT_TEXT, "", "#2", 0.0, 0, true);
 
-			AddLabelParameter(LblNameIdx       , 0, ParamDataType.TEXT           , "MyLabelname 0-2 "+ chartIdx.ToString("D2")   , "#2");
-			AddLabelParameter(LblDataTypeIdx   , 0, ParamDataType.DATATYPE       , "text"				 , "#2");
-			AddLabelParameter(LblFormulaIdx    , 0, ParamDataType.FORMULA        , "={[A2]}"			 , "#2");
-			AddLabelParameter(LblFormatInfoIdx , 0, ParamDataType.TEXT           , "#,###"			 , "#2");
-			AddLabelParameter(LblIgnoreIdx     , 0, ParamDataType.BOOL           , null				 , "#2", 0.0, 1);
+			AddLabelParam(LblNameIdx       , 0, ParamDataType.DT_TEXT           , "MyLabelname 0-2 "+ chartIdx.ToString("D2")   , "#2");
+			AddLabelParam(LblDataTypeIdx   , 0, ParamDataType.DT_DATATYPE       , "text"				 , "#2");
+			AddLabelParam(LblFormulaIdx    , 0, ParamDataType.DT_FORMULA        , "={[A2]}"			 , "#2");
+			AddLabelParam(LblFormatInfoIdx , 0, ParamDataType.DT_TEXT           , "#,###"			 , "#2");
+			AddLabelParam(LblIgnoreIdx     , 0, ParamDataType.DT_BOOL           , null				 , "#2", 0.0, 1);
+
+			addCommonCellParams();
 		}
 
 
 		private void AddSymbol1()
 		{
 
-			AddInstParameter(SeqIdx           , 0, ParamDataType.TEXT, "1");
-			AddInstParameter(NameIdx          , 0, ParamDataType.TEXT, "MyCellname2"+ chartIdx.ToString("D2"));
+			AddCellInstParam(SeqIdx           , ParamDataType.DT_TEXT, "1");
+			AddCellInstParam(NameIdx          , ParamDataType.DT_TEXT, "MyCellname2"+ chartIdx.ToString("D2"));
 
-			AddInstParameter(HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
+			AddCellInstParam(HasErrorsIdx     , ParamDataType.DT_IGNORE, "", 0.0, 1);
 
-			AddLabelParameter(LblLabelIdx         , 0, ParamDataType.TEXT        , "", "#1", 0.0, 0, true);
+			AddLabelParam(LblLabelIdx         , 0, ParamDataType.DT_TEXT        , "", "#1", 0.0, 0, true);
 
-			AddLabelParameter(LblDataTypeIdx   , 0, ParamDataType.DATATYPE       , "length"			 , "#1");
-			AddLabelParameter(LblNameIdx       , 0, ParamDataType.TEXT           , "MyLabelname 1-1 "+ chartIdx.ToString("D2")   , "#1");
-			AddLabelParameter(LblFormulaIdx    , 0, ParamDataType.FORMULA        , "={#SheetName}"    , "#1");
-			AddLabelParameter(LblFormatInfoIdx , 0, ParamDataType.TEXT           , "#,##0"			 , "#1");
-			AddLabelParameter(LblIgnoreIdx     , 0, ParamDataType.BOOL           , null				 , "#1", 0.0, 1);
+			AddLabelParam(LblDataTypeIdx   , 0, ParamDataType.DT_DATATYPE       , "length"			 , "#1");
+			AddLabelParam(LblNameIdx       , 0, ParamDataType.DT_TEXT           , "MyLabelname 1-1 "+ chartIdx.ToString("D2")   , "#1");
+			AddLabelParam(LblFormulaIdx    , 0, ParamDataType.DT_FORMULA        , "={#SheetName}"    , "#1");
+			AddLabelParam(LblFormatInfoIdx , 0, ParamDataType.DT_TEXT           , "#,##0"			 , "#1");
+			AddLabelParam(LblIgnoreIdx     , 0, ParamDataType.DT_BOOL           , null				 , "#1", 0.0, 1);
+
+			addCommonCellParams();
 		}
 
 
 		private void AddSymbol2()
 		{
 
-			AddInstParameter(SeqIdx           , 0, ParamDataType.TEXT, "2");
-			AddInstParameter(NameIdx          , 0, ParamDataType.TEXT, "MyCellname3"+ chartIdx.ToString("D2"));
-			AddInstParameter(HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
+			AddCellInstParam(SeqIdx           , ParamDataType.DT_TEXT, "2");
+			AddCellInstParam(NameIdx          , ParamDataType.DT_TEXT, "MyCellname3"+ chartIdx.ToString("D2"));
+			AddCellInstParam(HasErrorsIdx     , ParamDataType.DT_IGNORE, "", 0.0, 1);
 
-			AddLabelParameter(LblLabelIdx         , 0, ParamDataType.TEXT        , "", "#1", 0.0, 0, true);
+			AddLabelParam(LblLabelIdx         , 0, ParamDataType.DT_TEXT        , "", "#1", 0.0, 0, true);
 
-			AddLabelParameter(LblDataTypeIdx   , 0, ParamDataType.DATATYPE       , "length"           , "#1");
-			AddLabelParameter(LblNameIdx       , 0, ParamDataType.TEXT           , "MyLabelname 2-1 "+ chartIdx.ToString("D2")  , "#1");
-			AddLabelParameter(LblFormulaIdx    , 0, ParamDataType.FORMULA        , "={$Date(yyyy-mm-dd)}" , "#1");
-			AddLabelParameter(LblIgnoreIdx     , 0, ParamDataType.BOOL           , null               , "#1", 0.0, 1);
+			AddLabelParam(LblDataTypeIdx   , 0, ParamDataType.DT_DATATYPE       , "length"           , "#1");
+			AddLabelParam(LblNameIdx       , 0, ParamDataType.DT_TEXT           , "MyLabelname 2-1 "+ chartIdx.ToString("D2")  , "#1");
+			AddLabelParam(LblFormulaIdx    , 0, ParamDataType.DT_FORMULA        , "={$Date(yyyy-mm-dd)}" , "#1");
+			AddLabelParam(LblIgnoreIdx     , 0, ParamDataType.DT_BOOL           , null               , "#1", 0.0, 1);
+
+			addCommonCellParams();
 		}
 
 
 		private void AddSymbol3()
 		{
 
-			AddInstParameter(SeqIdx           , 0, ParamDataType.TEXT, "3");
-			AddInstParameter(NameIdx          , 0, ParamDataType.TEXT, "MyCellname4"+ chartIdx.ToString("D2"));
-			AddInstParameter(HasErrorsIdx     , 0, ParamDataType.IGNORE, "", 0.0, 1);
+			AddCellInstParam(SeqIdx           , ParamDataType.DT_TEXT, "3");
+			AddCellInstParam(NameIdx          , ParamDataType.DT_TEXT, "MyCellname4"+ chartIdx.ToString("D2"));
+			AddCellInstParam(HasErrorsIdx     , ParamDataType.DT_IGNORE, "", 0.0, 1);
 
-			AddLabelParameter(LblLabelIdx         , 0, ParamDataType.TEXT        , "", "#1", 0.0, 0, true);
+			AddLabelParam(LblLabelIdx         , 0, ParamDataType.DT_TEXT        , "", "#1", 0.0, 0, true);
 
-			AddLabelParameter(LblDataTypeIdx   , 0, ParamDataType.DATATYPE       , "length"	        , "#1");
-			AddLabelParameter(LblFormulaIdx    , 0, ParamDataType.FORMULA        , "={[A5]}"	        , "#1");
-			AddLabelParameter(LblNameIdx       , 0, ParamDataType.TEXT           , "MyLabelname 3-1 "+ chartIdx.ToString("D2")  , "#1");
-			AddLabelParameter(LblIgnoreIdx     , 0, ParamDataType.BOOL           , null		        , "#1", 0.0, 1);
+			AddLabelParam(LblDataTypeIdx   , 0, ParamDataType.DT_DATATYPE       , "length"	        , "#1");
+			AddLabelParam(LblFormulaIdx    , 0, ParamDataType.DT_FORMULA        , "={[A5]}"	        , "#1");
+			AddLabelParam(LblNameIdx       , 0, ParamDataType.DT_TEXT           , "MyLabelname 3-1 "+ chartIdx.ToString("D2")  , "#1");
+			AddLabelParam(LblIgnoreIdx     , 0, ParamDataType.DT_BOOL           , null		        , "#1", 0.0, 1);
+
+			addCommonCellParams();
 		}
 
 
-		public void AddChart( int index, int adjIdx,
-			ParamDataType type,
+		public void AddChartInstParam(int index, ParamDataType type, 
 			string strVal, double dblVal = 0.0, int intVal = 0,
 			string name = null)
 		{
-			string paramName = ChartInstParam(index).ParameterName;
+			string paramName = ChartParam(index).ParameterName;
 			paramName = name.IsVoid() ? paramName : name + " " + paramName;
 
-			Parameter p = new Parameter(paramName, type, strVal, dblVal, intVal);
-			Charts[symbolIdx].parameters.Add(p);
+			addChartParam(paramName, index, type, strVal, dblVal, intVal );
+		}
+		
+		public void AddChartTypeParam(int index, ParamDataType type, 
+			string strVal, double dblVal = 0.0, int intVal = 0,
+			string name = null)
+		{
+			string paramName = ChartParam(index).ParameterName;
+			paramName = name.IsVoid() ? paramName : name + " " + paramName;
+
+			addChartParam(paramName, index, type, strVal, dblVal, intVal );
+		}
+
+				
+		public void AddChartInternalParam(int index, ParamDataType type, 
+			string strVal, double dblVal = 0.0, int intVal = 0,
+			string name = null)
+		{
+			string paramName = ChartInternalParam(index).ParameterName;
+			paramName = name.IsVoid() ? paramName : name + " " + paramName;
+
+			addChartParam(paramName, index, type, strVal, dblVal, intVal );
+		}
+
+
+		private void addChartParam(string name, int index, ParamDataType type, 
+			string strVal, double dblVal = 0.0, int intVal = 0)
+		{
+			Parameter p = new Parameter(name, type, strVal, dblVal, intVal);
+			ChartSymbols[symbolIdx].parameters.Add(p);
+		}
+
+		private void addCommonChartParams()
+		{
+			AddChartTypeParam(IntNameIdx          , ParamDataType.DT_TEXT, "");
+			AddChartTypeParam(DevelopIdx          , ParamDataType.DT_TEXT, "CyberStudio");
+
+			// AddChartInternalParam(CellParamsClassIdx  , ParamDataType.DT_TEXT, CELL_FAMILY_NAME);
 		}
 
 		private void AddChart0()
 		{
-			AddChart(SeqIdx              , 0, ParamDataType.TEXT, "0");
-			AddChart(NameIdx             , 0, ParamDataType.TEXT, "MyChartname0");
-			AddChart(Descdx              , 0, ParamDataType.TEXT, "Description 0");
-			AddChart(ChartFilePathIdx    , 0, ParamDataType.TEXT, @".\CsSampleChart_01_02.xlsx");
-			AddChart(ChartWorkSheetIdx   , 0, ParamDataType.TEXT, "CsSheet 1");
-			AddChart(ChartFamilyNameIdx  , 0, ParamDataType.TEXT, "CsCellFamily01");
-			AddChart(ChartUpdateTypeIdx  , 0, ParamDataType.UPDATE_TYPE, "Alyways");
-			AddChart(ChartHasErrorsIdx   , 0, ParamDataType.TEXT, "");
+			AddChartInstParam(SeqIdx              , ParamDataType.DT_TEXT, "0");
+			AddChartInstParam(NameIdx             , ParamDataType.DT_TEXT, "MyChartname0");
+			AddChartInstParam(Descdx              , ParamDataType.DT_TEXT, "Description 0");
+			AddChartInstParam(ChartFilePathIdx    , ParamDataType.DT_TEXT, @".\CsSampleChart_01_02.xlsx");
+			AddChartInstParam(ChartWorkSheetIdx   , ParamDataType.DT_TEXT, "CsSheet 1");
+			AddChartInstParam(ChartCellFamilyNameIdx , ParamDataType.DT_TEXT, CELL_FAMILY_NAME);
+			AddChartInstParam(ChartUpdateTypeIdx  , ParamDataType.DT_UPDATE_TYPE, "Alyways");
+			AddChartInstParam(ChartHasErrorsIdx   , ParamDataType.DT_TEXT, "");
+
+			addCommonChartParams();
 		}
 
 		private void AddChart1()
 		{
-			AddChart(SeqIdx                 , 0, ParamDataType.TEXT, "1");
-			AddChart(ChartFilePathIdx       , 0, ParamDataType.TEXT, @".\CsSampleChart_01_02.xlsx");
-			AddChart(NameIdx                , 0, ParamDataType.TEXT, "MyChartname1");
-			AddChart(ChartWorkSheetIdx      , 0, ParamDataType.TEXT, "CsSheet 2");
-			AddChart(ChartFamilyNameIdx     , 0, ParamDataType.TEXT, "CsCellFamily02");
-			AddChart(ChartUpdateTypeIdx     , 0, ParamDataType.UPDATE_TYPE, "Alyways");
-			AddChart(ChartHasErrorsIdx      , 0, ParamDataType.TEXT, "");
+			AddChartInstParam(SeqIdx                 , ParamDataType.DT_TEXT, "1");
+			AddChartInstParam(ChartFilePathIdx       , ParamDataType.DT_TEXT, @".\CsSampleChart_01_02.xlsx");
+			AddChartInstParam(NameIdx                , ParamDataType.DT_TEXT, "MyChartname1");
+			AddChartInstParam(ChartWorkSheetIdx      , ParamDataType.DT_TEXT, "CsSheet 2");
+			AddChartInstParam(ChartCellFamilyNameIdx     , ParamDataType.DT_TEXT, "CsCellFamily02");
+			AddChartInstParam(ChartUpdateTypeIdx     , ParamDataType.DT_UPDATE_TYPE, "Alyways");
+			AddChartInstParam(ChartHasErrorsIdx      , ParamDataType.DT_TEXT, "");
+
+			addCommonChartParams();
 		}
 
 		private void AddChart2()
 		{
-			AddChart(SeqIdx                 , 0, ParamDataType.TEXT, "2");
-			AddChart(ChartFilePathIdx       , 0, ParamDataType.TEXT, @".\CsSampleChart_03_04.xlsx");
-			AddChart(ChartWorkSheetIdx      , 0, ParamDataType.TEXT, "CsSheet 1");
-			AddChart(NameIdx                , 0, ParamDataType.TEXT, "MyChartname2");
-			AddChart(ChartFamilyNameIdx     , 0, ParamDataType.TEXT, "CsCellFamily03");
-			AddChart(ChartUpdateTypeIdx     , 0, ParamDataType.UPDATE_TYPE, "Alyways");
-			AddChart(ChartHasErrorsIdx      , 0, ParamDataType.TEXT, "");
+			AddChartInstParam(SeqIdx                 , ParamDataType.DT_TEXT, "2");
+			AddChartInstParam(ChartFilePathIdx       , ParamDataType.DT_TEXT, @".\CsSampleChart_03_04.xlsx");
+			AddChartInstParam(ChartWorkSheetIdx      , ParamDataType.DT_TEXT, "CsSheet 1");
+			AddChartInstParam(NameIdx                , ParamDataType.DT_TEXT, "MyChartname2");
+			AddChartInstParam(ChartCellFamilyNameIdx     , ParamDataType.DT_TEXT, "CsCellFamily03");
+			AddChartInstParam(ChartUpdateTypeIdx     , ParamDataType.DT_UPDATE_TYPE, "Alyways");
+			AddChartInstParam(ChartHasErrorsIdx      , ParamDataType.DT_TEXT, "");
+
+			addCommonChartParams();
 		}
 
 		private void AddChart3()
 		{
-			AddChart(NameIdx                , 0, ParamDataType.TEXT, "MyChartname3");
+			AddChartInstParam(NameIdx                , ParamDataType.DT_TEXT, "MyChartname3");
 			// AddChart(RevitParamManager.ChartDescIdx        , 0, ParamDataType.TEXT, "Description 4 (not found worksheet)");
-			AddChart(SeqIdx                 , 0, ParamDataType.TEXT, "3");
-			AddChart(ChartFilePathIdx       , 0, ParamDataType.TEXT, @".\CsSampleChart_03_04.xlsx");
-			AddChart(ChartWorkSheetIdx      , 0, ParamDataType.TEXT, "CsSheet 2");
-			AddChart(ChartFamilyNameIdx     , 0, ParamDataType.TEXT, "CsCellFamily04");
-			AddChart(ChartUpdateTypeIdx     , 0, ParamDataType.UPDATE_TYPE, "Alyways");
-			AddChart(ChartHasErrorsIdx      , 0, ParamDataType.TEXT, "");
+			AddChartInstParam(SeqIdx                 , ParamDataType.DT_TEXT, "3");
+			AddChartInstParam(ChartFilePathIdx       , ParamDataType.DT_TEXT, @".\CsSampleChart_03_04.xlsx");
+			AddChartInstParam(ChartWorkSheetIdx      , ParamDataType.DT_TEXT, "CsSheet 2");
+			AddChartInstParam(ChartCellFamilyNameIdx     , ParamDataType.DT_TEXT, "CsCellFamily04");
+			AddChartInstParam(ChartUpdateTypeIdx     , ParamDataType.DT_UPDATE_TYPE, "Alyways");
+			AddChartInstParam(ChartHasErrorsIdx      , ParamDataType.DT_TEXT, "");
+
+			addCommonChartParams();
 		}
 
 		private void AddChart4()
 		{
-			AddChart(NameIdx                , 0, ParamDataType.TEXT, "MyChartname4");
+			AddChartInstParam(NameIdx                , ParamDataType.DT_TEXT, "MyChartname4");
 			// AddChart(RevitParamManager.ChartDescIdx        , 0, ParamDataType.TEXT, "Description 5 (not found chart)");
-			AddChart(SeqIdx                 , 0, ParamDataType.TEXT, "4");
-			AddChart(ChartFilePathIdx       , 0, ParamDataType.TEXT, @".\CsSampleChart_04.xlsx");
-			AddChart(ChartWorkSheetIdx      , 0, ParamDataType.TEXT, "CsSheet 1");
-			AddChart(ChartFamilyNameIdx     , 0, ParamDataType.TEXT, "CsCellFamily05");
-			AddChart(ChartUpdateTypeIdx     , 0, ParamDataType.UPDATE_TYPE, "Alyways");
-			AddChart(ChartHasErrorsIdx      , 0, ParamDataType.TEXT, "");
+			AddChartInstParam(SeqIdx                 , ParamDataType.DT_TEXT, "4");
+			AddChartInstParam(ChartFilePathIdx       , ParamDataType.DT_TEXT, @".\CsSampleChart_04.xlsx");
+			AddChartInstParam(ChartWorkSheetIdx      , ParamDataType.DT_TEXT, "CsSheet 1");
+			AddChartInstParam(ChartCellFamilyNameIdx     , ParamDataType.DT_TEXT, "CsCellFamily05");
+			AddChartInstParam(ChartUpdateTypeIdx     , ParamDataType.DT_UPDATE_TYPE, "Alyways");
+			AddChartInstParam(ChartHasErrorsIdx      , ParamDataType.DT_TEXT, "");
+
+			addCommonChartParams();
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

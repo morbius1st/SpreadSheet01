@@ -11,7 +11,9 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 	public enum ParamClass
 	{
 		PC_CHART,
-		PC_CELL
+		PC_CELL,
+		PC_LABEL,
+		PC_INTERNAL
 	}
 
 	public enum ParamCat
@@ -29,8 +31,9 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 	public enum ParamType
 	{
 		PT_INTERNAL,
-		PT_TYPE,
-		PT_INSTANCE,
+		PT_PARAM,
+		// PT_TYPE,
+		// PT_INSTANCE,
 		PT_LABEL
 	}
 
@@ -62,21 +65,19 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 	public enum ParamDataType
 	{
-		ERROR = -1,
-		EMPTY = 0,
-		IGNORE,
-		LABEL_TITLE,
-		TEXT,
-		INTEGER,
-		NUMBER,
-		ADDRESS,
-		RELATIVEADDRESS,
-		BOOL,
-		DATATYPE,
-		FORMULA,
-		FILE_PATH,
-		UPDATE_TYPE,
-		WORKSHEETNAME
+		DT_ERROR = -1,
+		DT_EMPTY = 0,
+		DT_IGNORE,
+		DT_LABEL_TITLE,
+		DT_TEXT,
+		DT_INTEGER,
+		DT_NUMBER,
+		DT_BOOL,
+		DT_DATATYPE,
+		DT_FORMULA,
+		DT_FILE_PATH,
+		DT_UPDATE_TYPE,
+		DT_WORKSHEETNAME
 	}
 
 	public enum ValueStatus

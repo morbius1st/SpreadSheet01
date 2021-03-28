@@ -12,7 +12,6 @@ using SpreadSheet01.RevitSupport.RevitParamManagement;
 
 namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 {
-
 	public class Families
 	{
 		// holds a dictionary of families of a category (is a list of families) (e.g. generic annotation, room tag)
@@ -48,21 +47,18 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 	public struct ParamStatusData
 	{
-		public string ShortName { get; }
-
 		public ParamDesc ParamDesc { get; }
-		public ParamType Type { get; }
-		public int Index { get; }
-		public bool IsReqd { get; set;}
-		public bool IsFound { get; set;}
+
+		public string ShortName => ParamDesc.ShortName;
+		public ParamType Type => ParamDesc.Type;
+		public int Index => ParamDesc.Index;
+		public bool IsReqd { get; set; }
+		public bool IsFound { get; set; }
 		public ErrorCodes Error { get; set; }
 
-		public ParamStatusData(  string shortName, ParamType type, ParamDesc paramDesc, int idx)
+		public ParamStatusData(ParamDesc paramDesc)
 		{
-			ShortName = shortName;
 			ParamDesc = paramDesc;
-			Type = type;
-			Index = idx;
 			IsReqd = false;
 			IsFound = false;
 			Error = ErrorCodes.NO_ERROR;
@@ -82,13 +78,13 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		protected List<List<ParamDesc>> paramLists = new List<List<ParamDesc>>();
 
-		//                                          param req'd + found +     + other error / code
+		//                                          param req'd + found +     + othr error / code
 		// meaning paramName Shortened-v |   type -v index -v   v       v     v 
 		protected static SortedDictionary<string, ParamStatusData>[] statusList;
 
-		protected int paramMustExistCount;
+		protected static ParamStatusData[][] paramStatusList;
 
-		protected ParamClass ParamClass { get; set; }
+		protected int paramMustExistCount;
 
 		// protected int[] shortNameLengths;
 
@@ -109,6 +105,13 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			statusList[(int) ParamClass.PC_CHART] = new SortedDictionary<string, ParamStatusData>();
 
 			statusList[(int) ParamClass.PC_CELL] = new SortedDictionary<string, ParamStatusData>();
+
+
+			paramStatusList = new ParamStatusData[3][];
+			paramStatusList[(int) ParamClass.PC_CHART] = new ParamStatusData[RevitParamManager.ChartTotalParamCount];
+			paramStatusList[(int) ParamClass.PC_CELL] = new ParamStatusData[RevitParamManager.CellBasicTotalParamCount];
+			paramStatusList[(int) ParamClass.PC_LABEL] = new ParamStatusData[RevitParamManager.CellLabelTotalParamCount];
+
 		}
 
 		public Family(string familyName, ParamCat cat, ParamSubCat sCat)
@@ -149,7 +152,11 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 	#endregion
 
-		public int Index { get; set; }
+	#region non-public properties
+
+		protected ParamClass ParamClass { get; set; }
+
+	#endregion
 
 	#region public methods
 
@@ -163,23 +170,16 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			}
 		}
 
-		internal static ParamDesc Match(string paramName, ParamClass paramClass)
+		public void ResetParamStatusDataList(ParamClass which)
 		{
-			string shortName = RevitParamManager.GetShortName(paramName);
-
-			ParamStatusData statData;
-
-			bool found = statusList[(int) paramClass].TryGetValue(shortName, out statData);
-
-			if (!found) return ParamDesc.Empty;
-			//
-			// ParamType type = statData.Type;
-			//
-			// int idx = statData.Index;
-			//
-			// return paramLists[(int) type][idx];
-
-			return statData.ParamDesc;
+			if (which == ParamClass.PC_CHART)
+			{
+				resetParamStatusDataList(paramStatusList[(int) ParamClass.PC_CHART]);
+			}
+			else
+			{
+				resetParamStatusDataList(paramStatusList[(int) ParamClass.PC_CELL]);
+			}
 		}
 
 		// public dynamic GetClassification(FamilyClassificationType type)
@@ -190,12 +190,12 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		// 	return null;
 		// }
 
-		public List<ParamDesc> ParamList(ParamType type)
-		{
-			if ((int) type > listCount) return null;
-
-			return paramLists[(int) type];
-		}
+		// public List<ParamDesc> ParamList(ParamType type)
+		// {
+		// 	if ((int) type > listCount) return null;
+		//
+		// 	return paramLists[(int) type];
+		// }
 
 		public void AddParam(ParamDesc pd)
 		{
@@ -203,11 +203,15 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 			paramLists[(int) pd.Type][pd.Index] = pd;
 
-			ParamStatusData statData = 
-				new ParamStatusData(pd.ShortName, pd.Type, pd, pd.Index);
+			ParamStatusData statData = new ParamStatusData(pd);
 
+			if (pd.Type != ParamType.PT_INTERNAL)
+			{
+				statusList[(int) ParamClass].Add(pd.ShortName, statData);
 
-			statusList[(int) ParamClass].Add(pd.ShortName, statData);
+				paramStatusList[(int) pd.ParamClass][pd.Index] = new ParamStatusData(pd);
+			}
+
 
 			if (pd.Exist == ParamExistReqmt.EX_PARAM_MUST_EXIST)
 			{
@@ -235,7 +239,65 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			}
 		}
 
+		public static ParamDesc Match(string paramName, ParamClass paramClass)
+		{
+			string shortName = RevitParamManager.GetShortName(paramName);
+
+			ParamStatusData statData;
+
+			bool found = statusList[(int) paramClass].TryGetValue(shortName, out statData);
+
+			if (!found) return ParamDesc.Empty;
+			//
+			// ParamType type = statData.Type;
+			//
+			// int idx = statData.Index;
+			//
+			// return paramLists[(int) type][idx];
+
+			return statData.ParamDesc;
+		}
+
 	#endregion
+
+	#region private methods
+
+		// private static void configStatusLists()
+		// {
+		// 	
+		// 	paramStatusList = new List<ParamStatusData>[2];
+		//
+		// 	paramStatusList[(int) ParamClass.PC_CHART] = new List<ParamStatusData>(RevitParamManager.ChartTotalParamCount);
+		//
+		//
+		// 	paramStatusList[(int) ParamClass.PC_CELL] = new List<ParamStatusData>(RevitParamManager.CellTotalParamCount);
+		//
+		//
+		// 	for (int i = 0; i < RevitParamManager.CellTotalParamCount; i++)
+		// 	{
+		// 		paramStatusList[(int) ParamClass.PC_CHART]
+		// 	}
+		//
+		// 	for (int i = 0; i < RevitParamManager.ChartTotalParamCount; i++)
+		// 	{
+		// 		
+		// 	}
+		// }
+
+
+		private void resetParamStatusDataList(ParamStatusData[] statusList)
+		{
+			foreach (ParamStatusData paramStatus in statusList)
+			{
+				ParamStatusData psd = paramStatus;
+				psd.IsFound = false;
+				psd.Error = ErrorCodes.NO_ERROR;
+			}
+		}
+
+	#endregion
+
+	#region event publishing
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -244,54 +306,73 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(memberName));
 		}
 
+	#endregion
+
+	#region system overrides
+
 		public override string ToString()
 		{
 			return "Family| Name| " + FamilyName;
 		}
+
+	#endregion
+
+
+
 	}
 
 	public class ChartFamily : Family
 	{
 		// public static new ParamClass ParamClass { get; protected set; } = ParamClass.CHART;
 
-		public override int listCount { get; protected set; } = 3;
+		public override int listCount { get; protected set; } = 2;
 
 		public ChartFamily(string familyName, ParamCat cat, ParamSubCat sCat) : base(familyName, cat, sCat)
 		{
-			base.ParamClass= ParamClass.PC_CHART;
+			base.ParamClass = ParamClass.PC_CHART;
 		}
 
+		public ParamStatusData[] StatusData => paramStatusList[(int) ParamClass.PC_CHART];
+
 		public  List<ParamDesc> InternalParams => paramLists[(int) ParamType.PT_INTERNAL];
-		public  List<ParamDesc> TypeParams => paramLists[(int) ParamType.PT_TYPE];
-		public  List<ParamDesc> InstanceParams => paramLists[(int) ParamType.PT_INSTANCE];
+
+		public  List<ParamDesc> Params => paramLists[(int) ParamType.PT_PARAM];
+		// public  List<ParamDesc> TypeParams => paramLists[(int) ParamType.PT_TYPE];
+		// public  List<ParamDesc> InstanceParams => paramLists[(int) ParamType.PT_INSTANCE];
 
 		public override string ToString()
 		{
 			return "ChartFamily| Name| " + FamilyName;
-		}	
+		}
 	}
 
 	public class CellFamily : Family
 	{
 		// public static new ParamClass ParamClass { get; protected set; } = ParamClass.CELL;
 
-		public override int listCount { get; protected set; } = 4;
+		public override int listCount { get; protected set; } = 3;
 
 		public CellFamily(string familyName, ParamCat cat, ParamSubCat sCat) : base(familyName, cat, sCat)
 		{
-			base.ParamClass= ParamClass.PC_CELL;
+			base.ParamClass = ParamClass.PC_CELL;
 		}
 
+		public ParamStatusData[] StatusDataBasic => paramStatusList[(int) ParamClass.PC_CELL];
+		public ParamStatusData[] StatusDataLabel => paramStatusList[(int) ParamClass.PC_LABEL];
+
 		public  List<ParamDesc> InternalParams => paramLists[(int) ParamType.PT_INTERNAL];
-		public  List<ParamDesc> TypeParams => paramLists[(int) ParamType.PT_TYPE];
-		public  List<ParamDesc> InstanceParams => paramLists[(int) ParamType.PT_INSTANCE];
+
+		public  List<ParamDesc> Params => paramLists[(int) ParamType.PT_PARAM];
+
+		// public  List<ParamDesc> TypeParams => paramLists[(int) ParamType.PT_TYPE];
+		// public  List<ParamDesc> InstanceParams => paramLists[(int) ParamType.PT_INSTANCE];
 		public  List<ParamDesc> LabelParams => paramLists[(int) ParamType.PT_LABEL];
 
 
-			public override string ToString()
+		public override string ToString()
 		{
 			return "CellFamily| Name| " + FamilyName;
-		}	
+		}
 	}
 
 
