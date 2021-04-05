@@ -16,9 +16,29 @@ namespace Autodesk.Revit.DB
 
 	public class Document {}
 
+	public class FamilySymbol : Element
+	{
+		public FamilySymbol(string familyName)
+		{
+			base.parameters = new List<Parameter>();
+
+			FamilyName = familyName;
+		}
+
+		public string FamilyName { get; private set; }
+	}
+
 	public class AnnotationSymbol : Element
 	{
+		private FamilySymbol famSym;
 
+		public AnnotationSymbol(string typeName, string familyName)
+		{
+			famSym = new FamilySymbol(familyName);
+			Name = typeName;
+		}
+
+		public FamilySymbol Symbol => famSym;
 	}
 
 
@@ -27,6 +47,13 @@ namespace Autodesk.Revit.DB
 		private static int id = 100000;
 		private int elementId = -1;
 
+		protected Element() {}
+
+		// public Element(string typeName)
+		// {
+		// 	Name = typeName;
+		// }
+
 		public IList<Parameter> parameters;
 
 		public IList<Parameter> GetOrderedParameters()
@@ -34,7 +61,7 @@ namespace Autodesk.Revit.DB
 			return parameters;
 		}
 
-		public string Name { get; set; }
+		public string Name { get; protected set; }
 
 		public int Id
 		{
@@ -56,16 +83,21 @@ namespace Autodesk.Revit.DB
 		private double asDouble;
 		private int asInteger;
 
+		private bool userModifiable;
+
 		public Definition Definition { get; set; }
 
 		public string AsString () =>  asString;
 		public double AsDouble () =>  asDouble;
 		public int AsInteger () =>  asInteger;
 
-		public Parameter(   string name, ParamDataType type, 
-			string strVal, double dblVal, int intVal)
+		public bool UserModifiable => userModifiable;
+
+		public Parameter(  string name, ParamDataType type,
+			string strVal, double dblVal, int intVal, bool userModifiable = true)
 		{
 			Definition = new Definition() {Name = name, Type = type};
+			this.userModifiable = userModifiable;
 			asString = strVal;
 			asDouble = dblVal;
 			asInteger = intVal;

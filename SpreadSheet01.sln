@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadSheet01", "SpreadSheet01\SpreadSheet01.csproj", "{DDC429DE-0FCC-45A7-A152-112E9AB46CC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CellsTest", "Cells\CellsTest.csproj", "{A2C8687D-C5B1-4136-9E2E-E06CB134C21C}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{EC7EC826-E988-4A42-BDA2-6E001B03121C}"
 	ProjectSection(SolutionItems) = preProject
 		DataHierarchy.txt = DataHierarchy.txt
@@ -16,6 +14,8 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedCode", "SharedCode\SharedCode.shproj", "{557CABDB-D47A-4D55-B914-603F13E0E6EE}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedRevitCode", "SharedRevitCode\SharedRevitCode.shproj", "{3E0E0793-852C-41B6-9EE6-7ABA072D1505}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CellsTest", "CellsTest\CellsTest.csproj", "{A2C8687D-C5B1-4136-9E2E-E06CB134C21C}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

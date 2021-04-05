@@ -8,72 +8,89 @@
 		Title="SelectCharts"
 		Width="600"
 		Height="800"
-		mc:Ignorable="d"
 		DataContext="{Binding ElementName=SelCharts}"
+		mc:Ignorable="d"
 		Background="#313339"
 		Loaded="SelectCharts_OnLoaded"
 		>
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="100" />
+			<ColumnDefinition Width="110" MinWidth="110" />
 		</Grid.ColumnDefinitions>
 
 		<Grid.RowDefinitions>
-			<RowDefinition Height="*" />
-			<RowDefinition Height="40" />
+			<RowDefinition />
+			<RowDefinition />
+			<RowDefinition Height="40" MinHeight="40" />
 		</Grid.RowDefinitions>
 
 		<StackPanel
 				Grid.Column="1"
-				Grid.Row="0"
+				Grid.Row="1"
 				Grid.RowSpan="2"
+				Margin="10"
+				HorizontalAlignment="Center"
 				VerticalAlignment="Bottom"
-				HorizontalAlignment="Right"
-				Orientation="Vertical">
+				Orientation="Vertical"
+				>
 
-										
-			<Button
-					x:Name="BtnGetCharts"
-					Margin="5"
-					Width="90"
-					Click="BtnGetCharts_OnClick"
+
+			<Button x:Name="BtnGetCharts"
 					Content="Get Charts"
-			/>	
-							
-			<Button
-					x:Name="BtnReOrder"
-					Margin="5"
-					Width="90"
-					Click="BtnReOrder_OnClick"
-					Content="Re-Order"
-					/>	
-												
-			<Button
-					x:Name="BtnDebug"
-					Margin="5"
-					Width="90"
-					Click="BtnDebug_OnClick"
-					Content="Debug"
-					/>	
+					Margin="0, 5, 0 ,0"
 
-			<Button
-					x:Name="BtnDone"
-					Margin="5"
-					Width="90"
-					Click="BtnDone_OnClick"
+					Click="BtnGetCharts_OnClick"
+					/>
+
+			<Button x:Name="BtnMakeSharedParams"
+					Content="Shared Params"
+					Margin="0, 5, 0 ,0"
+
+					Click="BtnMakeSharedParams_OnClick"
+					/>
+
+			<Button x:Name="BtnReOrder"
+					Content="Re-Order"
+					Margin="0, 5, 0 ,0"
+
+					Click="BtnReOrder_OnClick"
+					/>
+
+			<Button x:Name="BtnDebug"
+					Content="Debug"
+					Margin="0, 5, 0 ,0"
+
+					Click="BtnDebug_OnClick"
+					/>
+
+			<Button x:Name="BtnDone"
 					Content="Done"
+					Margin="0, 5, 0 ,0"
+
+					Click="BtnDone_OnClick"
 					/>
 
 		</StackPanel>
 
 		<ListView
+				Grid.Column="0"
+				Grid.Row="0"
 				Background="Transparent"
 				Foreground="White"
-				ItemsSource="{Binding Path=Charts, Mode=OneWay}"
-				
+				ItemsSource="{Binding Path=Charts,
+															Mode=OneWay}"
 				/>
 
+		<TextBox x:Name="TbxMsg"
+				Grid.Column="0"
+				Grid.Row="1"
+				Background="Transparent"
+				Foreground="White"
+				VerticalScrollBarVisibility="Visible"
+				HorizontalScrollBarVisibility="Visible"
+				Text="{Binding Message}"
+				/>
 
 
 	</Grid>

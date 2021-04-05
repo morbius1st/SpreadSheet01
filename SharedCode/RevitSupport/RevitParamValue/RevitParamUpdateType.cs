@@ -38,7 +38,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 				if (this.dynValue.Value == CellUpdateTypeCode.INVALID)
 				{
-					ErrorCode = ErrorCodes.PARAM_CHART_BAD_UPDATE_TYPE_CS001144;
+					ErrorCode = ErrorCodes.CHART_BAD_UPDATE_TYPE_CS001144;
 				}
 			}
 		}

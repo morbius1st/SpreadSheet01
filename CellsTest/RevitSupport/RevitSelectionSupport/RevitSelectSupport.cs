@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using CellsTest.CellsTests;
+using SpreadSheet01.RevitSupport.RevitParamManagement;
 
 #endregion
 
@@ -18,12 +19,14 @@ namespace SpreadSheet01.RevitSupport.RevitSelectionSupport
 	{
 		private SampleAnnoSymbols sample = new SampleAnnoSymbols();
 
-		// public ICollection<Element> GetCellFamilies(Document doc, string familyTypeName)
-		public ICollection<Element> GetCellFamilies(Document doc, string familyTypeName, int seq)
-		{
-			sample.Process();
+		public int seq = 0;
 
-			return sample.CellElements[seq];
+		// public ICollection<Element> GetCellFamilies(Document doc, string familyTypeName)
+		public ICollection<Element> GetCellFamilies(Document doc, string familyTypeName)
+		{
+			sample.Process(RevitParamManager.CHART_FAMILY_NAME);
+
+			return sample.CellElements[seq++];
 		}
 	}
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using CellsTest.Windows;
 using UtilityLibrary;
 
 using static CellsTest.Windows.MainWindow;
@@ -22,13 +23,16 @@ namespace CellsTest.CellsTests
 	{
 		#region private fields
 
-
+			private static MainWindow win;
 
 		#endregion
 
 		#region ctor
 
-		public Tests01() { }
+			public Tests01(MainWindow win1)
+			{
+				win = win1;
+			}
 
 		#endregion
 
@@ -63,21 +67,21 @@ namespace CellsTest.CellsTests
 
 				List<KeyValuePair<string, string>> varList = new List<KeyValuePair<string, string>>();
 
-				WriteLine("\nrx| start");
+				win.WriteLine("\nrx| start");
 
 				foreach (Match m in mc)
 				{
-					WriteLine("\ngot match| idx| " + m.Index
+					win.WriteLine("\ngot match| idx| " + m.Index
 						+ " name| " + m.Name
 						+ " value| " + m.Value);
-					WriteLine("");
+					win.WriteLine("");
 
 					for (var i = 1; i < m.Groups.Count; i++)
 					{
 						Group g = m.Groups[i];
 						if (g.Index > 0 || !g.Value.IsVoid())
 						{
-							WriteLine("    got group| idx| " + g.Index
+							win.WriteLine("    got group| idx| " + g.Index
 								+ " name| " + g.Name
 								+ " value | " + g.Value);
 
@@ -86,7 +90,7 @@ namespace CellsTest.CellsTests
 					}
 				}
 
-				WriteLine("rx| end\n");
+				win.WriteLine("rx| end\n");
 
 				return varList;
 			}
@@ -111,21 +115,21 @@ namespace CellsTest.CellsTests
 
 				List<KeyValuePair<string, string>> varList = new List<KeyValuePair<string, string>>();
 
-				WriteLine("\nrx| start");
+				win.WriteLine("\nrx| start");
 
 				foreach (Match m in mc)
 				{
-					WriteLine("\ngot match| idx| " + m.Index
+					win.WriteLine("\ngot match| idx| " + m.Index
 						+ " name| " + m.Name
 						+ " value| " + m.Value);
-					WriteLine("");
+					win.WriteLine("");
 
 					for (var i = 1; i < m.Groups.Count; i++)
 					{
 						Group g = m.Groups[i];
 						if (g.Index > 0 || !g.Value.IsVoid())
 						{
-							WriteLine("    got group| idx| " + g.Index
+							win.WriteLine("    got group| idx| " + g.Index
 								+ " name| " + g.Name
 								+ " value | " + g.Value);
 
@@ -134,7 +138,7 @@ namespace CellsTest.CellsTests
 					}
 				}
 
-				WriteLine("rx| end\n");
+				win.WriteLine("rx| end\n");
 
 				return varList;
 			}
@@ -142,8 +146,8 @@ namespace CellsTest.CellsTests
 
 		internal void splitTest5()
 		{
-			WriteLine("split test 5");
-			WriteLine("splitting| ");
+			win.WriteLine("split test 5");
+			win.WriteLine("splitting| ");
 
 			string[] test = new string[15];
 
@@ -164,31 +168,31 @@ namespace CellsTest.CellsTests
 			{
 				if (s.IsVoid()) continue;
 
-				Write("\n");
-				WriteLine("testing| " + s);
+				win.Write("\n");
+				win.WriteLine("testing| " + s);
 
 				List<KeyValuePair<string, string>> varList = rx.ParseFormula(s);
 
 				if (varList == null || varList.Count <= 0)
 				{
-					WriteLine("*** MATCH FAILED ***");
+					win.WriteLine("*** MATCH FAILED ***");
 					continue;
 				}
 
 				foreach (KeyValuePair<string, string> kvp in varList)
 				{
-					WriteLine(" key| " + kvp.Key + " value| " + kvp.Value);
+					win.WriteLine(" key| " + kvp.Key + " value| " + kvp.Value);
 				}
 
-				Write("\n");
+				win.Write("\n");
 			}
 		}
 
 
 		internal void splitTest6()
 		{
-			WriteLine("split test 6");
-			WriteLine("splitting| ");
+			win.WriteLine("split test 6");
+			win.WriteLine("splitting| ");
 
 			int count = 15;
 
@@ -253,8 +257,8 @@ namespace CellsTest.CellsTests
 
 		internal void splitTest()
 		{
-			WriteLine("split test");
-			WriteLine("splitting| ");
+			win.WriteLine("split test");
+			win.WriteLine("splitting| ");
 
 			string[] test = new string[15];
 
@@ -278,23 +282,23 @@ namespace CellsTest.CellsTests
 			{
 				if (test[i] == null) break;
 
-				Write("\n");
-				WriteLine("testing| " + i + "| " + test[i]);
-				Write("\n");
+				win.Write("\n");
+				win.WriteLine("testing| " + i + "| " + test[i]);
+				win.Write("\n");
 
 				MatchCollection c = r.Matches(test[i]);
 				if (c.Count < 1)
 				{
-					WriteLine("*** MATCH FAILED ***");
+					win.WriteLine("*** MATCH FAILED ***");
 					continue;
 				}
 
-				WriteLine("found| " + c.Count);
+				win.WriteLine("found| " + c.Count);
 
 				foreach (Match m in c)
 				{
-					Write("\n");
-					WriteLine("found| Groups| " + m.Groups.Count);
+					win.Write("\n");
+					win.WriteLine("found| Groups| " + m.Groups.Count);
 
 					for (var j = 1; j < m.Groups.Count; j++)
 					{
@@ -302,22 +306,22 @@ namespace CellsTest.CellsTests
 
 						if (g.Success && !string.IsNullOrWhiteSpace(g.Value))
 						{
-							Write("match| idx| " + g.Index.ToString().PadRight(4));
-							Write(" len| " + g.Length.ToString().PadRight(4));
-							Write(" name| " + g.Name.PadRight(8));
-							Write(" value| >" + (g.Value + "<"));
-							// Write(" success| " + g.Success);
-							Write("\n");
+							win.Write("match| idx| " + g.Index.ToString().PadRight(4));
+							win.Write(" len| " + g.Length.ToString().PadRight(4));
+							win.Write(" name| " + g.Name.PadRight(8));
+							win.Write(" value| >" + (g.Value + "<"));
+							// win.Write(" success| " + g.Success);
+							win.Write("\n");
 						}
 					}
 
-					// Write("\n");
-					// WriteLine("found| Captures| " + m.Captures.Count);
+					// win.Write("\n");
+					// win.WriteLine("found| Captures| " + m.Captures.Count);
 					// foreach (Capture cp in m.Captures)
 					// {
-					// 	Write("match| idx| " + cp.Index.ToString().PadRight(4));
-					// 	Write(" value| >" + (cp.Value + "<").PadRight(30));
-					// 	Write("\n");
+					// 	win.Write("match| idx| " + cp.Index.ToString().PadRight(4));
+					// 	win.Write(" value| >" + (cp.Value + "<").PadRight(30));
+					// 	win.Write("\n");
 					// }
 				}
 			}

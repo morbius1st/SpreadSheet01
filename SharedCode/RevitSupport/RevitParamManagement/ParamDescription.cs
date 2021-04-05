@@ -38,7 +38,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			ParameterName = paramName;
 			ShortName = shortName;
 			ParamClass = paramClass;
-			Type = paramType;
+			ParamType = paramType;
 			DataType = dataType;
 			Exist = paramExist;
 			ReadReqmt = paramReadReqmt;
@@ -69,7 +69,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		public int Index                { get; protected set; }
 		
 		public ParamClass ParamClass    { get; protected set; }
-		public ParamType Type           { get; protected set; }
+		public ParamType ParamType           { get; protected set; }
 		public ParamDataType DataType   { get; protected set; }
 		public ParamExistReqmt Exist    { get; protected set; }
 		public ParamReadReqmt ReadReqmt { get; protected set; }

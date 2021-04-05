@@ -178,40 +178,42 @@ Families
 		|			paramStatusList -> ParameterStatusData[][]
 		|
 		+-> ChartFamily : Family
-		|		** holds the parameters for the chart family
-		|		>> properties
-		|			InternalParams => paramList[PT_INTERNAL]	// internal parameters
-		|			Params => paramList[PT_PARAM]				// basic parameters
-		|			StatusData {ParamStatusData} => paramStatusList[PC_CHART]
-		|		>> from Family
-		|			FamilyName => string		(via ctor arg)
-		|			Category => ParamCat		(via ctor arg)
-		|			SubCategory => ParamSubCat	(via ctor arg)
-		|			ParamClass => ParamClass	(in ctor)
-		|			listCount => int			(in class)
-		|		>> methods
-		|			AddParam()
-		|			ConfigureLists()
-		|			Match()
-		|
-		+-> CellFamily : Family
-				** holds the parameters for the cell family
+				** holds the parameters for the chart family
 				>> properties
-					StatusData {ParamStatusData} => paramStatusList[PC_CHART]
 					InternalParams => paramList[PT_INTERNAL]	// internal parameters
 					Params => paramList[PT_PARAM]				// basic parameters
-					LabelParams => paramList[PT_LABEL]			// label parameters
+					StatusData {ParamStatusData} => paramStatusList[PC_CHART]
 				>> from Family
-					ParamClass => ParamClass
-					FamilyName => string
-					listCount => int
-					SubCategory => ParamSubCat
-					Category => ParamCat
-					Index => int
+					FamilyName => string		(via ctor arg)
+					Category => ParamCat		(via ctor arg)
+					SubCategory => ParamSubCat	(via ctor arg)
+					ParamClass => ParamClass	(in ctor)
+					listCount => int			(in class)
 				>> methods
 					AddParam()
 					ConfigureLists()
-					Match()					
+					Match()
+				>> properties
+					CellFamily
+					|
+					+-> CellFamily : Family
+							** holds the parameters for the cell family
+							>> properties
+								StatusData {ParamStatusData} => paramStatusList[PC_CHART]
+								InternalParams => paramList[PT_INTERNAL]	// internal parameters
+								Params => paramList[PT_PARAM]				// basic parameters
+								LabelParams => paramList[PT_LABEL]			// label parameters
+							>> from Family
+								ParamClass => ParamClass
+								FamilyName => string
+								listCount => int
+								SubCategory => ParamSubCat
+								Category => ParamCat
+								Index => int
+							>> methods
+								AddParam()
+								ConfigureLists()
+								Match()					
 
 d
 

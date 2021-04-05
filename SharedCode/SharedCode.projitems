@@ -13,6 +13,8 @@
     <Folder Include="$(MSBuildThisFileDirectory)Management\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory).DebugAssist\ISendMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory).DebugAssist\ListInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FormulaSupport\ParseSupport\ParseRegexSupport.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FormulaSupport\ProcessFormulaSupport.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FormulaSupport\ParseSupport\charValidation.cs" />

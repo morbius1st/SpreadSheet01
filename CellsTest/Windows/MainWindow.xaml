@@ -1,4 +1,4 @@
-﻿<Window x:Name="PrimeWin"
+<Window x:Name="PrimeWin"
 		x:Class="CellsTest.Windows.MainWindow"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,8 +9,8 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:mgmt="clr-namespace:SpreadSheet01.RevitSupport.RevitCellsManagement"
 		Title="MainWindow"
-		Width="1100"
-		Height="900"
+		Width="1400"
+		Height="1100"
 		DataContext="{Binding ElementName=PrimeWin}"
 		mc:Ignorable="d"
 		Background="{StaticResource Normal.Window.Background}"
@@ -22,7 +22,7 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="90" />
+			<ColumnDefinition Width="110" />
 		</Grid.ColumnDefinitions>
 
 		<Grid.RowDefinitions>
@@ -31,26 +31,66 @@
 		</Grid.RowDefinitions>
 
 		<DockPanel
-				Grid.Column="1"
-				Grid.Row="1"
-				Grid.ColumnSpan="2"
+				Grid.Column="2"
+				Grid.Row="0"
+				Grid.RowSpan="2"
+				VerticalAlignment="Bottom"
+				HorizontalAlignment="Stretch"
 				>
+
 			<Button x:Name="BtnDone"
 					Content="Done"
 					Margin="5"
-					Width="90"
-					HorizontalAlignment="Right"
-					DockPanel.Dock="Right"
+
+					VerticalAlignment="Bottom"
+					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
 					Click="BtnDone_OnClick"
 					/>
 
 			<Button x:Name="BtnDebug"
 					Content="Debug"
 					Margin="5"
-					Width="90"
-					HorizontalAlignment="Right"
-					DockPanel.Dock="Right"
+					VerticalAlignment="Bottom"
+					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
 					Click="BtnDebug_OnClick"
+					/>
+
+			<Button x:Name="BtnListChartsAll"
+					Content="List Charts All"
+					Margin="5"
+					VerticalAlignment="Bottom"
+					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
+					Click="BtnListChartsAll_OnClick"
+					/>
+					
+			<Button x:Name="BtnListChartsFamilies"
+					Content="List Cht Fams"
+					Margin="5"
+					VerticalAlignment="Bottom"
+					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
+					Click="BtnListChartsFamilies_OnClick"
+					/>
+
+			<Button x:Name="BtnListCharts"
+					Content="List Charts"
+					Margin="5"
+					VerticalAlignment="Bottom"
+					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
+					Click="BtnListCharts_OnClick"
+					/>
+					
+			<Button x:Name="BtnListSample"
+					Content="List Sample"
+					Margin="5"
+					VerticalAlignment="Bottom"
+					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
+					Click="BtnListSamples_OnClick"
 					/>
 
 		</DockPanel>

@@ -14,11 +14,16 @@ namespace SpreadSheet01.RevitSupport.RevitSelectionSupport
 	{
 		private ManagementSupport mgmtSupport = new ManagementSupport();
 
+		//SYMBOL_FAMILY_NAME_PARAM
 
+		// this will get the instances of the charts
 		public ICollection<Element> FindGenericAnnotationByName(Document doc, string typeName)
 		{
+			// ParameterValueProvider provider =
+			// 	new ParameterValueProvider(new ElementId((int)BuiltInParameter.ALL_MODEL_FAMILY_NAME));
+
 			ParameterValueProvider provider =
-				new ParameterValueProvider(new ElementId((int)BuiltInParameter.ALL_MODEL_FAMILY_NAME));
+				new ParameterValueProvider(new ElementId((int)BuiltInParameter.SYMBOL_FAMILY_NAME_PARAM));
 
 			string stringRuleValue = typeName;
 
@@ -27,6 +32,10 @@ namespace SpreadSheet01.RevitSupport.RevitSelectionSupport
 			FilterRule rule = new FilterStringRule(provider, sre, stringRuleValue, true);
 
 			ElementParameterFilter filter = new ElementParameterFilter(rule);
+
+			// FilteredElementCollector col
+			// 	= new FilteredElementCollector(doc)
+			// 	.OfCategory(BuiltInCategory.OST_GenericAnnotation).WhereElementIsNotElementType() ; //   .WherePasses(filter);
 
 			FilteredElementCollector col
 				= new FilteredElementCollector(doc)

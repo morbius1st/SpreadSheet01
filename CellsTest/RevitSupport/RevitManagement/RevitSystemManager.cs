@@ -4,10 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.DB;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
-using SpreadSheet01.RevitSupport.RevitParamValue;
 using SpreadSheet01.RevitSupport.RevitSelectionSupport;
 using UtilityLibrary;
 #if NOREVIT
@@ -20,8 +18,9 @@ using CellsTest.CellsTests;
 // created:  3/1/2021 10:29:39 PM
 
 /* ------------------------ /
- *  Shared Revit Code
+ *  CellsTest
  * ----------------------- */
+
 
 namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 {
@@ -33,13 +32,9 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		//
 		// private const string KEY_IDX_BEGIN  = "《";
 		// private const string KEY_IDX_END    = "》";
-
-
+		
 		// private readonly RevitParamCatagorize revitCat;
 		// private RevitSelectSupport rvtSelect;
-
-		private Application app;
-		private Document doc;
 
 		// private int errorIdx;
 
@@ -47,16 +42,13 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 	#region ctor
 
-		public RevitSystemManager(Application app, Document doc) : this()
-		{
-			this.app = app;
-			this.doc = doc;
-
-			// revitCat = new RevitParamCatagorize();
-			// rvtSelect = new RevitSelectSupport();
-			//
-			// Reset();
-		}
+		// public RevitSystemManager()
+		// {
+		// 	revitCat = new RevitParamCatagorize();
+		// 	rvtSelect = new RevitSelectSupport();
+		//
+		// 	Reset();
+		// }
 
 	#endregion
 
@@ -65,6 +57,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		// collection of all revit charts  
 		// this holds a collection of individual charts
 		// public RevitCharts Charts { get; private set; } = new RevitCharts();
+
 		// public RevitSelectSupport RvtSelect
 		// {
 		// 	get { return rvtSelect; }
@@ -78,6 +71,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	#endregion
 
 	#region public methods
+
 
 
 		// public bool CollectAllCharts()
@@ -97,10 +91,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		// // scan revit and get all chart and label information
 		// public bool ProcessCharts(CellUpdateTypeCode which)
 		// {
-		// 	// Families Fams = RevitParamManager.Fams;
-		// 	// ChartFamily ChartParams = RevitParamManager.ChartParams;
-		// 	// CellFamily CellParams = RevitParamManager.CellParams;
-		//
 		// 	int fail = 0;
 		//
 		// 	// process all charts and add to list
@@ -125,7 +115,15 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		private ICollection<Element> findAllChartFamilies(string chartFamilyName)
 		{
-			return rvtSelect.FindGenericAnnotationByName(doc, chartFamilyName);
+		#if NOREVIT
+
+			SampleAnnoSymbols samples = new SampleAnnoSymbols();
+
+			samples.Process(RevitParamManager.CHART_FAMILY_NAME);
+
+			return samples.ChartElements;
+		#endif
+
 		}
 
 
@@ -196,11 +194,11 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		// }
 
 
-
 		// private void Reset()
 		// {
 		// 	Charts = new RevitCharts();
 		// }
+
 
 	#endregion
 
@@ -223,9 +221,10 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public string LocalToString()
 		{
-			return "shared revit code";
+			return "Shared code";
 		}
 
 	#endregion
+
 	}
 }

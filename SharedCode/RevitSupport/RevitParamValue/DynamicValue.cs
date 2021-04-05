@@ -6,6 +6,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using UtilityLibrary;
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
@@ -55,7 +56,9 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		public override string ToString()
 		{
-			return "DynamicValue| " + dynamicValue.ToString();
+			string result =  dynamicValue == null ? "is null" : "";
+			result = result.IsVoid() ? "is empty" : result;
+			return "DynamicValue| " + result;
 		}
 	}
 }

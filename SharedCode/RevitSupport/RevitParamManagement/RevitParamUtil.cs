@@ -1,6 +1,9 @@
 ﻿using System.Text.RegularExpressions;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
+using SpreadSheet01.RevitSupport.RevitParamValue;
 using UtilityLibrary;
+
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
 
 namespace SpreadSheet01.RevitSupport.RevitParamManagement
 {
@@ -26,13 +29,13 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		}
 
 
-		public static string MakeAnnoSymKey(IAnnoSymContainer aSym, int nameIdex, int seqIndex, bool asSeqName = true)
+		public static string MakeAnnoSymKey(IAnnoSymContainer<ARevitParam> aSym, int nameIdex, int seqIndex, bool asSeqName = true)
 		{
-			string seq = aSym[seqIndex].GetValue();
+			string seq = aSym[PT_INSTANCE, seqIndex].GetValue();
 
 			seq = KEY_IDX_BEGIN + $"{(seq.IsVoid() ? "ZZZZZ" : seq),8}" + KEY_IDX_END;
 
-			string name = aSym[nameIdex].GetValue();
+			string name = aSym[PT_INSTANCE, nameIdex].GetValue();
 			name = name.IsVoid() ? "un-named" : name;
 
 			string eid = aSym.AnnoSymbol?.Id.ToString() ?? "Null Symbol " + annoSymUniqueIdx++.ToString("D7");

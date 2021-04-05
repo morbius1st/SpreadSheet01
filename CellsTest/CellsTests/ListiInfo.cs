@@ -1,15 +1,6 @@
 ﻿#region + Using Directives
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CellsTest.Windows;
-using SpreadSheet01.Management;
-using SpreadSheet01.RevitSupport.RevitCellsManagement;
-using SpreadSheet01.RevitSupport.RevitParamManagement;
-using SpreadSheet01.RevitSupport.RevitParamValue;
-using UtilityLibrary;
+
+using Autodesk.Revit.DB;
 
 #endregion
 
@@ -18,12 +9,27 @@ using UtilityLibrary;
 
 namespace CellsTest.CellsTests
 {
-	public class ListiInfo
-	{
 
-		public void listCharts(RevitCharts Charts)
+	// public class ListiInfo
+	// {
+	//
+	// 	public void listx() {}
+	//
+	// 	public void listSample(AnnotationSymbol[] chartSymbols, AnnotationSymbol[] symbols) { }
+	//
+	//
+	//
+	// }
+
+}
+
+
+/*
+
+
+		public void listCharts(RevitCharts Charts) 
 		{
-
+			
 			MainWindow.showTabId = false;
 
 			MainWindow.TabClr(0);
@@ -34,15 +40,13 @@ namespace CellsTest.CellsTests
 			{
 				foreach (KeyValuePair<string, RevitChart> kvp1 in Charts.ListOfCharts)
 				{
+					MainWindow.WriteLine("");
 					MainWindow.WriteLineTab("for chart| " + kvp1.Key);
 
 					MainWindow.TabUp("");
 					{
-						listOneChart(kvp1.Value);
-						
-						
-						
-
+						MainWindow.WriteLine("");
+						listChart(kvp1.Value);
 					}
 					MainWindow.TabDn("");
 
@@ -50,6 +54,30 @@ namespace CellsTest.CellsTests
 			}	
 			MainWindow.TabDn("end");
 		}
+
+		private void listChart(RevitChart chart)
+		{
+			MainWindow.WriteLineTab("Chart|       name| " + chart.Name);
+			MainWindow.WriteLineTab("Chart|   sequence| " + chart.Sequence);
+			MainWindow.WriteLineTab("Chart|   filepath| " + chart.FilePath);
+			MainWindow.WriteLineTab("Chart|     exists| " + chart.Exists);
+			MainWindow.WriteLineTab("Chart|  worksheet| " + chart.WorkSheet);
+			MainWindow.WriteLineTab("Chart| updateType| " + chart.UpdateType);
+			MainWindow.WriteLine("");
+
+			MainWindow.TabUp("revit chart data| start");
+			{
+				RevitChartData rcd = chart.RevitChartData;
+
+				MainWindow.WriteLineTab("RevitChartData|       name| " + rcd.Name);
+				MainWindow.WriteLineTab("RevitChartData|   dynvalue| " + rcd.DynValue.ToString());
+				MainWindow.WriteLineTab("RevitChartData|   sequence| " + rcd.Sequence);
+				MainWindow.WriteLineTab("RevitChartData| updatetype| " + rcd.UpdateType);
+			}
+			MainWindow.TabDn("revit chart data| start");
+
+		}
+
 
 		private void listOneChart(RevitChart chart)
 		{
@@ -425,4 +453,5 @@ namespace CellsTest.CellsTests
 
 
 	}
-}
+*/
+

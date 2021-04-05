@@ -4,16 +4,38 @@
 // Created:      2021-02-26 (9:46 PM)
 
 
+using System;
+
 namespace SpreadSheet01.RevitSupport.RevitParamManagement
 {
+
+	public static class RevitParamSupport
+	{
+		public const int PARAM_CLASS_COUNT = 2;
+		public const int PARAM_TYPE_COUNT = 4;
+
+		public static string GetShortName(string name)
+		{
+			return name.Substring(0, Math.Min(name.Length, RevitParamManager.SHORT_NAME_LEN));
+		}
+	}
+
+
 #region enums
 
 	public enum ParamClass
 	{
-		PC_CHART,
+		PC_INTERNAL = -1,
+		PC_CHART = 0,
 		PC_CELL,
-		PC_LABEL,
-		PC_INTERNAL
+	}
+
+	public enum ParamType
+	{
+		PT_INSTANCE = 0,
+		PT_TYPE,	// must be first
+		PT_INTERNAL,
+		PT_LABEL		// must be last
 	}
 
 	public enum ParamCat
@@ -28,15 +50,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		SC_CURTAIN_WALLS
 	}
 
-	public enum ParamType
-	{
-		PT_INTERNAL,
-		PT_PARAM,
-		// PT_TYPE,
-		// PT_INSTANCE,
-		PT_LABEL
-	}
-
 	public enum ParamExistReqmt
 	{
 		EX_PARAM_MUST_EXIST,
@@ -47,7 +60,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 	public enum ParamReadReqmt
 	{
 		RD_VALUE_IGNORE,
-		RDVALUE_OPTIONAL,
+		RD_VALUE_OPTIONAL,
 		RD_VALUE_REQUIRED,
 		RD_VALUE_SET_REQUIRED,
 		RD_VALUE_REQD_IF_NUMBER

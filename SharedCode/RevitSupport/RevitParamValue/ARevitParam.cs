@@ -26,7 +26,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		protected DynamicValue dynValue = new DynamicValue();
 
-		protected List<ErrorCodes> errors;
+		protected List<ErrorCodes> errors = new List<ErrorCodes>();
 
 		protected ParamDesc paramDesc;
 
@@ -57,11 +57,11 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		{
 			set
 			{
-				if (errors == null) errors = new List<ErrorCodes>();
-
 				errors.Add(value);
 			}
 		}
+
+		public void ResetErrors() => errors = new List<ErrorCodes>();
 
 		public bool Assigned { get; protected set; }
 
