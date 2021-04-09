@@ -170,6 +170,42 @@ namespace CellsTest.Windows
 		private void getParamsTest3()
 		{
 			WriteLine("Get and list all charts| start");
+
+			paramTestA();
+
+			paramTestB();
+		}
+
+		private void getParamsTest4a()
+		{
+			WriteLine("\nGet all charts (report 4a)| start");
+
+			Stopwatch s = new Stopwatch();
+
+			s.Start();
+			paramTestA();
+			s.Stop();
+
+			WriteLine("Get all charts (report 4)| done");
+			WriteLine("elapsed tile| " + s.ElapsedMilliseconds + "\n");
+		}
+
+		private void getParamsTest4b()
+		{
+			WriteLine("\nList all charts (report 4b)| start");
+			Stopwatch s = new Stopwatch();
+
+			s.Start();
+			paramTestB();
+			s.Stop();
+
+			WriteLine("List all charts (report 4b)| done");
+			WriteLine("elapsed tile| " + s.ElapsedMilliseconds + "\n");
+		}
+
+
+		private void paramTestA()
+		{
 			bool result;
 
 			// get all of the revit chart families and 
@@ -189,9 +225,15 @@ namespace CellsTest.Windows
 				WriteLine("process charts failed");
 				return;
 			}
+		}
 
+
+		private void paramTestB()
+		{
 			listInfo.listAllChartsInfo(RevitSystMgr.Charts);
 		}
+
+
 
 	#endregion
 
@@ -226,6 +268,20 @@ namespace CellsTest.Windows
 		private void BtnListChartsAll_OnClick(object sender, RoutedEventArgs e)
 		{
 			getParamsTest3();
+
+			Debug.WriteLine("@List Params");
+		}
+		
+		private void BtnGetChartsAll_OnClick(object sender, RoutedEventArgs e)
+		{
+			getParamsTest4a();
+
+			Debug.WriteLine("@List Params");
+		}
+				
+		private void BtnListGetChartsAll_OnClick(object sender, RoutedEventArgs e)
+		{
+			getParamsTest4b();
 
 			Debug.WriteLine("@List Params");
 		}

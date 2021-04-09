@@ -27,6 +27,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\ParamDescription.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\RevitParamCatagorize.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\RevitParamManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\RevitParamStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\RevitParamSupport.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\RevitParamUtil.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\ARevitParam.cs" />

@@ -143,6 +143,11 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		{
 			get { return ParamDescLists[(int) type][idx]; }
 		}
+		
+		public ParamDesc this[int type, int idx]
+		{
+			get { return ParamDescLists[type][idx]; }
+		}
 
 	#endregion
 
@@ -156,7 +161,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public int[] ParamMustExistCount {get; protected set; }
 
-		public int[] ParamCounts { get; protected set; }
+		public int[] ParamCounts => paramCounts;
 
 		public ParamSubCat SubCategory { get; protected set; }
 
@@ -186,7 +191,37 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			}
 		}
 
-		public bool Match(string paramName, out ParamDesc pd, bool isType)
+		public bool Match2(string paramName, ParamType type, out ParamDesc pd)
+		{
+			bool result = false;
+			pd = ParamDesc.Empty;
+			string shortName = RevitParamSupport.GetShortName(paramName);
+
+			if (type == ParamType.PT_INST_OR_INTL)
+			{
+				if (match(shortName, (int) ParamType.PT_INSTANCE, out pd))
+				{
+					result = true;
+				} 
+				else if (match(shortName, (int) ParamType.PT_INTERNAL, out pd))
+				{
+					result = true;
+				}
+			} 
+			else
+			{
+				result = (match(shortName, (int) type, out pd));
+			}
+
+			return result;
+		}
+
+
+
+
+
+/*
+		public bool Match(string paramName, out ParamDesc pd, bool isType, bool isLabel)
 		{
 			bool result = false;
 			pd = ParamDesc.Empty;
@@ -195,21 +230,49 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			// if is type, test index 0 only
 			// if not, test from 1 to num lists
 
-			int start = isType ? 0 : 1;
-			int end = isType ? 1 : NumberOfLists;
+			// int start = isType ? 0 : 1;
+			// int end = isType ? 1 : NumberOfLists;
+			//
+			// for (int pt = start; pt < end; pt++)
+			// {
+			// 	if (match(shortName, pt, out pd))
+			// 	{
+			// 		result = true;
+			// 		break;
+			// 	}
+			// }
+			//
+			//
 
-			for (int pt = start; pt < end; pt++)
+			if (isType)
 			{
-				if (match(shortName, pt, out pd))
+				if (match(shortName, (int) ParamType.PT_TYPE, out pd))
 				{
 					result = true;
-					break;
+				}
+			} 
+			else if (isLabel)
+			{
+				if (match(shortName, (int) ParamType.PT_LABEL, out pd))
+				{
+					result = true;
+				}
+			}
+			else
+			{
+				if (match(shortName, (int) ParamType.PT_INSTANCE, out pd))
+				{
+					result = true;
+				} 
+				else if (match(shortName, (int) ParamType.PT_INTERNAL, out pd))
+				{
+					result = true;
 				}
 			}
 
 			return result;
 		}
-
+*/
 		public bool Match(string paramName, ParamType pt, out ParamDesc pd)
 		{
 			pd = ParamDesc.Empty;
@@ -276,7 +339,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	{
 		private static int seqChart = 0;
 
-		private Dictionary<string, CellFamily> cellFamilies = new Dictionary<string, CellFamily>();
+		// private Dictionary<string, CellFamily> cellFamilies = new Dictionary<string, CellFamily>();
 
 		public override int NumberOfLists { get; protected set; } = 3;
 		public override ParamClass ParamClass { get; set; }
@@ -287,29 +350,29 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			ParamClass = ParamClass.PC_CHART;
 		}
 
-		public Dictionary<string, CellFamily> CellFamilies => cellFamilies;
+		// public Dictionary<string, CellFamily> CellFamilies => cellFamilies;
 
 		public CellFamily CellFamily { get; set; }
 
-		public bool GetCellFamily(string cellFamilyName, out CellFamily cell)
-		{
-			bool results = cellFamilies.TryGetValue(cellFamilyName, out cell);
+		// public bool GetCellFamily(string cellFamilyName, out CellFamily cell)
+		// {
+		// 	bool results = cellFamilies.TryGetValue(cellFamilyName, out cell);
+		//
+		// 	if (results) return true;
+		//
+		// 	cell = CellFamily.Invalid;
+		//
+		// 	return results;
+		// }
 
-			if (results) return true;
-
-			cell = CellFamily.Invalid;
-
-			return results;
-		}
-
-		public void AddCellFamily(CellFamily cell)
-		{
-			bool result = cellFamilies.ContainsKey(cell.FamilyName);
-
-			if (result) return;
-
-			cellFamilies.Add(cell.FamilyName, cell);
-		}
+		// public void AddCellFamily(CellFamily cell)
+		// {
+		// 	bool result = cellFamilies.ContainsKey(cell.FamilyName);
+		//
+		// 	if (result) return;
+		//
+		// 	cellFamilies.Add(cell.FamilyName, cell);
+		// }
 
 		// public CellFamily CellFamily {get; set; }
 

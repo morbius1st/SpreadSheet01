@@ -185,7 +185,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			f.AddParam(pd);
 		}
 
-
 		private static ChartFamily defineChartParameters(string chartFamilyName)
 		{
 			if (isConfigured) return null;
@@ -290,7 +289,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 			defineCellLabelParameters(f);
 
-			chart.AddCellFamily(f);
+			chart.CellFamily = f;
+			// chart.AddCellFamily(f);
 		}
 
 		private static void defineCellLabelParameters(Family f)

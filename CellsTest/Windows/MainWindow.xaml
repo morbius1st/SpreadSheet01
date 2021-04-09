@@ -57,32 +57,6 @@
 					Click="BtnDebug_OnClick"
 					/>
 
-			<Button x:Name="BtnListChartsAll"
-					Content="List Charts All"
-					Margin="5"
-					VerticalAlignment="Bottom"
-					HorizontalAlignment="Stretch"
-					DockPanel.Dock="Bottom"
-					Click="BtnListChartsAll_OnClick"
-					/>
-					
-			<Button x:Name="BtnListChartsFamilies"
-					Content="List Cht Fams"
-					Margin="5"
-					VerticalAlignment="Bottom"
-					HorizontalAlignment="Stretch"
-					DockPanel.Dock="Bottom"
-					Click="BtnListChartsFamilies_OnClick"
-					/>
-
-			<Button x:Name="BtnListCharts"
-					Content="List Charts"
-					Margin="5"
-					VerticalAlignment="Bottom"
-					HorizontalAlignment="Stretch"
-					DockPanel.Dock="Bottom"
-					Click="BtnListCharts_OnClick"
-					/>
 					
 			<Button x:Name="BtnListSample"
 					Content="List Sample"
@@ -92,6 +66,72 @@
 					DockPanel.Dock="Bottom"
 					Click="BtnListSamples_OnClick"
 					/>
+
+			<Button x:Name="BtnListChartsFamilies"
+					Content="List Chart Fams"
+					Margin="5"
+					VerticalAlignment="Bottom"
+					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
+					Click="BtnListChartsFamilies_OnClick"
+					/>
+
+
+			<Rectangle
+					DockPanel.Dock="Bottom"
+					Fill="Blue"
+					Margin="5,0,5,0"
+					Height="5"
+					HorizontalAlignment="Stretch"
+					/>
+
+			<Button x:Name="BtnListChartsAll"
+					Content="List Charts All"
+					Margin="5"
+					VerticalAlignment="Bottom"
+					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
+					Click="BtnListChartsAll_OnClick"
+					/>
+					
+
+			<Button x:Name="BtnListCharts"
+					Content="List Charts"
+					Margin="5"
+					VerticalAlignment="Bottom"
+					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
+					Click="BtnListCharts_OnClick"
+					/>
+
+			<Rectangle
+					DockPanel.Dock="Bottom"
+					Fill="Blue"
+					Margin="5,0,5,0"
+					Height="5"
+					HorizontalAlignment="Stretch"
+					/>
+
+			<Button x:Name="BtnListGetChartsAll"
+					Content="Lst Gt Cht All"
+					Margin="5"
+					VerticalAlignment="Bottom"
+					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
+					Click="BtnListGetChartsAll_OnClick"
+					/>
+
+			<Button x:Name="BtnGetChartsAll"
+					Content="Get Charts All"
+					Margin="5"
+					VerticalAlignment="Bottom"
+					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
+					Click="BtnGetChartsAll_OnClick"
+					/>
+
+
+
 
 		</DockPanel>
 

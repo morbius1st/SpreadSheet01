@@ -42,15 +42,15 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			rcd.RevitElement = elChart;
 			rcd.AnnoSymbol = (AnnotationSymbol) elChart;
 
-			// foreach (Parameter param in elChart.GetOrderedParameters())
-			// {
-			// 	catagorizeChartSymParam(rcd, param, chartFamily, false);
-			//
-			// }
+			foreach (Parameter param in elChart.GetOrderedParameters())
+			{
+				catagorizeChartSymParam(rcd, param, chartFamily, PT_INST_OR_INTL);
+			
+			}
 
 			foreach (Parameter param in ((AnnotationSymbol) elChart).Symbol.GetOrderedParameters())
 			{
-				catagorizeChartSymParam(rcd, param, chartFamily, true);
+				catagorizeChartSymParam(rcd, param, chartFamily, PT_TYPE);
 			}
 
 			validateChartSymParams(rcd, dataParamCount, mustExistParamCount);
@@ -58,9 +58,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			return rcd;
 		}
 
-
 		private void catagorizeChartSymParam(RevitChartData rcd, 
-			Parameter param, ChartFamily chartFamily, bool isType)
+			Parameter param, ChartFamily chartFamily, ParamType type)
 		{
 			ARevitParam rvtParam;
 			ParamDesc pd;
@@ -70,7 +69,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			// Debug.WriteLine("\ncategorizing| " + paramName);
 
 			// pd = Family.Match(paramName, ParamClass.PC_CHART);
-			bool result = chartFamily.Match(paramName, out pd, isType);
+			// bool result = chartFamily.Match(paramName, out pd, isType, false);
+			bool result = chartFamily.Match2(paramName, type, out pd);
 
 			if (!result || pd == null || pd.Mode == ParamMode.PM_NOT_USED) return;
 
@@ -118,14 +118,15 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			{
 				// Debug.WriteLine("is not valid");
 				rcd.ErrorCode = CHART_PARAM_HAS_ERROR_CS001137;
-			} else
-			{
-				string value = rvtParam.DynValue.AsString();
-				// Debug.WriteLine("is valid?| " + rvtParam.IsValid.ToString() 
-				// 	+ "  value| " + value);
-			}
-		}
+			} 
 
+			// else
+			// {
+			// 	string value = rvtParam.DynValue.AsString();
+			// 	// Debug.WriteLine("is valid?| " + rvtParam.IsValid.ToString() 
+			// 	// 	+ "  value| " + value);
+			// }
+		}
 
 		private void validateChartSymParams(RevitChartData rcs,
 			int dataParamCount, int mustExistParamCount)
@@ -149,7 +150,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 		private int[] labelParamCount;
 		private int dataParamCount = 0;
-
 
 		public RevitCellData catagorizeCellParams(AnnotationSymbol aSym, CellFamily cellFamily)
 		{
@@ -175,7 +175,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 			foreach (Parameter param in aSym.GetOrderedParameters())
 			{
-				catagorizeCellParam(rcd, param, cellFamily, false);
+				catagorizeCellParam(rcd, param, cellFamily, PT_INST_OR_INTL);
 
 /*
 				string paramName = RevitParamUtil.GetRootName(param.Definition.Name,
@@ -228,14 +228,16 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 			foreach (Parameter param in  aSym.Symbol.GetOrderedParameters())
 			{
-				catagorizeCellParam(rcd, param, cellFamily, true);
+				catagorizeCellParam(rcd, param, cellFamily, PT_TYPE);
 			}
 
 			return rcd;
 		}
 
+
+		// categorize a single parameter
 		private void catagorizeCellParam(RevitCellData rcd, Parameter param, 
-			CellFamily cellFamily, bool isType)
+			CellFamily cellFamily, ParamType type)
 		{
 			ARevitParam rvtParam = null;
 			ParamDesc pd;
@@ -246,9 +248,10 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			string paramRootName = RevitParamUtil.GetRootName(param.Definition.Name,
 				out labelId, out isLabel);
 
-			ParamType pt = isLabel ? ParamType.PT_LABEL : ParamType.PT_INSTANCE;
+			// ParamType pt = isLabel ? PT_LABEL : type;
+			type = isLabel ? PT_LABEL : type;
 
-			bool result = cellFamily.Match(paramRootName, out pd, isType);
+			bool result = cellFamily.Match2(paramRootName, type, out pd);
 
 			if (! result || pd == null || pd.Mode == ParamMode.PM_NOT_USED) return;
 			
@@ -258,9 +261,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				{
 					dataParamCount++;
 					if (pd.DataType == ParamDataType.DT_IGNORE) return;
-
 					rvtParam = catagorizeParameter(param, pd);
-
 					rcd.Add(PT_INSTANCE, pd.Index, rvtParam);
 					break;
 				}
@@ -268,9 +269,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				{
 					labelParamCount[labelId]++;
 					if (pd.DataType == ParamDataType.DT_IGNORE) return;
-
 					RevitLabel label = saveLabelParam(labelId, param, pd, rcd);
-
 					if (pd.Index == RevitParamManager.LblNameIdx)
 					{
 						rcd.AddLabelRef(label);
@@ -286,9 +285,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				{
 					dataParamCount++;
 					if (pd.DataType == ParamDataType.DT_IGNORE) return;
-
 					rvtParam = catagorizeParameter(param, pd);
-
 					rcd.AddInternal(pd.Index, rvtParam);
 					break;
 				}
@@ -296,9 +293,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				{
 					dataParamCount++;
 					if (pd.DataType == ParamDataType.DT_IGNORE) return;
-
 					rvtParam = catagorizeParameter(param, pd);
-
 					rcd.AddType(pd.Index, rvtParam);
 					break;
 				}
@@ -307,7 +302,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 					rvtParam = ARevitParam.Invalid;
 					rvtParam.ErrorCode = PARAM_INVALID_TYPE_CS001113;
 					rcd.Add(PT_INSTANCE, pd.Index, rvtParam);
-
 					break;
 				}
 			}
@@ -327,8 +321,9 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				labels);
 
 			ARevitParam labelParam = catagorizeParameter(param, pd);
+			
 
-			label.Add(PT_INSTANCE, pd.Index, labelParam);
+			label.Add(PT_LABEL, pd.Index, labelParam);
 
 			return label;
 		}
@@ -350,20 +345,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 			return label;
 		}
-
-
-		// public delegate ARevitParam MakeParamDelegate(Parameter param, ParamDesc pd);
-		//
-		//
-		// MakeParamDelegate ParamBoolDelegate = ParamBool;
-		//
-		// public static ARevitParam ParamBool(Parameter param, ParamDesc pd)
-		// {
-		// 	Debug.WriteLine("got bool delegate");
-		//
-		// 	return null;
-		// }
-
 
 		private ARevitParam catagorizeParameter(Parameter param, ParamDesc pd, string name = "")
 		{
@@ -458,6 +439,19 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 			return p;
 		}
+
+		// public delegate ARevitParam MakeParamDelegate(Parameter param, ParamDesc pd);
+		//
+		//
+		// MakeParamDelegate ParamBoolDelegate = ParamBool;
+		//
+		// public static ARevitParam ParamBool(Parameter param, ParamDesc pd)
+		// {
+		// 	Debug.WriteLine("got bool delegate");
+		//
+		// 	return null;
+		// }
+
 
 	}
 }

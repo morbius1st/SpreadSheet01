@@ -103,25 +103,27 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			RevitParamLists = new T[NumberOfLists][];
 		}
 
-		public int NumberOfLists { get; protected set; }
+		public abstract int NumberOfLists { get; protected set; }
 
 		public T[][] RevitParamLists { get; set; }
 
 		public T[] this[ParamType type] 
 		{
-			get => RevitParamLists[ (int) type];
-			set => RevitParamLists[ (int) type] = value;
+			get => RevitParamLists[(int) type];
+			set
+			{
+				int t = (int) type;
+
+				RevitParamLists[(int) type] = value;
+			}
 		}
 
 		public T this[ParamType type, int idx] => RevitParamLists[(int) type][idx];
-
 
 		public void Add(ParamType type, int idx, T content)
 		{
 			RevitParamLists[(int) type][idx] = content;
 		}
-
-
 
 
 		// public T[] RevitParamListBasic { get; set; }
@@ -228,9 +230,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		// parameter information for the chart symbol
 		public RevitChartData RevitChartData { get; set; }
 
-		
-		
-
 		public string Name {
 			get
 			{
@@ -333,21 +332,9 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 	public class RevitChartData : RevitContainer<ARevitParam>, IAnnoSymContainer<ARevitParam>
 	{
-		// public ARevitParam[] RevitParamListType { get; set; }
-		public ARevitParam[] revitParamListInternal { get; set; }
-
-		public override dynamic GetValue()
-		{
-			return null;
-		}
-
 		public RevitChartData(ChartFamily chartFam)
 		{
 			ChartFamily = chartFam;
-
-
-
-			NumberOfLists = 3;
 
 			this[PT_INSTANCE] = new ARevitParam[chartFam.ParamCounts[(int) PT_INSTANCE]];
 			// this[PT_INSTANCE] = new ARevitParam[ChartInstanceParamTotal];
@@ -356,7 +343,15 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			this[PT_TYPE] = new ARevitParam[chartFam.ParamCounts[(int) PT_TYPE]];
 			// RevitParamListType = new ARevitParam[ChartTypeParamCount];
 
-			revitParamListInternal = new ARevitParam[ChartInternalParamCount];
+			this[PT_INTERNAL] = new ARevitParam[chartFam.ParamCounts[(int) PT_INTERNAL]];
+			// revitParamListInternal = new ARevitParam[ChartInternalParamCount];
+		}
+
+		public override int NumberOfLists { get;  protected set; } = 3;
+
+		public override dynamic GetValue()
+		{
+			return null;
 		}
 
 		public ChartFamily ChartFamily { get; private set; }
@@ -373,21 +368,21 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public Element RevitElement { get; set; }
 
-		public void initLists()
-		{
-
-		}
-
-
 		public void AddInternal(int idx, ARevitParam content)
 		{
-			revitParamListInternal[idx] = content;
+			this[PT_INTERNAL][idx] = content;
 		}
 		
 		public void AddType(int idx, ARevitParam content)
 		{
 			this[PT_TYPE][idx] = content;
 			// RevitParamListType[idx] = content;
+		}
+
+		public bool validate()
+		{
+			
+			return true;
 		}
 
 		public override string ToString()
@@ -413,21 +408,17 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		T[][] RevitParamLists { get; set; }
 
-		// T this[int idx] { get; set; }
-
 		T this[ParamType type, int idx] {get;}
 	}
 
 	public class RevitCellData : RevitContainer<ARevitParam>, IAnnoSymContainer<ARevitParam>
 	{
-		public ARevitParam[] RevitParamListType { get; set; }
-		public ARevitParam[] revitParamListInternal { get; set; }
+		// public ARevitParam[] RevitParamListType { get; set; }
+		// public ARevitParam[] revitParamListInternal { get; set; }
 
 		public RevitCellData(CellFamily cellFam)
 		{
 			CellFamily = cellFam;
-
-			NumberOfLists = 4;
 
 			this[PT_INSTANCE] = new ARevitParam[cellFam.ParamCounts[(int) PT_INSTANCE]];
 			// this[PT_INSTANCE] = new ARevitParam[CellBasicParamTotal];
@@ -436,10 +427,12 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			this[PT_TYPE] = new ARevitParam[cellFam.ParamCounts[(int) PT_TYPE]];
 			// RevitParamListType = new ARevitParam[CellTypeParamCount];
 
-			revitParamListInternal = new ARevitParam[CellInternalParamCount];
+			this[PT_INTERNAL] = new ARevitParam[cellFam.ParamCounts[(int) PT_INTERNAL]];
+			// revitParamListInternal = new ARevitParam[CellInternalParamCount];
 		}
 
-		// key is OK
+		public override int NumberOfLists { get;  protected set; } = 4;
+
 		public SortedDictionary<string, RevitLabel>  CellLabels
 			= new SortedDictionary<string, RevitLabel>();
 
@@ -455,12 +448,12 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public void AddInternal(int idx, ARevitParam content)
 		{
-			revitParamListInternal[idx] = content;
+			this[PT_INTERNAL][idx] = content;
 		}
 
 		public void AddType(int idx, ARevitParam content)
 		{
-			RevitParamListType[idx] = content;
+			this[PT_TYPE][idx] = content;
 		}
 
 		public void AddLabelRef(RevitLabel label)
@@ -483,14 +476,16 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	public class RevitLabel : RevitContainer<ARevitParam>
 	{
 		// a single label 
-		public string Name => this[ParamType.PT_INSTANCE, LblNameIdx].GetValue();
-		public string Formula => this[ParamType.PT_INSTANCE, LblFormulaIdx].GetValue();
+		public string Name => this[PT_LABEL, LblNameIdx].GetValue();
+		public string Formula => this[PT_LABEL, LblFormulaIdx].GetValue();
 
 		public RevitLabel(int paramCount)
 		{
-			this[PT_INSTANCE]= new ARevitParam[paramCount];
+			this[PT_LABEL]= new ARevitParam[paramCount];
 			// RevitParamListBasic = new ARevitParam[CellLabelParamTotal];
 		}
+
+		public override int NumberOfLists { get;  protected set; } = 4;
 
 		public RevitChart ParentChart { get; set; }
 

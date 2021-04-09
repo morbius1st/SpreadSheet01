@@ -190,7 +190,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		{
 			RevitChart chart;
 			ChartFamily chartFamily;
-			CellFamily cellFamily;
+			// CellFamily cellFamily;
 
 			bool answer = RevitParamManager.GetChartFamily(chartData.FamilyName, out chartFamily);
 
@@ -199,17 +199,18 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			chart = new RevitChart();
 			chart.RevitChartData = chartData;
 
-			answer = chartFamily.GetCellFamily(chart.CellFamilyName, out cellFamily);
-
-			if (!answer)
-			{
-				chart.ErrorCode = ErrorCodes.CHART_CELL_FAMILY_MISSING_CS001136;
-				// chart.RevitChartData.CellFamily = CellFamily.Invalid;
-			}
-			else
-			{
-				// chart.RevitChartData.CellFamily = cellFamily;
-			}
+			// // answer = chartFamily.GetCellFamily(chart.CellFamilyName, out cellFamily);
+			// answer = chartFamily.GetCellFamily(chart.CellFamilyName, out cellFamily);
+			//
+			// if (!answer)
+			// {
+			// 	chart.ErrorCode = ErrorCodes.CHART_CELL_FAMILY_MISSING_CS001136;
+			// 	// chart.RevitChartData.CellFamily = CellFamily.Invalid;
+			// }
+			// else
+			// {
+			// 	// chart.RevitChartData.CellFamily = cellFamily;
+			// }
 
 			return chart;
 		}

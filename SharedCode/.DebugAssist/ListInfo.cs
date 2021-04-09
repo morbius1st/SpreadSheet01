@@ -74,6 +74,8 @@ namespace SharedCode.DebugAssist
 
 			foreach (AnnotationSymbol aSym in Symbols)
 			{
+				if (aSym == null) continue;
+
 				win.WriteLine("");
 				win.WriteLine("");
 
@@ -178,26 +180,26 @@ namespace SharedCode.DebugAssist
 		private void listCells(ChartFamily chart)
 		{
 			win.Write("\n");
-			win.WriteLineTab("list cells| ");
+			win.WriteLineTab("list cell| ");
 
 			win.TabUp("list cell start");
 
-			foreach (KeyValuePair<string, CellFamily> kvp in chart.CellFamilies)
-			{
-				Family cell = kvp.Value;
+			// foreach (KeyValuePair<string, CellFamily> kvp in chart.CellFamilies)
+			// {
+				// Family cell = kvp.Value;
+				Family cell = chart.CellFamily;
 
-				win.Write("\n");
-				win.WriteLineTab("list a cell| key| " + kvp.Key);
+				// win.Write("\n");
+				// win.WriteLineTab("list a cell| key| " + kvp.Key);
 
-				win.TabUp("list cell start");
-				{
+				// win.TabUp("list cell start");
+				// {
 					listOneFamily(cell, "cell");
 					listMustExist(cell, "cell");
 					listParams(cell, "cell");
-				}
-
-				win.TabDn("list cell end");
-			}
+				// }
+				// win.TabDn("list cell end");
+			// }
 			win.TabDn("list cell end");
 		}
 
@@ -332,6 +334,16 @@ namespace SharedCode.DebugAssist
 				RevitChartData rcd = chart.RevitChartData;
 
 				listRevitChartDataBasic(rcd);
+
+				win.Write("\n");
+				win.WriteLineTab("Cell| must exist list");
+
+				for (var i = 0; i < chart.RevitChartData.ChartFamily.ParamMustExistCount.Length; i++)
+				{
+					win.WriteTab("chart family| PT | " + ((ParamType) i).ToString().PadRight(12));
+					win.WriteLineTab("qty| " + chart.RevitChartData.ChartFamily.ParamMustExistCount[i].ToString("D3"));
+				}
+
 			}
 			win.TabDn("revit chart data| end");
 
@@ -358,7 +370,7 @@ namespace SharedCode.DebugAssist
 				win.WriteLineTab("internal params");
 
 				win.TabUp("internal params start");
-				listRevitChartParams2(chart.RevitChartData.revitParamListInternal);
+				listRevitChartParams2(chart.RevitChartData[PT_INTERNAL]);
 				win.TabDn("internal params end");
 			}
 			win.TabDn("chart params| end");
@@ -470,14 +482,14 @@ namespace SharedCode.DebugAssist
 				{
 					if (chart.ListOfCellSyms.Count > 0)
 					{
-						win.WriteLineTab("|key|".PadRight(25) + "|seq".PadRight(6) + "|name" );
-						win.WriteLineTab("|----------------------".PadRight(25) + "|------ " + "|--------------------------" );
+						win.WriteLineTab("|key".PadRight(30) + "|seq".PadRight(6) + "|name" );
+						win.WriteLineTab("|-------------------------".PadRight(30) + "|---- " + "|---------------" );
 
 						foreach (KeyValuePair<string, RevitCellData> kvp in chart.ListOfCellSyms)
 						{
-							win.WriteTab("key| " + kvp.Key.PadRight(20));
-							win.Write(" seq| " + kvp.Value.Sequence.PadRight(6));
-							win.Write(" name| " + kvp.Value.Name);
+							win.WriteTab("| " + kvp.Key.PadRight(28));
+							win.Write("| " + kvp.Value.Sequence.PadRight(4));
+							win.WriteLine("| " + kvp.Value.Name);
 
 						}
 					}
@@ -502,14 +514,14 @@ namespace SharedCode.DebugAssist
 				{
 					if (chart.AllCellLabels.Count > 0)
 					{
-						win.WriteLineTab("|key|".PadRight(25) + "|name".PadRight(25) + "|formula" );
-						win.WriteLineTab("|----------------------".PadRight(25) + "|--------------".PadRight(25) + "|--------------------" );
+						win.WriteLineTab("|key".PadRight(30) + "|name".PadRight(25) + "|formula" );
+						win.WriteLineTab("|----------------------".PadRight(30) + "|-------------------".PadRight(25) + "|--------------------" );
 
 						foreach (KeyValuePair<string, RevitLabel> kvp in chart.AllCellLabels)
 						{
-							win.WriteTab("key| " + kvp.Key.PadRight(20));
-							win.Write(" name| " + kvp.Value.Name.PadRight(20));
-							win.Write(" formula| " + kvp.Value.Formula);
+							win.WriteTab("| " + kvp.Key.PadRight(28));
+							win.Write("| " + kvp.Value.Name.PadRight(23));
+							win.WriteLine("| " + kvp.Value.Formula);
 
 						}
 					}
@@ -533,6 +545,7 @@ namespace SharedCode.DebugAssist
 			win.TabClr("0");
 
 			win.WriteLine("");
+			win.WriteLineTab("listing #5");
 			win.WriteLineTab("list charts (list of {RevitChart and contained info}");
 
 			win.TabUp("5");
@@ -545,6 +558,7 @@ namespace SharedCode.DebugAssist
 				int j = 0;
 				foreach (KeyValuePair<string, RevitChart> kvp1 in Charts.ListOfCharts)
 				{
+					win.WriteLine("");
 					win.WriteLineTab("chart " + j++.ToString("#0") + "| " + getChartName(kvp1.Value).PadRight(20) + " errors?| " + kvp1.Value.HasErrors);
 					listAllChartCellsSyms(kvp1.Value);
 					listAllChartLabels(kvp1.Value);
@@ -653,9 +667,19 @@ namespace SharedCode.DebugAssist
 										win.WriteLineTab("Cell| has errors| " + kvp2.Value.HasErrors);
 										win.WriteLineTab("Cell| parameters| value| " + kvp2.Value.GetValue() ?? " is null");
 
+										win.Write("\n");
+										win.WriteLineTab("Cell| must exist list");
+
+										for (var i = 0; i < kvp2.Value.CellFamily.ParamMustExistCount.Length; i++)
+										{
+											win.WriteTab("Cell family| PT | " + ((ParamType) i).ToString().PadRight(12));
+											win.WriteLineTab("qty| " + kvp2.Value.CellFamily.ParamMustExistCount[i].ToString("D3"));
+										}
+
 										win.TabUp("33");
 										{
 										#region Cell Parameters
+											win.Write("\n");
 
 											foreach (ARevitParam p2 in kvp2.Value[PT_INSTANCE])
 											{
@@ -724,11 +748,11 @@ namespace SharedCode.DebugAssist
 
 														#region Label Parameters
 
-															for (var i = 0; i < kvp3.Value[PT_INSTANCE].Length; i++)
+															for (var i = 0; i < kvp3.Value[PT_LABEL].Length; i++)
 															{
 																win.WriteTab("p3| " + i + "| ");
 
-																p3 = kvp3.Value[PT_INSTANCE][i];
+																p3 = kvp3.Value[PT_LABEL][i];
 
 																if (p3 == null)
 																{

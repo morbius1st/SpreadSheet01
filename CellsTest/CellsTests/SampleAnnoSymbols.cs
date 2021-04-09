@@ -33,15 +33,17 @@ namespace CellsTest.CellsTests
 		public void Process(string chartName)
 		{
 
-			ChartFamily chart;
+			// ChartFamily chart;
 			bool MaskedTextResultHint = RevitParamManager.GetChartFamily(chartName, out chart);
 
 			if (!MaskedTextResultHint) return;
 
-			this.chart = chart;
-			bool result = chart.GetCellFamily(CELL_FAMILY_NAME, out cell);
+			// this.chart = chart;
+			// bool result = chart.GetCellFamily(CELL_FAMILY_NAME, out cell);
 
-			if (!result) return;
+			cell = chart.CellFamily;
+
+			if (cell == null) return;
 
 			makeAnnoSyms();
 			makeChartSyms();

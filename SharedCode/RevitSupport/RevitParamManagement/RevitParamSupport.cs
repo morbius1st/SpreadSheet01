@@ -32,10 +32,11 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 	public enum ParamType
 	{
-		PT_INSTANCE = 0,
-		PT_TYPE,	// must be first
+		PT_INST_OR_INTL = -1,
+		PT_INSTANCE,
 		PT_INTERNAL,
-		PT_LABEL		// must be last
+		PT_TYPE,
+		PT_LABEL
 	}
 
 	public enum ParamCat
