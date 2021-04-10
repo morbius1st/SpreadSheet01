@@ -140,7 +140,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 				CellFamily cellFamily = null;
 				string key;
 
-				if (!chartData.IsValid)
+				if (!chartData.HasErrors)
 				{
 					key = "*** error *** (" + (++errorIdx).ToString("D3") + ")";
 					chart = setInvalidRevitChart(key, chartData);

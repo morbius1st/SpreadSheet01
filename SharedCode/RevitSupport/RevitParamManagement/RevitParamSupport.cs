@@ -20,7 +20,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		}
 	}
 
-
 #region enums
 
 	public enum ParamClass

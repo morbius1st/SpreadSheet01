@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using SharedCode.RevitSupport.RevitParamManagement;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
 
@@ -11,7 +12,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		public RevitParamDefault(dynamic dynValue)
 		{
 			this.dynValue = new DynamicValue(dynValue);
-			errors = new List<ErrorCodes>();
+			// errors = new List<ErrorCodes>();
 			paramDesc = ParamDesc.Empty;
 			gotValue = dynValue != null;
 			Assigned = gotValue;
@@ -24,9 +25,11 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 	{
 	#region private fields
 
+		protected ErrorCodeList errorList = new ErrorCodeList();
+
 		protected DynamicValue dynValue = new DynamicValue();
 
-		protected List<ErrorCodes> errors = new List<ErrorCodes>();
+		// protected List<ErrorCodes> errors = new List<ErrorCodes>();
 
 		protected ParamDesc paramDesc;
 
@@ -48,24 +51,17 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			}
 		}
 
-		public List<ErrorCodes> ErrorCodeList
-		{
-			get => errors;
-		}
-		
 		public ErrorCodes ErrorCode
 		{
-			set
-			{
-				errors.Add(value);
-			}
+			set => errorList.Add(value);
 		}
-
-		public void ResetErrors() => errors = new List<ErrorCodes>();
+		public IEnumerator<ErrorCodes> ErrorEnumerator => errorList.GetEnumerator();
+		public  List<ErrorCodes> ErrorList => errorList.ErrorsList;
+		public ErrorCodes GetError(int idx) => errorList[idx];
+		public bool HasErrors => errorList.HasErrors;
+		public void ResetErrors() => errorList.Reset();
 
 		public bool Assigned { get; protected set; }
-
-		public bool IsValid => errors == null || errors.Count == 0;
 
 		public static ARevitParam Invalid
 		{
@@ -107,15 +103,15 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 	#endregion
 
-		public IEnumerable<ErrorCodes> Errors()
-		{
-			if (errors == null) yield break;
-
-			foreach (ErrorCodes error in errors)
-			{
-				yield return error;
-			}
-		}
+		// public IEnumerable<ErrorCodes> Errors()
+		// {
+		// 	if (errors == null) yield break;
+		//
+		// 	foreach (ErrorCodes error in errors)
+		// 	{
+		// 		yield return error;
+		// 	}
+		// }
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -126,7 +122,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		public override string ToString()
 		{
-			return	"<" + ParamDesc.ParameterName + ">|<" + (dynValue?.ToString() ?? "null value") + " >|< " + (IsValid ? "Valid" : "Invalid") + ">";
+			return	"<" + ParamDesc.ParameterName + ">|<" + (dynValue?.ToString() ?? "null value") + " >|< " + (HasErrors ? "Valid" : "Invalid") + ">";
 		}
 
 

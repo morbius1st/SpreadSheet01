@@ -1,9 +1,8 @@
 ﻿#region using
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-
+using SharedCode.RevitSupport.RevitParamManagement;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
@@ -14,48 +13,8 @@ using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
 // username: jeffs
 // created:  4/6/2021 7:20:58 PM
 
-namespace SharedCode.RevitSupport.RevitParamManagement
+namespace SharedCode.RevitSupport.RevitManagement
 {
-	public class ErrorCodeList : IEnumerable<ErrorCodes>
-	{
-		private List<ErrorCodes> errors;
-
-		public ErrorCodeList()
-		{
-			Reset();
-		}
-
-		public List<ErrorCodes> ErrorsList => errors;
-
-		public int Count => errors.Count;
-
-		public bool HasErrors => Count > 0;
-
-		public ErrorCodes this[int idx] => errors[idx];
-
-		public void Add(ErrorCodes error)
-		{
-			if (errors.IndexOf(error) < 0) return;
-			errors.Add(error);
-		}
-
-		public void Reset()
-		{
-			errors = new List<ErrorCodes>();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
-
-		public IEnumerator<ErrorCodes> GetEnumerator()
-		{
-			yield break;
-		}
-	}
-
-
 	public class RevitParamStatus
 	{
 

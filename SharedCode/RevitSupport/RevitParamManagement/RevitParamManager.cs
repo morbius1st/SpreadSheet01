@@ -24,6 +24,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 	public class RevitParamManager
 	{
 		public const int SHORT_NAME_LEN = 8;
+		public const int MAX_LABELS_PER_CELL = 12;
 
 
 	#region private fields

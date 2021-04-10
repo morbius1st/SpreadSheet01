@@ -334,18 +334,36 @@ namespace SharedCode.DebugAssist
 				RevitChartData rcd = chart.RevitChartData;
 
 				listRevitChartDataBasic(rcd);
-
-				win.Write("\n");
-				win.WriteLineTab("Cell| must exist list");
-
-				for (var i = 0; i < chart.RevitChartData.ChartFamily.ParamMustExistCount.Length; i++)
-				{
-					win.WriteTab("chart family| PT | " + ((ParamType) i).ToString().PadRight(12));
-					win.WriteLineTab("qty| " + chart.RevitChartData.ChartFamily.ParamMustExistCount[i].ToString("D3"));
-				}
-
 			}
 			win.TabDn("revit chart data| end");
+
+			win.Write("\n");
+			win.WriteLineTab("param| must exist list");
+
+			win.TabUp("param must exist list| start");
+			{
+				for (var i = 0; i < chart.RevitChartData.ChartFamily.ParamMustExistCount.Length; i++)
+				{
+					win.WriteTab("PT | " + ((ParamType) i).ToString().PadRight(18));
+					win.WriteLine("qty| " + chart.RevitChartData.ChartFamily.ParamMustExistCount[i].ToString("D3"));
+				}
+			}
+
+			win.TabDn("param must exist list| end");
+
+			win.Write("\n");
+			win.WriteLineTab("param| does exist list");
+
+			win.TabUp("params do exist list| start");
+			{
+				for (var i = 0; i < chart.RevitChartData.ReqdParamCount.Length; i++)
+				{
+					win.WriteTab("PT | " + ((ParamType) i).ToString().PadRight(18));
+					win.WriteLine("qty| " + chart.RevitChartData.ReqdParamCount[i].ToString("D3"));
+				}
+			}
+			win.TabDn("params do exist list| end");
+
 
 			win.WriteLine("");
 			win.WriteLineTab("Chart params");
@@ -427,7 +445,7 @@ namespace SharedCode.DebugAssist
 				}
 				else
 				{
-					win.Write("| " + p2.IsValid.ToString().PadRight(10));
+					win.Write("| " + p2.HasErrors.ToString().PadRight(10));
 					win.WriteLine("| " + p2.GetValue() );
 
 				}
@@ -584,7 +602,7 @@ namespace SharedCode.DebugAssist
 				win.Write("\n");
 				win.TabUp("7");
 				{
-					win.WriteLineTab("list all cells ");
+					win.WriteLineTab("list associated cells ");
 
 					win.TabUp("8");
 					{
@@ -670,31 +688,66 @@ namespace SharedCode.DebugAssist
 										win.Write("\n");
 										win.WriteLineTab("Cell| must exist list");
 
-										for (var i = 0; i < kvp2.Value.CellFamily.ParamMustExistCount.Length; i++)
+										win.TabUp("Cell| must exist list");
 										{
-											win.WriteTab("Cell family| PT | " + ((ParamType) i).ToString().PadRight(12));
-											win.WriteLineTab("qty| " + kvp2.Value.CellFamily.ParamMustExistCount[i].ToString("D3"));
-										}
-
-										win.TabUp("33");
-										{
-										#region Cell Parameters
-											win.Write("\n");
-
-											foreach (ARevitParam p2 in kvp2.Value[PT_INSTANCE])
+											for (var i = 0; i < kvp2.Value.CellFamily.ParamMustExistCount.Length; i++)
 											{
-												if (p2 == null)
-												{
-													win.WriteLineTab("p2| is null");
-												}
-												else
-												{
-													win.WriteLineTab("p2| " + p2.ParamDesc.ParameterName.PadRight(15)
-														+ "  value| " + p2.GetValue() );
-												}
+												win.WriteTab("PT | " + ((ParamType) i).ToString().PadRight(18));
+												win.WriteLine("qty| " + kvp2.Value.CellFamily.ParamMustExistCount[i].ToString("D3"));
+											}
+										}
+										win.TabDn("Cell| must exist list");
+
+										win.Write("\n");
+										win.WriteLineTab("param| does exist list");
+
+										win.TabUp("params do exist list| start");
+										{
+											for (var i = 0; i < kvp2.Value.NumberOfLists; i++)
+											{
+												win.WriteTab("PT | " + ((ParamType) i).ToString().PadRight(18));
+												win.WriteLine("qty| " + kvp2.Value.ReqdParamCount[i].ToString("D3"));
 											}
 
-										#endregion
+											win.Write("\n");
+
+											for (var i = kvp2.Value.NumberOfLists; i < kvp2.Value.ReqdParamCount.Length; i++)
+											{
+												win.WriteTab("PT | " + ((ParamType) i).ToString().PadRight(18));
+												win.WriteLine("qty| " + kvp2.Value.ReqdParamCount[i].ToString("D3"));
+											}
+
+
+										}
+										win.TabDn("params do exist list| end");
+
+
+										// win.TabUp("33");
+										{
+											win.Write("\n");
+											win.WriteLineTab("Cell params");
+
+											win.TabUp("33");
+											{
+											#region Cell Parameters
+
+												win.Write("\n");
+
+												foreach (ARevitParam p2 in kvp2.Value[PT_INSTANCE])
+												{
+													if (p2 == null)
+													{
+														win.WriteLineTab("p2| is null");
+													}
+													else
+													{
+														win.WriteLineTab("p2| " + p2.ParamDesc.ParameterName.PadRight(15)
+															+ "  value| " + p2.GetValue() );
+													}
+												}
+
+											#endregion
+											}win.TabDn("33");
 
 											win.Write("\n");
 											win.WriteLineTab("labels| (RevitCell [kvp2])");
@@ -778,7 +831,7 @@ namespace SharedCode.DebugAssist
 												win.TabDn("53");
 											}
 										}
-										win.TabDn("55");
+										// win.TabDn("55");
 									}
 									win.TabDn("57");
 								}

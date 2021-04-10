@@ -75,17 +75,13 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		public ParamReadReqmt ReadReqmt { get; protected set; }
 		public ParamMode Mode           { get; protected set; }
 
-		// public RevitCatagorizeParam.MakeParamDelegate MakeParam { get; private set; }
-
-
-		// public ParamGroup Group         { get; protected set; }
+		public bool IsRequired => Exist == ParamExistReqmt.EX_PARAM_MUST_EXIST;
 
 	#endregion
 
 	#region private properties
 
 	#endregion
-
 
 	#region public methods
 

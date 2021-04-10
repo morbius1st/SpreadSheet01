@@ -82,29 +82,31 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			switch (pd.ParamType)
 			{
 			case ParamType.PT_INSTANCE:
-				{
-					dataParamCount++;
-					if (pd.DataType == ParamDataType.DT_IGNORE) return;
-					rvtParam = catagorizeParameter(param, pd);
-					rcd.Add(PT_INSTANCE, pd.Index, rvtParam);
-					break;
-				}
 			case ParamType.PT_INTERNAL:
-				{
-					dataParamCount++;
-					if (pd.DataType == ParamDataType.DT_IGNORE) return;
-					rvtParam = catagorizeParameter(param, pd);
-					rcd.AddInternal(pd.Index, rvtParam);
-					break;
-				}
 			case ParamType.PT_TYPE:
 				{
 					dataParamCount++;
 					if (pd.DataType == ParamDataType.DT_IGNORE) return;
 					rvtParam = catagorizeParameter(param, pd);
-					rcd.AddType(pd.Index, rvtParam);
+					rcd.Add(pd.ParamType, pd.Index, rvtParam);
 					break;
 				}
+			// case ParamType.PT_INTERNAL:
+			// 	{
+			// 		dataParamCount++;
+			// 		if (pd.DataType == ParamDataType.DT_IGNORE) return;
+			// 		rvtParam = catagorizeParameter(param, pd);
+			// 		rcd.Add(pd.ParamType, pd.Index, rvtParam);
+			// 		break;
+			// 	}
+			// case ParamType.PT_TYPE:
+			// 	{
+			// 		dataParamCount++;
+			// 		if (pd.DataType == ParamDataType.DT_IGNORE) return;
+			// 		rvtParam = catagorizeParameter(param, pd);
+			// 		rcd.Add(pd.ParamType, pd.Index, rvtParam);
+			// 		break;
+			// 	}
 			default:
 				{
 					rvtParam = ARevitParam.Invalid;
@@ -114,7 +116,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				}
 			}
 
-			if (!rvtParam.IsValid)
+			if (!rvtParam.HasErrors)
 			{
 				// Debug.WriteLine("is not valid");
 				rcd.ErrorCode = CHART_PARAM_HAS_ERROR_CS001137;
@@ -154,7 +156,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		public RevitCellData catagorizeCellParams(AnnotationSymbol aSym, CellFamily cellFamily)
 		{
 			dataParamCount = 0; 
-			labelParamCount = new int[12];
+			labelParamCount = new int[RevitParamManager.MAX_LABELS_PER_CELL];
 
 			RevitCellData rcd = new RevitCellData(cellFamily);
 
@@ -177,53 +179,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			{
 				catagorizeCellParam(rcd, param, cellFamily, PT_INST_OR_INTL);
 
-/*
-				string paramName = RevitParamUtil.GetRootName(param.Definition.Name,
-					out labelId, out isLabel);
-
-
-				pd = Family.Match(paramName, ParamClass.PC_CELL);
-
-				if (pd == null) continue;
-
-				switch (pd.Type)
-				{
-				case ParamType.PT_PARAM:
-					{
-						dataParamCount++;
-						if (pd.DataType == ParamDataType.DT_IGNORE) continue;
-
-						rvtParam = catagorizeParameter(param, pd);
-
-						rcd.Add(pd.Index, rvtParam);
-						break;
-					}
-				case ParamType.PT_LABEL:
-					{
-						labelParamCount[labelId]++;
-						if (pd.DataType == ParamDataType.DT_IGNORE) continue;
-
-						RevitLabel label = saveLabelParam(labelId, param, pd, rcd);
-
-						if (pd.Index == RevitParamManager.LblNameIdx)
-						{
-							rcd.AddLabelRef(label);
-						}
-
-						break;
-					}
-				case ParamType.PT_INTERNAL:
-					{
-						dataParamCount++;
-						if (pd.DataType == ParamDataType.DT_IGNORE) continue;
-
-						rvtParam = catagorizeParameter(param, pd);
-
-						rcd.AddInternal(pd.Index, rvtParam);
-						break;
-					}
-				}
-*/
 			}
 
 			foreach (Parameter param in  aSym.Symbol.GetOrderedParameters())
@@ -258,93 +213,104 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			switch (pd.ParamType)
 			{
 			case ParamType.PT_INSTANCE:
+			case ParamType.PT_INTERNAL:
+			case ParamType.PT_TYPE:
 				{
 					dataParamCount++;
 					if (pd.DataType == ParamDataType.DT_IGNORE) return;
 					rvtParam = catagorizeParameter(param, pd);
-					rcd.Add(PT_INSTANCE, pd.Index, rvtParam);
+					rcd.Add(pd.ParamType, pd.Index, rvtParam);
 					break;
 				}
 			case ParamType.PT_LABEL:
 				{
 					labelParamCount[labelId]++;
 					if (pd.DataType == ParamDataType.DT_IGNORE) return;
-					RevitLabel label = saveLabelParam(labelId, param, pd, rcd);
-					if (pd.Index == RevitParamManager.LblNameIdx)
-					{
-						rcd.AddLabelRef(label);
-					}
+					// RevitLabel label = saveLabelParam(labelId, param, pd, rcd);
 
-					if (!label.IsValid)
+					ARevitParam labelParam = catagorizeParameter(param, pd);
+
+					Debug.Write("@PT_Label| ");
+					Debug.Write(" rcd.name| " + rcd.Name.PadRight(18));
+					Debug.Write(" id| " + labelId.ToString("##0"));
+					Debug.Write(" idx| " + pd.Index.ToString("##0"));
+					Debug.Write(" name| " + pd.ParameterName.PadRight(18));
+					Debug.Write(" must exist| " + pd.Exist.ToString().PadRight(18));
+					Debug.WriteLine(" req'd| " + pd.IsRequired.ToString());
+
+					bool answer = rcd.AddLabelParam(labelId, pd.Index, labelParam);
+
+					Debug.Write("\n");
+
+					if (!answer)
 					{
 						rcd.ErrorCode = LABEL_INVALID_CS001125;
 					}
 					return;
 				}
-			case ParamType.PT_INTERNAL:
-				{
-					dataParamCount++;
-					if (pd.DataType == ParamDataType.DT_IGNORE) return;
-					rvtParam = catagorizeParameter(param, pd);
-					rcd.AddInternal(pd.Index, rvtParam);
-					break;
-				}
-			case ParamType.PT_TYPE:
-				{
-					dataParamCount++;
-					if (pd.DataType == ParamDataType.DT_IGNORE) return;
-					rvtParam = catagorizeParameter(param, pd);
-					rcd.AddType(pd.Index, rvtParam);
-					break;
-				}
+			// case ParamType.PT_INTERNAL:
+			// 	{
+			// 		dataParamCount++;
+			// 		if (pd.DataType == ParamDataType.DT_IGNORE) return;
+			// 		rvtParam = catagorizeParameter(param, pd);
+			// 		rcd.AddInternal(pd.Index, rvtParam);
+			// 		break;
+			// 	}
+			// case ParamType.PT_TYPE:
+			// 	{
+			// 		dataParamCount++;
+			// 		if (pd.DataType == ParamDataType.DT_IGNORE) return;
+			// 		rvtParam = catagorizeParameter(param, pd);
+			// 		rcd.AddType(pd.Index, rvtParam);
+			// 		break;
+			// 	}
 			default:
 				{
 					rvtParam = ARevitParam.Invalid;
 					rvtParam.ErrorCode = PARAM_INVALID_TYPE_CS001113;
 					rcd.Add(PT_INSTANCE, pd.Index, rvtParam);
 					break;
-				}
+				} 
 			}
 
-			if (!rvtParam.IsValid)
+			if (!rvtParam.HasErrors)
 			{
 				rcd.ErrorCode = PARAM_HAS_ERROR_CS001107;
 			}
 		}
 
-		private RevitLabel saveLabelParam(int labelId, Parameter param, ParamDesc pd, 
-			RevitCellData revitCellData)
-		{
-			Dictionary<string, RevitLabel> labels = revitCellData.ListOfLabels;
-
-			RevitLabel label = getLabel(labelId, revitCellData.CellFamily.ParamCounts[(int) PT_LABEL],
-				labels);
-
-			ARevitParam labelParam = catagorizeParameter(param, pd);
-			
-
-			label.Add(PT_LABEL, pd.Index, labelParam);
-
-			return label;
-		}
-
-		private RevitLabel getLabel(int idx, int numOfParams,
-			Dictionary<string, RevitLabel> labels)
-		{
-			RevitLabel label;
-
-			string key = RevitParamUtil.MakeLabelKey(idx);
-
-			bool result = labels.TryGetValue(key, out label);
-
-			if (!result)
-			{
-				label = new RevitLabel(numOfParams);
-				labels.Add(key, label);
-			}
-
-			return label;
-		}
+		// private RevitLabel saveLabelParam(int labelId, Parameter param, ParamDesc pd, 
+		// 	RevitCellData rcd)
+		// {
+		// 	// Dictionary<string, RevitLabel> labels = revitCellData.ListOfLabels;
+		//
+		// 	RevitLabel label = getLabel(labelId, rcd.CellFamily.ParamCounts[(int) PT_LABEL],
+		// 		rcd.ListOfLabels);
+		//
+		// 	ARevitParam labelParam = catagorizeParameter(param, pd);
+		// 	
+		// 	label.Add(PT_LABEL, pd.Index, labelParam);
+		//
+		// 	return label;
+		// }
+		//
+		// private RevitLabel getLabel(int idx, int numOfParams,
+		// 	SortedDictionary<string, RevitLabel> labels)
+		// {
+		// 	RevitLabel label;
+		//
+		// 	string key = RevitParamUtil.MakeLabelKey(idx);
+		//
+		// 	bool result = labels.TryGetValue(key, out label);
+		//
+		// 	if (!result)
+		// 	{
+		// 		label = new RevitLabel(idx, numOfParams);
+		// 		labels.Add(key, label);
+		// 	}
+		//
+		// 	return label;
+		// }
 
 		private ARevitParam catagorizeParameter(Parameter param, ParamDesc pd, string name = "")
 		{

@@ -24,6 +24,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)FormulaSupport\ProcessFormula.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitCellsManagement\RevitContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitCellsManagement\RevitFamilies.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitManagement\ErrorCodeList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\ParamDescription.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\RevitParamCatagorize.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\RevitParamManager.cs" />
