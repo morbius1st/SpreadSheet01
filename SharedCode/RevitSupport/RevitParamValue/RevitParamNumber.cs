@@ -24,7 +24,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 				|| paramDesc.ReadReqmt == ParamReadReqmt.RD_VALUE_REQD_IF_NUMBER
 				|| double.IsNaN(value))
 			{
-				ErrorCode = ErrorCodes.PARAM_VALUE_NAN_CS001103;
+				ErrorCode = ErrorCodes.CEL_VALUE_NAN_CS001103;
 				this.dynValue.Value = double.NaN;
 			}
 			else

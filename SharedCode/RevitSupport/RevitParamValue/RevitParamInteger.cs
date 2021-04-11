@@ -27,7 +27,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			if (paramDesc.ReadReqmt == ParamReadReqmt.RD_VALUE_REQUIRED
 				|| paramDesc.ReadReqmt == ParamReadReqmt.RD_VALUE_REQD_IF_NUMBER)
 			{
-				ErrorCode = ErrorCodes.PARAM_VALUE_NAN_CS001103;
+				ErrorCode = ErrorCodes.CEL_VALUE_NAN_CS001103;
 				this.dynValue.Value = Int32.MinValue;
 			}
 			else

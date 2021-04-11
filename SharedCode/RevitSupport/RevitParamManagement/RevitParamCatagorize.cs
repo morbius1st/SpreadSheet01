@@ -6,7 +6,6 @@ using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using Family = SpreadSheet01.RevitSupport.RevitCellsManagement.Family;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using static SpreadSheet01.Management.ErrorCodes;
-
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
 
 
@@ -22,10 +21,10 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 	{
 		private int mustExistParamCount = 0;
 
-		public RevitChartData CatagorizeChartSymParams(Element elChart, 
+		public RevitChartData CatagorizeChartSymParams(Element elChart,
 			ChartFamily chartFamily)
 		{
-			dataParamCount = 0; 
+			dataParamCount = 0;
 			mustExistParamCount = 0;
 
 		#if REVIT
@@ -45,7 +44,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			foreach (Parameter param in elChart.GetOrderedParameters())
 			{
 				catagorizeChartSymParam(rcd, param, chartFamily, PT_INST_OR_INTL);
-			
 			}
 
 			foreach (Parameter param in ((AnnotationSymbol) elChart).Symbol.GetOrderedParameters())
@@ -58,7 +56,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			return rcd;
 		}
 
-		private void catagorizeChartSymParam(RevitChartData rcd, 
+		private void catagorizeChartSymParam(RevitChartData rcd,
 			Parameter param, ChartFamily chartFamily, ParamType type)
 		{
 			ARevitParam rvtParam;
@@ -110,17 +108,17 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			default:
 				{
 					rvtParam = ARevitParam.Invalid;
-					rvtParam.ErrorCode = CHART_INVALID_PARAM_TYPE_CS001143;
+					rvtParam.ErrorCode = CHT_INVALID_PARAM_TYPE_CS001143;
 					rcd.Add(PT_INSTANCE, pd.Index, rvtParam);
 					break;
 				}
 			}
 
-			if (!rvtParam.HasErrors)
+			if (rvtParam.HasErrors)
 			{
 				// Debug.WriteLine("is not valid");
-				rcd.ErrorCode = CHART_PARAM_HAS_ERROR_CS001137;
-			} 
+				rcd.ErrorCode = CHT_PARAM_HAS_ERROR_CS001137;
+			}
 
 			// else
 			// {
@@ -134,20 +132,20 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			int dataParamCount, int mustExistParamCount)
 		{
 			return;
-			
-		/*
-			// if (mustExistParamCount != RevitChartParameters.MustExistCount)
-			if (mustExistParamCount != RevitParamManager.MustExistChartInstance)
-			{
-				rcs.ErrorCodes = PARAM_CHART_MUST_EXIST_MISSING_CS001138;
-			}
 
-			if (!rcs.IsValid)
-			{
-				rcs.ErrorCodes = PARAM_CHART_PARAM_HAS_ERROR_CS001135;
-			}
-
-		*/
+			/*
+				// if (mustExistParamCount != RevitChartParameters.MustExistCount)
+				if (mustExistParamCount != RevitParamManager.MustExistChartInstance)
+				{
+					rcs.ErrorCodes = PARAM_CHART_MUST_EXIST_MISSING_CS001138;
+				}
+	
+				if (!rcs.IsValid)
+				{
+					rcs.ErrorCodes = PARAM_CHART_PARAM_HAS_ERROR_CS001135;
+				}
+	
+			*/
 		}
 
 		private int[] labelParamCount;
@@ -155,7 +153,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 		public RevitCellData catagorizeCellParams(AnnotationSymbol aSym, CellFamily cellFamily)
 		{
-			dataParamCount = 0; 
+			dataParamCount = 0;
 			labelParamCount = new int[RevitParamManager.MAX_LABELS_PER_CELL];
 
 			RevitCellData rcd = new RevitCellData(cellFamily);
@@ -178,7 +176,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			foreach (Parameter param in aSym.GetOrderedParameters())
 			{
 				catagorizeCellParam(rcd, param, cellFamily, PT_INST_OR_INTL);
-
 			}
 
 			foreach (Parameter param in  aSym.Symbol.GetOrderedParameters())
@@ -186,12 +183,14 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				catagorizeCellParam(rcd, param, cellFamily, PT_TYPE);
 			}
 
+			validateRcdMustExist(rcd);
+
 			return rcd;
 		}
 
 
 		// categorize a single parameter
-		private void catagorizeCellParam(RevitCellData rcd, Parameter param, 
+		private void catagorizeCellParam(RevitCellData rcd, Parameter param,
 			CellFamily cellFamily, ParamType type)
 		{
 			ARevitParam rvtParam = null;
@@ -209,7 +208,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			bool result = cellFamily.Match2(paramRootName, type, out pd);
 
 			if (! result || pd == null || pd.Mode == ParamMode.PM_NOT_USED) return;
-			
+
 			switch (pd.ParamType)
 			{
 			case ParamType.PT_INSTANCE:
@@ -230,22 +229,23 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 					ARevitParam labelParam = catagorizeParameter(param, pd);
 
-					Debug.Write("@PT_Label| ");
-					Debug.Write(" rcd.name| " + rcd.Name.PadRight(18));
-					Debug.Write(" id| " + labelId.ToString("##0"));
-					Debug.Write(" idx| " + pd.Index.ToString("##0"));
-					Debug.Write(" name| " + pd.ParameterName.PadRight(18));
-					Debug.Write(" must exist| " + pd.Exist.ToString().PadRight(18));
-					Debug.WriteLine(" req'd| " + pd.IsRequired.ToString());
+					// Debug.Write("@PT_Label| ");
+					// Debug.Write(" rcd.name| " + rcd.Name.PadRight(18));
+					// Debug.Write(" id| " + labelId.ToString("##0"));
+					// Debug.Write(" idx| " + pd.Index.ToString("##0"));
+					// Debug.Write(" name| " + pd.ParameterName.PadRight(18));
+					// Debug.Write(" must exist| " + pd.Exist.ToString().PadRight(18));
+					// Debug.WriteLine(" req'd| " + pd.IsRequired.ToString());
 
 					bool answer = rcd.AddLabelParam(labelId, pd.Index, labelParam);
 
-					Debug.Write("\n");
+					// Debug.Write("\n");
 
 					if (!answer)
 					{
-						rcd.ErrorCode = LABEL_INVALID_CS001125;
+						rcd.ErrorCode = LBL_INVALID_CS001125;
 					}
+
 					return;
 				}
 			// case ParamType.PT_INTERNAL:
@@ -267,17 +267,40 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			default:
 				{
 					rvtParam = ARevitParam.Invalid;
-					rvtParam.ErrorCode = PARAM_INVALID_TYPE_CS001113;
+					rvtParam.ErrorCode = CEL_INVALID_TYPE_CS001113;
 					rcd.Add(PT_INSTANCE, pd.Index, rvtParam);
 					break;
-				} 
+				}
 			}
 
-			if (!rvtParam.HasErrors)
+			if (rvtParam.HasErrors)
 			{
-				rcd.ErrorCode = PARAM_HAS_ERROR_CS001107;
+				rcd.ErrorCode = CEL_HAS_ERROR_CS001107;
 			}
 		}
+
+		private void validateRcdMustExist(RevitCellData rcd)
+		{
+			int lblCountIdx = rcd.NumberOfLists;
+			int maxLabels = rcd.ListOfLabels.Count + lblCountIdx;
+
+			for (int i = 0; i < lblCountIdx - 1; i++)
+			{
+				if (rcd.CellFamily.ParamMustExistCount[i] != rcd.ReqdParamCount[i])
+				{
+					rcd.ErrorCode =	ErrorCodesAssist.EC_MustExist[i];
+				}
+			}
+
+			for (int i = lblCountIdx; i < maxLabels; i++)
+			{
+				if (rcd.CellFamily.ParamMustExistCount[lblCountIdx - 1] != rcd.ReqdParamCount[i])
+				{
+					rcd.ErrorCode =	ErrorCodesAssist.EC_MustExist[lblCountIdx - 1];
+				}
+			}
+		}
+
 
 		// private RevitLabel saveLabelParam(int labelId, Parameter param, ParamDesc pd, 
 		// 	RevitCellData rcd)
@@ -417,7 +440,5 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		//
 		// 	return null;
 		// }
-
-
 	}
 }

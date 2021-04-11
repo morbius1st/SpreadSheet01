@@ -111,7 +111,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			Charts = new RevitCharts();
 		}
 
-
 		private void getChartParams(ICollection<Element> chartFamilies)
 		{
 			RevitChartData chartData;
@@ -120,61 +119,25 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			{
 
 				chartData = getChartData(el);
-				
-				// ChartFamily chartFam;
-				//
-				// bool value = RevitParamManager.GetChartFamily(el.Name, out chartFam);
-				//
-				// if (value)
-				// {
-				// 	chartData = revitCat.CatagorizeChartSymParams(el, chartFam);
-				// }
-				// else
-				// {
-				// 	chartData = new RevitChartData();
-				// 	chartData.ErrorCode = ErrorCodes.INVALID_DATA_FORMAT_CS000I10;
-				// }
-				
+
 				RevitChart chart = null;
 				ChartFamily chartFamily = null;
 				CellFamily cellFamily = null;
-				string key;
 
-				if (!chartData.HasErrors)
+				string key= RevitParamUtil.MakeAnnoSymKey(chartData,
+					(int) RevitParamManager.NameIdx, (int) RevitParamManager.SeqIdx);
+
+				if (chartData.HasErrors)
 				{
-					key = "*** error *** (" + (++errorIdx).ToString("D3") + ")";
+					key += "*error* (" + (++errorIdx).ToString("D3") + ")";
 					chart = setInvalidRevitChart(key, chartData);
-
-					// key = "*** error *** (" + (++errorIdx).ToString("D3") + ")";
-					// chartFamily = ChartFamily.invalid(key);
-					// chart = new RevitChart(chartFamily);
-					// chart.CellFamily = CellFamily.invalid(key);
-					// chart.RevitChartData = chartData;
 				}
 				else
 				{
-					key = RevitParamUtil.MakeAnnoSymKey(chartData,
-						(int) RevitParamManager.NameIdx, (int) RevitParamManager.SeqIdx);
+					// key = RevitParamUtil.MakeAnnoSymKey(chartData,
+					// 	(int) RevitParamManager.NameIdx, (int) RevitParamManager.SeqIdx);
 
 					chart = getRevitChart(key, chartData);
-
-					// bool answer = RevitParamManager.GetChartFamily(el.Name, out chartFamily);
-					// if (!answer) continue;
-					//
-					// chart = new RevitChart(chartFamily);
-					// chart.RevitChartData = chartData;
-					//
-					// answer = chartFamily.GetCellFamily("", out cellFamily);
-					//
-					// if (!answer)
-					// {
-					// 	chart.ErrorCode = ErrorCodes.CHART_CELL_FAMILY_MISSING_CS001136;
-					// 	chart.CellFamily = CellFamily.Invalid;
-					// }
-					// else
-					// {
-					// 	chart.CellFamily = cellFamily;
-					// }
 				}
 
 				bool result = Charts.Add(key, chart);
@@ -198,19 +161,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 			chart = new RevitChart();
 			chart.RevitChartData = chartData;
-
-			// // answer = chartFamily.GetCellFamily(chart.CellFamilyName, out cellFamily);
-			// answer = chartFamily.GetCellFamily(chart.CellFamilyName, out cellFamily);
-			//
-			// if (!answer)
-			// {
-			// 	chart.ErrorCode = ErrorCodes.CHART_CELL_FAMILY_MISSING_CS001136;
-			// 	// chart.RevitChartData.CellFamily = CellFamily.Invalid;
-			// }
-			// else
-			// {
-			// 	// chart.RevitChartData.CellFamily = cellFamily;
-			// }
 
 			return chart;
 		}
@@ -271,6 +221,8 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 			foreach (Element cell in cellElements)
 			{
+				if (cell.Parameters.Size < 1) continue;
+
 				RevitCellData revitCellData = processCellFamily2(cell, chart.RevitChartData.CellFamily);
 
 				chart.CellHasError = !chart.Add(revitCellData);

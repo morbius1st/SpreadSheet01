@@ -56,7 +56,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			set => errorList.Add(value);
 		}
 		public IEnumerator<ErrorCodes> ErrorEnumerator => errorList.GetEnumerator();
-		public  List<ErrorCodes> ErrorList => errorList.ErrorsList;
+		public  List<ErrorCodes> ErrorCodeList => errorList.ErrorsList;
 		public ErrorCodes GetError(int idx) => errorList[idx];
 		public bool HasErrors => errorList.HasErrors;
 		public void ResetErrors() => errorList.Reset();

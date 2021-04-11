@@ -34,7 +34,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			if (paramDesc.ReadReqmt == ParamReadReqmt.RD_VALUE_REQUIRED
 				&& value.IsVoid() )
 			{
-				ErrorCode = ErrorCodes.PARAM_VALUE_MISSING_CS001102;
+				ErrorCode = ErrorCodes.CEL_VALUE_MISSING_CS001102;
 				this.dynValue.Value = null;
 			}
 			else
@@ -43,7 +43,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 				if (!value.StartsWith("="))
 				{
-					ErrorCode = ErrorCodes.PARAM_VALUE_BAD_FORMULA_CS001106;
+					ErrorCode = ErrorCodes.CEL_VALUE_BAD_FORMULA_CS001106;
 				}
 
 				this.dynValue.Value = value;

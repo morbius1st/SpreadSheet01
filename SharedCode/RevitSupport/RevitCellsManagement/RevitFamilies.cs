@@ -75,7 +75,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			ParamDesc = paramDesc;
 			IsReqd = false;
 			IsFound = false;
-			Error = ErrorCodes.NO_ERROR;
+			Error = ErrorCodes.EC_NO_ERROR;
 		}
 	}
 

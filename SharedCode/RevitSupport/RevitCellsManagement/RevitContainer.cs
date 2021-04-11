@@ -126,46 +126,14 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			RevitParamLists[(int) type][idx] = content;
 		}
 
-
-		// public T[] RevitParamListBasic { get; set; }
-
-		// public T this[int idx]
+		// public ErrorCodes ErrorCode
 		// {
-		// 	get
-		// 	{
-		// 		if (RevitParamListBasic == null
-		// 			|| RevitParamListBasic[idx] == null
-		// 			) return default(T);
-		//
-		// 		return RevitParamListBasic[idx];
-		// 	}
-		// 	set
-		// 	{
-		// 		RevitParamListBasic[idx] = value;
-		// 		OnPropertyChanged(nameof(RevitParamListBasic));
-		// 	}
+		// 	set { base.ErrorCode = value; }
 		// }
-
-
-		// public bool HasErrors => errors.Count > 0;
-
-		public ErrorCodes ErrorCode
-		{
-			set { base.ErrorCode = value; }
-		}
-
-		public List<ErrorCodes> ErrorCodeList
-		{
-			get => base.ErrorList;
-		}
-
-
-
-
-		// public void Add(int idx, T content)
+		//
+		// public List<ErrorCodes> ErrorCodeList
 		// {
-		// 	RevitParamListBasic[idx] = content;
-		// 	OnPropertyChanged(nameof(RevitParamListBasic));
+		// 	get => base.ErrorList;
 		// }
 
 		public abstract override dynamic GetValue();
@@ -252,26 +220,39 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public CellUpdateTypeCode UpdateType => RevitChartData.UpdateType;
 
-		public bool HasErrors => ErrorCodeList.Count > 0;
-
-		public ErrorCodes ErrorCode
-		{
-			set
-			{
-				errors.Add(value);
-				// RevitChartData.ErrorCode = value;
-			}
-		}
-
-		public List<ErrorCodes> ErrorCodeList
-		{
-			// get => RevitChartData.ErrorCodeList;
-			get => errors;
-		}
+		// public bool HasErrors => ErrorCodeList.Count > 0;
+		//
+		// public ErrorCodes ErrorCode
+		// {
+		// 	set
+		// 	{
+		// 		errors.Add(value);
+		// 		// RevitChartData.ErrorCode = value;
+		// 	}
+		// }
+		//
+		// public List<ErrorCodes> ErrorCodeList
+		// {
+		// 	// get => RevitChartData.ErrorCodeList;
+		// 	get => errors;
+		// }
 
 		public bool Add(RevitCellData revitCellData)
 		{
-			bool result = base.Add(makeCellSeqNameKey(revitCellData), revitCellData);
+			int ext = 0;
+			bool result;
+			string key;
+
+			do
+			{
+				key = RevitParamUtil.MakeCellKey( revitCellData.Sequence, revitCellData.Name, ext);
+				result = Containers.ContainsKey(key);
+
+				ext++;
+			}
+			while (result);
+
+			result = base.Add(key, revitCellData);
 
 			if (!result)
 			{
@@ -281,20 +262,20 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 			addCellLabels(revitCellData);
 
+			if (revitCellData.HasErrors)
+			{
+				ErrorCode = ErrorCodes.CHT_CELL_HAS_ERROR_CS001135;
+			}
+
 			return true;
 		}
 
-		public IEnumerable<ErrorCodes> Errors()
-		{
-			return errors;
-		}
+		// public IEnumerable<ErrorCodes> Errors()
+		// {
+		// 	return errors;
+		// }
 
-		public void ResetErrors() => RevitChartData.ResetErrors();
-
-		public string makeCellSeqNameKey(RevitCellData revitCellData)
-		{
-			return RevitParamUtil.MakeSeqNameKey(revitCellData.Name, revitCellData.Sequence);
-		}
+		// public void ResetErrors() => RevitChartData.ResetErrors();
 
 		private bool addCellLabels(RevitCellData revitCellData)
 		{
@@ -350,8 +331,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			// revitParamListInternal = new ARevitParam[ChartInternalParamCount];
 		}
 
-		
-
 		public int[] ReqdParamCount {get; private set; }
 
 		public override int NumberOfLists { get;  protected set; } = 3;
@@ -365,8 +344,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		public string CellFamilyName => this[ParamType.PT_INSTANCE, ChartCellFamilyNameIdx].GetValue();
 
 		public CellUpdateTypeCode UpdateType => ((RevitParamUpdateType) this[PT_INSTANCE, ChartUpdateTypeIdx]).UpdateType;
-
-
 
 		public override dynamic GetValue()
 		{
@@ -491,7 +468,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public bool AddLabelParam(int labelId, int idx, ARevitParam labelParam)
 		{
-			Debug.Write("    @Add_Label| " + labelParam.ParamDesc.ParameterName.PadRight(18));
+			// Debug.Write("    @Add_Label| " + labelParam.ParamDesc.ParameterName.PadRight(18));
 
 			RevitLabel label = getLabel(labelId);
 
@@ -504,13 +481,13 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 			if (labelParam.ParamDesc.IsRequired)
 			{
-				int i = (int) PT_LABEL + labelId;
-				Debug.Write(" is reqd| idx| " + i.ToString("##0"));
+				// int i = (int) PT_LABEL + labelId;
+				// Debug.Write(" is reqd| idx| " + i.ToString("##0"));
 
 				ReqdParamCount[(int) PT_LABEL + labelId]++;
 			}
 
-			Debug.Write("\n");
+			// Debug.Write("\n");
 
 			return !label.HasErrors;
 		}
@@ -519,7 +496,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		{
 			RevitLabel label;
 
-			string key = RevitParamUtil.MakeLabelKey(labelId);
+			string key = RevitParamUtil.MakeLabelKey(Sequence, labelId);
 
 			bool result = ListOfLabels.TryGetValue(key, out label);
 
@@ -538,7 +515,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			return "I am RevitCell| " + this[PT_INSTANCE, NameIdx] ?? "null name";
 		}
 	}
-
 
 	public class RevitLabel : RevitContainer<ARevitParam>
 	{

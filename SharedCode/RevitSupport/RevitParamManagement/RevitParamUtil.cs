@@ -14,14 +14,21 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 		private static int annoSymUniqueIdx = 0;
 
-		public static string MakeLabelKey(int paramIdx)
+		public static string MakeLabelKey(string seqId, int paramIdx, int ext = 0)
 		{
-			return KEY_IDX_BEGIN + paramIdx.ToString("D2") + KEY_IDX_END;
+			// string seq = $"{(seqId.IsVoid() ? "ZZZZZ" : seqId), 8}";
+			// string id = paramIdx.ToString("D2");
+			// string extn = ext.ToString("D2");
+			// return seq + "|" + id + "." + extn;
+
+			string key = $"{(seqId.IsVoid() ? "ZZZZZ" : seqId), 8}.{ext:D2}|{paramIdx:D2}";
+
+			return key;
 		}
 
-		public static string MakeSeqNameKey(string nameIn, string seqIn)
+		public static string MakeCellKey( string seqIn, string nameIn, int ext)
 		{
-			string seq = KEY_IDX_BEGIN + $"{(seqIn.IsVoid() ? "ZZZZZ" : seqIn),8}" + KEY_IDX_END;
+			string seq = $"{(seqIn.IsVoid() ? "ZZZZZ" : seqIn),8}.{ext:D2}|";
 
 			string name = nameIn.IsVoid() ? "un-named" : nameIn;
 
@@ -33,10 +40,10 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		{
 			string seq = aSym[PT_INSTANCE, seqIndex].GetValue();
 
-			seq = KEY_IDX_BEGIN + $"{(seq.IsVoid() ? "ZZZZZ" : seq),8}" + KEY_IDX_END;
+			seq = $"{(seq.IsVoid() ? "ZZZZZ" : seq),8}" + "|";
 
 			string name = aSym[PT_INSTANCE, nameIdex].GetValue();
-			name = name.IsVoid() ? "un-named" : name;
+			name = (name.IsVoid() ? "un-named" : name) + "|";
 
 			string eid = aSym.AnnoSymbol?.Id.ToString() ?? "Null Symbol " + annoSymUniqueIdx++.ToString("D7");
 

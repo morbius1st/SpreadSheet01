@@ -28,7 +28,7 @@ namespace SharedCode.RevitSupport.RevitParamManagement
 
 		public void Add(ErrorCodes error)
 		{
-			if (errors.IndexOf(error) < 0) return;
+			if (errors.IndexOf(error) > 0) return;
 			errors.Add(error);
 		}
 

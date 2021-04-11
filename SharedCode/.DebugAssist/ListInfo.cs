@@ -326,7 +326,46 @@ namespace SharedCode.DebugAssist
 			win.WriteLineTab("Chart|   cell Errors| " + chart.CellHasError);
 
 			win.WriteLine("");
+			win.WriteLineTab("Chart params");
 
+			win.TabUp("chart params start");
+			{
+				win.WriteLine("");
+				win.WriteLineTab("basic params");
+
+				win.TabUp("basic params start");
+				listRevitChartParams2(chart.RevitChartData[PT_INSTANCE]);
+				win.TabDn("basic params end");
+
+				win.WriteLine("");
+				win.WriteLineTab("type params");
+
+				win.TabUp("type params start");
+				listRevitChartParams2(chart.RevitChartData[PT_TYPE]);
+				win.TabDn("type params end");
+
+				win.WriteLine("");
+				win.WriteLineTab("internal params");
+
+				win.TabUp("internal params start");
+				listRevitChartParams2(chart.RevitChartData[PT_INTERNAL]);
+				win.TabDn("internal params end");
+			}
+			win.TabDn("chart params| end");
+
+
+			win.WriteLine("");
+			win.WriteLineTab("Chart errors");
+
+			win.TabUp("chart errors start");
+			{
+				listRevitChartErrors(chart);
+			}
+			win.TabDn("chart errors| end");
+
+
+
+			win.WriteLine("");
 			win.WriteLineTab("RevitChartData");
 
 			win.TabUp("revit chart data| start");
@@ -364,45 +403,9 @@ namespace SharedCode.DebugAssist
 			}
 			win.TabDn("params do exist list| end");
 
-
 			win.WriteLine("");
-			win.WriteLineTab("Chart params");
 
-			win.TabUp("chart params start");
-			{
-				win.WriteLine("");
-				win.WriteLineTab("basic params");
 
-				win.TabUp("basic params start");
-				listRevitChartParams2(chart.RevitChartData[PT_INSTANCE]);
-				win.TabDn("basic params end");
-
-				win.WriteLine("");
-				win.WriteLineTab("type params");
-
-				win.TabUp("type params start");
-				listRevitChartParams2(chart.RevitChartData[PT_TYPE]);
-				win.TabDn("type params end");
-
-				win.WriteLine("");
-				win.WriteLineTab("internal params");
-
-				win.TabUp("internal params start");
-				listRevitChartParams2(chart.RevitChartData[PT_INTERNAL]);
-				win.TabDn("internal params end");
-			}
-			win.TabDn("chart params| end");
-
-			win.WriteLine("");
-			win.WriteLineTab("Chart errors");
-
-			win.TabUp("chart errors start");
-			{
-				listRevitChartErrors(chart);
-			}
-			win.TabDn("chart errors| end");
-
-			win.WriteLine("");
 		}
 
 		private void listRevitChartDataBasic(RevitChartData rcd)
@@ -478,7 +481,7 @@ namespace SharedCode.DebugAssist
 		{
 			if (chart.ErrorCodeList.Count > 0)
 			{
-				foreach (ErrorCodes ec in chart.Errors())
+				foreach (ErrorCodes ec in chart.ErrorCodeList)
 				{
 					win.WriteLineTab("error| " + ec);
 				}
@@ -657,7 +660,7 @@ namespace SharedCode.DebugAssist
 						#region Cells
 
 							win.Write("\n");
-							win.WriteLineTab("Cells| [ListOfCellSyms] ");
+							win.WriteLineTab("Cells #C| [RevitCellData : ListOfCellSyms] ");
 
 							win.TabUp("25");
 							{
@@ -677,13 +680,55 @@ namespace SharedCode.DebugAssist
 
 									// list a single family
 									win.Write("\n");
-									win.WriteLineTab("Cell| " + revitCellData.ToString());
+									win.WriteLineTab("CellData| " + revitCellData.ToString());
 
 									win.TabUp("30");
 									{
-										win.WriteLineTab("Cell| key       | " + kvp2.Key);
-										win.WriteLineTab("Cell| has errors| " + kvp2.Value.HasErrors);
-										win.WriteLineTab("Cell| parameters| value| " + kvp2.Value.GetValue() ?? " is null");
+										win.WriteLineTab("CellData| key       | " + kvp2.Key);
+										win.WriteLineTab("CellData| has errors| " + kvp2.Value.HasErrors);
+										win.WriteLineTab("CellData| parameters| value| " + kvp2.Value.GetValue() ?? " is null");
+
+										win.Write("\n");
+										win.WriteLineTab("CellData params");
+
+										win.TabUp("33");
+										{
+										#region Cell Parameters
+
+											win.Write("\n");
+
+											foreach (ARevitParam p2 in kvp2.Value[PT_INSTANCE])
+											{
+												if (p2 == null)
+												{
+													win.WriteLineTab("p2| is null");
+												}
+												else
+												{
+													win.WriteLineTab("p2| " + p2.ParamDesc.ParameterName.PadRight(15)
+														+ "  value| " + p2.GetValue() );
+												}
+											}
+
+										#endregion
+										}win.TabDn("33");
+
+
+										if (kvp2.Value.HasErrors)
+										{
+											win.Write("\n");
+											win.WriteLineTab("CellData errors| qty| " + kvp2.Value.ErrorCodeList.Count);
+
+											win.TabUp("cellData errors");
+											{
+												for (var i = 0; i < kvp2.Value.ErrorCodeList.Count; i++)
+												{
+													win.WriteTab("idx | " + i.ToString().PadRight(18));
+													win.WriteLine("error| " + kvp2.Value.ErrorCodeList[i]);
+												}
+											}
+											win.TabDn("cellData errors");
+										}
 
 										win.Write("\n");
 										win.WriteLineTab("Cell| must exist list");
@@ -722,116 +767,107 @@ namespace SharedCode.DebugAssist
 										win.TabDn("params do exist list| end");
 
 
-										// win.TabUp("33");
+										win.Write("\n");
+										win.WriteLineTab("labels| (RevitCell [kvp2])");
+
+									#region Shortcuts to Labels
+
+										win.TabUp("35");
 										{
 											win.Write("\n");
-											win.WriteLineTab("Cell params");
+											win.WriteLineTab("Labels| label cell shortcuts| ([CellLabels])");
 
-											win.TabUp("33");
+											win.TabUp("36");
 											{
-											#region Cell Parameters
-
-												win.Write("\n");
-
-												foreach (ARevitParam p2 in kvp2.Value[PT_INSTANCE])
+												foreach (KeyValuePair<string, RevitLabel> kvp4 in kvp2.Value.ListOfLabels)
 												{
-													if (p2 == null)
-													{
-														win.WriteLineTab("p2| is null");
-													}
-													else
-													{
-														win.WriteLineTab("p2| " + p2.ParamDesc.ParameterName.PadRight(15)
-															+ "  value| " + p2.GetValue() );
-													}
+													win.WriteTab("kvp4|   key| " + kvp4.Key.PadRight(15));
+													win.WriteLine(" value| formula| " + kvp4.Value.Formula);
 												}
-
-											#endregion
-											}win.TabDn("33");
-
-											win.Write("\n");
-											win.WriteLineTab("labels| (RevitCell [kvp2])");
-
-										#region Shortcuts to Labels
-
-											win.TabUp("35");
-											{
-												win.Write("\n");
-												win.WriteLineTab("Labels| label cell shortcuts| ([CellLabels])");
-
-												win.TabUp("36");
-												{
-													foreach (KeyValuePair<string, RevitLabel> kvp4 in kvp2.Value.ListOfLabels)
-													{
-														win.WriteTab("kvp4|   key| " + kvp4.Key.PadRight(15));
-														win.WriteLine(" value| formula| " + kvp4.Value.Formula);
-													}
-												}
-												win.TabDn("37");
 											}
-											win.TabDn("38");
+											win.TabDn("37");
+										}
+										win.TabDn("38");
+
+									#endregion
+
+										win.TabUp("40");
+										{
+											// win.WriteLineTab("labels value| " + kvp2.Value.LabelList.DynValue.Value?.ToString() ?? "is null");
+
+											foreach (KeyValuePair<string, RevitLabel> kvp3 in kvp2.Value.ListOfLabels)
+
+										#region Label
+
+											{
+												win.Write("\n");
+												win.WriteLineTab("label| (RevitLabel [kvp3]) " + kvp3.Value.ToString());
+
+												win.TabUp("43");
+												{
+													win.WriteLineTab("label| key       | " + kvp3.Key);
+													win.WriteLineTab("label| value     | " + kvp3.Value.GetValue() ?? "is null");
+													win.WriteLineTab("label| parent cht| " + kvp3.Value.ParentChart?.ToString() ?? "is null");
+													win.WriteLineTab("label| excel file| " + kvp3.Value.ParentChart?.FilePath ?? "is null");
+													win.WriteLineTab("label| excel wsht| " + kvp3.Value.ParentChart?.WorkSheet ?? "is null");
+													win.WriteLineTab("label| has errors| " + kvp3.Value.HasErrors);
+
+
+													if (kvp3.Value.HasErrors)
+													{
+														win.Write("\n");
+														win.WriteLineTab("label errors| qty| " + kvp3.Value.ErrorCodeList.Count);
+
+														win.TabUp("label errors");
+														for (var i = 0; i < kvp3.Value.ErrorCodeList.Count; i++)
+														{
+															win.WriteTab("idx| " + i.ToString().PadRight(18));
+															win.WriteLine(" error code| " + kvp3.Value.ErrorCodeList[i]);
+														}
+														win.TabDn("label errors");
+
+													}
+
+
+													win.Write("\n");
+													win.WriteLineTab("label| parameters| ([RevitParamList])");
+
+													win.TabUp("45");
+													{
+														ARevitParam p3;
+
+													#region Label Parameters
+
+														for (var i = 0; i < kvp3.Value[PT_LABEL].Length; i++)
+														{
+															win.WriteTab("p3| " + i + "| ");
+
+															p3 = kvp3.Value[PT_LABEL][i];
+
+															if (p3 == null)
+															{
+																win.WriteLine("is null / not used");
+															}
+															else
+															{
+																win.WriteLine(p3.ParamDesc.ParameterName.PadRight(15)
+																	+ "  index| " + p3.ParamDesc.Index.ToString("D3")
+																	+ "  value| " + p3.GetValue() );
+															}
+														}
+
+													#endregion
+													}
+													win.TabDn("50");
+												}
+												win.TabDn("52");
+											}
 
 										#endregion
 
-											win.TabUp("40");
-											{
-												// win.WriteLineTab("labels value| " + kvp2.Value.LabelList.DynValue.Value?.ToString() ?? "is null");
-
-												foreach (KeyValuePair<string, RevitLabel> kvp3 in kvp2.Value.ListOfLabels)
-
-											#region Label
-
-												{
-													win.Write("\n");
-													win.WriteLineTab("label| (RevitLabel [kvp3]) " + kvp3.Value.ToString());
-
-													win.TabUp("43");
-													{
-														win.WriteLineTab("label| key       | " + kvp3.Key);
-														win.WriteLineTab("label| value     | " + kvp3.Value.GetValue() ?? "is null");
-														win.WriteLineTab("label| parent cht| " + kvp3.Value.ParentChart?.ToString() ?? "is null");
-														win.WriteLineTab("label| excel file| " + kvp3.Value.ParentChart?.FilePath ?? "is null");
-														win.WriteLineTab("label| excel wsht| " + kvp3.Value.ParentChart?.WorkSheet ?? "is null");
-														win.Write("\n");
-														win.WriteLineTab("label| parameters| ([RevitParamList])");
-
-														win.TabUp("45");
-														{
-															ARevitParam p3;
-
-														#region Label Parameters
-
-															for (var i = 0; i < kvp3.Value[PT_LABEL].Length; i++)
-															{
-																win.WriteTab("p3| " + i + "| ");
-
-																p3 = kvp3.Value[PT_LABEL][i];
-
-																if (p3 == null)
-																{
-																	win.WriteLine("is null / not used");
-																}
-																else
-																{
-																	win.WriteLine(p3.ParamDesc.ParameterName.PadRight(15)
-																		+ "  index| " + p3.ParamDesc.Index.ToString("D3")
-																		+ "  value| " + p3.GetValue() );
-																}
-															}
-
-														#endregion
-														}
-														win.TabDn("50");
-													}
-													win.TabDn("52");
-												}
-
-											#endregion
-
-												win.TabDn("53");
-											}
+											win.TabDn("53");
 										}
-										// win.TabDn("55");
+
 									}
 									win.TabDn("57");
 								}

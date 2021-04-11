@@ -16,11 +16,25 @@ namespace Autodesk.Revit.DB
 
 	public class Document {}
 
+	public class ParameterSet
+	{
+		public List<Parameter> Parameters { get; set; } = new List<Parameter>();
+
+		public int Size => Parameters.Count;
+
+		public void Add(Parameter p)
+		{
+			Parameters.Add(p);
+		}
+	}
+
+
 	public class FamilySymbol : Element
 	{
 		public FamilySymbol(string familyName)
 		{
-			base.parameters = new List<Parameter>();
+			// base.Parameters = new List<Parameter>();
+			base.Parameters = new ParameterSet();
 
 			FamilyName = familyName;
 		}
@@ -54,11 +68,13 @@ namespace Autodesk.Revit.DB
 		// 	Name = typeName;
 		// }
 
+		public ParameterSet Parameters { get; set; }
+
 		public IList<Parameter> parameters;
 
 		public IList<Parameter> GetOrderedParameters()
 		{
-			return parameters;
+			return Parameters.Parameters;
 		}
 
 		public string Name { get; protected set; }
