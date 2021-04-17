@@ -56,7 +56,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		public override string ToString()
 		{
-			string result =  dynamicValue == null ? "is null" : "";
+			string result =  dynamicValue == null ? "is null" : dynamicValue.ToString();
 			result = result.IsVoid() ? "is empty" : result;
 			return "DynamicValue| " + result;
 		}

@@ -1,11 +1,7 @@
-﻿// Solution:     SpreadSheet01
-// Project:       SpreadSheet01
-// File:             RevitParamInteger.cs
-// Created:      2021-03-15 (12:36 AM)
-
-using System;
+﻿using System;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
+//using static SharedCode.RevitSupport.RevitParamManagement.ErrorCodeList2;
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
@@ -27,6 +23,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			if (paramDesc.ReadReqmt == ParamReadReqmt.RD_VALUE_REQUIRED
 				|| paramDesc.ReadReqmt == ParamReadReqmt.RD_VALUE_REQD_IF_NUMBER)
 			{
+//				ErrCodeList.Add(this, ErrorCodes.CEL_VALUE_NAN_CS001103);
 				ErrorCode = ErrorCodes.CEL_VALUE_NAN_CS001103;
 				this.dynValue.Value = Int32.MinValue;
 			}

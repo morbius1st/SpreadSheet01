@@ -22,7 +22,7 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="110" />
+			<ColumnDefinition Width="180" />
 		</Grid.ColumnDefinitions>
 
 		<Grid.RowDefinitions>
@@ -34,16 +34,15 @@
 				Grid.Column="2"
 				Grid.Row="0"
 				Grid.RowSpan="2"
-				VerticalAlignment="Bottom"
 				HorizontalAlignment="Stretch"
+				VerticalAlignment="Bottom"
 				>
 
 			<Button x:Name="BtnDone"
 					Content="Done"
 					Margin="5"
-
-					VerticalAlignment="Bottom"
 					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
 					DockPanel.Dock="Bottom"
 					Click="BtnDone_OnClick"
 					/>
@@ -51,86 +50,135 @@
 			<Button x:Name="BtnDebug"
 					Content="Debug"
 					Margin="5"
-					VerticalAlignment="Bottom"
 					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
 					DockPanel.Dock="Bottom"
 					Click="BtnDebug_OnClick"
 					/>
 
-					
+
 			<Button x:Name="BtnListSample"
-					Content="List Sample"
+					Content="Get and list all&#13;Sample Data"
 					Margin="5"
-					VerticalAlignment="Bottom"
 					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
 					DockPanel.Dock="Bottom"
 					Click="BtnListSamples_OnClick"
 					/>
 
 			<Button x:Name="BtnListChartsFamilies"
-					Content="List Chart Fams"
+					Content="Get one chart and&#13;list all cells"
 					Margin="5"
-					VerticalAlignment="Bottom"
 					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
 					DockPanel.Dock="Bottom"
 					Click="BtnListChartsFamilies_OnClick"
 					/>
 
 
 			<Rectangle
-					DockPanel.Dock="Bottom"
-					Fill="Blue"
 					Margin="5,0,5,0"
 					Height="5"
 					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
+					Fill="Blue"
 					/>
 
 			<Button x:Name="BtnListChartsAll"
-					Content="List Charts All"
+					Content="Collect, Process, and&#13;list all Charts"
 					Margin="5"
-					VerticalAlignment="Bottom"
 					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
 					DockPanel.Dock="Bottom"
 					Click="BtnListChartsAll_OnClick"
 					/>
-					
+
 
 			<Button x:Name="BtnListCharts"
-					Content="List Charts"
+					Content="Collect and List all&#13;Charts - do not process"
 					Margin="5"
-					VerticalAlignment="Bottom"
 					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
 					DockPanel.Dock="Bottom"
 					Click="BtnListCharts_OnClick"
 					/>
 
 			<Rectangle
-					DockPanel.Dock="Bottom"
-					Fill="Blue"
 					Margin="5,0,5,0"
 					Height="5"
 					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
+					Fill="Blue"
 					/>
 
 			<Button x:Name="BtnListGetChartsAll"
-					Content="Lst Gt Cht All"
+					Content="List All Charts&#13;do not collect/process"
 					Margin="5"
-					VerticalAlignment="Bottom"
 					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
 					DockPanel.Dock="Bottom"
 					Click="BtnListGetChartsAll_OnClick"
 					/>
 
 			<Button x:Name="BtnGetChartsAll"
-					Content="Get Charts All"
+					Content="Collect and process All&#13;Charts - do not list"
 					Margin="5"
-					VerticalAlignment="Bottom"
 					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
 					DockPanel.Dock="Bottom"
 					Click="BtnGetChartsAll_OnClick"
 					/>
 
+			<Rectangle
+					Margin="5,0,5,0"
+					Height="5"
+					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
+					Fill="Blue"
+					/>
 
+			<Button x:Name="BtnListErrors"
+					Content="List errors - Collect and&#13;Process all Charts"
+					Margin="5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
+					DockPanel.Dock="Bottom"
+					Click="BtnListErrors_OnClick"
+					/>
+					
+			<Rectangle
+					Margin="5,0,5,0"
+					Height="5"
+					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
+					Fill="Blue"
+					/>
+
+			<Button x:Name="BtnProcess"
+					Content="List All Labels&#13;and Formulas"
+					Margin="5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
+					DockPanel.Dock="Bottom"
+					Click="BtnProcess_OnClick"
+					/>
+
+			<Rectangle
+					Margin="5,0,5,0"
+					Height="5"
+					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
+					Fill="Blue"
+					/>
+
+			<Button x:Name="BtnResetCharts"
+					Content="Reset"
+					Margin="5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
+					DockPanel.Dock="Bottom"
+					Click="BtnReset_OnClick"
+					/>
 
 
 		</DockPanel>
@@ -138,11 +186,11 @@
 		<TextBox x:Name="TbxMsg"
 				Grid.Column="0"
 				Grid.Row="0"
+				FontFamily="Droid Sans Mono"
 				Background="Transparent"
 				Foreground="White"
 				VerticalScrollBarVisibility="Visible"
-				HorizontalScrollBarVisibility="Visible" 
-				FontFamily="Droid Sans Mono"
+				HorizontalScrollBarVisibility="Visible"
 				/>
 
 
@@ -170,8 +218,7 @@
 									/>
 						</DockPanel>
 
-						<ListView
-								x:Name="LvSymbol01"
+						<ListView x:Name="LvSymbol01"
 								DataContext="{Binding Value}"
 								Foreground="#444444"
 								DockPanel.Dock="Bottom"
@@ -180,82 +227,78 @@
 																			Mode=OneWay}"
 								>
 
-									<DockPanel>
-										<TextBlock
-												DockPanel.Dock="Top"
-												Text="{Binding Path=AnnoSymbol.Name}"
-												/>
+							<DockPanel>
+								<TextBlock
+										DockPanel.Dock="Top"
+										Text="{Binding Path=AnnoSymbol.Name}"
+										/>
 
-										<StackPanel
-												DockPanel.Dock="Top"
-												Orientation="Horizontal"
-												>
-											<TextBlock
-													Margin="10,0,0,0"
-													Text="{Binding Path=RevitParamList[0].Value,
-																				 Mode=OneWay}"
-													/>
-											<TextBlock
-													Margin="10,0,0,0"
-													Text="{Binding Path=RevitParamList[1].Value,
-																				 Mode=OneWay}"
-													/>
-											<TextBlock
-													Margin="10,0,0,0"
-													Text="{Binding Path=RevitParamList[2].Value,
-																				 Mode=OneWay}"
-													/>
-											<TextBlock
-													Margin="10,0,0,0"
-													Text="{Binding Path=RevitParamList[3].Value,
-																				 Mode=OneWay}"
-													/>
-											<TextBlock
-													Margin="10,0,0,0"
-													Text="{Binding Path=RevitParamList[4].Value,
-																				 Mode=OneWay}"
-													/>
-										</StackPanel>
+								<StackPanel
+										DockPanel.Dock="Top"
+										Orientation="Horizontal"
+										>
+									<TextBlock
+											Margin="10,0,0,0"
+											Text="{Binding Path=RevitParamList[0].Value,
+																		 Mode=OneWay}"
+											/>
+									<TextBlock
+											Margin="10,0,0,0"
+											Text="{Binding Path=RevitParamList[1].Value,
+																		 Mode=OneWay}"
+											/>
+									<TextBlock
+											Margin="10,0,0,0"
+											Text="{Binding Path=RevitParamList[2].Value,
+																		 Mode=OneWay}"
+											/>
+									<TextBlock
+											Margin="10,0,0,0"
+											Text="{Binding Path=RevitParamList[3].Value,
+																		 Mode=OneWay}"
+											/>
+									<TextBlock
+											Margin="10,0,0,0"
+											Text="{Binding Path=RevitParamList[4].Value,
+																		 Mode=OneWay}"
+											/>
+								</StackPanel>
 
 
-										<ListView
-												x:Name="LvLabels01"
-												DataContext="{Binding RevitParamList[8],
-																							Mode=OneWay}"
-												DockPanel.Dock="Bottom"
-												ItemsSource="{Binding Containers,
-																							Mode=OneWay}"
-												>
-											<ListView.ItemTemplate>
-												<DataTemplate>
-													<StackPanel Orientation="Vertical">
-														<TextBlock Text="{Binding Path=Value, Mode=OneWay}" />
+								<ListView x:Name="LvLabels01"
+										DataContext="{Binding RevitParamList[8],
+																					Mode=OneWay}"
+										DockPanel.Dock="Bottom"
+										ItemsSource="{Binding Containers,
+																					Mode=OneWay}"
+										>
+									<ListView.ItemTemplate>
+										<DataTemplate>
+											<StackPanel Orientation="Vertical">
+												<TextBlock Text="{Binding Path=Value, Mode=OneWay}" />
 
-														<ListView
-																x:Name="LvLabel01"
-																ItemsSource="{Binding Value}"
-																
-																DataContext="{Binding Value}"
-																>
-																<!-- <ListView.ItemTemplate> -->
-																<!-- 	<DataTemplate> -->
-																		<StackPanel Orientation="Horizontal">
-																			<TextBlock
-																					Text="{Binding Path=RevitParamList[1].Value, Mode=OneWay}"
-																					></TextBlock>
-																		</StackPanel>
-																<!-- 	</DataTemplate> -->
-																<!-- </ListView.ItemTemplate> -->
-
-														</ListView>
-
+												<ListView x:Name="LvLabel01"
+														DataContext="{Binding Value}"
+														ItemsSource="{Binding Value}"
+														>
+													<!-- <ListView.ItemTemplate> -->
+													<!-- 	<DataTemplate> -->
+													<StackPanel Orientation="Horizontal">
+														<TextBlock Text="{Binding Path=RevitParamList[1].Value, Mode=OneWay}">
+														</TextBlock>
 													</StackPanel>
+													<!-- 	</DataTemplate> -->
+													<!-- </ListView.ItemTemplate> -->
 
-												</DataTemplate>
-											</ListView.ItemTemplate>
-										</ListView>
+												</ListView>
 
-									</DockPanel>
+											</StackPanel>
+
+										</DataTemplate>
+									</ListView.ItemTemplate>
+								</ListView>
+
+							</DockPanel>
 
 						</ListView>
 					</DockPanel>

@@ -8,6 +8,7 @@ using System.Drawing.Printing;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
+using SharedCode.RevitSupport.RevitParamManagement;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
 using SpreadSheet01.RevitSupport.RevitParamValue;
@@ -15,6 +16,8 @@ using UtilityLibrary;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.RevitParamManager;
 
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
+
+//using static SharedCode.RevitSupport.RevitParamManagement.ErrorCodeList2;
 #endregion
 
 // user name: jeffs
@@ -27,28 +30,27 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 	public abstract class RevitContainers<TV> : /* ARevitParam, */ INotifyPropertyChanged
 	{
+		private ErrorCodeList errorList = new ErrorCodeList();
+
 		protected RevitContainers()
 		{
 			Containers = new Dictionary<string, TV>();
 		}
 
-		protected List<ErrorCodes> errors = new List<ErrorCodes>();
+		// protected List<ErrorCodes> errors = new List<ErrorCodes>();
 
-		protected Dictionary<string, TV> Containers { get; set; }
-
-		public List<ErrorCodes> ErrorCodeList
-		{
-			get => errors;
-		}
+		public List<ErrorCodes> ErrorCodeList => errorList.ErrorsList;
 
 		public ErrorCodes ErrorCode
 		{
-			set { errors.Add(value); }
+			set { errorList.Add(value); }
 		}
 
-		public void ResetErrors() => errors = new List<ErrorCodes>();
+		public void ResetErrors() => errorList.Reset();
 
-		public bool HasErrors => errors.Count > 0;
+		public bool HasErrors => errorList.HasErrors;
+
+		protected Dictionary<string, TV> Containers { get; set; }
 
 		protected bool Add(string key, TV container)
 		{
@@ -159,6 +161,13 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	// root with a collection of Chart Families
 	public class RevitCharts : RevitContainers<RevitChart>
 	{
+		public RevitCharts(string name)
+		{
+			Name = name;
+		}
+
+		public string Name { get; private set;}
+
 		public Dictionary<string, RevitChart> ListOfCharts => Containers;
 
 		public bool Add(string key, RevitChart container)
@@ -216,26 +225,10 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		public string WorkSheet => this[ChartWorkSheetIdx].GetValue();
 
 		public string CellFamilyName => this[ChartCellFamilyNameIdx].GetValue();
-		public bool CellHasError { get; set; }
+
+		// public bool CellHasError { get; set; }
 
 		public CellUpdateTypeCode UpdateType => RevitChartData.UpdateType;
-
-		// public bool HasErrors => ErrorCodeList.Count > 0;
-		//
-		// public ErrorCodes ErrorCode
-		// {
-		// 	set
-		// 	{
-		// 		errors.Add(value);
-		// 		// RevitChartData.ErrorCode = value;
-		// 	}
-		// }
-		//
-		// public List<ErrorCodes> ErrorCodeList
-		// {
-		// 	// get => RevitChartData.ErrorCodeList;
-		// 	get => errors;
-		// }
 
 		public bool Add(RevitCellData revitCellData)
 		{
@@ -249,33 +242,29 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 				result = Containers.ContainsKey(key);
 
 				ext++;
+				if (ext > 50)
+				{
+					result = true;
+					break;
+				}
 			}
 			while (result);
+
+			if (result) return false;
 
 			result = base.Add(key, revitCellData);
 
 			if (!result)
 			{
+//				ErrCodeList.Add(this, ErrorCodes.DUPLICATE_KEY_CS000I01_1);
 				revitCellData.ErrorCode = ErrorCodes.DUPLICATE_KEY_CS000I01_1;
 				return false;
 			}
 
 			addCellLabels(revitCellData);
 
-			if (revitCellData.HasErrors)
-			{
-				ErrorCode = ErrorCodes.CHT_CELL_HAS_ERROR_CS001135;
-			}
-
 			return true;
 		}
-
-		// public IEnumerable<ErrorCodes> Errors()
-		// {
-		// 	return errors;
-		// }
-
-		// public void ResetErrors() => RevitChartData.ResetErrors();
 
 		private bool addCellLabels(RevitCellData revitCellData)
 		{
@@ -364,22 +353,19 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public Element RevitElement { get; set; }
 
-		// public void AddInternal(int idx, ARevitParam content)
-		// {
-		// 	this[PT_INTERNAL][idx] = content;
-		// }
-		//
-		// public void AddType(int idx, ARevitParam content)
-		// {
-		// 	this[PT_TYPE][idx] = content;
-		// 	// RevitParamListType[idx] = content;
-		// }
+		
+		public void ValidateMustExist()
+		{
+			for (int i = 0; i < NumberOfLists; i++)
+			{
+				if (ChartFamily.ParamMustExistCount[i] != ReqdParamCount[i])
+				{
+//					ErrCodeList.Add(this, ErrorCodesAssist.EC_MustExist[(int) ParamClass.PC_CHART][i]);
+					ErrorCode = ErrorCodesAssist.EC_MustExist[(int) ParamClass.PC_CHART][i];
+				}
 
-		// public bool validate()
-		// {
-		// 	
-		// 	return true;
-		// }
+			}
+		}
 
 		public override string ToString()
 		{
@@ -492,6 +478,35 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			return !label.HasErrors;
 		}
 
+		public void ValidateMustExist()
+		{
+			for (int i = 0; i < NumberOfLists - 1 ; i++)
+			{
+				if (CellFamily.ParamMustExistCount[i] != ReqdParamCount[i])
+				{
+//					ErrCodeList.Add(this, ErrorCodesAssist.EC_MustExist[(int) ParamClass.PC_CELL][i]);
+					ErrorCode = ErrorCodesAssist.EC_MustExist[(int) ParamClass.PC_CELL][i];
+					return;
+				}
+			}
+		}
+
+		public void ValidateLabelMustExist()
+		{
+			bool result;
+
+			foreach (KeyValuePair<string, RevitLabel> kvp in ListOfLabels)
+			{
+				if (!kvp.Value.ValidateMustExist(CellFamily.ParamMustExistCount[NumberOfLists - 1]))
+				{
+//					ErrCodeList.Add(this, ErrorCodes.CEL_LABEL_PARAM_MISSING_CS001124);
+					ErrorCode = ErrorCodes.CEL_LABEL_PARAM_MISSING_CS001124;
+					return;
+				}
+			}
+		}
+
+
 		private RevitLabel getLabel(int labelId)
 		{
 			RevitLabel label;
@@ -535,6 +550,39 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		public int LabelId { get; private set; }
 
 		public RevitChart ParentChart { get; set; }
+
+		public bool ValidateMustExist(int mustExistReqd)
+		{
+			int mustExistAct = 0;
+
+			foreach (ARevitParam p in this[PT_LABEL])
+			{
+				if (p == null)
+				{
+					continue;
+				}
+
+				if (p.ParamDesc.Exist == ParamExistReqmt.EX_PARAM_MUST_EXIST)
+				{
+					mustExistAct++;
+				}
+			}
+
+			Debug.Write("label validate| name| " + Name.PadRight(18));
+			Debug.Write(" act| " + mustExistAct.ToString("##0"));
+			Debug.Write(" reqd| " + mustExistReqd.ToString("##0"));
+
+			Debug.Write("\n" );
+
+			if (mustExistAct != mustExistReqd)
+			{
+//				ErrCodeList.Add(this, ErrorCodes.LBL_PARAM_MISSING_CS001123);
+				ErrorCode = ErrorCodes.LBL_PARAM_MISSING_CS001123;
+				return false;
+			}
+
+			return true;
+		}
 
 		public override dynamic GetValue()
 		{

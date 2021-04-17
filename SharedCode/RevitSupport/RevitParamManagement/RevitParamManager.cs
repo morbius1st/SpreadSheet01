@@ -300,7 +300,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 			// 0
 			defineParameter(f   , new ParamDesc("Label"          , "",
-				LblLabelIdx     , PC_CELL                       , PT_LABEL, EX_PARAM_MUST_EXIST, DT_LABEL_TITLE, RD_VALUE_REQUIRED, PM_READ_FROM_EXCEL));
+				LblLabelIdx     , PC_CELL                       , PT_LABEL, EX_PARAM_MUST_EXIST, DT_LABEL_TITLE, RD_VALUE_OPTIONAL, PM_READ_FROM_EXCEL));
 			// 1
 			defineParameter(f   , new ParamDesc("Label Name"     , "",
 				LblNameIdx      , PC_CELL                       , PT_LABEL, EX_PARAM_MUST_EXIST, DT_TEXT, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));

@@ -25,6 +25,7 @@ namespace SharedCode.DebugAssist
 		void WriteTab(string msg);
 		void WriteLine(string msg);
 		void Write(string msg);
+		void ShowMessage();
 
 	}
 

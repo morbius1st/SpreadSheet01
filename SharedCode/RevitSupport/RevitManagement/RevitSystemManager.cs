@@ -8,6 +8,7 @@ using Autodesk.Revit.DB;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
 using SpreadSheet01.RevitSupport.RevitSelectionSupport;
+//using static SharedCode.RevitSupport.RevitParamManagement.ErrorCodeList2;
 
 #endregion
 
@@ -24,10 +25,12 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	{
 	#region private fields
 
+		private const string NAME_OF_CHARTS = "Prime Charts";
+
 		private const string ROOT_TRANSACTION_NAME = "Transaction Name";
 
-		private const string KEY_IDX_BEGIN  = "《";
-		private const string KEY_IDX_END    = "》";
+		// private const string KEY_IDX_BEGIN  = "《";
+		// private const string KEY_IDX_END    = "》";
 
 		private readonly RevitParamCatagorize revitCat;
 		private RevitSelectSupport rvtSelect;
@@ -45,7 +48,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			revitCat = new RevitParamCatagorize();
 			rvtSelect = new RevitSelectSupport();
 
-			Reset();
+			ResetAllCharts();
 		}
 
 	#endregion
@@ -54,7 +57,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		// collection of all revit charts  
 		// this holds a collection of individual charts
-		public RevitCharts Charts { get; private set; } = new RevitCharts();
+		public RevitCharts Charts { get; private set; } = new RevitCharts(NAME_OF_CHARTS);
 
 	#endregion
 
@@ -64,8 +67,19 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 	#region public methods
 
+		public void ResetAllCharts()
+		{
+		#if NOREVIT
+			rvtSelect.seq = 0;
+		#endif
+
+			Charts = new RevitCharts(NAME_OF_CHARTS);
+		}
+
 		public bool CollectAllCharts()
 		{
+			ResetAllCharts();
+
 			// step 1 - select all of the chart cells - place them into: 'chartFamilies'
 			ICollection<Element> chartFamilies = findAllChartFamilies(RevitParamManager.CHART_FAMILY_NAME);
 
@@ -75,41 +89,35 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			return chartFamilies != null && chartFamilies.Count > 0;
 		}
 
-
 		// scan revit and get all cell and label information
-		public bool ProcessCharts(CellUpdateTypeCode which)
+		public void PreProcessCharts(CellUpdateTypeCode which)
 		{
-			fail = 0;
-
 			// process all charts and add to list
 			foreach (KeyValuePair<string, RevitChart> kvp in Charts.ListOfCharts)
 			{
 				// chart has all parameters retreived
 				RevitChart chart = kvp.Value;
 
-				if (chart.HasErrors)
+				if (which != CellUpdateTypeCode.ALL &&
+					chart.UpdateType != which) continue;
+
+				if (!processOneChart(chart))
 				{
-					fail++;
-					continue;
+//					ErrCodeList.Add(this, ErrorCodes.CHT_PROCESS_CHART_FAILED_CS001145);
+					chart.ErrorCode = ErrorCodes.CHT_PROCESS_CHART_FAILED_CS001145;
 				}
 
-				if (which != CellUpdateTypeCode.ALL &&
-					kvp.Value.UpdateType != which) continue;
-
-				if (!processOneChart(kvp.Value)) fail++;
+				if (chart.HasErrors)
+				{
+//					ErrCodeList.Add(this, ErrorCodes.CHTS_CHART_HAS_ERRORS_CS001200);
+					Charts.ErrorCode = ErrorCodes.CHTS_CHART_HAS_ERRORS_CS001200;
+				}
 			}
-
-			return true;
 		}
 
 	#endregion
 
 	#region private methods
-
-		private void Reset()
-		{
-			Charts = new RevitCharts();
-		}
 
 		private void getChartParams(ICollection<Element> chartFamilies)
 		{
@@ -117,20 +125,21 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 			foreach (Element el in chartFamilies)
 			{
-
 				chartData = getChartData(el);
 
 				RevitChart chart = null;
 				ChartFamily chartFamily = null;
 				CellFamily cellFamily = null;
 
-				string key= RevitParamUtil.MakeAnnoSymKey(chartData,
+				string key = RevitParamUtil.MakeAnnoSymKey(chartData,
 					(int) RevitParamManager.NameIdx, (int) RevitParamManager.SeqIdx);
 
 				if (chartData.HasErrors)
 				{
 					key += "*error* (" + (++errorIdx).ToString("D3") + ")";
 					chart = setInvalidRevitChart(key, chartData);
+//					ErrCodeList.Add(this, ErrorCodes.CHT_RCD_HAS_ERRORS_CS001138);
+					chart.ErrorCode = ErrorCodes.CHT_RCD_HAS_ERRORS_CS001138;
 				}
 				else
 				{
@@ -144,6 +153,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 				if (!result)
 				{
+//					ErrCodeList.Add(this, ErrorCodes.DUPLICATE_KEY_CS000I01_2);
 					Charts.ErrorCode = ErrorCodes.DUPLICATE_KEY_CS000I01_2;
 				}
 			}
@@ -157,14 +167,13 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 			bool answer = RevitParamManager.GetChartFamily(chartData.FamilyName, out chartFamily);
 
-			if (!answer)return RevitChart.Invalid();
+			if (!answer) return RevitChart.Invalid();
 
 			chart = new RevitChart();
 			chart.RevitChartData = chartData;
 
 			return chart;
 		}
-
 
 		private RevitChart setInvalidRevitChart(string key, RevitChartData chartData)
 		{
@@ -179,12 +188,11 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			return chart;
 		}
 
-
 		private RevitChartData getChartData(Element el)
 		{
 			RevitChartData chartData;
 			ChartFamily chartFam;
-			AnnotationSymbol aSym =(AnnotationSymbol) el;
+			AnnotationSymbol aSym = (AnnotationSymbol) el;
 
 			bool value1 = RevitParamManager.GetChartFamily(aSym.Symbol.FamilyName, out chartFam);
 
@@ -195,6 +203,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			else
 			{
 				chartData = new RevitChartData(ChartFamily.Invalid);
+//				ErrCodeList.Add(this, ErrorCodes.INVALID_DATA_FORMAT_CS000I10);
 				chartData.ErrorCode = ErrorCodes.INVALID_DATA_FORMAT_CS000I10;
 			}
 
@@ -210,8 +219,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		{
 			string cellFamilyTypeName = chart.CellFamilyName;
 
-			// CellFamily cellFam = chart.CellFamily;
-
 			ICollection<Element> cellElements
 				= rvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName);
 
@@ -219,13 +226,23 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 			chart.ListOfCellSyms = new Dictionary<string, RevitCellData>();
 
-			foreach (Element cell in cellElements)
+			foreach (Element el in cellElements)
 			{
-				if (cell.Parameters.Size < 1) continue;
+				if (el.Parameters.Size < 1) continue;
 
-				RevitCellData revitCellData = processCellFamily2(cell, chart.RevitChartData.CellFamily);
+				RevitCellData rcd = processCellFamily2(el, chart.RevitChartData.CellFamily);
 
-				chart.CellHasError = !chart.Add(revitCellData);
+				// RevitCellData rcd = 
+				// 	revitCat.catagorizeCellParams(el as AnnotationSymbol, chart.RevitChartData.CellFamily);
+
+				if (rcd.HasErrors)
+				{
+//					ErrCodeList.Add(this, ErrorCodes.CHT_CELL_HAS_ERROR_CS001135);
+					chart.ErrorCode = ErrorCodes.CHT_CELL_HAS_ERROR_CS001135;
+				}
+
+//				ErrCodeList.Add(this, chart.Add(rcd) ? ErrorCodes.EC_NO_ERROR : ErrorCodes.CHT_FAIL_TO_ADD_CS001036);
+				chart.ErrorCode = chart.Add(rcd) ? ErrorCodes.EC_NO_ERROR : ErrorCodes.CHT_FAIL_TO_ADD_CS001036;
 			}
 
 			return true;
@@ -235,8 +252,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		{
 			RevitCellData revitCellData
 				= revitCat.catagorizeCellParams(el as AnnotationSymbol, cellFam);
-
-			// if (!revitCellData.IsValid) return null;
 
 			return revitCellData;
 		}

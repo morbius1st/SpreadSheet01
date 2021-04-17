@@ -26,12 +26,15 @@ namespace CellsTest.CellsTests
 		private ChartFamily chart;
 		private CellFamily cell;
 
-
 		private int symbolIdx = 0;
 		private int chartIdx = 0;
 
+		private bool initialized;
+
 		public void Process(string chartName)
 		{
+			if (initialized) return;
+			initialized = true;
 
 			// ChartFamily chart;
 			bool MaskedTextResultHint = RevitParamManager.GetChartFamily(chartName, out chart);
@@ -274,13 +277,15 @@ namespace CellsTest.CellsTests
 			AddLabelParam(LblLabelIdx      , 0, ParamDataType.DT_TEXT      , ""          , labelIdx, 0.0, 0, true);
 			AddLabelParam(LblNameIdx       , 0, ParamDataType.DT_TEXT      , labelName   , labelIdx);
 			AddLabelParam(LblFormulaIdx    , 0, ParamDataType.DT_FORMULA   , formula	 , labelIdx);
-			AddLabelParam(LblFormatInfoIdx , 0, ParamDataType.DT_TEXT      , format      , labelIdx);
-			AddLabelParam(LblIgnoreIdx     , 0, ParamDataType.DT_BOOL      , null		 , labelIdx, 0.0, 1);
 
 			if (!makeBad)
 			{
 				AddLabelParam(LblDataTypeIdx   , 0, ParamDataType.DT_DATATYPE  , datatype	 , labelIdx);
 			}
+
+			AddLabelParam(LblFormatInfoIdx , 0, ParamDataType.DT_TEXT      , format      , labelIdx);
+			AddLabelParam(LblIgnoreIdx     , 0, ParamDataType.DT_BOOL      , null		 , labelIdx, 0.0, 1);
+
 		}
 
 
@@ -316,8 +321,8 @@ namespace CellsTest.CellsTests
 			AddCellInstParam(HasErrorsIdx     , ParamDataType.DT_IGNORE, "", 0.0, 1);
 
 			addParam("#1", "MyLabelname 2-1 ", "text", "={#SheetName}", "", true);
-			addParam("#2", "MyLabelname 2-2 ", "text", "={#SheetNumber}", "", true);
-			addParam("#3", "MyLabelname 2-3 ", "text", "={$Date(yyyy-mm-dd)}", "", true);
+			addParam("#2", "MyLabelname 2-2 ", "text", "={#SheetNumber}", "");
+			addParam("#3", "MyLabelname 2-3 ", "text", "={$Date(yyyy-mm-dd)}", "");
 
 
 			// AddLabelParam(LblLabelIdx         , 0, ParamDataType.DT_TEXT        , "", "#1", 0.0, 0, true);
@@ -479,7 +484,7 @@ namespace CellsTest.CellsTests
 			// AddChart(RevitParamManager.ChartDescIdx        , 0, ParamDataType.TEXT, "Description 5 (not found chart)");
 			AddChartInstParam(SeqIdx                 , ParamDataType.DT_TEXT, "4");
 			AddChartInstParam(ChartFilePathIdx       , ParamDataType.DT_TEXT, @".\CsSampleChart_04.xlsx");
-			AddChartInstParam(ChartWorkSheetIdx      , ParamDataType.DT_TEXT, "CsSheet 1");
+			// AddChartInstParam(ChartWorkSheetIdx      , ParamDataType.DT_TEXT, "CsSheet 1");
 			AddChartInstParam(ChartCellFamilyNameIdx     , ParamDataType.DT_TEXT, "CsCellFamily05");
 			AddChartInstParam(ChartUpdateTypeIdx     , ParamDataType.DT_UPDATE_TYPE, "Alyways");
 			AddChartInstParam(ChartHasErrorsIdx      , ParamDataType.DT_TEXT, "");

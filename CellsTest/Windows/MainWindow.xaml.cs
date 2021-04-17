@@ -3,11 +3,15 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows;
 using CellsTest.CellsTests;
 using SharedCode.DebugAssist;
+using SharedCode.RevitSupport.RevitParamManagement;
+using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
+using SpreadSheet01.RevitSupport.RevitParamValue;
 using UtilityLibrary;
 
 #endregion
@@ -26,11 +30,9 @@ namespace CellsTest.Windows
 	{
 	#region private fields
 
-		// public RevitParamTest RevitParamTests { get; } = new RevitParamTest();
+		private StringBuilder sb = new StringBuilder();
 
-		// private ListiInfo listInfo = new ListiInfo();
-
-		private SharedCode.DebugAssist.ListInfo<MainWindow> listInfo;
+		private ListInfo<MainWindow> listInfo;
 
 		// private static MainWindow me;
 
@@ -54,6 +56,8 @@ namespace CellsTest.Windows
 	#endregion
 
 	#region public properties
+
+
 
 		public RevitSystemManager RevitSystMgr { get; } = new RevitSystemManager();
 
@@ -121,9 +125,9 @@ namespace CellsTest.Windows
 
 		public void WriteTab(string msg)
 		{
-			TbxMsg.Text +=
-				// (tabId > 0 ? tabId.ToString("D3") : "") + 
-				(tabs > 0 ? "    ".Repeat(tabs) : "" ) + msg;
+			// TbxMsg.Text +=
+			// 	// (tabId > 0 ? tabId.ToString("D3") : "") + 
+				Write((tabs > 0 ? "    ".Repeat(tabs) : "" ) + msg);
 		}
 
 		public void WriteLine(string msg)
@@ -133,155 +137,82 @@ namespace CellsTest.Windows
 
 		public void Write(string msg)
 		{
-			TbxMsg.Text += msg;
+
+			sb.Append(msg);
+
+			// TbxMsg.Text += msg;
+		}
+
+		public void ShowMessage()
+		{
+			TbxMsg.Text += sb.ToString();
 		}
 
 	#endregion
 
 	#region private methods
 
-		private void getParamsTest1()
-		{
-			WriteLine("Get all charts| start");
-			bool result;
-
-			// get all of the revit chart families and 
-			// process each to get its parameters
-			result = RevitSystMgr.CollectAllCharts();
-			
-			if (!result) return;
-			
-			listInfo.listCharts(RevitSystMgr.Charts);
-
-			WriteLine("Get all charts| end");
-		}
-
-		private void getParamsTest2()
-		{
-			ChartFamily chart ;
-
-			bool result = RevitParamManager.GetChartFamily(RevitParamManager.CHART_FAMILY_NAME, out chart);
-
-			if (!result) return;
-
-			listInfo.listAllChartFamilies();
-		}
-		
-		private void getParamsTest3()
-		{
-			WriteLine("Get and list all charts| start");
-
-			paramTestA();
-
-			paramTestB();
-		}
-
-		private void getParamsTest4a()
-		{
-			WriteLine("\nGet all charts (report 4a)| start");
-
-			Stopwatch s = new Stopwatch();
-
-			s.Start();
-			paramTestA();
-			s.Stop();
-
-			WriteLine("Get all charts (report 4)| done");
-			WriteLine("elapsed tile| " + s.ElapsedMilliseconds + "\n");
-		}
-
-		private void getParamsTest4b()
-		{
-			WriteLine("\nList all charts (report 4b)| start");
-			Stopwatch s = new Stopwatch();
-
-			s.Start();
-			paramTestB();
-			s.Stop();
-
-			WriteLine("List all charts (report 4b)| done");
-			WriteLine("elapsed tile| " + s.ElapsedMilliseconds + "\n");
-		}
-
-
-		private void paramTestA()
-		{
-			bool result;
-
-			// get all of the revit chart families and 
-			// process each to get its parameters
-			result = RevitSystMgr.CollectAllCharts();
-
-			if (!result)
-			{
-				WriteLine("collect charts failed");
-				return;
-			}
-
-			result = RevitSystMgr.ProcessCharts(CellUpdateTypeCode.STANDARD);
-
-			if (!result)
-			{
-				WriteLine("process charts failed");
-				return;
-			}
-		}
-
-
-		private void paramTestB()
-		{
-			listInfo.listAllChartsInfo(RevitSystMgr.Charts);
-		}
-
-
-
+	
 	#endregion
 
 	#region event consuming
 
-
-
-		private void BtnDone_OnClick(object sender, RoutedEventArgs e)
-		{
-			this.Close();
-		}
-
-		private void BtnDebug_OnClick(object sender, RoutedEventArgs e)
-		{
-			Debug.WriteLine("@Debug");
-		}
-
-		private void BtnListCharts_OnClick(object sender, RoutedEventArgs e)
-		{
-			getParamsTest1();
-
-			Debug.WriteLine("@Debug");
-		}
-
-		private void BtnListChartsFamilies_OnClick(object sender, RoutedEventArgs e)
-		{
-			getParamsTest2();
-
-			Debug.WriteLine("@List Params");
-		}
-
-		private void BtnListChartsAll_OnClick(object sender, RoutedEventArgs e)
-		{
-			getParamsTest3();
-
-			Debug.WriteLine("@List Params");
-		}
 		
-		private void BtnGetChartsAll_OnClick(object sender, RoutedEventArgs e)
+		private void BtnReset_OnClick(object sender, RoutedEventArgs e)
 		{
-			getParamsTest4a();
+			sb = new StringBuilder("Reset\n");
+			ShowMessage();
+
+			RevitSystMgr.ResetAllCharts();
 
 			Debug.WriteLine("@List Params");
 		}
 				
+		private void BtnProcess_OnClick(object sender, RoutedEventArgs e)
+		{
+			listInfo.listProcess();
+
+			Debug.WriteLine("@List errors");
+		}
+						
+		private void BtnListErrors_OnClick(object sender, RoutedEventArgs e)
+		{
+			listInfo.listErrors1();
+
+			Debug.WriteLine("@List errors");
+		}
+		
+		private void BtnGetChartsAll_OnClick(object sender, RoutedEventArgs e)
+		{
+			listInfo.getParamsTest4a();
+
+			Debug.WriteLine("@List Params");
+		}
+
 		private void BtnListGetChartsAll_OnClick(object sender, RoutedEventArgs e)
 		{
-			getParamsTest4b();
+			listInfo.getParamsTest4b();
+
+			Debug.WriteLine("@List Params");
+		}
+
+		private void BtnListCharts_OnClick(object sender, RoutedEventArgs e)
+		{
+			listInfo.getParamsTest1();
+
+			Debug.WriteLine("@Debug");
+		}
+
+		private void BtnListChartsAll_OnClick(object sender, RoutedEventArgs e)
+		{
+			listInfo.getParamsTest3();
+
+			Debug.WriteLine("@List Params");
+		}
+
+		private void BtnListChartsFamilies_OnClick(object sender, RoutedEventArgs e)
+		{
+			listInfo.getParamsTest2();
 
 			Debug.WriteLine("@List Params");
 		}
@@ -296,8 +227,21 @@ namespace CellsTest.Windows
 			Debug.WriteLine("@Debug");
 		}
 
+
+		private void BtnDone_OnClick(object sender, RoutedEventArgs e)
+		{
+			this.Close();
+		}
+
+		private void BtnDebug_OnClick(object sender, RoutedEventArgs e)
+		{
+			Debug.WriteLine("@Debug");
+		}
+
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
+			// errorTest();
+
 			WriteLineTab("Loaded...");
 
 			bool result;
@@ -325,7 +269,7 @@ namespace CellsTest.Windows
 			return;
 
 
-			RevitSystMgr.ProcessCharts(CellUpdateTypeCode.ALL);
+			RevitSystMgr.PreProcessCharts(CellUpdateTypeCode.ALL);
 
 			listInfo.listAllChartsInfo(RevitSystMgr.Charts);
 
@@ -333,6 +277,15 @@ namespace CellsTest.Windows
 
 			OnPropertyChange("RevitParamTests");
 		}
+
+		// private void errorTest()
+		// {
+		// 	RevitParamText pt = new RevitParamText("test", ParamDesc.Empty);
+		// 	
+		// 	// ErrorCodeList2 ec2 = new ErrorCodeList2();
+		//
+		// 	// ec2.Add(pt, ErrorCodes.CEL_HAS_ERROR_CS001107);
+		// }
 
 	#endregion
 

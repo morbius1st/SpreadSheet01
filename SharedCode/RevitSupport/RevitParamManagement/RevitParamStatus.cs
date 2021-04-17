@@ -7,6 +7,7 @@ using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
+//using static SharedCode.RevitSupport.RevitParamManagement.ErrorCodeList2;
 
 #endregion
 
@@ -93,40 +94,7 @@ namespace SharedCode.RevitSupport.RevitManagement
 		{
 			statusList[(int) pt][idx].ErrorCode = error;
 		}
-		//
-		// public List<ErrorCodes> GetErrorsType()
-		// {
-		// 	List<ErrorCodes> errorList = new List<ErrorCodes>();
-		//
-		// 	for (var i = 0; i < statusListType.Length; i++)
-		// 	{
-		// 		if (statusListType[i].HasErrors)
-		// 		{
-		// 			errorList.Add(statusListType[i].ErrorsList);
-		// 		}
-		// 	}
-		// }
-		//
-		// private List<ErrorCodes> GetErrors(int pt)
-		// {
-		// 	List<ErrorCodes> errorList = new List<ErrorCodes>();
-		//
-		// 	for (int i = 0; i < statusList[p].Length; i++)
-		// 	{
-		// 		if (statusList[p][i].HasErrors)
-		// 		{
-		// 			errorList.Add(statusList[p][i].ErrorsList);
-		// 		}
-		// 	}
-		//
-		// 	return false;
-		// }
-		//
-		// public bool HasError2(ParamType pt)
-		// {
-		// 	return ;
-		// }
-
+		
 		public bool VerifyMustExist(ParamType pt)
 		{
 			int p = (int) pt;

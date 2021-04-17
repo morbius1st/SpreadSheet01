@@ -1,6 +1,7 @@
 ﻿using System;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
+//using static SharedCode.RevitSupport.RevitParamManagement.ErrorCodeList2;
 
 using UtilityLibrary;
 
@@ -34,6 +35,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			if (paramDesc.ReadReqmt == ParamReadReqmt.RD_VALUE_REQUIRED
 				&& value.IsVoid() )
 			{
+//				ErrCodeList.Add(this, ErrorCodes.CEL_VALUE_MISSING_CS001102);
 				ErrorCode = ErrorCodes.CEL_VALUE_MISSING_CS001102;
 				this.dynValue.Value = null;
 			}
@@ -43,6 +45,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 				if (!value.StartsWith("="))
 				{
+//					ErrCodeList.Add(this, ErrorCodes.CEL_VALUE_BAD_FORMULA_CS001106);
 					ErrorCode = ErrorCodes.CEL_VALUE_BAD_FORMULA_CS001106;
 				}
 

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows;
 using Application = Autodesk.Revit.ApplicationServices.Application;
 using Autodesk.Revit.DB;
@@ -125,8 +126,17 @@ namespace SpreadSheet01.Windows
 
 		public void Write(string msg)
 		{
-			Message += msg;
+			sb.Append(msg);
+			// Message += msg;
 		}
+
+		public void ShowMessage()
+		{
+			Message += sb.ToString();
+		}
+
+		private StringBuilder sb = new StringBuilder();
+
 	#endregion
 
 		private void BtnDone_OnClick(object sender, RoutedEventArgs e)
@@ -145,7 +155,7 @@ namespace SpreadSheet01.Windows
 
 			// list.listCharts(revitSystMgr.Charts);
 
-			revitSystMgr.ProcessCharts(CellUpdateTypeCode.ALL);
+			revitSystMgr.PreProcessCharts(CellUpdateTypeCode.ALL);
 
 			listInfo.listAllChartsInfo(revitSystMgr.Charts);
 

@@ -12,7 +12,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		public RevitParamDefault(dynamic dynValue)
 		{
 			this.dynValue = new DynamicValue(dynValue);
-			// errors = new List<ErrorCodes>();
 			paramDesc = ParamDesc.Empty;
 			gotValue = dynValue != null;
 			Assigned = gotValue;
@@ -28,8 +27,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		protected ErrorCodeList errorList = new ErrorCodeList();
 
 		protected DynamicValue dynValue = new DynamicValue();
-
-		// protected List<ErrorCodes> errors = new List<ErrorCodes>();
 
 		protected ParamDesc paramDesc;
 
@@ -122,7 +119,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 		public override string ToString()
 		{
-			return	"<" + ParamDesc.ParameterName + ">|<" + (dynValue?.ToString() ?? "null value") + " >|< " + (HasErrors ? "Valid" : "Invalid") + ">";
+			return	"<" + ParamDesc.ParameterName + ">|<" + (dynValue?.ToString() ?? "null value") + " >|< " + (HasErrors ? "has errors" : "no errors") + ">";
 		}
 
 

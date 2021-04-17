@@ -2,17 +2,20 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Autodesk.Revit.DB;
+using Microsoft.Office.Interop.Excel;
+using SharedCode.RevitSupport.RevitParamManagement;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using UtilityLibrary;
-
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
+using Parameter = Autodesk.Revit.DB.Parameter;
 
 #endregion
 
@@ -31,17 +34,148 @@ namespace SharedCode.DebugAssist
 		}
 
 	#if NOREVIT
+		public RevitSystemManager RevitSystMgr { get; } = new RevitSystemManager();
+
+		public void listProcess()
+		{
+			win.WriteLine("Get All Charts / List labels and formulas| start");
+			bool result;
+
+			// get all of the revit chart families and 
+			// process each to get its parameters
+			result = paramTestA();
+
+			if (!result)
+			{
+				win.WriteLine("Charts has errors");
+			}
+
+			listLabsAndForms(RevitSystMgr.Charts);
+
+			win.WriteLine("Get All Charts / List labels and formulas| end");
+		}
 
 
+		public void listErrors1()
+		{
+			win.WriteLine("Get All Charts / List errors| start");
+			bool result;
+
+			// get all of the revit chart families and 
+			// process each to get its parameters
+			result = paramTestA();
+
+			if (!result)
+			{
+				win.WriteLine("Charts has errors");
+			}
+
+			listErrors(RevitSystMgr.Charts);
+
+			win.WriteLine("Get all charts| end");
+		}
+
+		public void getParamsTest1()
+		{
+			win.WriteLine("Get all charts| start");
+			bool result;
+
+			// get all of the revit chart families and 
+			// process each to get its parameters
+			result = RevitSystMgr.CollectAllCharts();
+
+			if (!result) return;
+
+			listCharts(RevitSystMgr.Charts);
+
+			win.WriteLine("Get all charts| end");
+		}
+
+		public void getParamsTest2()
+		{
+			ChartFamily chart ;
+
+			bool result = RevitParamManager.GetChartFamily(RevitParamManager.CHART_FAMILY_NAME, out chart);
+
+			if (!result) return;
+
+			listAllChartFamilies();
+		}
+
+		public void getParamsTest3()
+		{
+			win.WriteLine("Get and list all charts| start");
+
+			paramTestA();
+
+			paramTestB();
+		}
+
+		public void getParamsTest4a()
+		{
+			win.WriteLine("\nGet all charts (report 4a)| start");
+
+			Stopwatch s = new Stopwatch();
+
+			s.Start();
+			paramTestA();
+			s.Stop();
+
+			win.WriteLine("Get all charts (report 4)| done");
+			win.WriteLine("elapsed tile| " + s.ElapsedMilliseconds + "\n");
+		}
+
+		public void getParamsTest4b()
+		{
+			win.WriteLine("\nList all charts (report 4b)| start");
+			Stopwatch s = new Stopwatch();
+
+			s.Start();
+			paramTestB();
+			s.Stop();
+
+			win.WriteLine("List all charts (report 4b)| done");
+			win.WriteLine("elapsed tile| " + s.ElapsedMilliseconds + "\n");
+		}
+
+
+		private bool paramTestA()
+		{
+			bool result;
+
+			// get all of the revit chart families and 
+			// process each to get its parameters
+			result = RevitSystMgr.CollectAllCharts();
+
+			if (!result)
+			{
+				win.WriteLine("collect charts failed");
+				return false;
+			}
+
+			RevitSystMgr.PreProcessCharts(CellUpdateTypeCode.STANDARD);
+
+			if (RevitSystMgr.Charts.HasErrors)
+			{
+				win.WriteLine("process charts| Charts has errors");
+				return false;
+			}
+
+			return result;
+		}
+
+		private void paramTestB()
+		{
+			listAllChartsInfo(RevitSystMgr.Charts);
+		}
 
 	#region sample data
-
 
 		public void listSample(AnnotationSymbol[] chartSymbols, AnnotationSymbol[] symbols)
 		{
 			win.showTabId = false;
 			win.TabClr("");
-
+			win.WriteLineTab("listing #1");
 			win.WriteLineTab("list chart symbols");
 
 
@@ -66,12 +200,13 @@ namespace SharedCode.DebugAssist
 
 			win.TabDn("list symbols end");
 
+			win.ShowMessage();
 		}
 
+	#endregion
 
 		private void listSymbols(AnnotationSymbol[] Symbols)
 		{
-
 			foreach (AnnotationSymbol aSym in Symbols)
 			{
 				if (aSym == null) continue;
@@ -105,14 +240,13 @@ namespace SharedCode.DebugAssist
 			}
 		}
 
-
 		private void listParams(IList<Parameter> paramsList)
 		{
 			win.WriteLine("");
 			win.TabUp("list params start");
 
-			win.WriteLineTab("|param| def| name|".PadRight(25) + "|type".PadRight(18)+ "|value as string" );
-			win.WriteLineTab("|----------------------".PadRight(25) + "|--------------".PadRight(18)+ "|--------------------" );
+			win.WriteLineTab("|param| def| name|".PadRight(25) + "|type".PadRight(18) + "|value as string" );
+			win.WriteLineTab("|----------------------".PadRight(25) + "|--------------".PadRight(18) + "|--------------------" );
 
 			foreach (Parameter param in paramsList)
 			{
@@ -128,22 +262,19 @@ namespace SharedCode.DebugAssist
 				string value = param.AsString();
 
 				win.WriteLine(" | " + (value.IsVoid() ? "* is empty *" : value));
-
 			}
+
 			win.TabDn("list params start");
 		}
-		
-	#endregion
 
-
-	#region Families (parameter descriptions)
+	#region listAllChartFamilies
 
 		public void listAllChartFamilies()
 		{
 			win.showTabId = false;
 
 			win.TabClr("");
-
+			win.WriteLineTab("listing #3");
 			win.WriteLineTab("list chart families");
 
 			win.TabUp("list all charts start");
@@ -157,7 +288,11 @@ namespace SharedCode.DebugAssist
 				}
 			}
 			win.TabDn("list all charts end");
+
+			win.ShowMessage();
 		}
+
+	#endregion
 
 		public void listAChart(ChartFamily chartFam)
 		{
@@ -172,7 +307,6 @@ namespace SharedCode.DebugAssist
 				listMustExist(chartFam, "chart");
 				listParams(chartFam, "chart");
 				listCells(chartFam);
-
 			}
 			win.TabDn("list chart end");
 		}
@@ -186,26 +320,25 @@ namespace SharedCode.DebugAssist
 
 			// foreach (KeyValuePair<string, CellFamily> kvp in chart.CellFamilies)
 			// {
-				// Family cell = kvp.Value;
-				Family cell = chart.CellFamily;
+			// Family cell = kvp.Value;
+			Family cell = chart.CellFamily;
 
-				// win.Write("\n");
-				// win.WriteLineTab("list a cell| key| " + kvp.Key);
+			// win.Write("\n");
+			// win.WriteLineTab("list a cell| key| " + kvp.Key);
 
-				// win.TabUp("list cell start");
-				// {
-					listOneFamily(cell, "cell");
-					listMustExist(cell, "cell");
-					listParams(cell, "cell");
-				// }
-				// win.TabDn("list cell end");
+			// win.TabUp("list cell start");
+			// {
+			listOneFamily(cell, "cell");
+			listMustExist(cell, "cell");
+			listParams(cell, "cell");
+			// }
+			// win.TabDn("list cell end");
 			// }
 			win.TabDn("list cell end");
 		}
 
 		private void listOneFamily(Family chart, string who)
 		{
-
 			win.WriteLineTab(who + "| num of lists| " + chart.NumberOfLists);
 			win.WriteLineTab(who + "| family nanme| " + chart.FamilyName);
 			win.WriteLineTab(who + "|     category| " + chart.Category);
@@ -251,6 +384,7 @@ namespace SharedCode.DebugAssist
 						{
 							listOneParamDesc(pd);
 						}
+
 						win.WriteLine("");
 					}
 					win.TabDn("params end");
@@ -266,7 +400,6 @@ namespace SharedCode.DebugAssist
 
 		private void listOneParamDesc(ParamDesc pd)
 		{
-			
 			// win.WriteTab("  param desc| seq| " + seq.ToString("##0"));
 			win.WriteTab("idx| " + pd.Index.ToString("##0"));
 			win.Write(" name| " + pd.ParameterName.PadRight(22));
@@ -277,12 +410,352 @@ namespace SharedCode.DebugAssist
 			win.Write(" rd req| " + pd.ReadReqmt.ToString().PadRight(20));
 			win.Write(" mode| " + pd.Mode.ToString().PadRight(22));
 			win.WriteLine(" exist| " + pd.Exist);
-
 		}
-		
-	#endregion
 
 	#endif
+
+	#region list labels and formulas
+
+		public void listLabsAndForms(RevitCharts charts)
+		{
+			win.showTabId = false;
+
+			win.TabClr("");
+			win.WriteLineTab("listing #7");
+			win.WriteLineTab("list labels and formulas");
+
+			win.TabUp("start");
+			{
+				listLabsAndFormsSummary(charts);
+			}
+			win.TabDn("end");
+
+			win.ShowMessage();
+		}
+
+	#endregion
+
+		private void listLabsAndFormsSummary(RevitCharts charts)
+		{
+			win.WriteLine("");
+			win.WriteTab("summary for| charts| " + charts.Name);
+			win.Write("  # charts| " + charts.ListOfCharts.Count.ToString("#0"));
+			win.Write("\n");
+
+			foreach (KeyValuePair<string, RevitChart> kvp1 in charts.ListOfCharts)
+			{
+				RevitChart chart = kvp1.Value;
+
+				listLnfChart(chart);
+
+				// win.TabUp("chart error summary");
+				// {
+				// 	foreach (KeyValuePair<string, RevitCellData> kvp2 in chart.ListOfCellSyms)
+				// 	{
+				// 		RevitCellData rcd = kvp2.Value;
+				//
+				// 		// list summary for a revit cell data
+				//
+				// 		listRevitCellDataErrors(rcd);
+				//
+				// 		win.TabUp("label error summary");
+				// 		{
+				// 			foreach (KeyValuePair<string, RevitLabel> kvp3 in rcd.ListOfLabels)
+				// 			{
+				// 				// list a summary for a label
+				// 			}
+				// 		}
+				// 		win.TabDn("label error summary");
+				// 	}
+				// }
+				// win.TabDn("chart error summary");
+			}
+		}
+
+
+		private void listLnfChart(RevitChart chart)
+		{
+			win.WriteLine("");
+			win.WriteTab("summary for| chart| " + chart.Name);
+			win.Write("  # cells| " + chart.ListOfCellSyms.Count.ToString("#0"));
+			win.Write("  # labels| " + chart.AllCellLabels.Count);
+			win.WriteLine("  # errors| " + chart.ErrorCodeList.Count);
+
+			listErrors(chart.ErrorCodeList);
+			listErrors(chart.RevitChartData.ErrorCodeList);
+
+			listAllParamErrors(chart.RevitChartData.RevitParamLists);
+
+			foreach (KeyValuePair<string, RevitCellData> kvp in chart.ListOfCellSyms)
+			{
+				RevitCellData rcd = kvp.Value;
+				listErrors(rcd.ErrorCodeList);
+
+				listAllParamErrors(rcd.RevitParamLists);
+			}
+
+			win.WriteLine("");
+			win.TabUp("chart excel info");
+			{
+				listChartExcelInfo(chart);
+			}
+			win.TabDn("chart excel info");
+
+			// win.WriteLine("");
+			win.TabUp("chart error summary");
+			{
+				listLnf(chart.AllCellLabels);
+			}
+			win.TabDn("chart error summary");
+		}
+
+		private void listChartExcelInfo(RevitChart chart)
+		{
+			// win.WriteLine("");
+			win.WriteLineTab("chart excel info| ");
+
+			win.TabUp("excel info");
+			{
+				win.WriteTab("excel info| worksheet| " +
+					(chart.RevitChartData[PT_INSTANCE][RevitParamManager.ChartWorkSheetIdx]?.DynValue.AsString() ?? "is null").PadRight(12));
+				win.Write("exists| " + chart.Exists.ToString().PadRight(8));
+				win.WriteLine(" file path|" + chart.FilePath);
+			}
+			win.TabDn("chart ");
+		}
+
+		private void listLnf(SortedDictionary<string, RevitLabel> labels)
+		{
+			if (labels.Count == 0) return;
+
+			win.WriteLineTab("labels list| ");
+
+			win.TabUp("list labels");
+			{
+				int i = 0;
+
+				foreach (KeyValuePair<string, RevitLabel> kvp in labels)
+				{
+					RevitLabel label = kvp.Value;
+
+					win.WriteTab("idx| " + i++.ToString("#0"));
+					win.Write(" key| " +  kvp.Key.PadRight(22));
+					win.Write(" label| " +  label.Name.PadRight(22));
+					win.Write(" formula| " +  label.Formula);
+					win.Write("\n");
+				}
+			}
+			win.WriteLine("");
+
+			win.TabDn("list labels");
+		}
+
+		private void listAllParamErrors(ARevitParam[][] paramLists)
+		{
+			if (!hasErrors(paramLists)) return;
+			 
+			win.TabUp("errors lists| list all param errors");
+
+			win.WriteLineTab("List all param errors| ");
+			{
+				int i = 0;
+
+				foreach (ARevitParam[] paramList in paramLists)
+				{
+					if (paramList == null || !hasErrors(paramList)) continue;
+
+					win.WriteLineTab("errors for| " + ((ParamType) i++).ToString().PadRight(12));
+
+					win.TabUp("list param errors");
+					{
+						int j = 0;
+						foreach (ARevitParam p in paramList)
+						{
+							if (p != null) listErrors(p.ErrorCodeList);
+						}
+					}
+					win.TabDn("list param errors");
+				}
+			}
+			win.TabDn("list all param errors");
+		}
+
+		private bool hasErrors(ARevitParam[][] paramLists)
+		{
+			foreach (ARevitParam[] paramList in paramLists)
+			{
+				if (paramList == null) continue;
+
+				if (hasErrors(paramList)) return true;
+			}
+			return false;
+		}
+		
+		private bool hasErrors(ARevitParam[] paramList)
+		{
+			foreach (ARevitParam p in paramList)
+			{
+				if (p != null)
+				{
+					if (p.ErrorCodeList.Count > 0 ) return true;
+				}
+			}
+
+			return false;
+		}
+	#region list errors
+
+		public void listErrors(RevitCharts Charts)
+		{
+			// List<ErrorCodeListMember> codes = ErrorCodeList2.ErrCodeList.Errors;
+
+
+			win.showTabId = false;
+
+			win.TabClr("");
+			win.WriteLineTab("listing #1");
+			win.WriteLineTab("list errors");
+
+			win.TabUp("start");
+			{
+				listChartsSummary(Charts);
+			}
+			win.TabDn("end");
+
+			win.ShowMessage();
+		}
+
+	#endregion
+
+		private void listChartsSummary(RevitCharts charts)
+		{
+			win.WriteLine("");
+			win.WriteTab("summary for| charts| " + charts.Name);
+			win.Write("  # charts| " + charts.ListOfCharts.Count.ToString("#0"));
+			win.WriteLine("  has errors| " + charts.HasErrors + " qty| " + charts.ErrorCodeList.Count);
+
+			win.TabUp("charts error summary");
+			{
+				listErrors(charts.ErrorCodeList);
+			}
+			win.TabDn("charts error summary");
+
+			win.TabUp("list charts summary");
+			{
+				foreach (KeyValuePair<string, RevitChart> kvp1 in charts.ListOfCharts)
+				{
+					RevitChart chart = kvp1.Value;
+
+					listChartErrors(chart);
+
+					win.TabUp("chart error summary");
+					{
+						foreach (KeyValuePair<string, RevitCellData> kvp2 in chart.ListOfCellSyms)
+						{
+							RevitCellData rcd = kvp2.Value;
+
+							listRevitCellDataErrors(rcd);
+
+							win.TabUp("label error summary");
+							{
+								foreach (KeyValuePair<string, RevitLabel> kvp3 in rcd.ListOfLabels)
+								{
+									listLabelErrors(kvp3.Value);
+								}
+							}
+							win.TabDn("label error summary");
+						}
+					}
+					win.TabDn("chart error summary");
+				}
+			}
+			win.TabDn("list chart summary");
+		}
+
+		private void listChartErrors(RevitChart chart)
+		{
+			win.WriteLine("");
+			win.WriteTab("summary for| chart| " + chart.Name);
+			win.Write("  # cells| " + chart.ListOfCellSyms.Count.ToString("#0"));
+			win.WriteLine("  has errors| " + chart.HasErrors + " qty| " + chart.ErrorCodeList.Count);
+
+			win.TabUp("chart error summary");
+			{
+				listErrors(chart.ErrorCodeList);
+			}
+			win.TabDn("chart error summary");
+		}
+
+		private void listRevitCellDataErrors(RevitCellData rcd)
+		{
+			win.WriteLine("");
+			win.WriteTab("summary for| revitcelldata| " + rcd.Name);
+			win.Write("  # labels| " + rcd.ListOfLabels.Count.ToString("#0"));
+			win.WriteLine("  has errors| " + rcd.HasErrors + " qty| " + rcd.ErrorCodeList.Count);
+
+			win.TabUp("rcd error summary");
+			{
+				listErrors(rcd.ErrorCodeList);
+			}
+			win.TabDn("rcd error summary");
+		}
+
+		private void listLabelErrors(RevitLabel label)
+		{
+			// win.WriteLine("");
+			win.WriteTab("summary for| label| " + label.Name);
+			win.WriteLine("  has errors| " + label.HasErrors + " qty| " + label.ErrorCodeList.Count);
+
+			win.TabUp("label error summary");
+			{
+				listErrors(label.ErrorCodeList);
+			}
+			win.TabDn("label error summary");
+		}
+
+		private void listErrors(List<ErrorCodes> errorList)
+		{
+			if (errorList.Count == 0) return;
+
+			win.WriteLineTab("errors list| ");
+
+			win.TabUp("list errors");
+			{
+				int i = 0;
+
+				foreach (ErrorCodes ec in errorList)
+				{
+					listError(i, ec);
+				}
+			}
+			// win.WriteLine("");
+
+			win.TabDn("list errors");
+		}
+
+
+		private void listError(int i, ErrorCodes ec)
+		{
+			win.WriteLineTab("idx| " + i++.ToString("#0")	+ " error| " + ec.ToString() );
+		}
+
+		// private void listChartErrors(RevitChart chart)
+		// {
+		// 	win.WriteLine("");
+		// 	win.WriteLineTab("for chart| " + chart.Name);
+		//
+		// 	win.WriteLine("");
+		// 	win.TabUp("list one chart errors");
+		// 	{
+		// 		win.WriteLineTab("chart| " + chart.Name + 
+		// 			" got errors?| " + chart.HasErrors
+		// 			+ " qty| " + chart.ErrorCodeList.Count);
+		//
+		//
+		// 	}	
+		// 	win.TabUp("list one chart errors");
+		// }
+
 
 	#region list charts
 
@@ -291,7 +764,7 @@ namespace SharedCode.DebugAssist
 			win.showTabId = false;
 
 			win.TabClr("");
-
+			win.WriteLineTab("listing #4");
 			win.WriteLineTab("list charts (list of {RevitChart}");
 
 			win.TabUp("start");
@@ -310,11 +783,14 @@ namespace SharedCode.DebugAssist
 				}
 			}
 			win.TabDn("end");
+
+			win.ShowMessage();
 		}
+
+	#endregion
 
 		private void listChart(RevitChart chart)
 		{
-
 			win.WriteLineTab("Chart|          name| " + chart.Name);
 			win.WriteLineTab("Chart| cell fam name| " + chart.CellFamilyName);
 			win.WriteLineTab("Chart|      sequence| " + chart.Sequence);
@@ -323,7 +799,7 @@ namespace SharedCode.DebugAssist
 			win.WriteLineTab("Chart|     worksheet| " + chart.WorkSheet);
 			win.WriteLineTab("Chart|    updateType| " + chart.UpdateType);
 			win.WriteLineTab("Chart|     hasErrors| " + chart.HasErrors + " (" + chart.ErrorCodeList.Count + ")");
-			win.WriteLineTab("Chart|   cell Errors| " + chart.CellHasError);
+			// win.WriteLineTab("Chart|   cell Errors| " + chart.CellHasError);
 
 			win.WriteLine("");
 			win.WriteLineTab("Chart params");
@@ -362,7 +838,6 @@ namespace SharedCode.DebugAssist
 				listRevitChartErrors(chart);
 			}
 			win.TabDn("chart errors| end");
-
 
 
 			win.WriteLine("");
@@ -404,8 +879,6 @@ namespace SharedCode.DebugAssist
 			win.TabDn("params do exist list| end");
 
 			win.WriteLine("");
-
-
 		}
 
 		private void listRevitChartDataBasic(RevitChartData rcd)
@@ -427,8 +900,8 @@ namespace SharedCode.DebugAssist
 				return;
 			}
 
-			win.WriteLineTab("|param| def| name|".PadRight(24) + "|errors?".PadRight(12)+ "|value as string" );
-			win.WriteLineTab("|----------------------".PadRight(24) + "|-----".PadRight(12)+ "|--------------------------------------------" );
+			win.WriteLineTab("|param| def| name|".PadRight(24) + "|errors?".PadRight(12) + "|value as string" );
+			win.WriteLineTab("|----------------------".PadRight(24) + "|-----".PadRight(12) + "|--------------------------------------------" );
 
 			foreach (ARevitParam p2 in paramList)
 			{
@@ -450,7 +923,6 @@ namespace SharedCode.DebugAssist
 				{
 					win.Write("| " + p2.HasErrors.ToString().PadRight(10));
 					win.WriteLine("| " + p2.GetValue() );
-
 				}
 			}
 		}
@@ -511,7 +983,6 @@ namespace SharedCode.DebugAssist
 							win.WriteTab("| " + kvp.Key.PadRight(28));
 							win.Write("| " + kvp.Value.Sequence.PadRight(4));
 							win.WriteLine("| " + kvp.Value.Name);
-
 						}
 					}
 					else
@@ -524,7 +995,7 @@ namespace SharedCode.DebugAssist
 			win.TabDn("list cell syms");
 		}
 
-		
+
 		private void listAllChartLabels(RevitChart chart)
 		{
 			win.TabUp("list labels");
@@ -543,7 +1014,6 @@ namespace SharedCode.DebugAssist
 							win.WriteTab("| " + kvp.Key.PadRight(28));
 							win.Write("| " + kvp.Value.Name.PadRight(23));
 							win.WriteLine("| " + kvp.Value.Formula);
-
 						}
 					}
 					else
@@ -556,8 +1026,8 @@ namespace SharedCode.DebugAssist
 			win.TabDn("list labels");
 		}
 
-	#endregion
 
+	#region listAllChartInfo
 
 		public void listAllChartsInfo(RevitCharts Charts)
 		{
@@ -664,7 +1134,6 @@ namespace SharedCode.DebugAssist
 
 							win.TabUp("25");
 							{
-
 								if (kvp1.Value.ListOfCellSyms.Count == 0)
 								{
 									win.WriteLineTab("List is empty");
@@ -711,7 +1180,8 @@ namespace SharedCode.DebugAssist
 											}
 
 										#endregion
-										}win.TabDn("33");
+										}
+										win.TabDn("33");
 
 
 										if (kvp2.Value.HasErrors)
@@ -761,8 +1231,6 @@ namespace SharedCode.DebugAssist
 												win.WriteTab("PT | " + ((ParamType) i).ToString().PadRight(18));
 												win.WriteLine("qty| " + kvp2.Value.ReqdParamCount[i].ToString("D3"));
 											}
-
-
 										}
 										win.TabDn("params do exist list| end");
 
@@ -824,8 +1292,8 @@ namespace SharedCode.DebugAssist
 															win.WriteTab("idx| " + i.ToString().PadRight(18));
 															win.WriteLine(" error code| " + kvp3.Value.ErrorCodeList[i]);
 														}
-														win.TabDn("label errors");
 
+														win.TabDn("label errors");
 													}
 
 
@@ -867,7 +1335,6 @@ namespace SharedCode.DebugAssist
 
 											win.TabDn("53");
 										}
-
 									}
 									win.TabDn("57");
 								}
@@ -893,7 +1360,11 @@ namespace SharedCode.DebugAssist
 
 			win.TabClr("70");
 			win.TabClr();
+
+			win.ShowMessage();
 		}
+
+	#endregion
 
 		private string getChartName(RevitChart chart)
 		{
@@ -909,27 +1380,5 @@ namespace SharedCode.DebugAssist
 
 			return name;
 		}
-
-
-
-
-
-		// private void listStatusData(ParamStatusData[] psd)
-		// {
-		// 	foreach (ParamStatusData status in psd)
-		// 	{
-		// 		win.WriteTab("Chart status|" );
-		// 		win.Write(" shortname| " + status.ShortName.PadRight(10));
-		// 		win.Write(" type| " + status.Type.ToString().PadRight(12));
-		// 		win.Write(" index| " + status.Index.ToString("D3").PadRight(5));
-		// 		win.Write(" pd index| " + status.ParamDesc.Index.ToString("D3").PadRight(5));
-		// 		win.Write(" class| " + status.ParamDesc.ParamClass.ToString().PadRight(12));
-		// 		win.Write(" pd data type| " + status.ParamDesc.DataType.ToString().PadRight(15));
-		// 		win.Write(" error| " + status.Error);
-		// 		win.WriteLine("");
-		// 	}
-		// }
-
-
 	}
 }
