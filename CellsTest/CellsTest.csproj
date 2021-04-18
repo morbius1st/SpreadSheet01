@@ -54,6 +54,9 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -87,10 +90,11 @@
     </ApplicationDefinition>
     <Compile Include="AutoDesk\AnnotationSymbol.cs" />
     <Compile Include="CellsTests\ListiInfo.cs" />
+    <Compile Include="CellsTests\SampleAnnoSymbols2.cs" />
     <Compile Include="CellsTests\Tests01.cs" />
     <Compile Include="Management\ManagementSupport.cs" />
     <Compile Include="CellsTests\SampleAnnoSymbols.cs" />
-    <Compile Include="RevitSupport\RevitManagement\RevitSystemManager.cs" />
+    <Compile Include="RevitSupport\RevitChartManagement\RevitChartManager.cs" />
     <Compile Include="RevitSupport\RevitSelectionSupport\RevitSelectSupport.cs" />
     <Compile Include="Settings\AppSettings.cs" />
     <Compile Include="Settings\DataSet.cs" />
@@ -145,6 +149,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -155,6 +160,7 @@
     <Folder Include=".Linked\" />
     <Folder Include="ExcelSupport\" />
     <Folder Include="RevitSupport\RevitCellsManagement\" />
+    <Folder Include="RevitSupport\RevitManagement\" />
     <Folder Include="Windows\ResourceFiles\ImageResources\" />
     <Folder Include="Windows\Support\" />
   </ItemGroup>

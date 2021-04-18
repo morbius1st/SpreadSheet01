@@ -11,6 +11,7 @@
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory).External\" />
     <Folder Include="$(MSBuildThisFileDirectory)Management\" />
+    <Folder Include="$(MSBuildThisFileDirectory)RevitSupport\RevitChartManagement\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory).DebugAssist\ISendMessage.cs" />
@@ -25,6 +26,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitCellsManagement\RevitContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitCellsManagement\RevitFamilies.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitManagement\ErrorCodeList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitManagement\RevitSystemManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\ParamDescription.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\RevitParamCatagorize.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamManagement\RevitParamManager.cs" />
@@ -42,7 +44,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamUpdateType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamWkShtName.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitManagement\RevitSystemManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitChartManagement\RevitChartManager.cs" />
     <Compile Include="D:\Users\Jeff\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\CsExtensions.cs">
       <Link>.External\CsExtensions.cs</Link>
     </Compile>

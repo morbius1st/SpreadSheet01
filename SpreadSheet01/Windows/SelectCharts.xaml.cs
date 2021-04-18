@@ -5,8 +5,8 @@ using System.Text;
 using System.Windows;
 using Application = Autodesk.Revit.ApplicationServices.Application;
 using Autodesk.Revit.DB;
+using RevitSupport.RevitChartManagement;
 using SharedRevitCode.ShParamUtils;
-using SharedRevitCode.ShRevitManagement;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SharedCode.DebugAssist;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
@@ -25,8 +25,7 @@ namespace SpreadSheet01.Windows
 		private Application app;
 		private Document doc;
 
-		private RevitProcessManager rvtProcMgr;
-		public RevitSystemManager revitSystMgr;
+		public RevitChartManager revitSystMgr;
 
 		private ListInfo<SelectCharts> listInfo;
 
@@ -43,8 +42,7 @@ namespace SpreadSheet01.Windows
 			this.app = app;
 			this.doc = doc;
 
-			rvtProcMgr = new RevitProcessManager();
-			revitSystMgr = new RevitSystemManager(app, doc);
+			revitSystMgr = new RevitChartManager(app, doc);
 
 			util = new ParamUtils(app, doc);
 

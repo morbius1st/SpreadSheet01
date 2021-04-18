@@ -23,9 +23,9 @@ using CellsTest.CellsTests;
  *  Shared Revit Code
  * ----------------------- */
 
-namespace SpreadSheet01.RevitSupport.RevitCellsManagement
+namespace RevitSupport.RevitChartManagement
 {
-	public partial class RevitSystemManager : INotifyPropertyChanged
+	public partial class RevitChartManager : INotifyPropertyChanged
 	{
 	#region private fields
 
@@ -47,7 +47,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 	#region ctor
 
-		public RevitSystemManager(Application app, Document doc) : this()
+		public RevitChartManager(Application app, Document doc) : this()
 		{
 			this.app = app;
 			this.doc = doc;

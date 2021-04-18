@@ -26,7 +26,8 @@ namespace SpreadSheet01.RevitSupport.RevitSelectionSupport
 		{
 			sample.Process(RevitParamManager.CHART_FAMILY_NAME);
 
-			return sample.CellElements[seq++];
+			return sample.CellSyms[familyTypeName];
+			// return sample.CellElements[seq++];
 		}
 	}
 }

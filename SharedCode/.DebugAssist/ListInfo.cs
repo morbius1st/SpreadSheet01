@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Microsoft.Office.Interop.Excel;
+using RevitSupport.RevitChartManagement;
 using SharedCode.RevitSupport.RevitParamManagement;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
@@ -34,7 +35,7 @@ namespace SharedCode.DebugAssist
 		}
 
 	#if NOREVIT
-		public RevitSystemManager RevitSystMgr { get; } = new RevitSystemManager();
+		public RevitChartManager RevitSystMgr { get; } = new RevitChartManager();
 
 		public void listProcess()
 		{
@@ -171,7 +172,9 @@ namespace SharedCode.DebugAssist
 
 	#region sample data
 
-		public void listSample(AnnotationSymbol[] chartSymbols, AnnotationSymbol[] symbols)
+		// public void listSample(AnnotationSymbol[] chartSymbols, AnnotationSymbol[] symbols)
+		// public void listSample(ICollection<Element>chartSymbols, ICollection<Element>[] symbols)
+		public void listSample(ICollection<Element>chartSymbols, Dictionary<string, ICollection<Element>> symbols)
 		{
 			win.showTabId = false;
 			win.TabClr("");
@@ -195,7 +198,19 @@ namespace SharedCode.DebugAssist
 			win.TabUp("list cell symbols start");
 
 			{
-				listSymbols(symbols);
+				foreach (KeyValuePair<string, ICollection<Element>> kvp in symbols)
+				{
+					if (kvp.Value == null || kvp.Value.Count == 0) continue;
+
+					listSymbols(kvp.Value);
+				}
+
+				// foreach (ICollection<Element> symCollection in symbols)
+				// {
+				// 	if (symCollection == null || symCollection.Count == 0) continue;
+				//
+				// 	listSymbols(symCollection);
+				// }
 			}
 
 			win.TabDn("list symbols end");
@@ -205,7 +220,8 @@ namespace SharedCode.DebugAssist
 
 	#endregion
 
-		private void listSymbols(AnnotationSymbol[] Symbols)
+		// private void listSymbols(AnnotationSymbol[] Symbols)
+		private void listSymbols(ICollection<Element> Symbols)
 		{
 			foreach (AnnotationSymbol aSym in Symbols)
 			{

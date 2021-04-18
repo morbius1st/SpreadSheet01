@@ -63,14 +63,9 @@ namespace Autodesk.Revit.DB
 
 		protected Element() {}
 
-		// public Element(string typeName)
-		// {
-		// 	Name = typeName;
-		// }
-
 		public ParameterSet Parameters { get; set; }
 
-		public IList<Parameter> parameters;
+		public IList<Parameter> parameters => Parameters.Parameters;
 
 		public IList<Parameter> GetOrderedParameters()
 		{

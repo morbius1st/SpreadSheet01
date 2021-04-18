@@ -31,5 +31,15 @@ namespace SpreadSheet01.Management
 			td.CommonButtons = TaskDialogCommonButtons.Ok;
 			td.Show();
 		}
+
+		public void ErrorChartErrors(string msg)
+		{
+			TaskDialog td = new TaskDialog("Chart Collection Errors");
+			td.MainContent = "When collecting Charts, errors were discovered |\n" + msg;
+			td.MainInstruction = "The Charts / Cells system appears to have some errors.\nThe errors must be corrected before proceeding" ;
+			td.MainIcon = TaskDialogIcon.TaskDialogIconError;
+			td.CommonButtons = TaskDialogCommonButtons.Ok;
+			td.Show();
+		}
 	}
 }

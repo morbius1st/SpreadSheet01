@@ -9,11 +9,12 @@
     <Import_RootNamespace>SharedRevitCode</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)ShRevitSupport\ShRevitManagement\RevitSystemManager.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ShRevitSupport\ShRevitManagement\RevitProcessManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ShRevitSupport\ShRevitChartManagement\RevitChartManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ShParamUtils\ParamUtils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)ShRevitSupport\ShRevitChartManagement\" />
     <Folder Include="$(MSBuildThisFileDirectory)ShRevitSupport\ShRevitCellsManagement\" />
+    <Folder Include="$(MSBuildThisFileDirectory)ShRevitSupport\ShRevitManagement\" />
   </ItemGroup>
 </Project>

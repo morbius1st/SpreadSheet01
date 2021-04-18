@@ -9,7 +9,7 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:mgmt="clr-namespace:SpreadSheet01.RevitSupport.RevitCellsManagement"
 		Title="MainWindow"
-		Width="1400"
+		Width="1600"
 		Height="1100"
 		DataContext="{Binding ElementName=PrimeWin}"
 		mc:Ignorable="d"
@@ -22,7 +22,8 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="180" />
+			<ColumnDefinition Width="160" />
+			<ColumnDefinition Width="160" />
 		</Grid.ColumnDefinitions>
 
 		<Grid.RowDefinitions>
@@ -30,8 +31,30 @@
 			<RowDefinition Height="40" />
 		</Grid.RowDefinitions>
 
+
 		<DockPanel
 				Grid.Column="2"
+				Grid.Row="0"
+				Grid.RowSpan="2"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Bottom"
+				>
+
+			<Button x:Name="BtnProcessNormal"
+					Content="Process Normal"
+					Margin="5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
+					DockPanel.Dock="Bottom"
+					Click="BtnProcessStandard_OnClick"
+			/>
+
+
+		</DockPanel>
+
+
+		<DockPanel
+				Grid.Column="3"
 				Grid.Row="0"
 				Grid.RowSpan="2"
 				HorizontalAlignment="Stretch"
@@ -145,7 +168,7 @@
 					DockPanel.Dock="Bottom"
 					Click="BtnListErrors_OnClick"
 					/>
-					
+
 			<Rectangle
 					Margin="5,0,5,0"
 					Height="5"

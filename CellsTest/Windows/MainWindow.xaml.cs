@@ -6,7 +6,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using CellsTest.CellsTests;
+using RevitSupport.RevitChartManagement;
 using SharedCode.DebugAssist;
+using SharedCode.RevitSupport.RevitManagement;
 using SharedCode.RevitSupport.RevitParamManagement;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
@@ -30,11 +32,11 @@ namespace CellsTest.Windows
 	{
 	#region private fields
 
+		private RevitSystemManager systMgr;
+
 		private StringBuilder sb = new StringBuilder();
 
 		private ListInfo<MainWindow> listInfo;
-
-		// private static MainWindow me;
 
 		private Tests01 tests01;
 
@@ -44,7 +46,7 @@ namespace CellsTest.Windows
 
 		public MainWindow()
 		{
-			// me = this;
+			systMgr = new RevitSystemManager();
 
 			InitializeComponent();
 
@@ -59,7 +61,7 @@ namespace CellsTest.Windows
 
 
 
-		public RevitSystemManager RevitSystMgr { get; } = new RevitSystemManager();
+		public RevitChartManager RevitSystMgr { get; } = new RevitChartManager();
 
 	#endregion
 
@@ -157,7 +159,6 @@ namespace CellsTest.Windows
 
 	#region event consuming
 
-		
 		private void BtnReset_OnClick(object sender, RoutedEventArgs e)
 		{
 			sb = new StringBuilder("Reset\n");
@@ -222,11 +223,18 @@ namespace CellsTest.Windows
 			SampleAnnoSymbols sample = new SampleAnnoSymbols();
 			sample.Process(RevitParamManager.CHART_FAMILY_NAME);
 			
-			listInfo.listSample(sample.ChartSymbols, sample.Symbols);
+			// listInfo.listSample(sample.ChartElements, sample.CellElements);
+			listInfo.listSample(sample.ChartElements, sample.CellSyms);
 
 			Debug.WriteLine("@Debug");
 		}
 
+		private void BtnProcessStandard_OnClick(object sender, RoutedEventArgs e)
+		{
+			systMgr.CollectCharts(CellUpdateTypeCode.STANDARD);
+
+			Debug.WriteLine("@process normal");
+		}
 
 		private void BtnDone_OnClick(object sender, RoutedEventArgs e)
 		{
@@ -235,6 +243,9 @@ namespace CellsTest.Windows
 
 		private void BtnDebug_OnClick(object sender, RoutedEventArgs e)
 		{
+			// SampleAnnoSymbols2 s2 = new SampleAnnoSymbols2();
+			// s2.Process(RevitParamManager.CHART_FAMILY_NAME);
+
 			Debug.WriteLine("@Debug");
 		}
 
