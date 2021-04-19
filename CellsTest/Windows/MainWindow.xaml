@@ -178,7 +178,7 @@
 					/>
 
 			<Button x:Name="BtnProcess"
-					Content="List All Labels&#13;and Formulas"
+					Content="(#7) List All Labels&#13;and Formulas"
 					Margin="5"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Bottom"

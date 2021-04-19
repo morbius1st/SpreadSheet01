@@ -1,6 +1,7 @@
 ﻿#region + Using Directives
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -99,7 +100,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		}
 	}
 
-	public abstract class RevitContainer<T> : ARevitParam, INotifyPropertyChanged
+	public abstract class RevitContainer<T> : ARevitParam, INotifyPropertyChanged where T : ARevitParam
 	{
 		public RevitContainer()
 		{
@@ -109,6 +110,8 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		public abstract int NumberOfLists { get; protected set; }
 
 		public T[][] RevitParamLists { get; set; }
+
+		public string SeqString => ((RevitParamSequence)(ARevitParam)this[(int) PT_INSTANCE, SeqIdx]).AsString();
 
 		public T[] this[ParamType type] 
 		{
@@ -159,7 +162,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	}
 
 	// root with a collection of Chart Families
-	public class RevitCharts : RevitContainers<RevitChart>
+	public class RevitCharts : RevitContainers<RevitChart>, IEnumerable<RevitLabel>
 	{
 		public RevitCharts(string name)
 		{
@@ -173,6 +176,23 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		public bool Add(string key, RevitChart container)
 		{
 			return base.Add(key, container);
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		public IEnumerator<RevitLabel> GetEnumerator()
+		{
+			foreach (KeyValuePair<string, RevitChart> kvp1 in ListOfCharts)
+			{
+				foreach (KeyValuePair<string, RevitLabel> kvp2 in kvp1.Value.AllCellLabels)
+				{
+					yield return kvp2.Value;
+				}
+			}
+			
 		}
 
 		public override string ToString()
@@ -216,7 +236,9 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 				return r.GetValue();
 			}
 	}
-		public string Sequence => this[SeqIdx].GetValue();
+		public string Sequence2 => this[SeqIdx].GetValue();
+		public string Sequence => ((RevitParamSequence) this[SeqIdx]).AsString();
+
 		public string Description => this[Descdx].GetValue();
 		public string IntName => this[IntNameIdx].GetValue();
 		public string Developer => this[DevelopIdx].GetValue();
@@ -266,16 +288,20 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			return true;
 		}
 
-		private bool addCellLabels(RevitCellData revitCellData)
+		private bool addCellLabels(RevitCellData cellData)
 		{
 			bool result = false;
+			string seq = Sequence;
+			string key;
 
-			foreach (KeyValuePair<string, RevitLabel> kvp in revitCellData.ListOfLabels)
+			foreach (KeyValuePair<string, RevitLabel> kvp in cellData.ListOfLabels)
 			{
 				try
 				{
 					kvp.Value.ParentChart = this;
-					AllCellLabels.Add(kvp.Key, kvp.Value);
+					key = seq + kvp.Key;
+					kvp.Value.InternalKey = key;
+					AllCellLabels.Add(key, kvp.Value);
 				}
 				catch
 				{
@@ -329,7 +355,10 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public string FamilyName => AnnoSymbol?.Symbol.FamilyName ?? null;
 		public string Name => this[ParamType.PT_INSTANCE, NameIdx].GetValue();
-		public string Sequence => this[ParamType.PT_INSTANCE, SeqIdx].GetValue();
+		public string Sequence2 => this[ParamType.PT_INSTANCE, SeqIdx].GetValue();
+		public string Sequence => SeqString;
+
+
 		public string CellFamilyName => this[ParamType.PT_INSTANCE, ChartCellFamilyNameIdx].GetValue();
 
 		public CellUpdateTypeCode UpdateType => ((RevitParamUpdateType) this[PT_INSTANCE, ChartUpdateTypeIdx]).UpdateType;
@@ -430,7 +459,8 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		public CellFamily CellFamily { get; set; }
 
 		public string Name => this[PT_INSTANCE, NameIdx].GetValue();
-		public string Sequence => this[ParamType.PT_INSTANCE, SeqIdx].GetValue();
+		public string Sequence2 => this[ParamType.PT_INSTANCE, SeqIdx].GetValue();
+		public string Sequence => ((RevitParamSequence) this[ParamType.PT_INSTANCE, SeqIdx]).AsString();
 
 		public new void Add(ParamType type, int idx, ARevitParam content)
 		{
@@ -517,7 +547,8 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 			if (!result)
 			{
-				label = new RevitLabel(labelId, CellFamily.ParamCounts[(int) PT_LABEL]);
+				label = new RevitLabel(labelId, 
+					CellFamily.ParamCounts[(int) PT_LABEL], this);
 				ListOfLabels.Add(key, label);
 			}
 
@@ -534,22 +565,28 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	public class RevitLabel : RevitContainer<ARevitParam>
 	{
 		// a single label 
-		public string Name => this[PT_LABEL, LblNameIdx].GetValue();
+		// public string Name => this[PT_LABEL, LblNameIdx].GetValue();
+		public string Label => this[PT_LABEL, LblLabelIdx].GetValue();
 		public string Formula => this[PT_LABEL, LblFormulaIdx].GetValue();
 
-		public RevitLabel(int labelId, int paramCount)
+		public RevitLabel(int labelId, int paramCount, RevitCellData cellData)
 		{
 			LabelId = labelId;
+			RevitCellData = cellData;
 
 			this[PT_LABEL] = new ARevitParam[paramCount];
-			// RevitParamListBasic = new ARevitParam[CellLabelParamTotal];
+
 		}
 
 		public override int NumberOfLists { get;  protected set; } = 4;
 
+		public string InternalKey {get; set; }
+
 		public int LabelId { get; private set; }
 
 		public RevitChart ParentChart { get; set; }
+
+		public RevitCellData RevitCellData { get; private set;}
 
 		public bool ValidateMustExist(int mustExistReqd)
 		{
@@ -557,6 +594,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 			foreach (ARevitParam p in this[PT_LABEL])
 			{
+
 				if (p == null)
 				{
 					continue;
@@ -568,7 +606,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 				}
 			}
 
-			Debug.Write("label validate| name| " + Name.PadRight(18));
+			Debug.Write("label validate| name| " + Label.PadRight(18));
 			Debug.Write(" act| " + mustExistAct.ToString("##0"));
 			Debug.Write(" reqd| " + mustExistReqd.ToString("##0"));
 
@@ -591,7 +629,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public override string ToString()
 		{
-			return "I am RevitLabel| " + Name;
+			return "I am RevitLabel| " + Label;
 		}
 	}
 

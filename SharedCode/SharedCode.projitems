@@ -41,6 +41,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamInteger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamLabel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamNumber.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamSequence.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamUpdateType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RevitSupport\RevitParamValue\RevitParamWkShtName.cs" />

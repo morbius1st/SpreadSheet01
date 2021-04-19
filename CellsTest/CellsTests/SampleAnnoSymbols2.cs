@@ -201,12 +201,13 @@ namespace CellsTest.CellsTests
 			AddCellInstParam(aSym, HasErrorsIdx  , ParamDataType.DT_IGNORE       , "", 0.0, 1);
 		}
 
-		private void addLabelParams(AnnotationSymbol aSym, string labelIdx, string name, string datatype, string formula, string format, bool makeBad = false)
+		private void addLabelParams(AnnotationSymbol aSym, string labelIdx, string name, 
+			string datatype, string formula, string format, bool makeBad = false)
 		{
-			string labelName = chartIdx.ToString("D2") + name;
+			// string labelName = chartIdx.ToString("D2") + name;
 
 			AddLabelParam(aSym, LblLabelIdx      , 0, ParamDataType.DT_TEXT      , ""          , labelIdx, 0.0, 0, true);
-			AddLabelParam(aSym, LblNameIdx       , 0, ParamDataType.DT_TEXT      , labelName   , labelIdx);
+			// AddLabelParam(aSym, LblNameIdx       , 0, ParamDataType.DT_TEXT      , labelName   , labelIdx);
 			AddLabelParam(aSym, LblFormulaIdx    , 0, ParamDataType.DT_FORMULA   , formula	 , labelIdx);
 
 			if (!makeBad)
@@ -266,12 +267,33 @@ namespace CellsTest.CellsTests
 		// 	SampleCells[idx] = cellSym;
 		// }
 
+				
+		// this is an error cell - duplicate name
+		// also, label 1 has "make bad" set to true
+		private void AddCellBad(AnnotationSymbol aSym)
+		{
+			if (chartIdx == 0) return;
+
+			addCellBasicParams(aSym, "A.A", "MyCellname2.");
+
+			// AddCellInstParam(SeqIdx           , ParamDataType.DT_TEXT, "1");
+			// AddCellInstParam(NameIdx          , ParamDataType.DT_TEXT, "MyCellname2." + chartIdx.ToString("D2"));
+			// AddCellInstParam(HasErrorsIdx     , ParamDataType.DT_IGNORE, "", 0.0, 1);
+
+			addLabelParams(aSym, "#1", "MyLabelname -2-1", "text", "={#SheetName}", "", true);
+			addLabelParams(aSym, "#2", "MyLabelname -2-2", "text", "={#SheetNumber}", "");
+			addLabelParams(aSym, "#3", "MyLabelname -2-3", "text", "={$Date(yyyy-mm-dd)}", "");
+
+			addCommonCellParams(aSym);
+		}
+
+
 		// cell 0_0 & cell 0_1 - associate with the same chart
 		// so must have the same number of labels
 		// also associated with cell bad (same number of labels)
 		private void AddCell_0_0(AnnotationSymbol aSym)
 		{
-			addCellBasicParams(aSym, "0", "MyCellname1.");
+			addCellBasicParams(aSym, "0.0", "MyCellname1.");
 
 			// AddCellInstParam(SeqIdx        , ParamDataType.DT_TEXT         , "0");
 			// AddCellInstParam(NameIdx       , ParamDataType.DT_TEXT         , "MyCellname1." + chartIdx.ToString("D2"));
@@ -287,7 +309,7 @@ namespace CellsTest.CellsTests
 
 		private void AddCell_0_1(AnnotationSymbol aSym)
 		{
-			addCellBasicParams(aSym, "1", "MyCellname2.");
+			addCellBasicParams(aSym, "1A.", "MyCellname2.");
 
 			// AddCellInstParam(SeqIdx           , ParamDataType.DT_TEXT, "1");
 			// AddCellInstParam(NameIdx          , ParamDataType.DT_TEXT, "MyCellname2." + chartIdx.ToString("D2"));
@@ -299,29 +321,10 @@ namespace CellsTest.CellsTests
 
 			addCommonCellParams(aSym);
 		}
-		
-		// this is an error cell - duplicate name
-		// also, label 1 has "make bad" set to true
-		private void AddCellBad(AnnotationSymbol aSym)
-		{
-			if (chartIdx == 0) return;
-
-			addCellBasicParams(aSym, "1", "MyCellname2.");
-
-			// AddCellInstParam(SeqIdx           , ParamDataType.DT_TEXT, "1");
-			// AddCellInstParam(NameIdx          , ParamDataType.DT_TEXT, "MyCellname2." + chartIdx.ToString("D2"));
-			// AddCellInstParam(HasErrorsIdx     , ParamDataType.DT_IGNORE, "", 0.0, 1);
-
-			addLabelParams(aSym, "#1", "MyLabelname -2-1", "text", "={#SheetName}", "", true);
-			addLabelParams(aSym, "#2", "MyLabelname -2-2", "text", "={#SheetNumber}", "");
-			addLabelParams(aSym, "#3", "MyLabelname -2-3", "text", "={$Date(yyyy-mm-dd)}", "");
-
-			addCommonCellParams(aSym);
-		}
 
 		private void AddCell_1_0(AnnotationSymbol aSym)
 		{
-			addCellBasicParams(aSym, "0", "MyCellname_1_0.");
+			addCellBasicParams(aSym, ".A0", "MyCellname_1_0.");
 
 			addLabelParams(aSym, "#1", "MyLabelname -0-1", "length", "={[A1]}", "#,###");
 			addLabelParams(aSym, "#2", "MyLabelname -0-2", "length", "={[A2]}", "#,###");
@@ -333,7 +336,7 @@ namespace CellsTest.CellsTests
 		
 		private void AddCell_1_1(AnnotationSymbol aSym)
 		{
-			addCellBasicParams(aSym, "1", "MyCellname_1_1.");
+			addCellBasicParams(aSym, "xy.z", "MyCellname_1_1.");
 
 			addLabelParams(aSym, "#1", "MyLabelname -1-1", "text", "={#SheetName}", "#,###");
 			addLabelParams(aSym, "#2", "MyLabelname -1-4", "text", "={#SheetNumber}", "#,###");
@@ -345,7 +348,7 @@ namespace CellsTest.CellsTests
 
 		private void AddCell_1_2(AnnotationSymbol aSym)
 		{
-			addCellBasicParams(aSym, "3", "MyCellname_1_2.");
+			addCellBasicParams(aSym, "alp.ha", "MyCellname_1_2.");
 
 			addLabelParams(aSym, "#1", "MyLabelname -2-1", "text", "={$Date(yyyy-mm-dd)}", "#,###");
 			addLabelParams(aSym, "#2", "MyLabelname -2-2", "text", "={%project number}", "#,###");
@@ -375,35 +378,27 @@ namespace CellsTest.CellsTests
 			ChartElements.Add(el);
 
 			symbolIdx = 1;
-			// ChartSymbols[symbolIdx] 
 			chartSymbol	= new AnnotationSymbol("Chart| " + symbolIdx.ToString("D2"), CHART_FAMILY_NAME);
-			// ChartSymbols[symbolIdx].Parameters = new ParameterSet();
 			chartSymbol.Parameters = new ParameterSet();
-			// ChartSymbols[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
 			AddChart1(symbolIdx);
-			// el = (Element) ChartSymbols[symbolIdx];
+			el = (Element) chartSymbol;
+			ChartElements.Add(el);
+			
+			symbolIdx = 2;
+			chartSymbol	= new AnnotationSymbol("Chart| " + symbolIdx.ToString("D2"), CHART_FAMILY_NAME);
+			chartSymbol.Parameters = new ParameterSet();
+			AddChart2(symbolIdx);
+			el = (Element) chartSymbol;
+			ChartElements.Add(el);
+			
+			symbolIdx = 3;
+			chartSymbol	= new AnnotationSymbol("Chart| " + symbolIdx.ToString("D2"), CHART_FAMILY_NAME);
+			chartSymbol.Parameters = new ParameterSet();
+			AddChart3(symbolIdx);
 			el = (Element) chartSymbol;
 			ChartElements.Add(el);
 
-			// symbolIdx = 2;
-			// ChartSymbols[symbolIdx] 
-			// 	= new AnnotationSymbol("Chart| " + symbolIdx.ToString("D2"), CHART_FAMILY_NAME);
-			// ChartSymbols[symbolIdx].parameters = new List<Parameter>();
-			// // ChartSymbols[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
-			// AddChart2();
-			// el = (Element) ChartSymbols[symbolIdx];
-			// ChartElements.Add(el);
-
-			// symbolIdx = 1;
-			// ChartSymbols[symbolIdx] 
-			// 	= new AnnotationSymbol("Chart| " + symbolIdx.ToString("D2"), CHART_FAMILY_NAME);
-			// ChartSymbols[symbolIdx].parameters = new List<Parameter>();
-			// // ChartSymbols[symbolIdx].Name = "Chart| " + symbolIdx.ToString("D2");
-			// AddChart3();
-			// el = (Element) ChartSymbols[symbolIdx];
-			// ChartElements.Add(el);
-
-			symbolIdx = 2;
+			symbolIdx = 4;
 			// ChartSymbols[symbolIdx] 
 			chartSymbol	= new AnnotationSymbol("Chart| " + symbolIdx.ToString("D2"), CHART_FAMILY_NAME);
 			// ChartSymbols[symbolIdx].Parameters = new ParameterSet();
@@ -483,7 +478,7 @@ namespace CellsTest.CellsTests
 
 		private void AddChart0(int idx)
 		{
-			AddChartInstParam(SeqIdx              , ParamDataType.DT_TEXT, "0");
+			AddChartInstParam(SeqIdx              , ParamDataType.DT_TEXT, ".10");
 			AddChartInstParam(NameIdx             , ParamDataType.DT_TEXT, "MyChartname0");
 			AddChartInstParam(Descdx              , ParamDataType.DT_TEXT, "Description 0");
 			AddChartInstParam(ChartFilePathIdx    , ParamDataType.DT_TEXT, @".\CsSampleChart_01_02.xlsx");
@@ -499,7 +494,7 @@ namespace CellsTest.CellsTests
 
 		private void AddChart1(int idx)
 		{
-			AddChartInstParam(SeqIdx                 , ParamDataType.DT_TEXT, "1");
+			AddChartInstParam(SeqIdx                 , ParamDataType.DT_TEXT, "1a.");
 			AddChartInstParam(ChartFilePathIdx       , ParamDataType.DT_TEXT, @".\CsSampleChart_01_02.xlsx");
 			AddChartInstParam(NameIdx                , ParamDataType.DT_TEXT, "MyChartname1");
 			AddChartInstParam(ChartWorkSheetIdx      , ParamDataType.DT_TEXT, "CsSheet 2");
@@ -514,7 +509,7 @@ namespace CellsTest.CellsTests
 
 		private void AddChart2(int idx)
 		{
-			AddChartInstParam(SeqIdx                 , ParamDataType.DT_TEXT, "2");
+			AddChartInstParam(SeqIdx                 , ParamDataType.DT_TEXT, "");
 			AddChartInstParam(ChartFilePathIdx       , ParamDataType.DT_TEXT, @".\CsSampleChart_03_04.xlsx");
 			AddChartInstParam(ChartWorkSheetIdx      , ParamDataType.DT_TEXT, "CsSheet 1");
 			AddChartInstParam(NameIdx                , ParamDataType.DT_TEXT, "MyChartname2");
@@ -524,13 +519,14 @@ namespace CellsTest.CellsTests
 
 			addCommonChartParams();
 
+			configSampleCells(idx, new [] {0, 1});
 		}
 
 		private void AddChart3(int idx)
 		{
 			AddChartInstParam(NameIdx                , ParamDataType.DT_TEXT, "MyChartname3");
 			// AddChart(RevitParamManager.ChartDescIdx        , 0, ParamDataType.TEXT, "Description 4 (not found worksheet)");
-			AddChartInstParam(SeqIdx                 , ParamDataType.DT_TEXT, "3");
+			AddChartInstParam(SeqIdx                 , ParamDataType.DT_TEXT, ".");
 			AddChartInstParam(ChartFilePathIdx       , ParamDataType.DT_TEXT, @".\CsSampleChart_03_04.xlsx");
 			AddChartInstParam(ChartWorkSheetIdx      , ParamDataType.DT_TEXT, "CsSheet 2");
 			AddChartInstParam(ChartCellFamilyNameIdx , ParamDataType.DT_TEXT, CELL_FAMILY_NAMES[idx]);
@@ -538,13 +534,15 @@ namespace CellsTest.CellsTests
 			AddChartInstParam(ChartHasErrorsIdx      , ParamDataType.DT_TEXT, "");
 
 			addCommonChartParams();
+
+			configSampleCells(idx, new [] {0, 1});
 		}
 
 		private void AddChart4(int idx)
 		{
 			AddChartInstParam(NameIdx                , ParamDataType.DT_TEXT, "MyChartname4");
 			// AddChart(RevitParamManager.ChartDescIdx        , 0, ParamDataType.TEXT, "Description 5 (not found chart)");
-			AddChartInstParam(SeqIdx                 , ParamDataType.DT_TEXT, "4");
+			AddChartInstParam(SeqIdx                 , ParamDataType.DT_TEXT, "4x.yz");
 			AddChartInstParam(ChartFilePathIdx       , ParamDataType.DT_TEXT, @".\CsSampleChart_04.xlsx");
 			// AddChartInstParam(ChartWorkSheetIdx      , ParamDataType.DT_TEXT, "CsSheet 1");
 			AddChartInstParam(ChartCellFamilyNameIdx , ParamDataType.DT_TEXT, CELL_FAMILY_NAMES[idx]);

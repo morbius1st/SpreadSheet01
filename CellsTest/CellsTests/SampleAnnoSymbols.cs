@@ -275,7 +275,7 @@ namespace CellsTest.CellsTests
 			string labelName = chartIdx.ToString("D2") + name;
 
 			AddLabelParam(LblLabelIdx      , 0, ParamDataType.DT_TEXT      , ""          , labelIdx, 0.0, 0, true);
-			AddLabelParam(LblNameIdx       , 0, ParamDataType.DT_TEXT      , labelName   , labelIdx);
+			// AddLabelParam(LblNameIdx       , 0, ParamDataType.DT_TEXT      , labelName   , labelIdx);
 			AddLabelParam(LblFormulaIdx    , 0, ParamDataType.DT_FORMULA   , formula	 , labelIdx);
 
 			if (!makeBad)

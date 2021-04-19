@@ -36,8 +36,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 	#region public properties
 
-		public DynamicValue DynValue => dynValue;
-
 		public ParamDesc ParamDesc
 		{
 			get => paramDesc;
@@ -47,6 +45,14 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 				OnPropertyChanged();
 			}
 		}
+
+		public DynamicValue DynValue => dynValue;
+
+		public string AsString() => dynValue.AsString();
+
+		public bool Assigned { get; protected set; }
+
+	#region errors
 
 		public ErrorCodes ErrorCode
 		{
@@ -58,7 +64,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		public bool HasErrors => errorList.HasErrors;
 		public void ResetErrors() => errorList.Reset();
 
-		public bool Assigned { get; protected set; }
+	#endregion
 
 		public static ARevitParam Invalid
 		{
@@ -99,16 +105,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 		}
 
 	#endregion
-
-		// public IEnumerable<ErrorCodes> Errors()
-		// {
-		// 	if (errors == null) yield break;
-		//
-		// 	foreach (ErrorCodes error in errors)
-		// 	{
-		// 		yield return error;
-		// 	}
-		// }
 
 		public event PropertyChangedEventHandler PropertyChanged;
 

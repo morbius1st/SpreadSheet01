@@ -35,7 +35,9 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		PT_INSTANCE,
 		PT_INTERNAL,
 		PT_TYPE,
-		PT_LABEL
+		PT_LABEL,
+		PT_LABEL_INTERNAL,
+
 	}
 
 	public enum ParamCat
@@ -90,7 +92,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		DT_FORMULA,
 		DT_FILE_PATH,
 		DT_UPDATE_TYPE,
-		DT_WORKSHEETNAME
+		DT_WORKSHEETNAME,
+		DT_SEQUENCE
 	}
 
 	public enum ValueStatus

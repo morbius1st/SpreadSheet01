@@ -98,13 +98,13 @@ namespace RevitSupport.RevitChartManagement
 				if (!processOneChart(chart))
 				{
 //					ErrCodeList.Add(this, ErrorCodes.CHT_PROCESS_CHART_FAILED_CS001145);
-					chart.ErrorCode = ErrorCodes.CHT_PROCESS_CHART_FAILED_CS001145;
+					chart.ErrorCode = ErrorCodes.RCHT_PROCESS_CHART_FAILED_CS001145;
 				}
 
 				if (chart.HasErrors)
 				{
 //					ErrCodeList.Add(this, ErrorCodes.CHTS_CHART_HAS_ERRORS_CS001200);
-					Charts.ErrorCode = ErrorCodes.CHTS_CHART_HAS_ERRORS_CS001200;
+					Charts.ErrorCode = ErrorCodes.RCHTS_CHART_HAS_ERRORS_CS001200;
 				}
 			}
 		}
@@ -142,7 +142,7 @@ namespace RevitSupport.RevitChartManagement
 					key += "*error* (" + (++errorIdx).ToString("D3") + ")";
 					chart = setInvalidRevitChart(key, chartData);
 //					ErrCodeList.Add(this, ErrorCodes.CHT_RCD_HAS_ERRORS_CS001138);
-					chart.ErrorCode = ErrorCodes.CHT_RCD_HAS_ERRORS_CS001138;
+					chart.ErrorCode = ErrorCodes.RCHT_RCD_HAS_ERRORS_CS001138;
 				}
 				else
 				{
@@ -241,11 +241,11 @@ namespace RevitSupport.RevitChartManagement
 				if (rcd.HasErrors)
 				{
 //					ErrCodeList.Add(this, ErrorCodes.CHT_CELL_HAS_ERROR_CS001135);
-					chart.ErrorCode = ErrorCodes.CHT_CELL_HAS_ERROR_CS001135;
+					chart.ErrorCode = ErrorCodes.RCHT_CELL_HAS_ERROR_CS001135;
 				}
 
 //				ErrCodeList.Add(this, chart.Add(rcd) ? ErrorCodes.EC_NO_ERROR : ErrorCodes.CHT_FAIL_TO_ADD_CS001036);
-				chart.ErrorCode = chart.Add(rcd) ? ErrorCodes.EC_NO_ERROR : ErrorCodes.CHT_FAIL_TO_ADD_CS001036;
+				chart.ErrorCode = chart.Add(rcd) ? ErrorCodes.EC_NO_ERROR : ErrorCodes.RCHT_FAIL_TO_ADD_CS001036;
 			}
 
 			return true;

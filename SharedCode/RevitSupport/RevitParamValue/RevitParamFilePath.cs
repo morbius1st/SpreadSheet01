@@ -54,7 +54,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 				if (!excelFilPath.IsValid || !excelFilPath.IsFound)
 				{
 //					ErrCodeList.Add(this, ErrorCodes.CHT_BAD_FILE_PATH_CS001142);
-					ErrorCode = ErrorCodes.CHT_BAD_FILE_PATH_CS001142;
+					ErrorCode = ErrorCodes.RCHT_BAD_FILE_PATH_CS001142;
 				}
 			}
 		}

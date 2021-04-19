@@ -90,7 +90,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				{
 					rvtParam = ARevitParam.Invalid;
 //					ErrCodeList.Add(this, ErrorCodes.CHT_INVALID_PARAM_TYPE_CS001143);
-					rvtParam.ErrorCode = CHT_INVALID_PARAM_TYPE_CS001143;
+					rvtParam.ErrorCode = RCHT_INVALID_PARAM_TYPE_CS001143;
 					rcd.Add(PT_INSTANCE, pd.Index, rvtParam);
 					break;
 				}
@@ -100,7 +100,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			{
 				// Debug.WriteLine("is not valid");
 //				ErrCodeList.Add(this, ErrorCodes.CHT_PARAM_HAS_ERROR_CS001137);
-				rcd.ErrorCode = CHT_PARAM_HAS_ERROR_CS001137;
+				rcd.ErrorCode = RCHT_PARAM_HAS_ERROR_CS001137;
 			}
 		}
 
@@ -300,6 +300,14 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 						ParamReadReqmt.RD_VALUE_IGNORE
 							? double.NaN
 							: param.AsDouble(), pd);
+					break;
+				}
+			case ParamDataType.DT_SEQUENCE:
+				{
+					p = new RevitParamSequence(pd.ReadReqmt ==
+						ParamReadReqmt.RD_VALUE_IGNORE
+							? ""
+							: param.AsString(), pd);
 					break;
 				}
 			}

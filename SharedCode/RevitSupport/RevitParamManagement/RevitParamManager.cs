@@ -109,21 +109,29 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 	#region cell label instance params
 
-		public static int CellLabelParamTotal			= 0;
+		public static int CellLabelBasicParamTotal		= 0;
+		public static int CellLabelInternalParamTotal	= 0;
+		
 
 		// cell label indices (cell label)
-		public static readonly int LblLabelIdx          = CellLabelParamTotal++;
-		public static readonly int LblNameIdx           = CellLabelParamTotal++;
-		public static readonly int LblFormulaIdx        = CellLabelParamTotal++;
-		public static readonly int LblDataTypeIdx       = CellLabelParamTotal++;
-		public static readonly int LblFormatInfoIdx     = CellLabelParamTotal++;
+		public static readonly int LblLabelIdx          = CellLabelBasicParamTotal++;
+		// public static readonly int LblNameIdx           = CellLabelParamTotal++;
+		public static readonly int LblFormulaIdx        = CellLabelBasicParamTotal++;
+		public static readonly int LblDataTypeIdx       = CellLabelBasicParamTotal++;
+		public static readonly int LblFormatInfoIdx     = CellLabelBasicParamTotal++;
 
-		public static readonly int LblIgnoreIdx         = CellLabelParamTotal++;
-		// end of cell label list
+		public static readonly int LblIgnoreIdx         = CellLabelBasicParamTotal++;
+		// end of cell label basic list
+
+		// public static readonly int LblIdIdx				= CellLabelInternalParamTotal++;
+		// // end of cell label internal list
+		//
+		// public static int CellLabelParamTotal			= CellLabelBasicParamTotal + CellLabelInternalParamTotal;
+		// // end of cell label
 
 	#endregion
 
-		public static readonly int CellInstanceParamTotal = CellBasicParamTotal + CellLabelParamTotal;
+		public static readonly int CellInstanceParamTotal = CellBasicParamTotal + CellLabelBasicParamTotal;
 		public static readonly int CellTypeParamCount = CommonTypeParamTotal;
 
 		public static int CellInternalParamCount	        = 0; // temp number until real internal params are created
@@ -208,7 +216,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				NameIdx           , PC_CHART                            , PT_INSTANCE, EX_PARAM_MUST_EXIST, DT_TEXT, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
 			// 1
 			defineParameter(f     , new ParamDesc("Sequence"            , "",
-				SeqIdx            , PC_CHART                            , PT_INSTANCE, EX_PARAM_OPTIONAL, DT_TEXT, RD_VALUE_OPTIONAL, PM_READ_FROM_FAMILY));
+				SeqIdx            , PC_CHART                            , PT_INSTANCE, EX_PARAM_OPTIONAL, DT_SEQUENCE, RD_VALUE_OPTIONAL, PM_READ_FROM_FAMILY));
 			// 2
 			defineParameter(f     , new ParamDesc("Description"         , "",
 				Descdx            , PC_CHART                            , PT_INSTANCE, EX_PARAM_OPTIONAL, DT_TEXT, RD_VALUE_OPTIONAL, PM_READ_FROM_FAMILY));
@@ -254,9 +262,10 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 			int[] paramCounts = new int[(int) RevitParamSupport.PARAM_TYPE_COUNT];
 			paramCounts[(int) PT_INSTANCE] = CellBasicParamTotal;
-			paramCounts[(int) PT_INTERNAL] = CellInternalParamCount;
+			paramCounts[(int) PT_INTERNAL] = CellInternalParamCount > CellLabelInternalParamTotal ? CellInternalParamCount : CellLabelInternalParamTotal;
+				// Math.Max(CellInternalParamCount, CellLabelInternalParamTotal);
 			paramCounts[(int) PT_TYPE] = CellTypeParamCount;
-			paramCounts[(int) PT_LABEL] = CellLabelParamTotal;
+			paramCounts[(int) PT_LABEL] = CellLabelBasicParamTotal;
 
 			CellFamily f = new CellFamily(cellFamilyName,
 				CT_ANNOTATION, SC_GENERIC_ANNOTATION, paramCounts);
@@ -268,7 +277,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				NameIdx       , PC_CELL                    , PT_INSTANCE, EX_PARAM_MUST_EXIST, DT_TEXT, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
 			//1
 			defineParameter(f , new ParamDesc("Sequence"    , "",
-				SeqIdx        , PC_CELL                    , PT_INSTANCE, EX_PARAM_OPTIONAL, DT_TEXT, RD_VALUE_OPTIONAL, PM_READ_FROM_FAMILY));
+				SeqIdx        , PC_CELL                    , PT_INSTANCE, EX_PARAM_OPTIONAL, DT_SEQUENCE, RD_VALUE_OPTIONAL, PM_READ_FROM_FAMILY));
 			// 2
 			defineParameter(f , new ParamDesc("Description" , "",
 				Descdx        , PC_CELL                    , PT_INSTANCE, EX_PARAM_OPTIONAL, DT_TEXT, RD_VALUE_OPTIONAL, PM_READ_FROM_FAMILY));
@@ -301,9 +310,9 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			// 0
 			defineParameter(f   , new ParamDesc("Label"          , "",
 				LblLabelIdx     , PC_CELL                       , PT_LABEL, EX_PARAM_MUST_EXIST, DT_LABEL_TITLE, RD_VALUE_OPTIONAL, PM_READ_FROM_EXCEL));
-			// 1
-			defineParameter(f   , new ParamDesc("Label Name"     , "",
-				LblNameIdx      , PC_CELL                       , PT_LABEL, EX_PARAM_MUST_EXIST, DT_TEXT, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
+			// // 1
+			// defineParameter(f   , new ParamDesc("Label Name"     , "",
+			// 	LblNameIdx      , PC_CELL                       , PT_LABEL, EX_PARAM_MUST_EXIST, DT_TEXT, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
 			// 2
 			defineParameter(f   , new ParamDesc("Formula"        , "",
 				LblFormulaIdx   , PC_CELL                       , PT_LABEL, EX_PARAM_MUST_EXIST, DT_FORMULA, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
@@ -316,6 +325,11 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			// 5
 			defineParameter(f   , new ParamDesc("Ignore"         , "",
 				LblIgnoreIdx    , PC_CELL                       , PT_LABEL, EX_PARAM_OPTIONAL, DT_BOOL, RD_VALUE_REQUIRED, PM_READ_FROM_FAMILY));
+
+
+			// // 0
+			// defineParameter(f , new ParamDesc("Label Id", "",
+			// 	LblIdIdx        , PC_CELL                       , PT_LABEL_INTERNAL, EX_PARAM_INTERNAL, DT_INTEGER, RD_VALUE_IGNORE, PM_INTERNAL));
 		}
 
 	#endregion

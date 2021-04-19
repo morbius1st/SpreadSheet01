@@ -442,6 +442,7 @@ namespace SharedCode.DebugAssist
 
 			win.TabUp("start");
 			{
+				
 				listLabsAndFormsSummary(charts);
 			}
 			win.TabDn("end");
@@ -463,31 +464,20 @@ namespace SharedCode.DebugAssist
 				RevitChart chart = kvp1.Value;
 
 				listLnfChart(chart);
-
-				// win.TabUp("chart error summary");
-				// {
-				// 	foreach (KeyValuePair<string, RevitCellData> kvp2 in chart.ListOfCellSyms)
-				// 	{
-				// 		RevitCellData rcd = kvp2.Value;
-				//
-				// 		// list summary for a revit cell data
-				//
-				// 		listRevitCellDataErrors(rcd);
-				//
-				// 		win.TabUp("label error summary");
-				// 		{
-				// 			foreach (KeyValuePair<string, RevitLabel> kvp3 in rcd.ListOfLabels)
-				// 			{
-				// 				// list a summary for a label
-				// 			}
-				// 		}
-				// 		win.TabDn("label error summary");
-				// 	}
-				// }
-				// win.TabDn("chart error summary");
 			}
-		}
 
+			win.WriteLine("");
+			win.WriteLine("");
+			win.WriteTab("summary for| all labels| " + charts.Name);
+			win.WriteLine("");
+
+			win.TabUp("labels summary 2");
+			{
+				listLabelHeader();
+				listLabels(charts);
+			}
+			win.TabDn("labels summary2 ");
+		}
 
 		private void listLnfChart(RevitChart chart)
 		{
@@ -497,15 +487,25 @@ namespace SharedCode.DebugAssist
 			win.Write("  # labels| " + chart.AllCellLabels.Count);
 			win.WriteLine("  # errors| " + chart.ErrorCodeList.Count);
 
-			listErrors(chart.ErrorCodeList);
-			listErrors(chart.RevitChartData.ErrorCodeList);
+			if (!listErrors(chart.ErrorCodeList))
+			{
+				win.WriteLineTab("chart errors| NONE");
+			}
+
+			if (!listErrors(chart.RevitChartData.ErrorCodeList))
+			{
+				win.WriteLineTab("chart data errors| NONE");
+			}
 
 			listAllParamErrors(chart.RevitChartData.RevitParamLists);
 
 			foreach (KeyValuePair<string, RevitCellData> kvp in chart.ListOfCellSyms)
 			{
 				RevitCellData rcd = kvp.Value;
-				listErrors(rcd.ErrorCodeList);
+				if (!listErrors(rcd.ErrorCodeList))
+				{
+					win.WriteLineTab("cell data errors| NONE");
+				}
 
 				listAllParamErrors(rcd.RevitParamLists);
 			}
@@ -518,11 +518,13 @@ namespace SharedCode.DebugAssist
 			win.TabDn("chart excel info");
 
 			// win.WriteLine("");
-			win.TabUp("chart error summary");
+			win.TabUp("labels summary");
 			{
 				listLnf(chart.AllCellLabels);
 			}
-			win.TabDn("chart error summary");
+			win.TabDn("labels summary");
+
+
 		}
 
 		private void listChartExcelInfo(RevitChart chart)
@@ -540,6 +542,15 @@ namespace SharedCode.DebugAssist
 			win.TabDn("chart ");
 		}
 
+		private void listLabels(RevitCharts charts)
+		{
+			int idx = 0;
+			foreach (RevitLabel label in charts)
+			{
+				listLabel(label, idx++);
+			}
+		}
+
 		private void listLnf(SortedDictionary<string, RevitLabel> labels)
 		{
 			if (labels.Count == 0) return;
@@ -554,17 +565,73 @@ namespace SharedCode.DebugAssist
 				{
 					RevitLabel label = kvp.Value;
 
-					win.WriteTab("idx| " + i++.ToString("#0"));
-					win.Write(" key| " +  kvp.Key.PadRight(22));
-					win.Write(" label| " +  label.Name.PadRight(22));
-					win.Write(" formula| " +  label.Formula);
-					win.Write("\n");
+					listLabel(label, i);
+					
+
+					// // win.WriteTab("idx| " + i++.ToString("{3:##0}"));
+					// win.WriteTab("idx| " + $"{i++,2:#0}");
+					// win.Write(" key| >" +  (kvp.Key + "<").PadRight(28));
+					// win.Write(" chart seq| >" +  (label.ParentChart.Sequence + "<").PadRight(12));
+					// win.Write(" cell data seq| >" +  (label.RevitCellData.Sequence + "<").PadRight(12));
+					// win.Write(" cellName| " + label.RevitCellData.Name.PadRight(20));
+					// win.Write(" label| " +  label.Label.PadRight(10));
+					// win.Write(" id| " +  $"{label.LabelId,2:#0}");
+					// win.Write(" errors| " +  label.HasErrors.ToString().PadRight(7));
+					// win.Write(" formula| " +  label.Formula);
+					// win.Write("\n");
 				}
 			}
 			win.WriteLine("");
 
 			win.TabDn("list labels");
 		}
+
+		private void listLabelHeader()
+		{
+			win.WriteTab("|".PadRight(32));
+			win.Write(" | parent".PadRight(16));
+			// win.Write(" | cell".PadRight(15));
+			win.Write("\n");
+
+			win.WriteTab("|idx");
+			win.Write("| key ".PadRight(28,'-'));
+			win.Write(" | chart name ".PadRight(18, '-'));
+			win.Write(" | cell data name ".PadRight(23,'-'));
+			win.Write(" | label ".PadRight(14,'-'));
+			win.Write(" | id ".PadRight(7,'-'));
+			win.Write(" | formula ---------------------------");
+			win.Write("\n");
+
+			win.WriteLineTab("|"+"-".Repeat(134));
+		}
+
+		private void listLabel(RevitLabel label, int i)
+		{
+			string name;
+
+			win.WriteTab("| " + $"{i++,2:#0}");
+			win.Write("| >" +  (label.InternalKey + "<").PadRight(26));
+			// win.Write(" chart seq| >" +  (label.ParentChart.Sequence + "<").PadRight(12));
+			// win.Write(" cell data seq| >" +  (label.RevitCellData.Sequence + "<").PadRight(12));
+			// win.Write(" cellName| " + label.RevitCellData.Name.PadRight(20));
+
+			name = (label.ParentChart.HasErrors ? "*" : "") + label.ParentChart.Name;
+
+			win.Write("| " +  name.PadRight(16));
+
+			name = (label.RevitCellData.HasErrors ? "*" : "") + label.RevitCellData.Name;
+
+			win.Write("| " +  name.PadRight(21));
+
+			name = (label.HasErrors ? "*" : "") + label.Label;
+
+			win.Write("| " +  name.PadRight(12));
+			win.Write("| " +  $"{label.LabelId,3:#0}  ");
+			// win.Write("| " +  label.HasErrors.ToString().PadRight(7));
+			win.Write("| " +  label.Formula);
+			win.Write("\n");
+		}
+
 
 		private void listAllParamErrors(ARevitParam[][] paramLists)
 		{
@@ -719,19 +786,22 @@ namespace SharedCode.DebugAssist
 		private void listLabelErrors(RevitLabel label)
 		{
 			// win.WriteLine("");
-			win.WriteTab("summary for| label| " + label.Name);
+			win.WriteTab("summary for| label| " + label.Label);
 			win.WriteLine("  has errors| " + label.HasErrors + " qty| " + label.ErrorCodeList.Count);
 
 			win.TabUp("label error summary");
 			{
-				listErrors(label.ErrorCodeList);
+				if (!listErrors(label.ErrorCodeList))
+				{
+					win.WriteLineTab("label errors| NONE");
+				}
 			}
 			win.TabDn("label error summary");
 		}
 
-		private void listErrors(List<ErrorCodes> errorList)
+		private bool listErrors(List<ErrorCodes> errorList)
 		{
-			if (errorList.Count == 0) return;
+			if (errorList.Count == 0) return false;
 
 			win.WriteLineTab("errors list| ");
 
@@ -747,6 +817,8 @@ namespace SharedCode.DebugAssist
 			// win.WriteLine("");
 
 			win.TabDn("list errors");
+
+			return true;
 		}
 
 
@@ -1028,7 +1100,7 @@ namespace SharedCode.DebugAssist
 						foreach (KeyValuePair<string, RevitLabel> kvp in chart.AllCellLabels)
 						{
 							win.WriteTab("| " + kvp.Key.PadRight(28));
-							win.Write("| " + kvp.Value.Name.PadRight(23));
+							win.Write("| " + kvp.Value.Label.PadRight(23));
 							win.WriteLine("| " + kvp.Value.Formula);
 						}
 					}
