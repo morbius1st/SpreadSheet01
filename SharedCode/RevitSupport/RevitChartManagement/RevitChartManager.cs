@@ -9,7 +9,7 @@ using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
 using SpreadSheet01.RevitSupport.RevitSelectionSupport;
 
-//using static SharedCode.RevitSupport.RevitParamManagement.ErrorCodeList2;
+using FormulaManager = SharedCode.FormulaSupport.FormulaManagement.FormulaManager;
 
 #endregion
 
@@ -46,8 +46,10 @@ namespace RevitSupport.RevitChartManagement
 
 	#region ctor
 
-		public RevitChartManager()
+		public RevitChartManager(FormulaManager fm)
 		{
+			FormulaManager = fm;
+
 			revitCat = new RevitParamCatagorize();
 			rvtSelect = new RevitSelectSupport();
 
@@ -60,7 +62,9 @@ namespace RevitSupport.RevitChartManagement
 
 		// collection of all revit charts  
 		// this holds a collection of individual charts
-		public RevitCharts Charts { get; private set; } = new RevitCharts(NAME_OF_CHARTS);
+		public RevitCharts Charts { get; private set; }
+
+		public FormulaManager FormulaManager { get; private set; }
 
 	#endregion
 
@@ -115,7 +119,8 @@ namespace RevitSupport.RevitChartManagement
 			rvtSelect.seq = 0;
 		#endif
 
-			Charts = new RevitCharts(NAME_OF_CHARTS);
+			Charts = new RevitCharts(NAME_OF_CHARTS, FormulaManager);
+
 		}
 
 	#endregion
@@ -140,29 +145,24 @@ namespace RevitSupport.RevitChartManagement
 				if (chartData.HasErrors)
 				{
 					key += "*error* (" + (++errorIdx).ToString("D3") + ")";
-					chart = setInvalidRevitChart(key, chartData);
-//					ErrCodeList.Add(this, ErrorCodes.CHT_RCD_HAS_ERRORS_CS001138);
+					chart = setInvalidRevitChart(chartData);
 					chart.ErrorCode = ErrorCodes.RCHT_RCD_HAS_ERRORS_CS001138;
 				}
 				else
 				{
-					// key = RevitParamUtil.MakeAnnoSymKey(chartData,
-					// 	(int) RevitParamManager.NameIdx, (int) RevitParamManager.SeqIdx);
-
-					chart = getRevitChart(key, chartData);
+					chart = getRevitChart(chartData);
 				}
 
 				bool result = Charts.Add(key, chart);
 
 				if (!result)
 				{
-//					ErrCodeList.Add(this, ErrorCodes.DUPLICATE_KEY_CS000I01_2);
 					Charts.ErrorCode = ErrorCodes.DUPLICATE_KEY_CS000I01_2;
 				}
 			}
 		}
 
-		private RevitChart getRevitChart(string key, RevitChartData chartData)
+		private RevitChart getRevitChart(RevitChartData chartData)
 		{
 			RevitChart chart;
 			ChartFamily chartFamily;
@@ -172,16 +172,16 @@ namespace RevitSupport.RevitChartManagement
 
 			if (!answer) return RevitChart.Invalid();
 
-			chart = new RevitChart();
+			chart = new RevitChart(Charts);
 			chart.RevitChartData = chartData;
 
 			return chart;
 		}
 
-		private RevitChart setInvalidRevitChart(string key, RevitChartData chartData)
+		private RevitChart setInvalidRevitChart(RevitChartData chartData)
 		{
 			// ChartFamily chartFamily = ChartFamily.invalid(key);
-			RevitChart chart = new RevitChart();
+			RevitChart chart = new RevitChart(Charts);
 
 			// chartData.ChartFamily = ChartFamily.invalid(key);
 

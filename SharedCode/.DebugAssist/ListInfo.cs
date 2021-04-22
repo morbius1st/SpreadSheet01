@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Microsoft.Office.Interop.Excel;
 using RevitSupport.RevitChartManagement;
+using SharedCode.RevitSupport.RevitManagement;
 using SharedCode.RevitSupport.RevitParamManagement;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
@@ -17,6 +18,7 @@ using SpreadSheet01.RevitSupport.RevitParamValue;
 using UtilityLibrary;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
 using Parameter = Autodesk.Revit.DB.Parameter;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.RevitParamManager;
 
 #endregion
 
@@ -35,7 +37,7 @@ namespace SharedCode.DebugAssist
 		}
 
 	#if NOREVIT
-		public RevitChartManager RevitSystMgr { get; } = new RevitChartManager();
+		public RevitSystemManager RevitSystMgr { get; } = new RevitSystemManager();
 
 		public void listProcess()
 		{
@@ -83,7 +85,7 @@ namespace SharedCode.DebugAssist
 
 			// get all of the revit chart families and 
 			// process each to get its parameters
-			result = RevitSystMgr.CollectAllCharts();
+			result = RevitSystMgr.CollectCharts(CellUpdateTypeCode.STANDARD);
 
 			if (!result) return;
 
@@ -94,6 +96,7 @@ namespace SharedCode.DebugAssist
 
 		public void getParamsTest2()
 		{
+			win.WriteLine("list all chart families (#1)| start");
 			ChartFamily chart ;
 
 			bool result = RevitParamManager.GetChartFamily(RevitParamManager.CHART_FAMILY_NAME, out chart);
@@ -146,7 +149,7 @@ namespace SharedCode.DebugAssist
 
 			// get all of the revit chart families and 
 			// process each to get its parameters
-			result = RevitSystMgr.CollectAllCharts();
+			result = RevitSystMgr.CollectCharts(CellUpdateTypeCode.STANDARD);
 
 			if (!result)
 			{
@@ -154,7 +157,7 @@ namespace SharedCode.DebugAssist
 				return false;
 			}
 
-			RevitSystMgr.PreProcessCharts(CellUpdateTypeCode.STANDARD);
+			// RevitSystMgr.PreProcessCharts(CellUpdateTypeCode.STANDARD);
 
 			if (RevitSystMgr.Charts.HasErrors)
 			{
@@ -396,6 +399,7 @@ namespace SharedCode.DebugAssist
 					win.TabUp("params start");
 					{
 						win.WriteLine("");
+						listParamHeader();
 						foreach (ParamDesc pd in paramDescs)
 						{
 							listOneParamDesc(pd);
@@ -414,18 +418,54 @@ namespace SharedCode.DebugAssist
 			}
 		}
 
+		private int[] phw1 = new [] {23, 12, 16, 12, 18, 12, 16, 22, 24 };
+
+		private void listParamHeader()
+		{
+			// // line 1
+			// win.WriteTab("|".PadRight(32));
+			// win.Write(" | parent".PadRight(16));
+			// // win.Write(" | cell".PadRight(15));
+			// win.Write("\n");
+
+			int i = 0;
+
+
+			// line 2
+			win.WriteTab("|idx");
+			win.Write(" | name"       .PadRight(phw1[i++]+2, '-'));
+			win.Write(" | short-name" .PadRight(phw1[i++]+2, '-'));
+			win.Write(" | dt type"    .PadRight(phw1[i++]+2, '-'));
+			win.Write(" | rt type"    .PadRight(phw1[i++]+2, '-'));
+			win.Write(" | sub type"   .PadRight(phw1[i++]+2, '-'));
+			win.Write(" | pm class"   .PadRight(phw1[i++]+2, '-'));
+			win.Write(" | pm type"    .PadRight(phw1[i++]+2, '-'));
+			win.Write(" | rd req"     .PadRight(phw1[i++]+2, '-'));
+			win.Write(" | mode"       .PadRight(phw1[i++]+2, '-'));
+			win.Write(" | exist -----------------");
+			win.Write("\n");
+
+			// line 3
+			// win.WriteLineTab("| "+"-".Repeat(160));
+		}
+
+
 		private void listOneParamDesc(ParamDesc pd)
 		{
-			// win.WriteTab("  param desc| seq| " + seq.ToString("##0"));
-			win.WriteTab("idx| " + pd.Index.ToString("##0"));
-			win.Write(" name| " + pd.ParameterName.PadRight(22));
-			win.Write(" sht-name| " + pd.ShortName.PadRight(10));
-			win.Write(" dt type| " + pd.DataType.ToString().PadRight(15));
-			win.Write(" pm class| " + pd.ParamClass.ToString().PadRight(10));
-			win.Write(" pm type| " + pd.ParamType.ToString().PadRight(15));
-			win.Write(" rd req| " + pd.ReadReqmt.ToString().PadRight(20));
-			win.Write(" mode| " + pd.Mode.ToString().PadRight(22));
-			win.WriteLine(" exist| " + pd.Exist);
+			int i = 0;
+
+			win.WriteTab("| " + $"{pd.Index, 2:#0} ");
+			win.Write   ("| " + pd.ParameterName  .PadRight(phw1[i++]));
+			win.Write   ("| " + pd.ShortName      .PadRight(phw1[i++]));
+			win.Write   ("| " + pd.DataType       .ToString().PadRight(phw1[i++]));
+			win.Write   ("| " + pd.RootType       .ToString().PadRight(phw1[i++]));
+			win.Write   ("| " + pd.SubType        .ToString().PadRight(phw1[i++]));
+			win.Write   ("| " + pd.ParamClass     .ToString().PadRight(phw1[i++]));
+			win.Write   ("| " + pd.ParamType      .ToString().PadRight(phw1[i++]));
+			win.Write   ("| " + pd.ReadReqmt      .ToString().PadRight(phw1[i++]));
+			win.Write   ("| " + pd.Mode           .ToString().PadRight(phw1[i++]));
+			win.Write   ("| " + pd.Exist          .ToString());
+			win.Write("\n");
 		}
 
 	#endif
@@ -545,13 +585,15 @@ namespace SharedCode.DebugAssist
 		private void listLabels(RevitCharts charts)
 		{
 			int idx = 0;
-			foreach (RevitLabel label in charts)
+			foreach (KeyValuePair<string, RevitLabel> kvp in charts.FormulaManager.AllCellLabels)
 			{
+				RevitLabel label = kvp.Value;
+
 				listLabel(label, idx++);
 			}
 		}
 
-		private void listLnf(SortedDictionary<string, RevitLabel> labels)
+		private void listLnf(Dictionary<string, RevitLabel> labels)
 		{
 			if (labels.Count == 0) return;
 
@@ -879,15 +921,17 @@ namespace SharedCode.DebugAssist
 
 		private void listChart(RevitChart chart)
 		{
-			win.WriteLineTab("Chart|          name| " + chart.Name);
-			win.WriteLineTab("Chart| cell fam name| " + chart.CellFamilyName);
-			win.WriteLineTab("Chart|      sequence| " + chart.Sequence);
-			win.WriteLineTab("Chart|      filepath| " + chart.FilePath);
-			win.WriteLineTab("Chart|        exists| " + chart.Exists);
-			win.WriteLineTab("Chart|     worksheet| " + chart.WorkSheet);
-			win.WriteLineTab("Chart|    updateType| " + chart.UpdateType);
+			
+
+
+			win.WriteLineTab("Chart|          name| " + chart[NameIdx]?.GetValue() ?? "is null");
+			win.WriteLineTab("Chart| cell fam name| " + chart[ChartCellFamilyNameIdx]?.GetValue() ?? "is null");
+			win.WriteLineTab("Chart|      sequence| " + chart[SeqIdx]?.GetValue() ?? "is null");
+			win.WriteLineTab("Chart|      filepath| " + ((RevitParamFilePath) chart[ChartFilePathIdx])?.FilePath ?? "is null");
+			win.WriteLineTab("Chart|        exists| " + ((RevitParamFilePath) chart[ChartFilePathIdx])?.Exists ?? "is null");
+			win.WriteLineTab("Chart|     worksheet| " + chart[ChartWorkSheetIdx]?.GetValue() ?? "is null");
+			win.WriteLineTab("Chart|    updateType| " + chart[ChartUpdateTypeIdx]?.GetValue() ?? "is null");
 			win.WriteLineTab("Chart|     hasErrors| " + chart.HasErrors + " (" + chart.ErrorCodeList.Count + ")");
-			// win.WriteLineTab("Chart|   cell Errors| " + chart.CellHasError);
 
 			win.WriteLine("");
 			win.WriteLineTab("Chart params");
@@ -971,13 +1015,13 @@ namespace SharedCode.DebugAssist
 
 		private void listRevitChartDataBasic(RevitChartData rcd)
 		{
-			win.WriteLineTab("R_ChartData|              name| " + rcd.Name);
+			win.WriteLineTab("R_ChartData|          sequence| " + rcd[SeqIdx]?.GetValue() ?? "is null");
+			win.WriteLineTab("R_ChartData|              name| " + rcd[NameIdx]?.GetValue() ?? "is null");
 			win.WriteLineTab("R_ChartData|          fam name| " + rcd.FamilyName);
-			win.WriteLineTab("R_ChartData|     cell fam name| " + rcd.CellFamilyName);
+			win.WriteLineTab("R_ChartData|     cell fam name| " + rcd[ChartCellFamilyNameIdx]?.GetValue() ?? "is null");
 			win.WriteLineTab("R_ChartData| anno sym fam name| " + rcd.AnnoSymbol.Symbol.FamilyName);
 			win.WriteLineTab("R_ChartData|          dynvalue| " + rcd.DynValue.ToString());
-			win.WriteLineTab("R_ChartData|          sequence| " + rcd.Sequence);
-			win.WriteLineTab("R_ChartData|        updatetype| " + rcd.UpdateType);
+			win.WriteLineTab("R_ChartData|        updatetype| " + rcd[ChartUpdateTypeIdx]?.GetValue() ?? "is null");
 		}
 
 		private void listRevitChartParams2(ARevitParam[] paramList)
@@ -1361,60 +1405,77 @@ namespace SharedCode.DebugAssist
 
 												win.TabUp("43");
 												{
-													win.WriteLineTab("label| key       | " + kvp3.Key);
-													win.WriteLineTab("label| value     | " + kvp3.Value.GetValue() ?? "is null");
-													win.WriteLineTab("label| parent cht| " + kvp3.Value.ParentChart?.ToString() ?? "is null");
-													win.WriteLineTab("label| excel file| " + kvp3.Value.ParentChart?.FilePath ?? "is null");
-													win.WriteLineTab("label| excel wsht| " + kvp3.Value.ParentChart?.WorkSheet ?? "is null");
+
+
 													win.WriteLineTab("label| has errors| " + kvp3.Value.HasErrors);
 
+													try
+													{
+														win.WriteLineTab("label| key       | " + kvp3.Key);
+														win.WriteLineTab("label| value     | " + kvp3.Value.GetValue() ?? "is null");
+														win.WriteLineTab("label| parent cht| " + kvp3.Value.ParentChart?.ToString() ?? "is null");
+														win.WriteLineTab("label| excel file| " + kvp3.Value.ParentChart?.FilePath ?? "is null");
+														// win.WriteLineTab("label| excel wsht| " + kvp3.Value.ParentChart?.WorkSheet ?? "is null");
 
-													if (kvp3.Value.HasErrors)
+														win.WriteLineTab("label| excel wsht| " + kvp3.Value.ParentChart[ChartWorkSheetIdx]?.GetValue() ?? "is null");
+
+
+														if (kvp3.Value.HasErrors)
+														{
+															win.Write("\n");
+															win.WriteLineTab("label errors| qty| " + kvp3.Value.ErrorCodeList.Count);
+
+															win.TabUp("label errors");
+															for (var i = 0; i < kvp3.Value.ErrorCodeList.Count; i++)
+															{
+																win.WriteTab("idx| " + i.ToString().PadRight(18));
+																win.WriteLine(" error code| " + kvp3.Value.ErrorCodeList[i]);
+															}
+
+															win.TabDn("label errors");
+														}
+
+
+														win.Write("\n");
+														win.WriteLineTab("label| parameters| ([RevitParamList])");
+
+														win.TabUp("45");
+														{
+															ARevitParam p3;
+
+														#region Label Parameters
+
+															for (var i = 0; i < kvp3.Value[PT_LABEL].Length; i++)
+															{
+																win.WriteTab("p3| " + i + "| ");
+
+																p3 = kvp3.Value[PT_LABEL][i];
+
+																if (p3 == null)
+																{
+																	win.WriteLine("is null / not used");
+																}
+																else
+																{
+																	win.WriteLine(p3.ParamDesc.ParameterName.PadRight(15)
+																		+ "  index| " + p3.ParamDesc.Index.ToString("D3")
+																		+ "  value| " + p3.GetValue() );
+																}
+															}
+
+														#endregion
+														}
+														win.TabDn("50");
+
+													}
+													catch
 													{
 														win.Write("\n");
-														win.WriteLineTab("label errors| qty| " + kvp3.Value.ErrorCodeList.Count);
-
-														win.TabUp("label errors");
-														for (var i = 0; i < kvp3.Value.ErrorCodeList.Count; i++)
-														{
-															win.WriteTab("idx| " + i.ToString().PadRight(18));
-															win.WriteLine(" error code| " + kvp3.Value.ErrorCodeList[i]);
-														}
-
-														win.TabDn("label errors");
+														win.WriteLineTab("*** label| has errors| error found - remainder skipped");
+														
 													}
 
 
-													win.Write("\n");
-													win.WriteLineTab("label| parameters| ([RevitParamList])");
-
-													win.TabUp("45");
-													{
-														ARevitParam p3;
-
-													#region Label Parameters
-
-														for (var i = 0; i < kvp3.Value[PT_LABEL].Length; i++)
-														{
-															win.WriteTab("p3| " + i + "| ");
-
-															p3 = kvp3.Value[PT_LABEL][i];
-
-															if (p3 == null)
-															{
-																win.WriteLine("is null / not used");
-															}
-															else
-															{
-																win.WriteLine(p3.ParamDesc.ParameterName.PadRight(15)
-																	+ "  index| " + p3.ParamDesc.Index.ToString("D3")
-																	+ "  value| " + p3.GetValue() );
-															}
-														}
-
-													#endregion
-													}
-													win.TabDn("50");
 												}
 												win.TabDn("52");
 											}

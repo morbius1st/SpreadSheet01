@@ -96,6 +96,29 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		DT_SEQUENCE
 	}
 
+	public enum ParamRootDataType
+	{
+		RT_INVALID = -1,
+		RT_IGNORE,
+		RT_TEXT,
+		RT_INTEGER,
+		RT_DOUBLE,
+		RT_BOOL
+	}
+
+	public enum ParamSubDataType
+	{
+		ST_INVALID = -1,
+		ST_NONE = 0,
+		ST_LABEL_TITLE,
+		ST_DATATYPE,
+		ST_FORMULA,
+		ST_FILE_PATH,
+		ST_UPDATE_TYPE,
+		ST_WORKSHEETNAME,
+		ST_SEQUENCE
+	}
+
 	public enum ValueStatus
 	{
 		DONE = 0,

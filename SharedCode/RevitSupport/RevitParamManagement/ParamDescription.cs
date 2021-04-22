@@ -3,8 +3,17 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using SpreadSheet01.RevitSupport.RevitCellsManagement;
-using UtilityLibrary;
+
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamClass;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamRootDataType;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamSubDataType;
+
+
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamExistReqmt;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamDataType;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamReadReqmt;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamMode;
 
 #endregion
 
@@ -30,6 +39,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			ParamType paramType,
 			ParamExistReqmt paramExist,
 			ParamDataType dataType,
+			ParamRootDataType rootType, 
+			ParamSubDataType subType,
 			ParamReadReqmt paramReadReqmt,
 			ParamMode paramMode)
 			// RevitCatagorizeParam.MakeParamDelegate makeParam = null)
@@ -40,6 +51,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			ParamClass = paramClass;
 			ParamType = paramType;
 			DataType = dataType;
+			RootType = rootType;
+			SubType = subType;
 			Exist = paramExist;
 			ReadReqmt = paramReadReqmt;
 			Mode = paramMode;
@@ -51,9 +64,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 	#region public properties
 
-		public static ParamDesc Empty => new ParamDesc("", "", -1, 
-			ParamClass.PC_INTERNAL, ParamType.PT_INTERNAL, ParamExistReqmt.EX_PARAM_MUST_EXIST, 
-			ParamDataType.DT_IGNORE, ParamReadReqmt.RD_VALUE_IGNORE, ParamMode.PM_NOT_USED);
+		public static ParamDesc Empty => new ParamDesc("", "", -1, PC_INTERNAL, PT_INTERNAL, 
+			EX_PARAM_MUST_EXIST, DT_IGNORE, RT_INVALID, ST_INVALID, RD_VALUE_IGNORE, PM_NOT_USED);
 
 
 		public string ParameterName {
@@ -65,15 +77,17 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				OnPropertyChanged();
 			}
 		}
-		public string ShortName	        { get; set; }
-		public int Index                { get; protected set; }
-		
-		public ParamClass ParamClass    { get; protected set; }
-		public ParamType ParamType           { get; protected set; }
-		public ParamDataType DataType   { get; protected set; }
-		public ParamExistReqmt Exist    { get; protected set; }
-		public ParamReadReqmt ReadReqmt { get; protected set; }
-		public ParamMode Mode           { get; protected set; }
+		public string ShortName	          { get; set; }
+		public int Index                  { get; protected set; }
+										  
+		public ParamClass ParamClass      { get; protected set; }
+		public ParamType ParamType        { get; protected set; }
+		public ParamDataType DataType     { get; protected set; }
+		public ParamRootDataType RootType { get; protected set; }
+		public ParamSubDataType SubType   { get; protected set; }
+		public ParamExistReqmt Exist      { get; protected set; }
+		public ParamReadReqmt ReadReqmt   { get; protected set; }
+		public ParamMode Mode             { get; protected set; }
 
 		public bool IsRequired => Exist == ParamExistReqmt.EX_PARAM_MUST_EXIST;
 
@@ -84,25 +98,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 	#endregion
 
 	#region public methods
-
-		// public void InvokeDelegate(Parameter param)
-		// {
-		// 	Debug.WriteLine("got invoke");
-		//
-		// 	if (MakeParam != null)
-		// 	{
-		// 		MakeParam.Invoke(param, this);
-		// 	}
-		// }
-
-
-
-		// public bool Match(string testShortName)
-		// {
-		// 	if (testShortName.IsVoid()) return false;
-		//
-		// 	return testShortName.Equals(shortName);
-		// }
 
 	#endregion
 

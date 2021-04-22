@@ -90,7 +90,7 @@
 					/>
 
 			<Button x:Name="BtnListChartsFamilies"
-					Content="Get one chart and&#13;list all cells"
+					Content="(#1) List Chart Families&#13;Get one chart and&#13;list all cells"
 					Margin="5"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Bottom"

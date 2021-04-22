@@ -59,9 +59,10 @@ namespace CellsTest.Windows
 
 	#region public properties
 
+		public RevitSystemManager RevitSystMgr => systMgr;
 
 
-		public RevitChartManager RevitSystMgr { get; } = new RevitChartManager();
+		// public RevitChartManager RevitSystMgr { get; } = new RevitChartManager();
 
 	#endregion
 
@@ -280,13 +281,13 @@ namespace CellsTest.Windows
 			return;
 
 
-			RevitSystMgr.PreProcessCharts(CellUpdateTypeCode.ALL);
-
-			listInfo.listAllChartsInfo(RevitSystMgr.Charts);
-
-			// proess labels
-
-			OnPropertyChange("RevitParamTests");
+			// RevitSystMgr.PreProcessCharts(CellUpdateTypeCode.ALL);
+			//
+			// listInfo.listAllChartsInfo(RevitSystMgr.Charts);
+			//
+			// // proess labels
+			//
+			// OnPropertyChange("RevitParamTests");
 		}
 
 		// private void errorTest()

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Autodesk.Revit.DB;
 using SpreadSheet01.Management;
@@ -8,7 +9,16 @@ using SpreadSheet01.RevitSupport.RevitParamValue;
 using static SpreadSheet01.Management.ErrorCodes;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
 
-//using static SharedCode.RevitSupport.RevitParamManagement.ErrorCodeList2;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamClass;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamReadReqmt;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamDataType;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamRootDataType;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamSubDataType;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamMode;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamExistReqmt;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamCat;
+using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamSubCat;
 
 
 // Solution:     SpreadSheet01
@@ -212,108 +222,222 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			}
 		}
 
-
-		private ARevitParam catagorizeParameter(Parameter param, ParamDesc pd, string name = "")
+		private ARevitParam ignoreParam(Parameter param, ParamDesc pd)
 		{
 			ARevitParam p = null;
 
-			// pd.InvokeDelegate(param);
-
-			switch (pd.DataType)
+			switch (pd.RootType)
 			{
-			case ParamDataType.DT_TEXT:
+			case RT_TEXT:
 				{
-					p = new RevitParamText(pd.ReadReqmt ==
-						ParamReadReqmt.RD_VALUE_IGNORE
-							? ""
-							: param.AsString(), pd);
+					p = new RevitParamText("", pd);
 					break;
 				}
-			case ParamDataType.DT_BOOL:
+			case RT_BOOL:
 				{
-					p = new RevitParamBool(
-						pd.ReadReqmt ==
-						ParamReadReqmt.RD_VALUE_IGNORE
-							? (bool?) false
-							: param.AsInteger() == 1, pd);
+					p = new RevitParamBool((bool?) false, pd);
 					break;
 				}
-			case ParamDataType.DT_NUMBER:
+			case RT_DOUBLE:
 				{
-					p = new RevitParamNumber(
-						pd.ReadReqmt ==
-						ParamReadReqmt.RD_VALUE_IGNORE
-							? double.NaN
-							: param.AsDouble(), pd);
+					p = new RevitParamNumber(double.NaN, pd);
 					break;
 				}
-			case ParamDataType.DT_FORMULA:
+			case RT_INTEGER:
 				{
-					p = new RevitParamFormula(pd.ReadReqmt ==
-						ParamReadReqmt.RD_VALUE_IGNORE
-							? ""
-							: param.AsString(), pd);
-					break;
-				}
-			case ParamDataType.DT_DATATYPE:
-				{
-					p = new RevitParamText(pd.ReadReqmt ==
-						ParamReadReqmt.RD_VALUE_IGNORE
-							? ""
-							: param.AsString(), pd);
-					break;
-				}
-			case ParamDataType.DT_FILE_PATH:
-				{
-					p = new RevitParamFilePath(pd.ReadReqmt ==
-						ParamReadReqmt.RD_VALUE_IGNORE
-							? ""
-							: param.AsString(), pd);
-					break;
-				}
-			case ParamDataType.DT_UPDATE_TYPE:
-				{
-					p = new RevitParamUpdateType(pd.ReadReqmt ==
-						ParamReadReqmt.RD_VALUE_IGNORE
-							? ""
-							: param.AsString(), pd);
-					break;
-				}
-			case ParamDataType.DT_WORKSHEETNAME:
-				{
-					p = new RevitParamWkShtName(pd.ReadReqmt ==
-						ParamReadReqmt.RD_VALUE_IGNORE
-							? ""
-							: param.AsString(), pd);
-					break;
-				}
-			case ParamDataType.DT_LABEL_TITLE:
-				{
-					p = new RevitParamLabel("", pd);
-					((RevitParamLabel) p).LabelValueName = param.Definition.Name;
-					break;
-				}
-			case ParamDataType.DT_INTEGER:
-				{
-					p = new RevitParamNumber(
-						pd.ReadReqmt ==
-						ParamReadReqmt.RD_VALUE_IGNORE
-							? double.NaN
-							: param.AsDouble(), pd);
-					break;
-				}
-			case ParamDataType.DT_SEQUENCE:
-				{
-					p = new RevitParamSequence(pd.ReadReqmt ==
-						ParamReadReqmt.RD_VALUE_IGNORE
-							? ""
-							: param.AsString(), pd);
+					p = new RevitParamInteger(Int32.MaxValue, pd);
 					break;
 				}
 			}
 
 			return p;
 		}
+
+
+
+
+		private ARevitParam catagorizeParameter(Parameter param, ParamDesc pd)
+		{
+			ARevitParam p = null;
+
+			// pd.InvokeDelegate(param);
+
+			if (pd.ReadReqmt == RD_VALUE_IGNORE)  return ignoreParam(param, pd);
+
+
+			switch (pd.RootType)
+			{
+			case RT_TEXT:
+				{
+					string text = param.AsString();
+
+					if (pd.SubType == ST_NONE)
+					{
+						p = new RevitParamText(text, pd);
+					}
+					else
+					{
+						p = subCatTextParameter(param, pd, text);
+					}
+
+					break;
+				}
+			case RT_BOOL:
+				{
+					p = new RevitParamBool(param.AsInteger() == 1, pd);
+					break;
+				}
+			case RT_DOUBLE:
+				{
+					p = new RevitParamNumber(param.AsDouble(), pd);
+					break;
+				}
+			case RT_INTEGER:
+				{
+					p = new RevitParamInteger(param.AsInteger(), pd);
+					break;
+				}
+			//
+			//
+			// case ParamDataType.DT_FORMULA:
+			// 	{
+			// 		p = new RevitParamFormula(pd.ReadReqmt ==
+			// 			ParamReadReqmt.RD_VALUE_IGNORE
+			// 				? ""
+			// 				: param.AsString(), pd);
+			// 		break;
+			// 	}
+			// case ParamDataType.DT_DATATYPE:
+			// 	{
+			// 		p = new RevitParamText(pd.ReadReqmt ==
+			// 			ParamReadReqmt.RD_VALUE_IGNORE
+			// 				? ""
+			// 				: param.AsString(), pd);
+			// 		break;
+			// 	}
+			// case ParamDataType.DT_FILE_PATH:
+			// 	{
+			// 		p = new RevitParamFilePath(pd.ReadReqmt ==
+			// 			ParamReadReqmt.RD_VALUE_IGNORE
+			// 				? ""
+			// 				: param.AsString(), pd);
+			// 		break;
+			// 	}
+			// case ParamDataType.DT_UPDATE_TYPE:
+			// 	{
+			// 		p = new RevitParamUpdateType(pd.ReadReqmt ==
+			// 			ParamReadReqmt.RD_VALUE_IGNORE
+			// 				? ""
+			// 				: param.AsString(), pd);
+			// 		break;
+			// 	}
+			// case ParamDataType.DT_WORKSHEETNAME:
+			// 	{
+			// 		p = new RevitParamWkShtName(pd.ReadReqmt ==
+			// 			ParamReadReqmt.RD_VALUE_IGNORE
+			// 				? ""
+			// 				: param.AsString(), pd);
+			// 		break;
+			// 	}
+			// case ParamDataType.DT_LABEL_TITLE:
+			// 	{
+			// 		p = new RevitParamLabel("", pd);
+			// 		((RevitParamLabel) p).LabelValueName = param.Definition.Name;
+			// 		break;
+			// 	}
+			//
+			// case ParamDataType.DT_SEQUENCE:
+			// 	{
+			// 		p = new RevitParamSequence(pd.ReadReqmt ==
+			// 			ParamReadReqmt.RD_VALUE_IGNORE
+			// 				? ""
+			// 				: param.AsString(), pd);
+			// 		break;
+			// 	}
+			}
+
+			return p;
+		}
+
+		
+		private ARevitParam subCatTextParameter(Parameter param, ParamDesc pd, string text)
+		{
+			ARevitParam p = null;
+
+			// pd.InvokeDelegate(param);
+
+			switch (pd.SubType)
+			{
+			case ST_FORMULA:
+				{
+					p = new RevitParamFormula(text, pd);
+					break;
+				}
+			case ST_DATATYPE:
+				{
+					p = new RevitParamText(text, pd);
+					break;
+				}
+			case ST_FILE_PATH:
+				{
+					p = new RevitParamFilePath(text, pd);
+					break;
+				}
+			case ST_UPDATE_TYPE:
+				{
+					p = new RevitParamUpdateType(text, pd);
+					break;
+				}
+			case ST_WORKSHEETNAME:
+				{
+					p = new RevitParamWkShtName(text, pd);
+					break;
+				}
+			case ST_LABEL_TITLE:
+				{
+					p = new RevitParamLabel("", pd);
+					((RevitParamLabel) p).LabelValueName = param.Definition.Name;
+					break;
+				}
+			case ST_SEQUENCE:
+				{
+					p = new RevitParamSequence(text, pd);
+					break;
+				}
+			}
+
+			return p;
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		// public delegate ARevitParam MakeParamDelegate(Parameter param, ParamDesc pd);
 		//

@@ -47,6 +47,8 @@ namespace RevitSupport.RevitChartManagement
 
 	#region ctor
 
+		private RevitChartManager() {}
+
 		public RevitChartManager(Application app, Document doc) : this()
 		{
 			this.app = app;
@@ -127,80 +129,6 @@ namespace RevitSupport.RevitChartManagement
 		{
 			return rvtSelect.FindGenericAnnotationByName(doc, chartFamilyName);
 		}
-
-
-		// private void getChartParams(ICollection<Element> chartFamilies)
-		// {
-		// 	foreach (Element el in chartFamilies)
-		// 	{
-		// 		RevitChartData chartData = revitCat.CatagorizeChartSymParams(el);
-		//
-		// 		chartData.RevitElement = el;
-		// 		chartData.AnnoSymbol = (AnnotationSymbol) el;
-		//
-		// 		string key;
-		//
-		// 		if (!chartData.IsValid)
-		// 		{
-		// 			key = "*** error *** (" + (++errorIdx).ToString("D3") + ")";
-		// 		}
-		// 		else
-		// 		{
-		// 			// fixed this
-		// 			// 	why 8 parameters
-		// 			key = RevitParamUtil.MakeAnnoSymKey(chartData,
-		// 				(int) RevitParamManager.NameIdx, (int) RevitParamManager.SeqIdx);
-		// 		}
-		//
-		// 		RevitChart chart = new RevitChart();
-		//
-		// 		chart.RevitChartData = chartData;
-		//
-		// 		Charts.Add(key, chart);
-		// 	}
-		// }
-
-
-
-		// // provide the list of cell families
-		// // process a chart and get the parameters for a family
-		// private bool processOneChart(RevitChart chart)
-		// {
-		// 	string cellFamilyTypeName = chart.RevitChartData.GetValue();
-		//
-		// 	ICollection<Element> cellElements
-		// 		= rvtSelect.GetCellFamilies(RevitDoc.Doc, cellFamilyTypeName);
-		//
-		// 	if (cellElements == null || cellElements.Count == 0) return false;
-		//
-		// 	chart.ListOfCellSyms = new Dictionary<string, RevitCellData>();
-		//
-		// 	foreach (Element cell in cellElements)
-		// 	{
-		// 		RevitCellData revitCellData = processCellFamily2(cell);
-		//
-		// 		chart.Add(revitCellData);
-		// 	}
-		//
-		// 	return true;
-		// }
-
-
-		// private RevitCellData processCellFamily2(Element el)
-		// {
-		// 	RevitCellData revitCellData = revitCat.catagorizeCellParams(el as AnnotationSymbol);
-		//
-		// 	if (!revitCellData.IsValid) return null;
-		//
-		// 	return revitCellData;
-		// }
-
-
-
-		// private void Reset()
-		// {
-		// 	Charts = new RevitCharts();
-		// }
 
 	#endregion
 

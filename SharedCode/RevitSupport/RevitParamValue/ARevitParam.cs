@@ -66,6 +66,22 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 
 	#endregion
 
+		// public static ARevitParam[] MakeDefaultParamList(int count)
+		// {
+		// 	ARevitParam invalid = Invalid;
+		//
+		// 	ARevitParam[] paramList = new ARevitParam[count];
+		//
+		// 	for (int i = 0; i < count; i++)
+		// 	{
+		// 		
+		// 		paramList[i] = invalid;
+		// 	}
+		//
+		// 	return paramList;
+		// }
+
+
 		public static ARevitParam Invalid
 		{
 			get
@@ -75,12 +91,22 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			}
 		}
 
+		public static ARevitParam Ignore
+		{
+			get
+			{
+				ARevitParam result = new RevitParamDefault(null);
+				result.ParamDesc = ParamDesc.Empty;
+				return result;
+			}
+		}
+
 	#endregion
 
 	#region public methods
 
 		public abstract dynamic GetValue();
-
+		
 		public void UpdateProperties()
 		{
 			OnPropertyChanged(nameof(DynValue));

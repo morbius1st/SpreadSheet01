@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using RevitSupport.RevitChartManagement;
+using SharedCode.FormulaSupport.FormulaManagement;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
@@ -24,6 +25,7 @@ namespace SharedCode.RevitSupport.RevitManagement
 
 		private RevitChartManager chartMgr;
 		private ManagementSupport mgmtSupport;
+		private FormulaManager fmMgr;
 
 	#endregion
 
@@ -31,7 +33,8 @@ namespace SharedCode.RevitSupport.RevitManagement
 
 		public RevitSystemManager()
 		{
-			chartMgr = new RevitChartManager();
+			fmMgr = new FormulaManager();
+			chartMgr = new RevitChartManager(fmMgr);
 			mgmtSupport = new ManagementSupport();
 
 		}
@@ -61,6 +64,10 @@ namespace SharedCode.RevitSupport.RevitManagement
 			return true;
 		}
 
+		public void ResetAllCharts()
+		{
+			chartMgr.ResetAllCharts();
+		}
 
 	#endregion
 

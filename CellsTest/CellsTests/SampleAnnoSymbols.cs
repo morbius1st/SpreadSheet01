@@ -267,7 +267,7 @@ namespace CellsTest.CellsTests
 			AddCellInstParam(SeqIdx        , ParamDataType.DT_TEXT         , seq);
 			AddCellInstParam(NameIdx       , ParamDataType.DT_TEXT         , name + chartIdx.ToString("D2"));
 			AddCellInstParam(Descdx        , ParamDataType.DT_TEXT         , "Description 0");
-			AddCellInstParam(HasErrorsIdx  , ParamDataType.DT_IGNORE       , "", 0.0, 1);
+			// AddCellInstParam(HasErrorsIdx  , ParamDataType.DT_IGNORE       , "", 0.0, 1);
 		}
 
 		private void addLabelParams(string labelIdx, string name, string datatype, string formula, string format, bool makeBad = false)
@@ -443,7 +443,7 @@ namespace CellsTest.CellsTests
 			AddChartInstParam(ChartWorkSheetIdx   , ParamDataType.DT_TEXT, "CsSheet 1");
 			AddChartInstParam(ChartCellFamilyNameIdx , ParamDataType.DT_TEXT, CELL_FAMILY_NAME);
 			AddChartInstParam(ChartUpdateTypeIdx  , ParamDataType.DT_UPDATE_TYPE, "Alyways");
-			AddChartInstParam(ChartHasErrorsIdx   , ParamDataType.DT_TEXT, "");
+			// AddChartInstParam(ChartHasErrorsIdx   , ParamDataType.DT_TEXT, "");
 
 			addCommonChartParams();
 		}
@@ -456,7 +456,7 @@ namespace CellsTest.CellsTests
 			AddChartInstParam(ChartWorkSheetIdx      , ParamDataType.DT_TEXT, "CsSheet 2");
 			AddChartInstParam(ChartCellFamilyNameIdx     , ParamDataType.DT_TEXT, "CsCellFamily02");
 			AddChartInstParam(ChartUpdateTypeIdx     , ParamDataType.DT_UPDATE_TYPE, "Alyways");
-			AddChartInstParam(ChartHasErrorsIdx      , ParamDataType.DT_TEXT, "");
+			// AddChartInstParam(ChartHasErrorsIdx      , ParamDataType.DT_TEXT, "");
 
 			addCommonChartParams();
 		}
@@ -469,7 +469,7 @@ namespace CellsTest.CellsTests
 			AddChartInstParam(NameIdx                , ParamDataType.DT_TEXT, "MyChartname2");
 			AddChartInstParam(ChartCellFamilyNameIdx     , ParamDataType.DT_TEXT, "CsCellFamily03");
 			AddChartInstParam(ChartUpdateTypeIdx     , ParamDataType.DT_UPDATE_TYPE, "Alyways");
-			AddChartInstParam(ChartHasErrorsIdx      , ParamDataType.DT_TEXT, "");
+			// AddChartInstParam(ChartHasErrorsIdx      , ParamDataType.DT_TEXT, "");
 
 			addCommonChartParams();
 		}
@@ -483,7 +483,7 @@ namespace CellsTest.CellsTests
 			AddChartInstParam(ChartWorkSheetIdx      , ParamDataType.DT_TEXT, "CsSheet 2");
 			AddChartInstParam(ChartCellFamilyNameIdx     , ParamDataType.DT_TEXT, "CsCellFamily04");
 			AddChartInstParam(ChartUpdateTypeIdx     , ParamDataType.DT_UPDATE_TYPE, "Alyways");
-			AddChartInstParam(ChartHasErrorsIdx      , ParamDataType.DT_TEXT, "");
+			// AddChartInstParam(ChartHasErrorsIdx      , ParamDataType.DT_TEXT, "");
 
 			addCommonChartParams();
 		}
@@ -497,7 +497,7 @@ namespace CellsTest.CellsTests
 			// AddChartInstParam(ChartWorkSheetIdx      , ParamDataType.DT_TEXT, "CsSheet 1");
 			AddChartInstParam(ChartCellFamilyNameIdx     , ParamDataType.DT_TEXT, "CsCellFamily05");
 			AddChartInstParam(ChartUpdateTypeIdx     , ParamDataType.DT_UPDATE_TYPE, "Alyways");
-			AddChartInstParam(ChartHasErrorsIdx      , ParamDataType.DT_TEXT, "");
+			// AddChartInstParam(ChartHasErrorsIdx      , ParamDataType.DT_TEXT, "");
 
 			addCommonChartParams();
 		}

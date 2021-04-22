@@ -9,14 +9,17 @@ using System.Drawing.Printing;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
+using SharedCode.FormulaSupport.FormulaManagement;
 using SharedCode.RevitSupport.RevitParamManagement;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
 using SpreadSheet01.RevitSupport.RevitParamValue;
-using UtilityLibrary;
-using static SpreadSheet01.RevitSupport.RevitParamManagement.RevitParamManager;
 
+
+using static SpreadSheet01.RevitSupport.RevitParamManagement.RevitParamManager;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
+
+using FormulaManager = SharedCode.FormulaSupport.FormulaManagement.FormulaManager;
 
 //using static SharedCode.RevitSupport.RevitParamManagement.ErrorCodeList2;
 #endregion
@@ -162,37 +165,23 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	}
 
 	// root with a collection of Chart Families
-	public class RevitCharts : RevitContainers<RevitChart>, IEnumerable<RevitLabel>
+	public class RevitCharts : RevitContainers<RevitChart> //, IEnumerable<RevitLabel>
 	{
-		public RevitCharts(string name)
+		public RevitCharts(string name, FormulaManager fm)
 		{
 			Name = name;
+			FormulaManager = fm;
 		}
 
 		public string Name { get; private set;}
 
 		public Dictionary<string, RevitChart> ListOfCharts => Containers;
 
+		public FormulaManager FormulaManager { get; private set; }
+
 		public bool Add(string key, RevitChart container)
 		{
 			return base.Add(key, container);
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
-
-		public IEnumerator<RevitLabel> GetEnumerator()
-		{
-			foreach (KeyValuePair<string, RevitChart> kvp1 in ListOfCharts)
-			{
-				foreach (KeyValuePair<string, RevitLabel> kvp2 in kvp1.Value.AllCellLabels)
-				{
-					yield return kvp2.Value;
-				}
-			}
-			
 		}
 
 		public override string ToString()
@@ -204,14 +193,13 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	// one chart family with a collection of cell families
 	public class RevitChart : RevitContainers<RevitCellData>
 	{
-		// key is sequence number first then name in the format of
-		// 《    #》{name}
-		public RevitChart()
+		private RevitChart() {}
+		public RevitChart(RevitCharts charts)
 		{
-
+			ParentCharts = charts;
 			// ChartFamily = chartFamily;
 			ListOfCellSyms = new Dictionary<string, RevitCellData>();
-			AllCellLabels = new SortedDictionary<string, RevitLabel>();
+			AllCellLabels = new Dictionary<string, RevitLabel>();
 		}
 
 		public Dictionary<string, RevitCellData> ListOfCellSyms
@@ -220,10 +208,11 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			set => Containers = value;
 		}
 
-		public SortedDictionary<string, RevitLabel> AllCellLabels { get; private set; }
-			= new SortedDictionary<string, RevitLabel>();
+		public Dictionary<string, RevitLabel> AllCellLabels { get; private set; }
 
 		public ARevitParam this[int idx] => RevitChartData[PT_INSTANCE, idx];
+
+		public RevitCharts ParentCharts { get; set; }
 
 		// parameter information for the chart symbol
 		public RevitChartData RevitChartData { get; set; }
@@ -238,7 +227,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	}
 		public string Sequence2 => this[SeqIdx].GetValue();
 		public string Sequence => ((RevitParamSequence) this[SeqIdx]).AsString();
-
 		public string Description => this[Descdx].GetValue();
 		public string IntName => this[IntNameIdx].GetValue();
 		public string Developer => this[DevelopIdx].GetValue();
@@ -247,8 +235,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		public string WorkSheet => this[ChartWorkSheetIdx].GetValue();
 
 		public string CellFamilyName => this[ChartCellFamilyNameIdx].GetValue();
-
-		// public bool CellHasError { get; set; }
 
 		public CellUpdateTypeCode UpdateType => RevitChartData.UpdateType;
 
@@ -302,6 +288,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 					key = seq + kvp.Key;
 					kvp.Value.InternalKey = key;
 					AllCellLabels.Add(key, kvp.Value);
+					ParentCharts.FormulaManager.AllCellLabels.Add(key, kvp.Value);
 				}
 				catch
 				{
@@ -314,7 +301,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public static RevitChart Invalid()
 		{
-			RevitChart cht = new RevitChart();
+			RevitChart cht = new RevitChart(null);
 			cht.RevitChartData = new RevitChartData(ChartFamily.Invalid);
 			cht.RevitChartData.ErrorCode = ErrorCodes.INVALID_DATA_FORMAT_CS000I10;
 			cht.ErrorCode = ErrorCodes.INVALID_DATA_FORMAT_CS000I10;
@@ -353,15 +340,20 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		public ChartFamily ChartFamily { get; private set; }
 		public CellFamily CellFamily => ChartFamily.CellFamily;
 
+		public ARevitParam this[int idx] => this[PT_INSTANCE, idx];
+
 		public string FamilyName => AnnoSymbol?.Symbol.FamilyName ?? null;
 		public string Name => this[ParamType.PT_INSTANCE, NameIdx].GetValue();
 		public string Sequence2 => this[ParamType.PT_INSTANCE, SeqIdx].GetValue();
 		public string Sequence => SeqString;
 
-
 		public string CellFamilyName => this[ParamType.PT_INSTANCE, ChartCellFamilyNameIdx].GetValue();
 
 		public CellUpdateTypeCode UpdateType => ((RevitParamUpdateType) this[PT_INSTANCE, ChartUpdateTypeIdx]).UpdateType;
+
+		public AnnotationSymbol AnnoSymbol { get; set; }
+
+		public Element RevitElement { get; set; }
 
 		public override dynamic GetValue()
 		{
@@ -378,11 +370,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 			}
 		}
 
-		public AnnotationSymbol AnnoSymbol { get; set; }
-
-		public Element RevitElement { get; set; }
-
-		
 		public void ValidateMustExist()
 		{
 			for (int i = 0; i < NumberOfLists; i++)
@@ -395,6 +382,16 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 			}
 		}
+
+
+		// private void configParamList()
+		// {
+		// 	for (var i = 0; i < this[PT_INSTANCE].Length; i++)
+		// 	{
+		// 		this[PT_INSTANCE][i] = ARevitParam.Invalid;
+		// 	}
+		//
+		// }
 
 		public override string ToString()
 		{
