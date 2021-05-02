@@ -106,7 +106,8 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			set(value);
 		}
 
-		public override dynamic GetValue() => dynValue.AsString();
+		// public override dynamic GetValue() => dynValue.AsString();
+		public override dynamic GetValue() => this.AsString();
 
 		public new string AsString()
 		{

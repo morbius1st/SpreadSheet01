@@ -20,6 +20,12 @@ using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
 using Parameter = Autodesk.Revit.DB.Parameter;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.RevitParamManager;
 
+
+#if  NOREVIT
+using CellsTest.Windows;
+#endif
+
+
 #endregion
 
 // user name: jeffs
@@ -36,11 +42,16 @@ namespace SharedCode.DebugAssist
 			this.win = win;
 		}
 
-	#if NOREVIT
 		public RevitSystemManager RevitSystMgr { get; } = new RevitSystemManager();
 
-		public void listProcess()
+	#if NOREVIT
+
+		public void listLablesAndFormulas()
 		{
+			foreach (KeyValuePair<string, RevitLabel> formulasAllCellLabel in RevitSystMgr.Formulas.AllCellLabels)
+			{
+				
+			}
 			win.WriteLine("Get All Charts / List labels and formulas| start");
 			bool result;
 
@@ -85,7 +96,7 @@ namespace SharedCode.DebugAssist
 
 			// get all of the revit chart families and 
 			// process each to get its parameters
-			result = RevitSystMgr.CollectCharts(CellUpdateTypeCode.STANDARD);
+			result = RevitSystMgr.CollectAndPreProcessCharts(CellUpdateTypeCode.STANDARD);
 
 			if (!result) return;
 
@@ -149,7 +160,7 @@ namespace SharedCode.DebugAssist
 
 			// get all of the revit chart families and 
 			// process each to get its parameters
-			result = RevitSystMgr.CollectCharts(CellUpdateTypeCode.STANDARD);
+			result = RevitSystMgr.CollectAndPreProcessCharts(CellUpdateTypeCode.STANDARD);
 
 			if (!result)
 			{
@@ -179,6 +190,8 @@ namespace SharedCode.DebugAssist
 		// public void listSample(ICollection<Element>chartSymbols, ICollection<Element>[] symbols)
 		public void listSample(ICollection<Element>chartSymbols, Dictionary<string, ICollection<Element>> symbols)
 		{
+			
+			MainWindow.myTrace.TraceInformation("listSample| Start");
 			win.showTabId = false;
 			win.TabClr("");
 			win.WriteLineTab("listing #1");
@@ -219,6 +232,10 @@ namespace SharedCode.DebugAssist
 			win.TabDn("list symbols end");
 
 			win.ShowMessage();
+
+			MainWindow.myTrace.TraceInformation("listSample| End");
+			// MainWindow.myTrace.Flush();
+
 		}
 
 	#endregion
@@ -418,7 +435,7 @@ namespace SharedCode.DebugAssist
 			}
 		}
 
-		private int[] phw1 = new [] {23, 12, 16, 12, 18, 12, 16, 22, 24 };
+		private int[] phw1 = new [] {23, 12, 12, 18, 12, 16, 22, 24 };
 
 		private void listParamHeader()
 		{
@@ -435,7 +452,7 @@ namespace SharedCode.DebugAssist
 			win.WriteTab("|idx");
 			win.Write(" | name"       .PadRight(phw1[i++]+2, '-'));
 			win.Write(" | short-name" .PadRight(phw1[i++]+2, '-'));
-			win.Write(" | dt type"    .PadRight(phw1[i++]+2, '-'));
+			// win.Write(" | dt type"    .PadRight(phw1[i++]+2, '-'));
 			win.Write(" | rt type"    .PadRight(phw1[i++]+2, '-'));
 			win.Write(" | sub type"   .PadRight(phw1[i++]+2, '-'));
 			win.Write(" | pm class"   .PadRight(phw1[i++]+2, '-'));
@@ -457,7 +474,7 @@ namespace SharedCode.DebugAssist
 			win.WriteTab("| " + $"{pd.Index, 2:#0} ");
 			win.Write   ("| " + pd.ParameterName  .PadRight(phw1[i++]));
 			win.Write   ("| " + pd.ShortName      .PadRight(phw1[i++]));
-			win.Write   ("| " + pd.DataType       .ToString().PadRight(phw1[i++]));
+			// win.Write   ("| " + pd.DataType       .ToString().PadRight(phw1[i++]));
 			win.Write   ("| " + pd.RootType       .ToString().PadRight(phw1[i++]));
 			win.Write   ("| " + pd.SubType        .ToString().PadRight(phw1[i++]));
 			win.Write   ("| " + pd.ParamClass     .ToString().PadRight(phw1[i++]));
@@ -482,7 +499,6 @@ namespace SharedCode.DebugAssist
 
 			win.TabUp("start");
 			{
-				
 				listLabsAndFormsSummary(charts);
 			}
 			win.TabDn("end");
@@ -564,7 +580,6 @@ namespace SharedCode.DebugAssist
 			}
 			win.TabDn("labels summary");
 
-
 		}
 
 		private void listChartExcelInfo(RevitChart chart)
@@ -574,10 +589,10 @@ namespace SharedCode.DebugAssist
 
 			win.TabUp("excel info");
 			{
+				win.WriteLineTab("excel info| file path|" + chart.FilePath);
 				win.WriteTab("excel info| worksheet| " +
 					(chart.RevitChartData[PT_INSTANCE][RevitParamManager.ChartWorkSheetIdx]?.DynValue.AsString() ?? "is null").PadRight(12));
-				win.Write("exists| " + chart.Exists.ToString().PadRight(8));
-				win.WriteLine(" file path|" + chart.FilePath);
+				win.WriteLine("exists| " + chart.Exists.ToString().PadRight(8));
 			}
 			win.TabDn("chart ");
 		}
@@ -585,7 +600,9 @@ namespace SharedCode.DebugAssist
 		private void listLabels(RevitCharts charts)
 		{
 			int idx = 0;
-			foreach (KeyValuePair<string, RevitLabel> kvp in charts.FormulaManager.AllCellLabels)
+			// foreach (KeyValuePair<string, RevitLabel> kvp in charts.FormulaManager.AllCellLabels)
+
+			foreach (KeyValuePair<string, RevitLabel> kvp in RevitSystMgr.Formulas.AllCellLabels)
 			{
 				RevitLabel label = kvp.Value;
 
@@ -607,7 +624,7 @@ namespace SharedCode.DebugAssist
 				{
 					RevitLabel label = kvp.Value;
 
-					listLabel(label, i);
+					listLabel(label, i++);
 					
 
 					// // win.WriteTab("idx| " + i++.ToString("{3:##0}"));
@@ -628,47 +645,72 @@ namespace SharedCode.DebugAssist
 			win.TabDn("list labels");
 		}
 
+		// private int[] phw2 = new [10] {26, 16, 21, 12, 5};
+		private int[] phw2 = new int[20];
+
 		private void listLabelHeader()
 		{
+			int i = 0;
+
 			win.WriteTab("|".PadRight(32));
 			win.Write(" | parent".PadRight(16));
 			// win.Write(" | cell".PadRight(15));
 			win.Write("\n");
 
 			win.WriteTab("|idx");
-			win.Write("| key ".PadRight(28,'-'));
-			win.Write(" | chart name ".PadRight(18, '-'));
-			win.Write(" | cell data name ".PadRight(23,'-'));
-			win.Write(" | label ".PadRight(14,'-'));
-			win.Write(" | id ".PadRight(7,'-'));
+
+			phw2[i] = 26;
+			win.Write("| key ".PadRight(phw2[i++] + 2,'-'));
+
+			phw2[i] = 16;
+			win.Write(" | chart name ".PadRight(phw2[i++] + 2, '-'));
+
+			phw2[i] = 21;
+			win.Write(" | cell data name ".PadRight(phw2[i++] + 2,'-'));
+
+			phw2[i] = 14;
+			win.Write(" | label Name".PadRight(phw2[i++] + 2,'-'));
+
+			phw2[i] = 5;
+			win.Write(" | id ".PadRight(phw2[i++] + 2, '-'));
+
+			phw2[i] = 20;
+			win.Write(" | formula status".PadRight(phw2[i++] + 2,'-'));
+
 			win.Write(" | formula ---------------------------");
 			win.Write("\n");
 
 			win.WriteLineTab("|"+"-".Repeat(134));
 		}
 
-		private void listLabel(RevitLabel label, int i)
+		private void listLabel(RevitLabel label, int j)
 		{
+			int i = 0;
+
 			string name;
 
-			win.WriteTab("| " + $"{i++,2:#0}");
-			win.Write("| >" +  (label.InternalKey + "<").PadRight(26));
+			win.WriteTab("| " + $"{j,2:#0}");
+			win.Write("| >" +  (label.InternalKey + "<").PadRight(phw2[i++]));
 			// win.Write(" chart seq| >" +  (label.ParentChart.Sequence + "<").PadRight(12));
 			// win.Write(" cell data seq| >" +  (label.RevitCellData.Sequence + "<").PadRight(12));
 			// win.Write(" cellName| " + label.RevitCellData.Name.PadRight(20));
 
 			name = (label.ParentChart.HasErrors ? "*" : "") + label.ParentChart.Name;
 
-			win.Write("| " +  name.PadRight(16));
+			win.Write("| " +  name.PadRight(phw2[i++]));
 
 			name = (label.RevitCellData.HasErrors ? "*" : "") + label.RevitCellData.Name;
 
-			win.Write("| " +  name.PadRight(21));
+			win.Write("| " +  name.PadRight(phw2[i++]));
 
 			name = (label.HasErrors ? "*" : "") + label.Label;
 
-			win.Write("| " +  name.PadRight(12));
 			win.Write("| " +  $"{label.LabelId,3:#0}  ");
+
+			win.Write("| " +  name.PadRight(phw2[i++]));
+
+			win.Write("| " +  label.FormulaStatus.ToString().PadRight(phw2[i++]));
+
 			// win.Write("| " +  label.HasErrors.ToString().PadRight(7));
 			win.Write("| " +  label.Formula);
 			win.Write("\n");
@@ -1132,6 +1174,7 @@ namespace SharedCode.DebugAssist
 		{
 			win.TabUp("list labels");
 			{
+				win.WriteLine("\n");
 				win.WriteLineTab("list all labels ");
 
 				win.TabUp("list labels");

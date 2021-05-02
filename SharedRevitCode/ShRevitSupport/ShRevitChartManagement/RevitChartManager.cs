@@ -47,8 +47,6 @@ namespace RevitSupport.RevitChartManagement
 
 	#region ctor
 
-		private RevitChartManager() {}
-
 		public RevitChartManager(Application app, Document doc) : this()
 		{
 			this.app = app;

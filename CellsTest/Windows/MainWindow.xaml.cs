@@ -1,7 +1,10 @@
 ﻿#region using
 
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
@@ -53,9 +56,12 @@ namespace CellsTest.Windows
 			listInfo = new ListInfo<MainWindow>(this);
 
 			tests01 = new Tests01(this);
+
+			configTrace();
 		}
 
 	#endregion
+
 
 	#region public properties
 
@@ -160,6 +166,94 @@ namespace CellsTest.Windows
 
 	#region event consuming
 
+		private void BtnSplit1_OnClick(object sender, RoutedEventArgs e)
+		{
+			WriteLineTab("SplitTest 1");
+
+			tests01.splitTest1();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 1");
+		}
+		
+		private void BtnSplit2_OnClick(object sender, RoutedEventArgs e)
+		{
+			WriteLineTab("SplitTest 2");
+
+			tests01.splitTest2();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 2");
+		}
+		
+		private void BtnSplit3_OnClick(object sender, RoutedEventArgs e)
+		{
+			WriteLineTab("SplitTest 3");
+
+			tests01.splitTest3();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 3");
+		}
+			
+		private void BtnSplit5_OnClick(object sender, RoutedEventArgs e)
+		{
+			WriteLineTab("SplitTest 5");
+
+			tests01.splitTest5();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 5");
+		}
+			
+		private void BtnSplit6_OnClick(object sender, RoutedEventArgs e)
+		{
+			WriteLineTab("SplitTest 6");
+
+			tests01.splitTest6();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 6");
+		}
+					
+		private void BtnSplit7_OnClick(object sender, RoutedEventArgs e)
+		{
+			WriteLineTab("SplitTest 7");
+
+			tests01.splitTest7();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 7");
+		}
+								
+		private void BtnSplit8_OnClick(object sender, RoutedEventArgs e)
+		{
+			WriteLineTab("SplitTest 8");
+
+			tests01.splitTest8();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 8");
+		}
+											
+		private void BtnSplit9_OnClick(object sender, RoutedEventArgs e)
+		{
+			WriteLineTab("SplitTest 9");
+
+			tests01.splitTest9();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 9");
+		}
+			
 		private void BtnReset_OnClick(object sender, RoutedEventArgs e)
 		{
 			sb = new StringBuilder("Reset\n");
@@ -170,11 +264,11 @@ namespace CellsTest.Windows
 			Debug.WriteLine("@List Params");
 		}
 				
-		private void BtnProcess_OnClick(object sender, RoutedEventArgs e)
+		private void BtnLabelsAndFormulas_OnClick(object sender, RoutedEventArgs e)
 		{
-			listInfo.listProcess();
+			listInfo.listLablesAndFormulas();
 
-			Debug.WriteLine("@List errors");
+			Debug.WriteLine("@List listLablesAndFormulas");
 		}
 						
 		private void BtnListErrors_OnClick(object sender, RoutedEventArgs e)
@@ -221,18 +315,22 @@ namespace CellsTest.Windows
 
 		private void BtnListSamples_OnClick(object sender, RoutedEventArgs e)
 		{
+			myTrace.TraceEvent(TraceEventType.Information, 1, "List Sample| Init");
+
 			SampleAnnoSymbols sample = new SampleAnnoSymbols();
 			sample.Process(RevitParamManager.CHART_FAMILY_NAME);
 			
 			// listInfo.listSample(sample.ChartElements, sample.CellElements);
+			myTrace.TraceEvent(TraceEventType.Information, 2, "List Sample| Start");
 			listInfo.listSample(sample.ChartElements, sample.CellSyms);
+			myTrace.TraceEvent(TraceEventType.Information, 3, "List Sample| Start");
 
 			Debug.WriteLine("@Debug");
 		}
 
 		private void BtnProcessStandard_OnClick(object sender, RoutedEventArgs e)
 		{
-			systMgr.CollectCharts(CellUpdateTypeCode.STANDARD);
+			systMgr.CollectAndPreProcessCharts(CellUpdateTypeCode.STANDARD);
 
 			Debug.WriteLine("@process normal");
 		}
@@ -247,6 +345,15 @@ namespace CellsTest.Windows
 			// SampleAnnoSymbols2 s2 = new SampleAnnoSymbols2();
 			// s2.Process(RevitParamManager.CHART_FAMILY_NAME);
 
+			/*
+			// enable trace
+			myTrace.Switch.Level = SourceLevels.All;
+			writerListener.Filter = new EventTypeFilter(SourceLevels.All);
+
+			writerListener.WriteLine(DateTime.Now);
+			writerListener.WriteLine("This line gets auto flushed");
+			*/
+
 			Debug.WriteLine("@Debug");
 		}
 
@@ -256,38 +363,9 @@ namespace CellsTest.Windows
 
 			WriteLineTab("Loaded...");
 
-			bool result;
-
-			// tests01.splitTest5();
-			// tests01.ProcessFormulaSupport.Tests();
-
-			// tests01.ests();
-			// tests01.tests2();
-			// tests01.test3();
-
-			// return;
-
-			// test that the params have been defined
-			// RevitParamTests.Process();
-
-			// get all of the revit chart families and 
-			// process each to get its parameters
-			// result = RevitSystMgr.CollectAllCharts();
-			//
-			// if (!result) return;
-			//
-			// listInfo.listCharts(RevitSystMgr.Charts);
+			ShowMessage();
 
 			return;
-
-
-			// RevitSystMgr.PreProcessCharts(CellUpdateTypeCode.ALL);
-			//
-			// listInfo.listAllChartsInfo(RevitSystMgr.Charts);
-			//
-			// // proess labels
-			//
-			// OnPropertyChange("RevitParamTests");
 		}
 
 		// private void errorTest()
@@ -300,6 +378,39 @@ namespace CellsTest.Windows
 		// }
 
 	#endregion
+
+		public static TraceSource myTrace = new TraceSource("CellsTest");
+		private TextWriterTraceListener writerListener;
+
+
+		private void configTrace()
+		{
+			string fileName = "trace.log";
+			string path = AppDomain.CurrentDomain.BaseDirectory;
+			string filepath = path + fileName;
+
+			if (File.Exists(filepath))
+			{
+				File.Delete(filepath);
+			}
+
+			myTrace.Switch = new SourceSwitch("SourceSwitch", "Off");
+			
+			myTrace.Listeners.Remove("Default");
+
+			writerListener = new TextWriterTraceListener("trace.log");
+
+			writerListener.Filter = new EventTypeFilter(SourceLevels.Off);
+
+			myTrace.Listeners.Add(writerListener);
+
+			Trace.AutoFlush = true;
+			
+
+		}
+
+
+
 
 	#region event publishing
 

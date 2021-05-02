@@ -1,14 +1,15 @@
 ﻿#region using
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
+using System.Windows.Media.Animation;
 using CellsTest.Windows;
 using UtilityLibrary;
-
 using static CellsTest.Windows.MainWindow;
-
-
 using SharedCode.FormulaSupport;
 using UtilityLibrary;
 
@@ -21,35 +22,34 @@ namespace CellsTest.CellsTests
 {
 	public class Tests01
 	{
-		#region private fields
 
-			private static MainWindow win;
+		private const int MAX_PREN_DEPTH = 6;
 
-		#endregion
+	#region private fields
 
-		#region ctor
+		private static MainWindow win;
 
-			public Tests01(MainWindow win1)
-			{
-				win = win1;
-			}
+	#endregion
 
-		#endregion
+	#region ctor
 
-		#region public properties
+		public Tests01(MainWindow win1)
+		{
+			win = win1;
+		}
 
+	#endregion
 
+	#region public properties
 
-		#endregion
+	#endregion
 
-		#region private properties
+	#region private properties
 
+	#endregion
 
+	#region public methods
 
-		#endregion
-
-		#region public methods
-		
 		internal static class rxx
 		{
 			static string patt = @"\s*(?<E>=?)(?<eq1>.*?)\{(?:(?<keyvar>[\$\#\%\!\@].*?)|(?<keyvar>\[.*?\]))\}|\s*(?<E>=?)(?<eq2>.+$)";
@@ -95,7 +95,6 @@ namespace CellsTest.CellsTests
 				return varList;
 			}
 		}
-
 
 		internal static class rx
 		{
@@ -188,7 +187,6 @@ namespace CellsTest.CellsTests
 			}
 		}
 
-
 		internal void splitTest6()
 		{
 			win.WriteLine("split test 6");
@@ -254,8 +252,399 @@ namespace CellsTest.CellsTests
 			Debug.WriteLine("splitest 6| done");
 		}
 
+		internal void splitTest7()
+		{
+			win.WriteLine("split test 7");
+			win.WriteLine("splitting| ");
 
-		internal void splitTest()
+			int count = 70;
+
+			string[] test = new string[count];
+
+			test[1] = "{[ 1addd1 ]} = {[a1]}";
+			test[2] = " {[a1]} = {[a1]}";
+			test[3] = " {[a1]} = \"this 1 is a test\"";
+			test[4] = "= {#b1}";
+			test[5] = "= {!c1a} ";
+			test[6] = "= {$dd}";
+			test[7] = "=  {#E1}";
+			test[8] = "= {%F1}";
+			test[9] = "={@H1}";
+			test[10] = "={@cellname: }";
+			test[11] = "={@cellname1:label1name}";
+			test[12] = "={@chartname1:cellname:labelname}";
+			test[13] = "={@a]H1]}";
+			test[14] = "{#b1}";
+			test[15] = "= {#b1}";
+			test[16] = "={#b1}";
+			test[17] = "a{#b1}";
+			test[18] = "function(test)";
+			test[19] = "a(x+b)";
+			test[20] = "= 1234 + function(ddd) + asdf";
+			test[21] = "= asf + function(afadf) + asf";
+			test[22] = "= {asf}";
+			test[23] = "12";
+			test[24] = "={asf]}";
+			test[25] = "abcdef";
+			test[26] = "abcdfg";
+			test[27] = "{a}def";
+			test[28] = "{[1abc]}def";
+			test[29] = "{[abc]}=";
+			test[30] = "{[abc]}   =";
+			test[31] = " = {[abc]}";
+			test[32] = " ={[abc]}";
+			test[33] = "={@xEz9999} ";
+			test[34] = "={[ a1]}";
+			test[35] = "={[ a1 ]}}";
+			test[36] = "=12 + {[aaa12345]} asdf ";
+			test[37] = "={[ aaa12345 ]}";
+			test[38] = "={[ A112345 ]}";
+			test[39] = " {[abc]} = \"cellname:time\" & {@Bx4} + \"asf\" +{@x3} & \"dfdfd + asf\"  ";
+			test[40] = " {[abc]} = \"cell:name : time\" & {@Bx4} + \"asf\" +{@x3} & \"dfdfd + asf\"  ";
+			test[41] = " {[abc]} = \"cellname :time\" & {@Bx4} + \"asf\" +{@x3} & \"dfdfd + asf\"  ";
+			test[42] = " {[abc]} = {@Bx4]} & \"this time\"+{@Bx4} + \"asf\" +{@x3} \"dfdfd + asf\"  ";
+			test[43] = "={@Bx4]} & \"this time\"+{@Bx4} + asf +{@x3} dfdfd + asf";
+			test[44] = "={!Bx4]}+\"this time\"+{![Bx4]} + asf +{[x3} dfdfd";
+			test[45] = "={%Bx2}+\"this time\"+{%[Bx1]} + asf +{@[x1]} dfdfd";
+			test[46] = "= asdf {#[Bx1]}+\"this time\"+{#[Bx1]} + asf +{@[x1]} dfdfd";
+			test[47] = "={@[A1]} +\"this time\"+ {@[B1]} +\"this time\"+ {@[C1]}   ";
+			test[48] = "={@[A1]} +\"this time\"+ {$[variable]} +\"this time\"+ {@[C1]} + {$[]} dfadsf ";
+			test[49] = "= asf asdf asf + {[A1]} +\"this time\"+ {$variable} +\"this time\"+ {[C1]} + {$} dfadsf ";
+			test[50] = "= asf asdf asf + {[A1]} +\"this time\"+ {$variable} +\"this time\"+ {[C1]} + {$} dfadsf ";
+			test[51] = "={#bx1}+\"this time\"+{#bx2} + asf +{[x1]} dfdfd";
+			test[52] = "={%bx4}+\"this time\"+{%bx5} + asf +{[x1]} dfdfd";
+			test[53] = "={!Bx4}+\"this time\"+{!Bx4} + asf +{[x3} dfdfd";
+			test[54] = "{#cx1}={[Bx4]}+\"this time\"+{[Bx4]} + asf +{[x3} dfdfd + asf";
+			test[55] = "{#dx1)}={[Bx4]}";
+			test[56] = "={[A1]}";
+			test[57] = "={$A1}";
+			test[58] = "={#ex1}";
+			test[59] = "={%bx6}";
+			test[60] = "={!A1}";
+			test[61] = "={@A1}";
+
+			string[] pattCodes = new [] {"eq", "op", "dx", "vx", "fx", "sx", "ex"};
+
+			string[] patt = new string[5];
+
+			// extract basic components
+			patt[0] = @"(?<eq>=)|(?<op>[+&])|(?<dx>\d+)|(?<vx>{[^{]+})|(?<fx>\p{L}(?>\p{L})*(?=\()\(.+\))|(?<sx>""[^""]+"")|(?<e1>\b\w+\b)";
+
+			// validate an excell address
+			patt[1] = @"(?<name>(?i:([a-w]?[a-z]{1,2}|x[a-f][a-d])\d{1,7}))";
+
+			// validate a cell name - replace with pure code
+			patt[2] = @"(?<name>[a-zA-Z]\w{1,23})";
+
+			// validate a parameter name
+			// use code - starts with a letter, unlimited letters/numbers follow
+			Regex r = new Regex(patt[0], RegexOptions.ExplicitCapture);
+
+			for (int i = 0; i < count; i++)
+			{
+				if (test[i] == null) continue;
+
+				win.WriteLine("testing| " + test[i]);
+
+				MatchCollection c = r.Matches(test[i]);
+
+				if (c.Count < 1)
+				{
+					win.WriteLine("*** MATCH FAILED ***");
+					continue;
+				}
+
+				win.WriteLine("found| " + c.Count);
+
+				foreach (Match m in c)
+				{
+					// win.Write("\n");
+					// win.WriteLine("found| Groups| " + m.Groups.Count);
+
+					for (var j = 1; j < m.Groups.Count; j++)
+					{
+						Group g = m.Groups[j];
+
+
+						if (g.Success && !string.IsNullOrWhiteSpace(g.Value))
+						{
+							win.Write("group| idx| " + g.Index.ToString().PadRight(4));
+							win.Write(" len| " + g.Length.ToString().PadRight(4));
+							win.Write(" code| " + g.Name.PadRight(8));
+							win.Write(" value| >" + (g.Value + "<"));
+							// win.Write(" success| " + g.Success);
+							win.Write("\n");
+						}
+					}
+
+
+					// captures do not include the group code
+					// // win.Write("\n");
+					// // win.WriteLine("found| Captures| " + m.Captures.Count);
+					// foreach (Capture cp in m.Captures)
+					// {
+					// 	win.Write("capture| idx| " + cp.Index.ToString().PadRight(4));
+					// 	win.Write(" value| >" + (cp.Value + "<"));
+					// 	win.Write("\n");
+					// }
+				}
+
+				win.WriteLine("Test| " + i + " complete\n");
+			}
+
+			win.WriteLine("splitest 7| done");
+		}
+
+		internal void splitTest8()
+		{
+			win.WriteLine("split test 8");
+			win.WriteLine("splitting| ");
+
+			string[] test = new string[15];
+
+			int k = 0;
+
+			test[k++] = "=(1 + (21 + 22 + (31 + 32 * (41 + 42) * (sign(51+52) ) ) ) + 2*3) + 4+5";
+			test[k++] = "= 123 (456+(123 + (678 + (123 + 123 + (123 + (123 + 456) + 456)) + 456) + 246))";
+			test[k++] = "= 123 (123 + (123 + 123 + (123 + (123 + 456) + 456)) + 456)";
+			test[k++] = "= 123 ((123 + 567) + (678 + 891) + (123 + 123 + (123 + (123 + 456) + 456)) + 456) + 246";
+			test[k++] = "= 123 ((123 + 567) + 246";
+			test[k++] = "= 123 (123 + 567)) + 246";
+			test[k++] = "= 123 ((((123 + 567) + 246";
+			test[k++] = "= 123 (123 + 567)))) + 246";
+
+			for (int i = 0; i < test.Length; i++)
+			{
+				if (test[i] == null) break;
+
+				win.Write("\n\n");
+				win.WriteLine("testing| " + i + "| length| " + test[i].Length + " >" + test[i] + "<");
+
+				win.WriteLine("0---  0---1--- 10---2--- 20---3--- 30---4--- 40---5--- 50---6--- 60---7--- 70---8--- 80---0--- 90---1");
+				win.WriteLine("0123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|");
+				win.WriteLine(test[i]);
+				win.Write("\n");
+
+				List<List<int[]>> prenArray = startParsePren(test[i]);
+
+				if (prenArray != null)
+				{
+					if (prenArray[0].Count == 0)
+					{
+						win.WriteLine("pren pairs| no prens found");
+					}
+					else
+					{
+						win.WriteLine("pren pairs| pairs found| " + prenArray.Count);
+
+						foreach (List<int[]> prenList in prenArray)
+						{
+							if (prenList.Count == 0) break;
+
+							win.Write("\n");
+							win.WriteLine("pren pairs| pairs found| " + prenList.Count);
+
+							foreach (int[] prenPair in prenList)
+							{
+								int len = prenPair[2] - prenPair[1] + 1;
+
+								win.Write("pren pairs| level| " + prenPair[0]);
+								win.Write(" start| " + prenPair[1]);
+								win.Write(" end| " + prenPair[2]);
+								win.Write(" length| " + len);
+								win.Write("\n");
+
+								win.Write("pren pairs| string| >");
+
+								if (len != 0)
+								{
+									win.Write(test[i].Substring(prenPair[1], len));
+									win.Write("\n");
+								}
+								else
+								{
+									win.WriteLine("** zero length **");
+								}
+							}
+						}
+					}
+				}
+				else 
+				{
+					win.WriteLine("pren pairs| failed");
+				}
+			}
+		}
+
+
+
+		private List<List<int[]>> startParsePren(string eq)
+		{
+			int level = 0;
+
+			List<List<int[]>> prenArray = new List<List<int[]>>();
+
+			parsePren(0, eq.ToCharArray(), ref level, prenArray);
+
+			if (level != 0)
+			{
+				return null;
+			}
+
+			return prenArray;
+		}
+
+		private int parsePren(int beg, char[] eq, ref int level, List<List<int[]>> prenPairs)
+		{
+			if (level == MAX_PREN_DEPTH+1)
+			{
+				level = -1;
+				return beg;
+			};
+
+			int end = beg + 1;
+
+			for (; end < eq.Length; end++)
+			{
+				if (eq[end] == '(')
+				{
+					if (prenPairs.Count == level)
+					{
+						prenPairs.Add(new List<int[]>());
+					}
+
+					level += 1;
+					beg = end;
+					end = parsePren(end, eq, ref level, prenPairs);
+
+					if (level < 0) return beg;
+
+					prenPairs[level].Add(new []{level, beg, end});
+				} 
+				else if (eq[end] == ')')
+				{
+					level -= 1;
+					return end;
+				}
+			}
+
+			return end;
+		}
+
+
+				
+		internal void splitTest9()
+		{
+			win.WriteLine("split test 9");
+			win.WriteLine("splitting| ");
+
+			string[] test = new string[15];
+
+			int k = 0;
+
+			test[k++] = "=(1 + (21 + 22 + (31 + 32 * (41 + 42) * (sign(51+52) ) ) ) + 2*3) + 4+5 + {[A1]} + ([{A1]}) & \"text\"";
+			test[k++] = "= 123 (456+(123 + (678 + (123 + 123 + (123 + (123 + 456) + 456)) + 456) + 246))";
+			test[k++] = "= 123 (123 + (123 + 123 + (123 + (123 + 456) + 456)) + 456)";
+			test[k++] = "= 123 ((123 + 567) + (678 + 891) + (123 + 123 + (123 + (123 + 456) + 456)) + 456) + 246";
+			test[k++] = "= 123 ((123 + 567) + 246";
+			test[k++] = "= 123 (123 + 567)) + 246";
+			test[k++] = "= 123 ((((123 + 567) + 246";
+			test[k++] = "= 123 (123 + 567)))) + 246";
+
+			for (int i = 0; i < test.Length; i++)
+			{
+				if (test[i] == null) break;
+
+				win.Write("\n\n");
+				win.WriteLine("testing| " + i + "| length| " + test[i].Length + " >" + test[i] + "<");
+
+				win.WriteLine("0---  0---1--- 10---2--- 20---3--- 30---4--- 40---5--- 50---6--- 60---7--- 70---8--- 80---0--- 90---1");
+				win.WriteLine("0123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|");
+				win.WriteLine(test[i]);
+				win.Write("\n");
+
+				Dictionary<string, Tuple<int, int, string>> result =
+					parseEq(test[i]);
+
+				if (result != null)
+				{
+					win.WriteLine("split test 9| idx| " + i + " (worked)");
+					win.Write("\n");
+				}
+				else 
+				{
+					win.WriteLine("split test 9| idx| " + i + " (failed)");
+					win.Write("\n");
+				}
+			}
+		}
+
+		private string opString = @"+ |- |& |* |\\ |";
+
+		// key = sort order
+		// tupple = level (int), op (string), value (string) 
+		private Dictionary<string, Tuple<int, int, string>> parseEq(string eq)
+		{
+			// string patt = @"(?<eq>=)|(?<f1>[a-zA-Z]\w+?\(.+?\))|(?<s1>\"".+?\"")|(?<op1>\+|\-)|(?<op2>\\|\*)|(?<op3>&)|(?<p1>\(|\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<n1>\d+)|(?<x1>.*?)";
+			string patt = @"(?<eq>=)|(?<f1>[a-zA-Z]\w+?\(.+?\))|(?<s1>\"".+?\"")|(?<op1>\+|\-)|(?<op2>\\|\*)|(?<op3>&)|(?<p1>\()|(?<P2>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<n1>\d+)|(?<x1>.*?)";
+
+			Dictionary<string, Tuple<int, int, string>> result = new Dictionary<string, Tuple<int, int, string>>();
+
+			Regex r = new Regex(patt, RegexOptions.Compiled);
+
+			MatchCollection c = r.Matches(eq);
+
+			
+
+			if (c.Count < 1)
+			{
+				win.WriteLine("*** MATCH FAILED ***");
+				return null;
+			}
+
+			win.WriteLine("collection found| " + c.Count + " matches");
+
+			int i = 0;
+
+			foreach (Match m in c)
+			{
+				// win.WriteLine("match found| " + m.Captures.Count + " captures");
+				// win.WriteLine("match found| " + m.Groups.Count + " groups (follows)");
+
+				for (var j = 1; j < m.Groups.Count; j++)
+				{
+					Group g = m.Groups[j];
+
+					if (g.Success /*&& !string.IsNullOrWhiteSpace(g.Value)*/)
+					{
+						string location = i.ToString().PadRight(3) + " : " + j.ToString().PadRight(3);
+
+						win.Write("group| idx| " + g.Index.ToString().PadRight(4));
+						win.Write(" loc| " + location);
+						win.Write(" len| " + g.Length.ToString().PadRight(4));
+						win.Write(" code| " + g.Name.PadRight(5));
+						win.Write(" value| >" + (g.Value + "<"));
+						win.Write("\n");
+					}
+				}
+
+				i++;
+			}
+
+
+			return result;
+		}
+
+		private Tuple<int, string> codeList(Regex r)
+		{
+			string[] s = r.GetGroupNames();
+			int[] n = r.GetGroupNumbers();
+		}
+
+
+
+
+		internal void splitTest1()
 		{
 			win.WriteLine("split test");
 			win.WriteLine("splitting| ");
@@ -327,17 +716,7 @@ namespace CellsTest.CellsTests
 			}
 		}
 
-		
-		internal void tests2()
-		{
-			splitTest();
-			// for (int j = 0; j < 5; j++)
-
-			// }
-		}
-
-
-		internal void tests()
+		internal void splitTest2()
 		{
 			for (int j = 0; j < 10; j++)
 			{
@@ -393,7 +772,7 @@ namespace CellsTest.CellsTests
 			}
 		}
 
-		internal void test3()
+		internal void splitTest3()
 		{
 			// for (int j = 0; j < 5; j++)
 			// {
@@ -455,35 +834,27 @@ namespace CellsTest.CellsTests
 			Debug.WriteLine("done");
 		}
 
+	#endregion
 
+	#region private methods
 
-		#endregion
+	#endregion
 
-		#region private methods
+	#region event consuming
 
+	#endregion
 
+	#region event publishing
 
-		#endregion
+	#endregion
 
-		#region event consuming
-
-
-
-		#endregion
-
-		#region event publishing
-
-
-
-		#endregion
-
-		#region system overrides
+	#region system overrides
 
 		public override string ToString()
 		{
 			return "this is Tests01";
 		}
 
-		#endregion
+	#endregion
 	}
 }

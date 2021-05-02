@@ -89,11 +89,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AutoDesk\AnnotationSymbol.cs" />
-    <Compile Include="CellsTests\ListiInfo.cs" />
     <Compile Include="CellsTests\SampleAnnoSymbols2.cs" />
     <Compile Include="CellsTests\Tests01.cs" />
     <Compile Include="Management\ManagementSupport.cs" />
-    <Compile Include="CellsTests\SampleAnnoSymbols.cs" />
     <Compile Include="RevitSupport\RevitChartManagement\RevitChartManager.cs" />
     <Compile Include="RevitSupport\RevitSelectionSupport\RevitSelectSupport.cs" />
     <Compile Include="Settings\AppSettings.cs" />

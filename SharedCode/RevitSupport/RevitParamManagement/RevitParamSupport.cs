@@ -78,23 +78,23 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		PM_INTERNAL
 	}
 
-	public enum ParamDataType
-	{
-		DT_ERROR = -1,
-		DT_EMPTY = 0,
-		DT_IGNORE,
-		DT_LABEL_TITLE,
-		DT_TEXT,
-		DT_INTEGER,
-		DT_NUMBER,
-		DT_BOOL,
-		DT_DATATYPE,
-		DT_FORMULA,
-		DT_FILE_PATH,
-		DT_UPDATE_TYPE,
-		DT_WORKSHEETNAME,
-		DT_SEQUENCE
-	}
+	// public enum ParamDataType
+	// {
+	// 	DT_ERROR = -1,
+	// 	DT_EMPTY = 0,
+	// 	DT_IGNORE,
+	// 	DT_LABEL_TITLE,
+	// 	DT_TEXT,
+	// 	DT_INTEGER,
+	// 	DT_NUMBER,
+	// 	DT_BOOL,
+	// 	DT_DATATYPE,
+	// 	DT_FORMULA,
+	// 	DT_FILE_PATH,
+	// 	DT_UPDATE_TYPE,
+	// 	DT_WORKSHEETNAME,
+	// 	DT_SEQUENCE
+	// }
 
 	public enum ParamRootDataType
 	{
@@ -119,13 +119,17 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 		ST_SEQUENCE
 	}
 
-	public enum ValueStatus
+	public enum FormulaStatus
 	{
-		DONE = 0,
-		RECALCULATE = 1,
-		WRITE_TO_CELL = 2,
-		WRITE_TO_EXCEL = 3,
-		WRITE_TO_BOTH = 4
+		FS_HAS_ERROR = -1,
+		FS_UNDEFINED,
+		FS_OBTAINED,
+		FS_NEED_TO_CALCULATE,
+		FS_NEED_TO_RECALCULATE,
+		FS_NEED_TO_WRITE_TO_CELL,
+		FS_NEED_TO_WRITE_TO_OUTPUT,
+
+		FS_DONE = 100
 	}
 
 	public enum CellUpdateTypeCode

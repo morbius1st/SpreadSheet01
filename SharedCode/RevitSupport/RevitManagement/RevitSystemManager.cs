@@ -25,7 +25,7 @@ namespace SharedCode.RevitSupport.RevitManagement
 
 		private RevitChartManager chartMgr;
 		private ManagementSupport mgmtSupport;
-		private FormulaManager fmMgr;
+		private FormulaSupervisor fmSuper;
 
 	#endregion
 
@@ -33,9 +33,9 @@ namespace SharedCode.RevitSupport.RevitManagement
 
 		public RevitSystemManager()
 		{
-			fmMgr = new FormulaManager();
-			chartMgr = new RevitChartManager(fmMgr);
+			chartMgr = new RevitChartManager();
 			mgmtSupport = new ManagementSupport();
+			fmSuper = new FormulaSupervisor(chartMgr);
 
 		}
 
@@ -45,6 +45,8 @@ namespace SharedCode.RevitSupport.RevitManagement
 
 		public RevitCharts Charts => chartMgr.Charts;
 
+		public FormulaSupervisor Formulas => fmSuper;
+
 	#endregion
 
 	#region private properties
@@ -53,9 +55,22 @@ namespace SharedCode.RevitSupport.RevitManagement
 
 	#region public methods
 
-		public bool CollectCharts(CellUpdateTypeCode which)
+		public bool PreProcessFormulas()
+		{
+			fmSuper.Preprocess();
+
+			return true;
+		}
+
+		public bool CollectAndPreProcessCharts(CellUpdateTypeCode which)
 		{
 			if (!collectCharts(which))
+			{
+				showChartErrors();
+				return false;
+			}
+
+			if (!preProcessCharts(which))
 			{
 				showChartErrors();
 				return false;
@@ -78,6 +93,11 @@ namespace SharedCode.RevitSupport.RevitManagement
 		{
 			if (!chartMgr.CollectAllCharts()) return false;
 
+			return true;
+		}
+
+		private bool preProcessCharts(CellUpdateTypeCode which)
+		{
 			chartMgr.PreProcessCharts(which);
 
 			if (chartMgr.Charts.HasErrors) return false;

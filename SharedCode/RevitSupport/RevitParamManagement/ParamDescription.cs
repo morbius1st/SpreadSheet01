@@ -8,10 +8,7 @@ using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamClass;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamRootDataType;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamSubDataType;
-
-
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamExistReqmt;
-using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamDataType;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamReadReqmt;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamMode;
 
@@ -38,26 +35,21 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			ParamClass paramClass,
 			ParamType paramType,
 			ParamExistReqmt paramExist,
-			ParamDataType dataType,
-			ParamRootDataType rootType, 
+			ParamRootDataType rootType,
 			ParamSubDataType subType,
 			ParamReadReqmt paramReadReqmt,
 			ParamMode paramMode)
-			// RevitCatagorizeParam.MakeParamDelegate makeParam = null)
 		{
 			Index = index;
 			ParameterName = paramName;
 			ShortName = shortName;
 			ParamClass = paramClass;
 			ParamType = paramType;
-			DataType = dataType;
 			RootType = rootType;
 			SubType = subType;
 			Exist = paramExist;
 			ReadReqmt = paramReadReqmt;
 			Mode = paramMode;
-
-			// MakeParam = makeParam;
 		}
 
 	#endregion
@@ -65,7 +57,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 	#region public properties
 
 		public static ParamDesc Empty => new ParamDesc("", "", -1, PC_INTERNAL, PT_INTERNAL, 
-			EX_PARAM_MUST_EXIST, DT_IGNORE, RT_INVALID, ST_INVALID, RD_VALUE_IGNORE, PM_NOT_USED);
+			EX_PARAM_MUST_EXIST, RT_INVALID, ST_INVALID, RD_VALUE_IGNORE, PM_NOT_USED);
 
 
 		public string ParameterName {
@@ -82,7 +74,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 										  
 		public ParamClass ParamClass      { get; protected set; }
 		public ParamType ParamType        { get; protected set; }
-		public ParamDataType DataType     { get; protected set; }
+
 		public ParamRootDataType RootType { get; protected set; }
 		public ParamSubDataType SubType   { get; protected set; }
 		public ParamExistReqmt Exist      { get; protected set; }

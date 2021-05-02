@@ -19,8 +19,6 @@ using SpreadSheet01.RevitSupport.RevitParamValue;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.RevitParamManager;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
 
-using FormulaManager = SharedCode.FormulaSupport.FormulaManagement.FormulaManager;
-
 //using static SharedCode.RevitSupport.RevitParamManagement.ErrorCodeList2;
 #endregion
 
@@ -165,23 +163,37 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	}
 
 	// root with a collection of Chart Families
-	public class RevitCharts : RevitContainers<RevitChart> //, IEnumerable<RevitLabel>
+	public class RevitCharts : RevitContainers<RevitChart>, IEnumerable<KeyValuePair<string, RevitLabel>>
 	{
-		public RevitCharts(string name, FormulaManager fm)
+		public RevitCharts(string name)
 		{
 			Name = name;
-			FormulaManager = fm;
 		}
 
 		public string Name { get; private set;}
 
 		public Dictionary<string, RevitChart> ListOfCharts => Containers;
 
-		public FormulaManager FormulaManager { get; private set; }
-
 		public bool Add(string key, RevitChart container)
 		{
 			return base.Add(key, container);
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		public IEnumerator<KeyValuePair<string, RevitLabel>> GetEnumerator()
+		{
+			foreach (KeyValuePair<string, RevitChart> kvp1 in ListOfCharts)
+			{
+				foreach (KeyValuePair<string, RevitLabel> kvp2 in kvp1.Value.AllCellLabels)
+				{
+					yield return kvp2;
+				}
+			}
+
 		}
 
 		public override string ToString()
@@ -193,7 +205,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 	// one chart family with a collection of cell families
 	public class RevitChart : RevitContainers<RevitCellData>
 	{
-		private RevitChart() {}
 		public RevitChart(RevitCharts charts)
 		{
 			ParentCharts = charts;
@@ -288,7 +299,7 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 					key = seq + kvp.Key;
 					kvp.Value.InternalKey = key;
 					AllCellLabels.Add(key, kvp.Value);
-					ParentCharts.FormulaManager.AllCellLabels.Add(key, kvp.Value);
+					
 				}
 				catch
 				{
@@ -485,6 +496,11 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 			RevitLabel label = getLabel(labelId);
 
+			if (labelParam is RevitParamFormula)
+			{
+				label.FormulaStatus = FormulaStatus.FS_OBTAINED;
+			}
+
 			label.Add(PT_LABEL, idx, labelParam);
 
 			// if (idx == RevitParamManager.LblNameIdx)
@@ -507,6 +523,8 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public void ValidateMustExist()
 		{
+			// validateParams();
+
 			for (int i = 0; i < NumberOfLists - 1 ; i++)
 			{
 				if (CellFamily.ParamMustExistCount[i] != ReqdParamCount[i])
@@ -532,7 +550,6 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 				}
 			}
 		}
-
 
 		private RevitLabel getLabel(int labelId)
 		{
@@ -570,9 +587,9 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		{
 			LabelId = labelId;
 			RevitCellData = cellData;
+			FormulaStatus = FormulaStatus.FS_UNDEFINED;
 
 			this[PT_LABEL] = new ARevitParam[paramCount];
-
 		}
 
 		public override int NumberOfLists { get;  protected set; } = 4;
@@ -580,6 +597,8 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		public string InternalKey {get; set; }
 
 		public int LabelId { get; private set; }
+
+		public FormulaStatus FormulaStatus { get; set; }
 
 		public RevitChart ParentChart { get; set; }
 

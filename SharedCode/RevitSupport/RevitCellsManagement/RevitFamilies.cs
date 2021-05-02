@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using SharedCode.RevitSupport.RevitManagement;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
 
@@ -434,93 +435,5 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 		}
 
 	}
-
-
-	// public class FamilyCategories : RevitContainers<ParamCat, FamilyCategory>
-	// {
-	// 	// holds a dictionary of all family categories (is a list of cats) (e.g. annotation, and walls, and ...)
-	// 	// Dictionary<string, Families>
-	// 	// string is the category i.e. annotation
-	//
-	// 	public FamilyCategories()
-	// 	{
-	// 		dynValue.Value = "Collection of Family Categories";
-	//
-	// 		Containers = new Dictionary<ParamCat, FamilyCategory>();
-	// 	}
-	//
-	// 	public Dictionary<ParamCat, FamilyCategory> FamilyCats => Containers;
-	//
-	// 	public void Add(Family family)
-	// 	{
-	// 		FamilyCategory cat;
-	//
-	// 		bool result = Containers.TryGetValue(family.Category, out cat);
-	//
-	// 		if (!result)
-	// 		{
-	// 			cat = new FamilyCategory(family.Category);
-	// 			cat.DynValue.Value = family.Category.ToString();
-	// 			Add(family.Category, cat);
-	// 		}
-	//
-	// 		cat.Add(family);
-	// 	}
-	//
-	// 	public bool Exists(Family family)
-	// 	{
-	// 		FamilyCategory cat;
-	//
-	// 		bool result = Containers.TryGetValue(family.Category, out cat);
-	// 	
-	// 		if (!result) return false;
-	//
-	// 		return cat.Exists(family);
-	// 	}
-	//
-	// }
-	//
-	// public class FamilyCategory : RevitContainers<ParamSubCat, Families>
-	// {
-	// 	// holds a dictionary of a family category (is a list of subcats) (e.g. either annotation or walls)
-	// 	// Dictionary<string, Families>
-	// 	// string is the category i.e. annotation
-	//
-	// 	public FamilyCategory(ParamCat cat)
-	// 	{
-	// 		Category = cat;
-	// 		Containers = new Dictionary<ParamSubCat, Families>();
-	// 	}
-	//
-	// 	public Dictionary<ParamSubCat, Families> FamilyCat => Containers;
-	//
-	// 	public ParamCat Category {get; private set; }
-	//
-	// 	public void Add(Family family)
-	// 	{
-	// 		Families fams;
-	//
-	// 		bool result = Containers.TryGetValue(family.SubCategory, out fams);
-	//
-	// 		if (!result)
-	// 		{
-	// 			fams = new Families(family.Category, family.SubCategory);
-	// 			family.DynValue.Value = family.SubCategory.ToString();
-	//
-	// 			Add(family.SubCategory, fams);
-	// 		}
-	// 	}
-	//
-	// 	public bool Exists(Family family)
-	// 	{
-	// 		Families fams;
-	//
-	// 		bool result = Containers.TryGetValue(family.SubCategory, out fams);
-	// 	
-	// 		if (!result) return false;
-	//
-	// 		return fams.Exists(family);
-	// 	}
-	//
-	// }
+	
 }

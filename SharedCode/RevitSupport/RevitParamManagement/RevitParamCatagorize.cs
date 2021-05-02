@@ -8,11 +8,9 @@ using Family = SpreadSheet01.RevitSupport.RevitCellsManagement.Family;
 using SpreadSheet01.RevitSupport.RevitParamValue;
 using static SpreadSheet01.Management.ErrorCodes;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
-
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamClass;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamReadReqmt;
-using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamDataType;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamRootDataType;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamSubDataType;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamMode;
@@ -65,10 +63,10 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			return rcd;
 		}
 
-		private void validateChartSymParams(RevitChartData rcd, int mustExistParamCount)
-		{
-			rcd.ValidateMustExist();
-		}
+		// private void validateChartSymParams(RevitChartData rcd, int mustExistParamCount)
+		// {
+		// 	rcd.ValidateMustExist();
+		// }
 
 		private void catagorizeChartSymParam(RevitChartData rcd,
 			Parameter param, ChartFamily chartFamily, ParamType type)
@@ -91,7 +89,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			case ParamType.PT_TYPE:
 				{
 					dataParamCount++;
-					if (pd.DataType == ParamDataType.DT_IGNORE) return;
+					if (pd.RootType == ParamRootDataType.RT_IGNORE) return;
 					rvtParam = catagorizeParameter(param, pd);
 					rcd.Add(pd.ParamType, pd.Index, rvtParam);
 					break;
@@ -180,7 +178,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			case ParamType.PT_TYPE:
 				{
 					dataParamCount++;
-					if (pd.DataType == ParamDataType.DT_IGNORE) return;
+					if (pd.RootType == ParamRootDataType.RT_IGNORE) return;
 					rvtParam = catagorizeParameter(param, pd);
 					rcd.Add(pd.ParamType, pd.Index, rvtParam);
 					break;
@@ -188,7 +186,7 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			case ParamType.PT_LABEL:
 				{
 					labelParamCount[labelId]++;
-					if (pd.DataType == ParamDataType.DT_IGNORE) return;
+					if (pd.RootType == ParamRootDataType.RT_IGNORE) return;
 
 					ARevitParam labelParam = catagorizeParameter(param, pd);
 
@@ -222,39 +220,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 			}
 		}
 
-		private ARevitParam ignoreParam(Parameter param, ParamDesc pd)
-		{
-			ARevitParam p = null;
-
-			switch (pd.RootType)
-			{
-			case RT_TEXT:
-				{
-					p = new RevitParamText("", pd);
-					break;
-				}
-			case RT_BOOL:
-				{
-					p = new RevitParamBool((bool?) false, pd);
-					break;
-				}
-			case RT_DOUBLE:
-				{
-					p = new RevitParamNumber(double.NaN, pd);
-					break;
-				}
-			case RT_INTEGER:
-				{
-					p = new RevitParamInteger(Int32.MaxValue, pd);
-					break;
-				}
-			}
-
-			return p;
-		}
-
-
-
 
 		private ARevitParam catagorizeParameter(Parameter param, ParamDesc pd)
 		{
@@ -262,13 +227,15 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 			// pd.InvokeDelegate(param);
 
-			if (pd.ReadReqmt == RD_VALUE_IGNORE)  return ignoreParam(param, pd);
-
-
 			switch (pd.RootType)
 			{
 			case RT_TEXT:
 				{
+					if (pd.ReadReqmt == RD_VALUE_IGNORE)
+					{
+						return new RevitParamText("", pd);
+					}
+
 					string text = param.AsString();
 
 					if (pd.SubType == ST_NONE)
@@ -284,82 +251,40 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 				}
 			case RT_BOOL:
 				{
+					if (pd.ReadReqmt == RD_VALUE_IGNORE)
+					{
+						return new RevitParamBool((bool?) false, pd);
+					}
+
 					p = new RevitParamBool(param.AsInteger() == 1, pd);
 					break;
 				}
 			case RT_DOUBLE:
 				{
+					if (pd.ReadReqmt == RD_VALUE_IGNORE)
+					{
+						return new RevitParamNumber(double.NaN, pd);
+					}
+
 					p = new RevitParamNumber(param.AsDouble(), pd);
 					break;
 				}
 			case RT_INTEGER:
 				{
+					if (pd.ReadReqmt == RD_VALUE_IGNORE)
+					{
+						return new RevitParamInteger(Int32.MaxValue, pd);
+					}
+
 					p = new RevitParamInteger(param.AsInteger(), pd);
 					break;
 				}
-			//
-			//
-			// case ParamDataType.DT_FORMULA:
-			// 	{
-			// 		p = new RevitParamFormula(pd.ReadReqmt ==
-			// 			ParamReadReqmt.RD_VALUE_IGNORE
-			// 				? ""
-			// 				: param.AsString(), pd);
-			// 		break;
-			// 	}
-			// case ParamDataType.DT_DATATYPE:
-			// 	{
-			// 		p = new RevitParamText(pd.ReadReqmt ==
-			// 			ParamReadReqmt.RD_VALUE_IGNORE
-			// 				? ""
-			// 				: param.AsString(), pd);
-			// 		break;
-			// 	}
-			// case ParamDataType.DT_FILE_PATH:
-			// 	{
-			// 		p = new RevitParamFilePath(pd.ReadReqmt ==
-			// 			ParamReadReqmt.RD_VALUE_IGNORE
-			// 				? ""
-			// 				: param.AsString(), pd);
-			// 		break;
-			// 	}
-			// case ParamDataType.DT_UPDATE_TYPE:
-			// 	{
-			// 		p = new RevitParamUpdateType(pd.ReadReqmt ==
-			// 			ParamReadReqmt.RD_VALUE_IGNORE
-			// 				? ""
-			// 				: param.AsString(), pd);
-			// 		break;
-			// 	}
-			// case ParamDataType.DT_WORKSHEETNAME:
-			// 	{
-			// 		p = new RevitParamWkShtName(pd.ReadReqmt ==
-			// 			ParamReadReqmt.RD_VALUE_IGNORE
-			// 				? ""
-			// 				: param.AsString(), pd);
-			// 		break;
-			// 	}
-			// case ParamDataType.DT_LABEL_TITLE:
-			// 	{
-			// 		p = new RevitParamLabel("", pd);
-			// 		((RevitParamLabel) p).LabelValueName = param.Definition.Name;
-			// 		break;
-			// 	}
-			//
-			// case ParamDataType.DT_SEQUENCE:
-			// 	{
-			// 		p = new RevitParamSequence(pd.ReadReqmt ==
-			// 			ParamReadReqmt.RD_VALUE_IGNORE
-			// 				? ""
-			// 				: param.AsString(), pd);
-			// 		break;
-			// 	}
 			}
 
 			return p;
 		}
 
-		
+
 		private ARevitParam subCatTextParameter(Parameter param, ParamDesc pd, string text)
 		{
 			ARevitParam p = null;
@@ -408,35 +333,6 @@ namespace SpreadSheet01.RevitSupport.RevitParamManagement
 
 			return p;
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 		// public delegate ARevitParam MakeParamDelegate(Parameter param, ParamDesc pd);

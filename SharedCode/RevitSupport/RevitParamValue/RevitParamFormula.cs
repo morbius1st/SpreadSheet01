@@ -53,13 +53,13 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 			}
 		}
 
-		public string AsString => GetValue();
-		public double AsDouble => dynValue.AsDouble();
-		public bool AsBool => dynValue.AsBool();
-		public int AsInteger => dynValue.AsInteger();
-		public dynamic AsValue => dynValue.Value;
-
-		public Type GetType => dynValue.BaseType();
+		// public string AsString => GetValue();
+		// public double AsDouble => dynValue.AsDouble();
+		// public bool AsBool => dynValue.AsBool();
+		// public int AsInteger => dynValue.AsInteger();
+		// public dynamic AsValue => dynValue.Value;
+		//
+		// public Type GetType => dynValue.BaseType();
 
 		public bool Evaluate()
 		{

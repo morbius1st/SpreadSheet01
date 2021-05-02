@@ -72,7 +72,7 @@ namespace Autodesk.Revit.DB
 			return Parameters.Parameters;
 		}
 
-		public string Name { get; protected set; }
+		public string Name { get; set; }
 
 		public int Id
 		{
@@ -99,12 +99,17 @@ namespace Autodesk.Revit.DB
 		public Definition Definition { get; set; }
 
 		public string AsString () =>  asString;
+
+		public void AsString (string value)
+		{
+			asString = value;
+		}
 		public double AsDouble () =>  asDouble;
 		public int AsInteger () =>  asInteger;
 
 		public bool UserModifiable => userModifiable;
 
-		public Parameter(  string name, ParamDataType type,
+		public Parameter(  string name, ParamRootDataType type,
 			string strVal, double dblVal, int intVal, bool userModifiable = true)
 		{
 			Definition = new Definition() {Name = name, Type = type};
@@ -116,13 +121,13 @@ namespace Autodesk.Revit.DB
 
 		public override string ToString()
 		{
-			return Definition.Name;
+			return Definition.Name + " (" + AsString() + ")";
 		}
 	}
 
 	public class Definition
 	{
 		public string Name { get; set; }
-		public ParamDataType Type { get; set; }
+		public ParamRootDataType Type { get; set; }
 	}
 }

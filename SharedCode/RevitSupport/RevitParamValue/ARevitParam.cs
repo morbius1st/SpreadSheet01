@@ -7,6 +7,7 @@ using SpreadSheet01.RevitSupport.RevitParamManagement;
 
 namespace SpreadSheet01.RevitSupport.RevitParamValue
 {
+
 	public class RevitParamDefault : ARevitParam
 	{
 		public RevitParamDefault(dynamic dynValue)
@@ -99,6 +100,13 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 				result.ParamDesc = ParamDesc.Empty;
 				return result;
 			}
+		}
+
+		public static ARevitParam Error(ParamDesc pd)
+		{
+			ARevitParam result = new RevitParamDefault(null);
+			result.ParamDesc = pd;
+			return result;
 		}
 
 	#endregion

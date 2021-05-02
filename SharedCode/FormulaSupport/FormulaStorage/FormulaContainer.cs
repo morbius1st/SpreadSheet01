@@ -1,13 +1,7 @@
 ﻿#region using
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
 
 #endregion
@@ -15,17 +9,10 @@ using SpreadSheet01.RevitSupport.RevitCellsManagement;
 // username: jeffs
 // created:  4/19/2021 6:33:31 PM
 
-/*
-={[A8]}  = excel cell address
-={$name} = system variable	
-={#name} = revit variable	
-={%name} = project parameter
-={!name} = global parameter
-={@name} = label name
-*/
 
 
-namespace SharedCode.FormulaSupport.FormulaManagement
+
+namespace SpreadSheet01.FormulaSupport.FormulaStorage
 {
 	public class FormulaContainer : IEnumerable<RevitLabel>
 	{

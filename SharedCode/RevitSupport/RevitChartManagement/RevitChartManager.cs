@@ -1,15 +1,16 @@
 ﻿#region using
+
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
+using SharedCode.FormulaSupport.FormulaManagement;
 using SpreadSheet01;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
 using SpreadSheet01.RevitSupport.RevitSelectionSupport;
-
-using FormulaManager = SharedCode.FormulaSupport.FormulaManagement.FormulaManager;
 
 #endregion
 
@@ -24,7 +25,7 @@ using FormulaManager = SharedCode.FormulaSupport.FormulaManagement.FormulaManage
 
 namespace RevitSupport.RevitChartManagement
 {
-	public partial class RevitChartManager
+	public partial class RevitChartManager : IEnumerable<KeyValuePair<string, RevitLabel>>
 	{
 	#region private fields
 
@@ -46,10 +47,8 @@ namespace RevitSupport.RevitChartManagement
 
 	#region ctor
 
-		public RevitChartManager(FormulaManager fm)
+		public RevitChartManager()
 		{
-			FormulaManager = fm;
-
 			revitCat = new RevitParamCatagorize();
 			rvtSelect = new RevitSelectSupport();
 
@@ -64,7 +63,7 @@ namespace RevitSupport.RevitChartManagement
 		// this holds a collection of individual charts
 		public RevitCharts Charts { get; private set; }
 
-		public FormulaManager FormulaManager { get; private set; }
+		public FormulaSupervisor FormulaSupervisor { get; private set; }
 
 	#endregion
 
@@ -119,7 +118,7 @@ namespace RevitSupport.RevitChartManagement
 			rvtSelect.seq = 0;
 		#endif
 
-			Charts = new RevitCharts(NAME_OF_CHARTS, FormulaManager);
+			Charts = new RevitCharts(NAME_OF_CHARTS);
 
 		}
 
@@ -277,6 +276,19 @@ namespace RevitSupport.RevitChartManagement
 	#endregion
 
 	#region system overrides
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		public IEnumerator<KeyValuePair<string, RevitLabel>> GetEnumerator()
+		{
+			foreach (KeyValuePair<string, RevitLabel> kvp in Charts)
+			{
+				yield return kvp;
+			}
+		}
 
 		public override string ToString()
 		{
