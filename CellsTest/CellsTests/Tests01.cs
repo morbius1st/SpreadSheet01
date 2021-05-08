@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
+using System.Globalization;
 using System.Security.Policy;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media.Animation;
 using CellsTest.Windows;
@@ -23,7 +25,8 @@ namespace CellsTest.CellsTests
 	public class Tests01
 	{
 
-		private const int MAX_PREN_DEPTH = 6;
+		private const int MAX_EQ_DEPTH = 20;
+		
 
 	#region private fields
 
@@ -496,7 +499,7 @@ namespace CellsTest.CellsTests
 
 		private int parsePren(int beg, char[] eq, ref int level, List<List<int[]>> prenPairs)
 		{
-			if (level == MAX_PREN_DEPTH+1)
+			if (level == MAX_EQ_DEPTH+1)
 			{
 				level = -1;
 				return beg;
@@ -530,117 +533,6 @@ namespace CellsTest.CellsTests
 
 			return end;
 		}
-
-
-				
-		internal void splitTest9()
-		{
-			win.WriteLine("split test 9");
-			win.WriteLine("splitting| ");
-
-			string[] test = new string[15];
-
-			int k = 0;
-
-			test[k++] = "=(1 + (21 + 22 + (31 + 32 * (41 + 42) * (sign(51+52) ) ) ) + 2*3) + 4+5 + {[A1]} + ([{A1]}) & \"text\"";
-			test[k++] = "= 123 (456+(123 + (678 + (123 + 123 + (123 + (123 + 456) + 456)) + 456) + 246))";
-			test[k++] = "= 123 (123 + (123 + 123 + (123 + (123 + 456) + 456)) + 456)";
-			test[k++] = "= 123 ((123 + 567) + (678 + 891) + (123 + 123 + (123 + (123 + 456) + 456)) + 456) + 246";
-			test[k++] = "= 123 ((123 + 567) + 246";
-			test[k++] = "= 123 (123 + 567)) + 246";
-			test[k++] = "= 123 ((((123 + 567) + 246";
-			test[k++] = "= 123 (123 + 567)))) + 246";
-
-			for (int i = 0; i < test.Length; i++)
-			{
-				if (test[i] == null) break;
-
-				win.Write("\n\n");
-				win.WriteLine("testing| " + i + "| length| " + test[i].Length + " >" + test[i] + "<");
-
-				win.WriteLine("0---  0---1--- 10---2--- 20---3--- 30---4--- 40---5--- 50---6--- 60---7--- 70---8--- 80---0--- 90---1");
-				win.WriteLine("0123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|");
-				win.WriteLine(test[i]);
-				win.Write("\n");
-
-				Dictionary<string, Tuple<int, int, string>> result =
-					parseEq(test[i]);
-
-				if (result != null)
-				{
-					win.WriteLine("split test 9| idx| " + i + " (worked)");
-					win.Write("\n");
-				}
-				else 
-				{
-					win.WriteLine("split test 9| idx| " + i + " (failed)");
-					win.Write("\n");
-				}
-			}
-		}
-
-		private string opString = @"+ |- |& |* |\\ |";
-
-		// key = sort order
-		// tupple = level (int), op (string), value (string) 
-		private Dictionary<string, Tuple<int, int, string>> parseEq(string eq)
-		{
-			// string patt = @"(?<eq>=)|(?<f1>[a-zA-Z]\w+?\(.+?\))|(?<s1>\"".+?\"")|(?<op1>\+|\-)|(?<op2>\\|\*)|(?<op3>&)|(?<p1>\(|\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<n1>\d+)|(?<x1>.*?)";
-			string patt = @"(?<eq>=)|(?<f1>[a-zA-Z]\w+?\(.+?\))|(?<s1>\"".+?\"")|(?<op1>\+|\-)|(?<op2>\\|\*)|(?<op3>&)|(?<p1>\()|(?<P2>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<n1>\d+)|(?<x1>.*?)";
-
-			Dictionary<string, Tuple<int, int, string>> result = new Dictionary<string, Tuple<int, int, string>>();
-
-			Regex r = new Regex(patt, RegexOptions.Compiled);
-
-			MatchCollection c = r.Matches(eq);
-
-			
-
-			if (c.Count < 1)
-			{
-				win.WriteLine("*** MATCH FAILED ***");
-				return null;
-			}
-
-			win.WriteLine("collection found| " + c.Count + " matches");
-
-			int i = 0;
-
-			foreach (Match m in c)
-			{
-				// win.WriteLine("match found| " + m.Captures.Count + " captures");
-				// win.WriteLine("match found| " + m.Groups.Count + " groups (follows)");
-
-				for (var j = 1; j < m.Groups.Count; j++)
-				{
-					Group g = m.Groups[j];
-
-					if (g.Success /*&& !string.IsNullOrWhiteSpace(g.Value)*/)
-					{
-						string location = i.ToString().PadRight(3) + " : " + j.ToString().PadRight(3);
-
-						win.Write("group| idx| " + g.Index.ToString().PadRight(4));
-						win.Write(" loc| " + location);
-						win.Write(" len| " + g.Length.ToString().PadRight(4));
-						win.Write(" code| " + g.Name.PadRight(5));
-						win.Write(" value| >" + (g.Value + "<"));
-						win.Write("\n");
-					}
-				}
-
-				i++;
-			}
-
-
-			return result;
-		}
-
-		private Tuple<int, string> codeList(Regex r)
-		{
-			string[] s = r.GetGroupNames();
-			int[] n = r.GetGroupNumbers();
-		}
-
 
 
 

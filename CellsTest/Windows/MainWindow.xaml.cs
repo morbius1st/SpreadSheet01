@@ -42,6 +42,7 @@ namespace CellsTest.Windows
 		private ListInfo<MainWindow> listInfo;
 
 		private Tests01 tests01;
+		private Tests01A tests01A;
 
 	#endregion
 
@@ -56,6 +57,7 @@ namespace CellsTest.Windows
 			listInfo = new ListInfo<MainWindow>(this);
 
 			tests01 = new Tests01(this);
+			tests01A = new Tests01A(this);
 
 			configTrace();
 		}
@@ -247,11 +249,22 @@ namespace CellsTest.Windows
 		{
 			WriteLineTab("SplitTest 9");
 
-			tests01.splitTest9();
+			tests01A.splitTest9();
 
 			ShowMessage();
 
 			Debug.WriteLine("@split test 9");
+		}
+													
+		private void BtnSplit10_OnClick(object sender, RoutedEventArgs e)
+		{
+			WriteLineTab("SplitTest 10");
+
+			tests01A.splitTest10();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 10");
 		}
 			
 		private void BtnReset_OnClick(object sender, RoutedEventArgs e)

@@ -60,6 +60,15 @@
 			/>
 
 			
+			<Button x:Name="BtnSplit10"
+					Content="Split Test #10"
+					Margin="5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
+					DockPanel.Dock="Bottom"
+					Click="BtnSplit10_OnClick"
+			/>
+
 			<Button x:Name="BtnSplit9"
 					Content="Split Test #9"
 					Margin="5"
