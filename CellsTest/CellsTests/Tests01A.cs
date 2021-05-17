@@ -87,21 +87,34 @@ namespace CellsTest.CellsTests
 
 			int countLoops;
 			int countTests;
-			int m = 0;
+			int numPatterns = 0;
 			int groupCountTotalLoops;
+
+
+			// test 0  about 0.735 sec for 1000 loops
+			// pattern difference:                   																																											    ** v
+			patt[numPatterns++] =
+				@"(?<l2>(?>(?<=^[\t ]*|[-+'""*=()&\/][\t ]*)[-+]?)(?>(?>(?>(?>\d+ )?(?>\d+\/\d+['""])))|(?>(?>\d+'-(?>(?>\d+)?(?> \d+\/\d+""|\d+(?>\.\d*""|"")))))|(?>\d+(?>\.\d*""|""))|(?>(?>\d+\.\d*['""]))|(?>(?>\d+['""]))))|(?<d1>(?>(?>(?<=^[\t ]*|[-+'""*=()&\/][\t ]*)[-+]?)\d+\.\d*))|(?<n1>(?>(?<=^[\t ]*|[-+'""*=()&\/][\t ]*)[-+]?)(?>\d+(?!\.)))|(?<f1>[a-zA-Z]\w*(?=\())|(?<s1>\"".+?\"")|(?<op1>\<[oO][rR]\>|\<[aA][nN][dD]\>|\+|\-|&|<=|>=|<|>|==|!=|\*|\/)|(?<eq>=)|(?<pdn>\()|(?<pup>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<x1>[^ ])";
+
+			// test 1 about 0.738 sec for 1000 loops
+			// pattern difference:                       																																											** v
+			patt[numPatterns++] =
+				@"(?<l1>(?>(?<=^[\t ]*|[-+'""*=()&\/][\t ]*)[-+]?)(?>(?>(?>(?>\d+ )?(?>\d+\/\d+['""])))|(?>(?>\d+'-(?>(?>\d+)?(?> \d+\/\d+""|\d+(?>\.\d*""|"")))))|(?>\d+(?>\.\d*""|""))|(?>(?>\d+\.\d*['""]))|(?>(?>\d+['""]))))|(?<f1>[a-zA-Z]\w*(?=\())|(?<s1>\"".+?\"")|(?<d1>(?>(?>(?<=^[\t ]*|[-+'""*=()&\/][\t ]*)[-+]?)\d+\.\d*))|(?<n1>(?>(?<=^[\t ]*|[-+'""*=()&\/][\t ]*)[-+]?)(?>\d+(?!\.)))|(?<op1>\<[oO][rR]\>|\<[aA][nN][dD]\>|\+|\-|&|<=|>=|<|>|==|!=|\*|\/)|(?<eq>=)|(?<pdn>\()|(?<pup>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<x1>[^ ])";
+
+			// test 2  about 0.643 sec for 1000 loops
+			// pattern difference: always associates the + or - against a digit
+			// as a part of the digit even though an operator is then missing
+			// final "approved" pattern
+			patt[numPatterns++] =
+				@"(?<l1>[-+]?(?>\d+'-(?>\d*\.\d+|(?>\d+ )?\d+\/\d+|\d+)""|(?>\d+ \d+\/\d+|\d+\/\d+|\d*\.\d+|\d+)[""']))|(?<fr1>[-+]?\d+ \d+\/\d+|\d+\/\d+)|(?<d1>[-+]?(?>\d+\.\d*|\d*\.\d+))|(?<n1>[-+]?\d+(?![.\/]))|(?<fn1>[a-zA-Z]\w*(?=\())|(?<s1>\"".+?\"")|(?<op1>\<[oO][rR]\>|\<[aA][nN][dD]\>|\+|\-|&|<=|>=|<|>|==|!=|\*|\/)|(?<eq>=)|(?<pdn>\()|(?<pup>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<x1>[^ ])";
+
+/*
+	prior tests - did not pass
 
 			// // test about 1.0094 sec for 1000 loops	**v																																											** v
 			// patt[m++] =
 			// 	@"(?<l0>(?>(?<=^|[-+'""*=()&\/])(?>[\t ]*[-+]?))(?>(?>(?>(?>\d+ )?(?>\d+\/\d+['""])))|(?>(?>\d+'-(?>(?>\d+)?(?> \d+\/\d+""|\d+(?>\.\d*""|"")))))|(?>\d+(?>\.\d*""|""))|(?>(?>\d+\.\d*['""]))|(?>(?>\d+['""]))))|(?<f1>[a-zA-Z]\w*(?=\())|(?<s1>\"".+?\"")|(?<d1>(?>(?>(?<=^|[-+'""*=()&\/])(?>[\t ]*[-+]?))\d+\.\d*))|(?<n1>(?>(?<=^|[-+'""*=()&\/])(?>[\t ]*[-+]?))(?>\d+(?!\.)))|(?<op1>\<[oO][rR]\>|\<[aA][nN][dD]\>|\+|\-|&|<=|>=|<|>|==|!=|\*|\/)|(?<eq>=)|(?<pdn>\()|(?<pup>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<x1>[^ ])";
 
-			// test 1 about 0.720 sec for 1000 loops  **v																																											** v
-			patt[m++] =
-				@"(?<l1>(?>(?<=^[\t ]*|[-+'""*=()&\/][\t ]*)[-+]?)(?>(?>(?>(?>\d+ )?(?>\d+\/\d+['""])))|(?>(?>\d+'-(?>(?>\d+)?(?> \d+\/\d+""|\d+(?>\.\d*""|"")))))|(?>\d+(?>\.\d*""|""))|(?>(?>\d+\.\d*['""]))|(?>(?>\d+['""]))))|(?<f1>[a-zA-Z]\w*(?=\())|(?<s1>\"".+?\"")|(?<d1>(?>(?>(?<=^[\t ]*|[-+'""*=()&\/][\t ]*)[-+]?)\d+\.\d*))|(?<n1>(?>(?<=^[\t ]*|[-+'""*=()&\/][\t ]*)[-+]?)(?>\d+(?!\.)))|(?<op1>\<[oO][rR]\>|\<[aA][nN][dD]\>|\+|\-|&|<=|>=|<|>|==|!=|\*|\/)|(?<eq>=)|(?<pdn>\()|(?<pup>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<x1>[^ ])";
-
-			// test 2  about 0.655 sec for 1000 loops  **v																																											** v
-			// final "approved" pattern
-			patt[m++] =
-				@"(?<l2>(?>(?<=^[\t ]*|[-+'""*=()&\/][\t ]*)[-+]?)(?>(?>(?>(?>\d+ )?(?>\d+\/\d+['""])))|(?>(?>\d+'-(?>(?>\d+)?(?> \d+\/\d+""|\d+(?>\.\d*""|"")))))|(?>\d+(?>\.\d*""|""))|(?>(?>\d+\.\d*['""]))|(?>(?>\d+['""]))))|(?<d1>(?>(?>(?<=^[\t ]*|[-+'""*=()&\/][\t ]*)[-+]?)\d+\.\d*))|(?<n1>(?>(?<=^[\t ]*|[-+'""*=()&\/][\t ]*)[-+]?)(?>\d+(?!\.)))|(?<f1>[a-zA-Z]\w*(?=\())|(?<s1>\"".+?\"")|(?<op1>\<[oO][rR]\>|\<[aA][nN][dD]\>|\+|\-|&|<=|>=|<|>|==|!=|\*|\/)|(?<eq>=)|(?<pdn>\()|(?<pup>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<x1>[^ ])";
 
 			// // test 3 about 0.954 sec for 1000 loops  **v																																							** v
 			// patt[m++] =
@@ -110,65 +123,88 @@ namespace CellsTest.CellsTests
 			// // test 4 about  0.725 sec for 1000 loops  *v																																											** v
 			// patt[m++] =
 			// 	@"(?<l4>(?>(?<=^|[-+'""*=()&\/])(?>[\t ]*[-+]?))(?>(?>(?>(?>\d+ )?(?>\d+\/\d+['""])))|(?>(?>\d+'-(?>(?>\d+)?(?> \d+\/\d+""|\d+(?>\.\d*""|"")))))|(?>\d+(?>\.\d*""|""))|(?>(?>\d+\.\d*['""]))|(?>(?>\d+['""]))))|(?<d1>(?>(?>(?<=^|[-+'""*=()&\/])(?>[\t ]*[-+]?))\d+\.\d*))|(?<n1>(?>(?<=^|[-+'""*=()&\/])(?>[\t ]*[-+]?))(?>\d+(?!\.)))|(?<f1>[a-zA-Z]\w*(?=\())|(?<s1>\"".+?\"")|(?<op1>\<[oO][rR]\>|\<[aA][nN][dD]\>|\+|\-|&|<=|>=|<|>|==|!=|\*|\/)|(?<eq>=)|(?<pdn>\()|(?<pup>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<x1>[^ ])";
-
+*/
 
 			string[] test = new string[50];
 
-			int[] matchCount = new int[m];
-			string[][] result = new string[m][];
+			int[] matchCount = new int[numPatterns];
+			string[][] result = new string[numPatterns][];
 
-			for (int i = 0; i < m; i++)
+			for (int i = 0; i < numPatterns; i++)
 			{
 				result[i] = new string[numstrings];
 
 			}
 
-			int k = 0;
+			int numTestStr = 0;
 
-			test[k++] = @"=(1 + (21 + 22 + (31 + 32 * (41 + 42) * (sign(51+52) ) ) ) + 2*3) + 4+5 + {[A1]} + ([{A1]}) & ""text""";
-			test[k++] = @"{!a}= 223 (-123 + (+123 / 123 + (123 + (123 + 156) + 456)) + 456) + {[A1]} & ""text"" + ""tex() & t"" d  {!afdfd} + 100";
-			test[k++] = @"=(1 + (21 + 22 + (31 + 32 * (41  -42) * Sign(51 ++52) ) ) + 2*3) asfasf x <= y + - z > a t <= u  m != n + 1/2";
-			test[k++] = @"= 2 <or> 3 < 4 <and> 5 * f();";
-			test[k++] = @"=1.05";
-			test[k++] = @"=-1.05 * 1.05 + 123 + +1. ++1.05";
-			test[k++] = @"= 100/1.05";
-			test[k++] = @"1' + -2' + +3'";
-			test[k++] = @"4"" +5"" +-6""";
-			test[k++] = @"1.5' + +2.5'+ -2.5'";
-			test[k++] = @"4.5"" + +5.5"" * -6.5""";
-			test[k++] = @"= 1'-0"" + -2'-0"" * +3'-0""";
-			test[k++] = @"1'-1.5"" + -2'-1.5"" * +3'-1.5""";
-			test[k++] = @"1.1'-5"" + -2.1'-6.5"" *+3.1'-6.5""";
-			test[k++] = @"1/2""  + +1/2"" -1/2""";
-			test[k++] = @" 1/2' + -1/2' +1/2'";
-			test[k++] = @"  +1/2""";
-			test[k++] = @"    1/2"" + -1/2' + -4 1/2' - +4.5'";
-			test[k++] = @"=-5'-6.5"" +600' * 700.05' + -fun(3*4) + d";
+			test[numTestStr++] = @"{[A1]} + {!B2} + {@C2} + {#D3} + {$E4} + {%F5}";
+			test[numTestStr++] = @"=(1 + (21 + 22 + (31 + 32 * (41 + 42) * (sign(51+52) ) ) ) + 2*3) + 4+5 + {[A1]} + ([{A1]}) & ""text""";
+			test[numTestStr++] = @"{!a}= 223 (-123 + (+123 / 123 + (123 + (123 + 156) + 456)) + 456) + {[A1]} & ""text"" + ""tex() & t"" d  {!afdfd} + 100";
+			test[numTestStr++] = @"=(1 + (21 + 22 + (31 + 32 * (41  -42) * Sign(51 ++52) ) ) + 2*3) asfasf x <= y + - z > a t <= u  m != n + 1/2";
+			test[numTestStr++] = @"= 2 <or> 3 < 4 <and> 5 * f()";
+			test[numTestStr++] = @"=1.05";
+			test[numTestStr++] = @"=-1.05 * 1.05 + 123 + +1. ++1.05";
+			test[numTestStr++] = @"= 100/1.05";
+			test[numTestStr++] = @"1' + -2' + +3'";
+			test[numTestStr++] = @"4"" +5"" +-6""";
+			test[numTestStr++] = @"1.5' + +2.5'+ -2.5'";
+			test[numTestStr++] = @"4.5"" + +5.5"" * -6.5""";
+			test[numTestStr++] = @"= 1'-0"" + -2'-0"" * +3'-0""";
+			test[numTestStr++] = @"1'-1.5"" + -2'-1.5"" * +3'-1.5""";
+			test[numTestStr++] = @"1.1'-5"" + -2.1'-6.5"" *+3.1'-6.5""";
+			test[numTestStr++] = @"1/2""  + +1/2"" -1/2""";
+			test[numTestStr++] = @" 1/2' + -1/2' +1/2'";
+			test[numTestStr++] = @"  +1/2""";
+			test[numTestStr++] = @"    1/2"" + -1/2' + -4 1/2' - +4.5'";
+			test[numTestStr++] = @"=-5'-6.5"" +600' * 700.05' + -fun(3*4) + d";
 
 			Stopwatch s = new Stopwatch();
 
-			for (int j = 0; j < m; j++)
+			int[] tests = new int[numTestStr+1];
+
+			// m = number of patterns
+			for (int loop = 0; loop < numPatterns; loop++)
 			{
 				countLoops = 0;
 				countTests = 0;
 				groupCountTotalLoops = 0;
 
-				win.WriteLine("\n*** start loop| " + j);
+				win.WriteLine("\n*** start loop| " + loop + "\n");
 
 				s.Reset();
 				s.Start();
 
-				Regex r = new Regex(patt[j], RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+				Regex r = new Regex(patt[loop], RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
 				for (int l = 0; l < numLoops; l++)
 				{
 					countLoops++;
-					for (int i = 0; i < k; i++)
-					{
-						MatchCollection c = r.Matches(test[i]);
+					matchCount[loop] = 0;
 
-						groupCountTotalLoops += countMatches(c);
-						matchCount[j] += getMatches(c, result[j], matchCount[j]);
+					for (int testIdx = 0; testIdx < numTestStr; testIdx++)
+					{
+						MatchCollection c = r.Matches(test[testIdx]);
+
+						int x = countMatches(c);
+						int y = getMatches(c, result[loop], matchCount[loop]);
+
+						// win.WriteLine($"pattern| {j,-4:D}  loop| {l,-4:D}  test| {i,-4:D}" );
+						// win.Write($"count x| {x,-4:D}  y| {y,-4:D}  " );
+						//
+						// if (tests[i] != 0)
+						// {
+						// 	win.WriteLine($"tests[]| {tests[i],-4:D}  match?| {x==tests[i]}" );
+						// }
+						// else
+						// {
+						// 	win.WriteLine($"no tests" );
+						// }
+
+						// tests[testIdx] = x;
+
+						groupCountTotalLoops += x;
+						matchCount[loop] += y;
 						countTests++;
 					}
 				}
@@ -177,7 +213,7 @@ namespace CellsTest.CellsTests
 
 				double secs = s.Elapsed.TotalSeconds;
 
-				win.WriteLine("\n\n*** loop #| " + j + "  loop count| " + countLoops + "  total tests| " + countTests);
+				win.WriteLine("\n\n*** loop #| " + loop + "  loop count| " + countLoops + "  total tests| " + countTests);
 
 				win.WriteLine("time for patt| " + secs.ToString("N6") + " seconds");
 				win.WriteLine("time per loop| " + (secs/countLoops).ToString("N6") + " seconds");
@@ -185,12 +221,17 @@ namespace CellsTest.CellsTests
 
 				win.WriteLine("total groups found| " + groupCountTotalLoops.ToString("N0"));
 				win.WriteLine("avg groups per loop| " + (groupCountTotalLoops/countLoops).ToString("N4"));
-				win.WriteLine("pattern| " + patt[j]);
+				win.WriteLine("pattern| " + patt[loop]);
 				win.WriteLine("\n\n");
 
 			}
 
-			showMatches(result, matchCount[0], matchCount[1]);
+			if (numLoops == 1)
+			{
+				// compare the matches from one pattern to the other
+				showMatches2(result, 0, 1 ,matchCount);
+				showMatches2(result, 0, 2, matchCount);
+			}
 		}
 
 		private int countMatches(MatchCollection c)
@@ -220,56 +261,29 @@ namespace CellsTest.CellsTests
 			return k;
 		}
 
-		private void showMatches(string[][] s, int s0Count, int s1Count)
+		private void showMatches2(string[][] s, int pos0, int pos1, int[] count)
 		{
-
 			win.WriteLine("\nshow pattern test|");
 
-			int cntSmaller;
-			int posSmaller = 0;
-			string[] sSmaller;
+			int colLeft = pos0;
+			int colRight = pos1;
 
-			int cntLarger;
-			int posLarger = 0;
-			string[] sLarger;
+			int idxLeft = 0;
 
-			if (s0Count < s1Count)
+			if (count[colLeft] >= count[colRight])
 			{
-				sSmaller = s[0];
-				sLarger = s[1];
-				cntSmaller = s0Count;
-				cntLarger = s1Count;
-			}
-			else
-			{
-				sSmaller = s[1];
-				sLarger = s[0];
-				cntSmaller = s1Count;
-				cntLarger = s0Count;
+				colLeft = pos1;
+				colRight = pos0;
 			}
 
-			string smaller;
-			string larger;
+			win.WriteLine($"small count| {count[colLeft],-4:D}  larger count| {count[colRight],-4:D}\n");
 
-			win.WriteLine($"small count| {cntSmaller,-4:D}  larger count| {cntLarger,-4:D}\n");
-
-
-			for (int i = 0; i < cntLarger; i++)
+			for (int i = 0; i < count[colRight]; i++)
 			{
+				string left = string.IsNullOrWhiteSpace(s[colLeft][i]) ? "empty" : s[colLeft][i];
+				string right = string.IsNullOrWhiteSpace(s[colRight][i]) ? "empty" : s[colRight][i];
 
-				// while (string.IsNullOrWhiteSpace(sSmaller[posSmaller]) || !sSmaller[posSmaller].Equals(sLarger[posLarger]))
-				// {
-				// 	win.WriteLine($"smaller| {posSmaller,-4:D}| larger| {posLarger,-4:D}| value| {sLarger[posLarger]} - does not match");
-				// 	posSmaller++;
-				// }
-
-				smaller = string.IsNullOrWhiteSpace(sSmaller[posSmaller]) ? "empty" : sSmaller[posSmaller];
-				larger = string.IsNullOrWhiteSpace(sLarger[posSmaller]) ? "empty" : sLarger[posSmaller];
-
-				win.WriteLine($"smaller| {posSmaller,-4:D}| \t{smaller,-15} \tlarger| {posLarger,-4:D}| \t{larger,-15}");
-
-				posSmaller++;
-				posLarger++;
+				win.WriteLine($"smaller| {i,-4:D}| \t{left,-15} \tlarger| {i,-4:D}| \t{right,-15}");
 
 			}
 
@@ -277,11 +291,8 @@ namespace CellsTest.CellsTests
 
 		}
 
-
-		
 		private int getMatches(MatchCollection c, string[] matches, int start)
 		{
-
 			int matchCount = start;
 			Match m;
 			Group g;
@@ -302,7 +313,8 @@ namespace CellsTest.CellsTests
 
 					if (g.Success)
 					{
-						matches[matchCount++] = $"{g.Name,-5}| {g.Value}";
+						// win.WriteLine("match| " + $"{g.Name,-5}|\t{g.Value}");
+						matches[matchCount++] = $"{g.Name,-5}|\t{g.Value}";
 					}
 				}
 			}
@@ -310,17 +322,18 @@ namespace CellsTest.CellsTests
 			return matchCount - start;
 		}
 
-
+// initial split test for a formula - incomplete
 		internal void splitTest9()
 		{
-			win.WriteLine("split test 9A");
+			win.WriteLine("split test 9B");
 			win.WriteLine("splitting| ");
 
 			// string patt = @"(?<eq>=)|(?<f1>[a-zA-Z]\w+?\(.+?\))|(?<s1>\"".+?\"")|(?<op1>\+|\-)|(?<op2>\\|\*)|(?<op3>&)|(?<p1>\(|\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<n1>\d+)|(?<x1>.*?)";
 			//string patt = @"(?<eq>=)|(?<f1>[a-zA-Z]\w+?\(.+?\))|(?<s1>\"".+?\"")|(?<op1>\+|\-)|(?<op2>\\|\*)|(?<op3>&)|(?<pdn>\()|(?<pup>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<n1>\d+)";
 			// string patt = @"(?<eq>=)|(?<f1>[a-zA-Z]\w+(?=\())|(?<s1>\"".+?\"")|(?<op1>\+|\-)|(?<op2>\\|\*)|(?<op3>&)|(?<pdn>\()|(?<pup>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<n1>\d+)";
-			string patt =
-				@"(?<f1>[a-zA-Z]\w+(?=\())|(?<s1>\"".+?\"")|(?<n1>-?\d+)|(?<op1>\+|\-|&|<=|>=|<|>|==|!=)|(?<op2>\*|\\)|(?<eq>=)|(?<pdn>\()|(?<pup>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)";
+			// string patt = @"(?<f1>[a-zA-Z]\w+(?=\())|(?<s1>\"".+?\"")|(?<n1>-?\d+)|(?<op1>\+|\-|&|<=|>=|<|>|==|!=)|(?<op2>\*|\\)|(?<eq>=)|(?<pdn>\()|(?<pup>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)";
+
+			string patt = @"(?<l1>[-+]?(?>\d+'-(?>\d*\.\d+|(?>\d+ )?\d+\/\d+|\d+)""|(?>\d+ \d+\/\d+|\d+\/\d+|\d*\.\d+|\d+)[""']))|(?<fr1>[-+]?\d+ \d+\/\d+|\d+\/\d+)|(?<d1>[-+]?(?>\d+\.\d*|\d*\.\d+))|(?<n1>[-+]?\d+(?![.\/]))|(?<fn1>[a-zA-Z]\w*(?=\())|(?<s1>\"".+?\"")|(?<op1>\<[oO][rR]\>|\<[aA][nN][dD]\>|\+|\-|&|<=|>=|<|>|==|!=|\*|\/)|(?<eq>=)|(?<pdn>\()|(?<pup>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<x1>[^ ])";
 
 			Regex r = new Regex(patt, RegexOptions.Compiled);
 
@@ -328,7 +341,7 @@ namespace CellsTest.CellsTests
 
 			int k = 0;
 
-			test[k++] = "=(1 + (21 + 22 + (31 + 32 * (41 + 42) * (sign(51+52) ) ) ) + 2*3) + 4+5 + {[A1]} + ([{A1]}) & \"text\"";
+			test[k++] = "=(1 + (21 + 22 + (31 + 32 * (41 + 42) * (sign(51+52) ) ) ) + 2*3) + 4+5 + {[A1]} + ({!B1}) & \"text\"";
 			test[k++] = "= 123 (456+(123 + (678 + (123 + 123 + (123 + (123 + 456) + 456)) + 456) + 246))";
 			// test[k++] = "= 123 (123 + (123 + 123 + (123 + (123 + 456) + 456)) + 456)";
 			// test[k++] = "= 123 ((123 + 567) + (678 + 891) + (123 + 123 + (123 + (123 + 456) + 456)) + 456) + 246";
@@ -730,7 +743,7 @@ namespace CellsTest.CellsTests
 					new [] {new Tuple<string, int>("v1", 31), new Tuple<string, int>("v2", 32)}),
 				new Tuple<string, Tuple<string, int>[]>("word",  new [] {new Tuple<string, int>("w1", 41)}), // could be "true" or "false"
 				new Tuple<string, Tuple<string, int>[]>("string",  new [] {new Tuple<string, int>("s1", 51)}),
-				new Tuple<string, Tuple<string, int>[]>("error",  new [] {new Tuple<string, int>("x1", 51)}),
+				new Tuple<string, Tuple<string, int>[]>("error",  new [] {new Tuple<string, int>("x1", 61)}),
 				new Tuple<string, Tuple<string, int>[]>("function",  new [] {new Tuple<string, int>("f1", 91)}),
 			};
 

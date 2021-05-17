@@ -146,6 +146,7 @@ namespace CellsTest.CellsTests
 			}
 		}
 
+// simple split a formula
 		internal void splitTest5()
 		{
 			win.WriteLine("split test 5");
@@ -190,6 +191,7 @@ namespace CellsTest.CellsTests
 			}
 		}
 
+// simple work with vars
 		internal void splitTest6()
 		{
 			win.WriteLine("split test 6");
@@ -241,7 +243,7 @@ namespace CellsTest.CellsTests
 					string code = m.Groups["code"].Value;
 					if (string.IsNullOrWhiteSpace(code)) continue;
 
-					Debug.WriteLine("adding| " + i
+					win.WriteLine("adding| " + i
 						+ "| code| " + code.PadRight(5)
 						+ "| name| " + m.Groups["name"].Value
 						);
@@ -249,12 +251,13 @@ namespace CellsTest.CellsTests
 					varList.Add(new KeyValuePair<string, string>(code, m.Groups["name"].Value));
 				}
 
-				Debug.WriteLine("Test| " + i + " complete\n");
+				win.WriteLine("Test| " + i + " complete\n");
 			}
 
-			Debug.WriteLine("splitest 6| done");
+			win.WriteLine("splitest 6| done");
 		}
 
+// simple work with vars
 		internal void splitTest7()
 		{
 			win.WriteLine("split test 7");
@@ -398,6 +401,7 @@ namespace CellsTest.CellsTests
 			win.WriteLine("splitest 7| done");
 		}
 
+// split by paren's
 		internal void splitTest8()
 		{
 			win.WriteLine("split test 8");
@@ -479,8 +483,6 @@ namespace CellsTest.CellsTests
 			}
 		}
 
-
-
 		private List<List<int[]>> startParsePren(string eq)
 		{
 			int level = 0;
@@ -535,10 +537,10 @@ namespace CellsTest.CellsTests
 		}
 
 
-
+// simple test to split a formula
 		internal void splitTest1()
 		{
-			win.WriteLine("split test");
+			win.WriteLine("split test 1");
 			win.WriteLine("splitting| ");
 
 			string[] test = new string[15];
@@ -608,8 +610,11 @@ namespace CellsTest.CellsTests
 			}
 		}
 
+// tests working with key vars
 		internal void splitTest2()
 		{
+			win.WriteLine("split test 2");
+
 			for (int j = 0; j < 10; j++)
 			{
 				ProcessFormula pf = new ProcessFormula();
@@ -640,32 +645,35 @@ namespace CellsTest.CellsTests
 				{
 					if (test[i] == null) continue;
 
-					Debug.WriteLine("testing| " + test[i]);
+					win.WriteLine("testing| " + test[i]);
 
 					bool result = pf.GetKeyVars(test[i], out gotLeftSide, out leftSide, out rightSide);
 
-					Debug.WriteLine("final answer| worked?| " + result );
-					Debug.WriteLine("");
+					win.WriteLine("final answer| worked?| " + result );
+					win.WriteLine("");
 
 					if (result)
 					{
-						Debug.WriteLine("tested| " + test[i] + "| passed "
+						win.WriteLine("tested| " + test[i] + "| passed "
 							+ ">" + rightSide.Key + "< >" + rightSide.Value + "<\n"
 							+ "gotLeftSize| " + gotLeftSide + "\n"
 							);
 					}
 					else
 					{
-						Debug.WriteLine("testing| " + test[i] + "| failed \n");
+						win.WriteLine("testing| " + test[i] + "| failed \n");
 					}
 				}
 
-				Debug.WriteLine("done");
+				win.WriteLine("done");
 			}
 		}
 
+// tests working with key vars
 		internal void splitTest3()
 		{
+			win.WriteLine("split test 3");
+
 			// for (int j = 0; j < 5; j++)
 			// {
 			ProcessFormula pf = new ProcessFormula();
@@ -693,37 +701,37 @@ namespace CellsTest.CellsTests
 			{
 				if (test[i] == null) continue;
 
-				Debug.WriteLine("\ntesting| " + test[i]);
+				win.WriteLine("\ntesting| " + test[i]);
 
 				Tuple<int, char, TestType, TestStatusCode> result =
 					pf.GetKeyVars3(test[i], out keyVar);
 
-				// Debug.WriteLine("final answer| worked?| " + result );
-				// Debug.Write("\n");
+				// win.WriteLine("final answer| worked?| " + result );
+				// win.Write("\n");
 
 				if (result.Item1 == 0)
 				{
-					Debug.WriteLine("PASSED| " + test[i]);
-					Debug.Write(" index| " + keyVar.Key);
-					Debug.Write(" keyvar| " + keyVar.Value);
-					Debug.Write(" id| " + ProcessFormulaSupport.varIds[keyVar.Key].Id);
-					Debug.Write(" prefix| " + ProcessFormulaSupport.varIds[keyVar.Key].Prefix);
-					Debug.Write("\n");
+					win.WriteLine("PASSED| " + test[i]);
+					win.Write(" index| " + keyVar.Key);
+					win.Write(" keyvar| " + keyVar.Value);
+					win.Write(" id| " + ProcessFormulaSupport.varIds[keyVar.Key].Id);
+					win.Write(" prefix| " + ProcessFormulaSupport.varIds[keyVar.Key].Prefix);
+					win.Write("\n");
 				}
 				else
 				{
-					Debug.WriteLine("FAILED| " + test[i]);
-					Debug.Write(" index| " + result.Item1);
-					Debug.Write(" char| " + (result.Item2 == 0 ? "none" : result.Item2.ToString()));
-					Debug.Write(" test type| " + result.Item3);
-					Debug.Write(" stat code| " + result.Item4);
-					Debug.Write("\n");
+					win.WriteLine("FAILED| " + test[i]);
+					win.Write(" index| " + result.Item1);
+					win.Write(" char| " + (result.Item2 == 0 ? "none" : result.Item2.ToString()));
+					win.Write(" test type| " + result.Item3);
+					win.Write(" stat code| " + result.Item4);
+					win.Write("\n");
 				}
 
-				Debug.WriteLine("");
+				win.WriteLine("");
 			}
 
-			Debug.WriteLine("done");
+			win.WriteLine("done");
 		}
 
 	#endregion

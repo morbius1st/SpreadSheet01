@@ -159,6 +159,14 @@ namespace CellsTest.Windows
 			TbxMsg.Text += sb.ToString();
 		}
 
+		public void ClrMessage()
+		{
+			sb = new StringBuilder();
+			TbxMsg.Text ="";
+		}
+
+
+
 	#endregion
 
 	#region private methods
@@ -168,103 +176,26 @@ namespace CellsTest.Windows
 
 	#region event consuming
 
-		private void BtnSplit1_OnClick(object sender, RoutedEventArgs e)
-		{
-			WriteLineTab("SplitTest 1");
-
-			tests01.splitTest1();
-
-			ShowMessage();
-
-			Debug.WriteLine("@split test 1");
-		}
-		
-		private void BtnSplit2_OnClick(object sender, RoutedEventArgs e)
-		{
-			WriteLineTab("SplitTest 2");
-
-			tests01.splitTest2();
-
-			ShowMessage();
-
-			Debug.WriteLine("@split test 2");
-		}
-		
-		private void BtnSplit3_OnClick(object sender, RoutedEventArgs e)
-		{
-			WriteLineTab("SplitTest 3");
-
-			tests01.splitTest3();
-
-			ShowMessage();
-
-			Debug.WriteLine("@split test 3");
-		}
-			
-		private void BtnSplit5_OnClick(object sender, RoutedEventArgs e)
-		{
-			WriteLineTab("SplitTest 5");
-
-			tests01.splitTest5();
-
-			ShowMessage();
-
-			Debug.WriteLine("@split test 5");
-		}
-			
-		private void BtnSplit6_OnClick(object sender, RoutedEventArgs e)
-		{
-			WriteLineTab("SplitTest 6");
-
-			tests01.splitTest6();
-
-			ShowMessage();
-
-			Debug.WriteLine("@split test 6");
-		}
-					
-		private void BtnSplit7_OnClick(object sender, RoutedEventArgs e)
-		{
-			WriteLineTab("SplitTest 7");
-
-			tests01.splitTest7();
-
-			ShowMessage();
-
-			Debug.WriteLine("@split test 7");
-		}
-								
-		private void BtnSplit8_OnClick(object sender, RoutedEventArgs e)
-		{
-			WriteLineTab("SplitTest 8");
-
-			tests01.splitTest8();
-
-			ShowMessage();
-
-			Debug.WriteLine("@split test 8");
-		}
-											
 		private void BtnSplit9_OnClick(object sender, RoutedEventArgs e)
 		{
+			ClrMessage();
+
 			WriteLineTab("SplitTest 9");
 
 			tests01A.splitTest9();
 
 			ShowMessage();
-
-			Debug.WriteLine("@split test 9");
 		}
-													
+								
 		private void BtnSplit10_OnClick(object sender, RoutedEventArgs e)
 		{
+			ClrMessage();
+
 			WriteLineTab("SplitTest 10");
 
 			tests01A.splitTest10();
 
 			ShowMessage();
-
-			Debug.WriteLine("@split test 10");
 		}
 			
 		private void BtnReset_OnClick(object sender, RoutedEventArgs e)
@@ -395,7 +326,6 @@ namespace CellsTest.Windows
 		public static TraceSource myTrace = new TraceSource("CellsTest");
 		private TextWriterTraceListener writerListener;
 
-
 		private void configTrace()
 		{
 			string fileName = "trace.log";
@@ -422,9 +352,6 @@ namespace CellsTest.Windows
 
 		}
 
-
-
-
 	#region event publishing
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -445,6 +372,111 @@ namespace CellsTest.Windows
 
 	#endregion
 
+/*
+		private void BtnSplit1_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("SplitTest 1");
+
+			tests01.splitTest1();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 1");
+		}
 		
+		private void BtnSplit2_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("SplitTest 2");
+
+			tests01.splitTest2();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 2");
+		}
+		
+		private void BtnSplit3_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("SplitTest 3");
+
+			tests01.splitTest3();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 3");
+		}
+			
+		private void BtnSplit5_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("SplitTest 5");
+
+			tests01.splitTest5();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 5");
+		}
+			
+		private void BtnSplit6_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("SplitTest 6");
+
+			tests01.splitTest6();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 6");
+		}
+					
+		private void BtnSplit7_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("SplitTest 7");
+
+			tests01.splitTest7();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 7");
+		}
+								
+		private void BtnSplit8_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("SplitTest 8");
+
+			tests01.splitTest8();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 8");
+		}
+											
+		private void BtnSplit9_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("SplitTest 9");
+
+			tests01A.splitTest9();
+
+			ShowMessage();
+
+			Debug.WriteLine("@split test 9");
+		}
+					
+*/		
 	}
 }

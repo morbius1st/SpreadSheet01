@@ -11,6 +11,7 @@
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory).External\" />
     <Folder Include="$(MSBuildThisFileDirectory)Management\" />
+    <Folder Include="$(MSBuildThisFileDirectory)NewFolder\" />
     <Folder Include="$(MSBuildThisFileDirectory)RevitSupport\RevitChartManagement\" />
   </ItemGroup>
   <ItemGroup>

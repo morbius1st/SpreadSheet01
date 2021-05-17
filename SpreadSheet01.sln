@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{EC7EC826-E988-4A42-BDA2-6E001B03121C}"
 	ProjectSection(SolutionItems) = preProject
 		DataHierarchy.txt = DataHierarchy.txt
+		Equation Processing.txt = Equation Processing.txt
 		Notes.txt = Notes.txt
 	EndProjectSection
 EndProject

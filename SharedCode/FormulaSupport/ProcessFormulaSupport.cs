@@ -98,22 +98,22 @@ namespace SharedCode.FormulaSupport
 		private const char ID_STR_pfx = '{';
 		private const char ID_STR_sfx = '}';
 
-		private  readonly Var_Id EXCEL_ADDR     = new Var_Id("ca",
+		private readonly Var_Id EXCEL_ADDR     = new Var_Id("ca",
 			RegexValidateType.RI_EXCEL_ADDR, '[', ']'); // CA cell address
 
-		private  readonly Var_Id SYST_VAR       = new Var_Id("sv",
+		private readonly Var_Id SYST_VAR       = new Var_Id("sv",
 			RegexValidateType.RI_VAR_NAME_OTHER, '$'); // SA
 
-		private  readonly Var_Id REVIT_PARAM    = new Var_Id("rp",
+		private readonly Var_Id REVIT_PARAM    = new Var_Id("rp",
 			RegexValidateType.RI_VAR_NAME_OTHER, '#'); // RP
 
-		private  readonly Var_Id PROJ_PARAM     = new Var_Id("pp",
+		private readonly Var_Id PROJ_PARAM     = new Var_Id("pp",
 			RegexValidateType.RI_VAR_NAME_OTHER, '%'); // PP
 
-		private  readonly Var_Id GLOBAL_PARAM   = new Var_Id("gp",
+		private readonly Var_Id GLOBAL_PARAM   = new Var_Id("gp",
 			RegexValidateType.RI_VAR_NAME_OTHER, '!'); // GP
 
-		private  readonly Var_Id LABEL_NAME     = new Var_Id("ln",
+		private readonly Var_Id LABEL_NAME     = new Var_Id("ln",
 			RegexValidateType.RI_VAR_NAME_LABEL, '@'); // LN
 
 		public static Var_Id[] varIds;
@@ -348,7 +348,6 @@ namespace SharedCode.FormulaSupport
 
 			return null;
 		}
-
 
 		public  void Tests()
 		{

@@ -4,13 +4,12 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:data="clr-namespace:CellsTest.CellsTests"
-		xmlns:rvt="clr-namespace:SpreadSheet01.RevitSupport"
 		xmlns:local="clr-namespace:CellsTest.Windows"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:mgmt="clr-namespace:SpreadSheet01.RevitSupport.RevitCellsManagement"
 		Title="MainWindow"
 		Width="1600"
-		Height="1100"
+		Height="700"
 		DataContext="{Binding ElementName=PrimeWin}"
 		mc:Ignorable="d"
 		Background="{StaticResource Normal.Window.Background}"
@@ -69,6 +68,7 @@
 					Click="BtnSplit10_OnClick"
 			/>
 
+			
 			<Button x:Name="BtnSplit9"
 					Content="Split Test #9"
 					Margin="5"
@@ -77,69 +77,69 @@
 					DockPanel.Dock="Bottom"
 					Click="BtnSplit9_OnClick"
 			/>
-			
-			<Button x:Name="BtnSplit8"
-					Content="Split Test #8"
-					Margin="5"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Bottom"
-					DockPanel.Dock="Bottom"
-					Click="BtnSplit8_OnClick"
-			/>
-									
-			<Button x:Name="BtnSplit7"
-					Content="Split Test #7"
-					Margin="5"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Bottom"
-					DockPanel.Dock="Bottom"
-					Click="BtnSplit7_OnClick"
-			/>
-								
-			<Button x:Name="BtnSplit6"
-					Content="Split Test #6"
-					Margin="5"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Bottom"
-					DockPanel.Dock="Bottom"
-					Click="BtnSplit6_OnClick"
-			/>
-						
-			<Button x:Name="BtnSplit5"
-					Content="Split Test #5"
-					Margin="5"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Bottom"
-					DockPanel.Dock="Bottom"
-					Click="BtnSplit5_OnClick"
-			/>
-									
-			<Button x:Name="BtnSplit3"
-					Content="Split Test #3"
-					Margin="5"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Bottom"
-					DockPanel.Dock="Bottom"
-					Click="BtnSplit3_OnClick"
-			/>
-												
-			<Button x:Name="BtnSplit2"
-					Content="Split Test #2"
-					Margin="5"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Bottom"
-					DockPanel.Dock="Bottom"
-					Click="BtnSplit2_OnClick"
-			/>
-															
-			<Button x:Name="BtnSplit1"
-					Content="Split Test #1"
-					Margin="5"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Bottom"
-					DockPanel.Dock="Bottom"
-					Click="BtnSplit1_OnClick"
-			/>
+			<!-- -->
+			<!-- <Button x:Name="BtnSplit8" -->
+			<!-- 		Content="Split Test #8" -->
+			<!-- 		Margin="5" -->
+			<!-- 		HorizontalAlignment="Stretch" -->
+			<!-- 		VerticalAlignment="Bottom" -->
+			<!-- 		DockPanel.Dock="Bottom" -->
+			<!-- 		Click="BtnSplit8_OnClick" -->
+			<!-- /> -->
+			<!-- 						 -->
+			<!-- <Button x:Name="BtnSplit7" -->
+			<!-- 		Content="Split Test #7" -->
+			<!-- 		Margin="5" -->
+			<!-- 		HorizontalAlignment="Stretch" -->
+			<!-- 		VerticalAlignment="Bottom" -->
+			<!-- 		DockPanel.Dock="Bottom" -->
+			<!-- 		Click="BtnSplit7_OnClick" -->
+			<!-- /> -->
+			<!-- 					 -->
+			<!-- <Button x:Name="BtnSplit6" -->
+			<!-- 		Content="Split Test #6" -->
+			<!-- 		Margin="5" -->
+			<!-- 		HorizontalAlignment="Stretch" -->
+			<!-- 		VerticalAlignment="Bottom" -->
+			<!-- 		DockPanel.Dock="Bottom" -->
+			<!-- 		Click="BtnSplit6_OnClick" -->
+			<!-- /> -->
+			<!-- 			 -->
+			<!-- <Button x:Name="BtnSplit5" -->
+			<!-- 		Content="Split Test #5" -->
+			<!-- 		Margin="5" -->
+			<!-- 		HorizontalAlignment="Stretch" -->
+			<!-- 		VerticalAlignment="Bottom" -->
+			<!-- 		DockPanel.Dock="Bottom" -->
+			<!-- 		Click="BtnSplit5_OnClick" -->
+			<!-- /> -->
+			<!-- 						 -->
+			<!-- <Button x:Name="BtnSplit3" -->
+			<!-- 		Content="Split Test #3" -->
+			<!-- 		Margin="5" -->
+			<!-- 		HorizontalAlignment="Stretch" -->
+			<!-- 		VerticalAlignment="Bottom" -->
+			<!-- 		DockPanel.Dock="Bottom" -->
+			<!-- 		Click="BtnSplit3_OnClick" -->
+			<!-- /> -->
+			<!-- 									 -->
+			<!-- <Button x:Name="BtnSplit2" -->
+			<!-- 		Content="Split Test #2" -->
+			<!-- 		Margin="5" -->
+			<!-- 		HorizontalAlignment="Stretch" -->
+			<!-- 		VerticalAlignment="Bottom" -->
+			<!-- 		DockPanel.Dock="Bottom" -->
+			<!-- 		Click="BtnSplit2_OnClick" -->
+			<!-- /> -->
+			<!-- 												 -->
+			<!-- <Button x:Name="BtnSplit1" -->
+			<!-- 		Content="Split Test #1" -->
+			<!-- 		Margin="5" -->
+			<!-- 		HorizontalAlignment="Stretch" -->
+			<!-- 		VerticalAlignment="Bottom" -->
+			<!-- 		DockPanel.Dock="Bottom" -->
+			<!-- 		Click="BtnSplit1_OnClick" -->
+			<!-- /> -->
 
 
 
@@ -308,7 +308,6 @@
 				VerticalScrollBarVisibility="Visible"
 				HorizontalScrollBarVisibility="Visible"
 				/>
-
 
 
 		<ListView x:Name="LvSymbols01"
