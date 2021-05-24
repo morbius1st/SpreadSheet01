@@ -74,7 +74,6 @@ namespace SharedCode.EquationSupport.Definitions
 		public static int Vd_GrpBeg;
 		public static int Vd_GrpEnd;
 		
-
 		private static void Init()
 		{
 			idDefArray = new ValueDef[MAX_TOKENS];

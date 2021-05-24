@@ -3,7 +3,7 @@
 // File:             UnitOfMeasure.cs
 // Created:      2021-05-22 (6:42 AM)
 
-namespace SharedCode.EquationSupport.TokenSupport.Values
+namespace SharedCode.EquationSupport.TokenSupport.Amounts
 {
 	public class UoM
 	{

@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using SharedCode.EquationSupport.Definitions;
-using SharedCode.EquationSupport.TokenSupport.Values;
 
 using static SharedCode.EquationSupport.Definitions.ValueDefinitions;
 
