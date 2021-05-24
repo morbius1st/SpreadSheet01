@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{EC7EC826
 		DataHierarchy.txt = DataHierarchy.txt
 		Equation Processing.txt = Equation Processing.txt
 		Notes.txt = Notes.txt
+		TokenProcessing.txt = TokenProcessing.txt
 	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedCode", "SharedCode\SharedCode.shproj", "{557CABDB-D47A-4D55-B914-603F13E0E6EE}"

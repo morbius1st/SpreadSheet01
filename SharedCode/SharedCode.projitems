@@ -11,12 +11,32 @@
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory).External\" />
     <Folder Include="$(MSBuildThisFileDirectory)Management\" />
-    <Folder Include="$(MSBuildThisFileDirectory)NewFolder\" />
     <Folder Include="$(MSBuildThisFileDirectory)RevitSupport\RevitChartManagement\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory).DebugAssist\ISendMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory).DebugAssist\ListInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\DefinitionBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\ParseGeneralDefinitions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\ValueDefinitions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\ParseVariableDefinitions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\ParseSupport\ParseInitial.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmountBase2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmtInt.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Token.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\TokenAmt2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\TokenAmt.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\TokenAmts2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\TokenAmts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmountBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Values\UnitOfMeasure.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Values\ValDouble.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Values\ValGrouping.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Values\ValOpAdditive.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Values\ValInteger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Values\ValueBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Tokens.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\TokenValue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FormulaSupport\FormulaStorage\FormulaContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FormulaSupport\FormulaManagement\FormulaSupervisor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FormulaSupport\FormulaStorage\RevitFormulaDefinition\RevitFormula.cs" />

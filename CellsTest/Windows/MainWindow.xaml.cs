@@ -43,6 +43,8 @@ namespace CellsTest.Windows
 
 		private Tests01 tests01;
 		private Tests01A tests01A;
+		private Tests02A tests02A;
+		private Tests04Amounts tests04Amts;
 
 	#endregion
 
@@ -58,6 +60,8 @@ namespace CellsTest.Windows
 
 			tests01 = new Tests01(this);
 			tests01A = new Tests01A(this);
+			tests02A = new Tests02A(this);
+			tests04Amts = new Tests04Amounts(this);
 
 			configTrace();
 		}
@@ -176,6 +180,50 @@ namespace CellsTest.Windows
 
 	#region event consuming
 
+		private void BtnToken04_02a_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("Token Test 4-1");
+
+			tests04Amts.valueDefTest02a();
+
+			ShowMessage();
+		}
+		
+		private void BtnToken04_01a_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("Token Test 4-1");
+
+			tests04Amts.tokenAmtTest01();
+
+			ShowMessage();
+		}
+
+		private void BtnParse01_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("Parse Test 1");
+
+			tests02A.parseTest01();
+
+			ShowMessage();
+		}
+		
+		private void BtnParse02_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("Parse Test 2");
+
+			tests02A.parseTest02();
+
+			ShowMessage();
+		}
+
 		private void BtnSplit9_OnClick(object sender, RoutedEventArgs e)
 		{
 			ClrMessage();
@@ -186,7 +234,7 @@ namespace CellsTest.Windows
 
 			ShowMessage();
 		}
-								
+
 		private void BtnSplit10_OnClick(object sender, RoutedEventArgs e)
 		{
 			ClrMessage();

@@ -1,0 +1,50 @@
+
+Token
+need to track
+
+1. token category:  i.e.
+	operator vs. string vs. number
+	
+2. token sub-category i.e.
+	logical operator vs additive operator or real number vs integer
+
+3. token level
+4. processing order
+5. token value
+	needs to hold multiple types depending on 
+		category / sub-category
+	needs to identify its unit type
+
+
+
+Token Value
+1. needs the value
+	as a string
+	native format (as a number if a number)
+		string, integer, float, bool
+2. value type
+	identifier, string, integer, real, unit, bool
+	identifier is a string but identifies something
+		such as a function name or a prenthesis
+3. value processing
+	operator processing
+	conversion processing (to/from string)
+4. unit types
+	unit type category:
+		linear / length / distance
+		volume, time, the 7 SI categories
+		other such as currency
+	unit type includes
+		conversion between values of the same category
+		unit operator processing
+
+interface <T>
+> original value (as string)
+> T Value => ValueType.Value
+> ValueType
+
+
+actual
+
+
+
