@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using SharedCode.EquationSupport.ParseSupport;
 using SharedCode.EquationSupport.TokenSupport.Amounts;
 
 #endregion
@@ -17,30 +18,45 @@ using SharedCode.EquationSupport.TokenSupport.Amounts;
 namespace SharedCode.EquationSupport.TokenSupport
 {
 
-	public class TokenAmt2
+	public class Token
 	{
 	#region private fields
 
+		private int position;	// position in the formula string
+		private int length; // length in the formula string
+
 		private int level = 0;
-		private IAmtBase2 amtBase2;
-		private List<TokenAmt2> tokenAmts2 = null;
+		private AAmtBase aAmtBase;
+		private List<Token> tokenAmts2 = null;
 
 	#endregion
 
 	#region ctor
 
-		public TokenAmt2(IAmtBase2 amtBase)
+		public Token()
 		{
-			this.amtBase2 = amtBase;
+			this.aAmtBase = null;
+			position = 0;
+			length = 0;
+		}
+
+		public Token(AAmtBase aAmtBase, int pos, int len)
+		{
+			this.aAmtBase = aAmtBase;
+			position = pos;
+			length = len;
 		}
 
 	#endregion
 
 	#region public properties
 
-		public IAmtBase2 AmountBase => amtBase2;
-		public ValueType DataType => amtBase2.DataType;
-		public TokenAmt2 this[int idx] => tokenAmts2[idx];
+		public AAmtBase AmountBase => aAmtBase;
+		public ValueType DataType => aAmtBase.DataType;
+		public Token this[int idx] => tokenAmts2[idx];
+		public int Position => position;
+		public int Length => length;
+
 	#endregion
 
 	#region private properties
@@ -49,17 +65,17 @@ namespace SharedCode.EquationSupport.TokenSupport
 
 	#region public methods
 
-		public TokenAmt2 MakeBranch()
+		public Token MakeBranch()
 		{
-			TokenAmt2 t = new TokenAmt2(null);
+			Token t = new Token();
 			t.level++;
-			t.tokenAmts2 = new List<TokenAmt2>();
+			t.tokenAmts2 = new List<Token>();
 			tokenAmts2.Add(t);
 
 			return t;
 		}
 
-		public void Add(TokenAmt2 t)
+		public void Add(Token t)
 		{
 			tokenAmts2.Add(t);
 		}
@@ -83,7 +99,7 @@ namespace SharedCode.EquationSupport.TokenSupport
 
 		public override string ToString()
 		{
-			return "this is| " + nameof(TokenAmt2) + "(" + amtBase2.AsString() + ")";
+			return "this is| " + nameof(Token) + "(" + aAmtBase.AsString() + ")";
 		}
 
 	#endregion

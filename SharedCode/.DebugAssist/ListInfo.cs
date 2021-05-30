@@ -402,7 +402,9 @@ namespace SharedCode.DebugAssist
 			win.WriteLineTab(who + "| list parameter descriptions");
 
 			int i = 0;
+#pragma warning disable CS0219 // The variable 'j' is assigned but its value is never used
 			int j = 0;
+#pragma warning restore CS0219 // The variable 'j' is assigned but its value is never used
 
 			win.TabUp("start list chart params");
 			{
@@ -735,7 +737,9 @@ namespace SharedCode.DebugAssist
 
 					win.TabUp("list param errors");
 					{
+#pragma warning disable CS0219 // The variable 'j' is assigned but its value is never used
 						int j = 0;
+#pragma warning restore CS0219 // The variable 'j' is assigned but its value is never used
 						foreach (ARevitParam p in paramList)
 						{
 							if (p != null) listErrors(p.ErrorCodeList);

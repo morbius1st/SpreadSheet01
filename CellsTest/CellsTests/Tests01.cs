@@ -13,7 +13,9 @@ using CellsTest.Windows;
 using UtilityLibrary;
 using static CellsTest.Windows.MainWindow;
 using SharedCode.FormulaSupport;
+#pragma warning disable CS0105 // The using directive for 'UtilityLibrary' appeared previously in this namespace
 using UtilityLibrary;
+#pragma warning restore CS0105 // The using directive for 'UtilityLibrary' appeared previously in this namespace
 
 #endregion
 

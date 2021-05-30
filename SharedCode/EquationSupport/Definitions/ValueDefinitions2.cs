@@ -17,22 +17,22 @@ using static SharedCode.EquationSupport.Definitions.ValueType;
 
 namespace SharedCode.EquationSupport.Definitions
 {
-	public class ValueDefinitions : ADefinitionBase<DefValue>
+	public class ValueDefinitions2 : ADefinitionBase<ADefBase2>
 	{
 		private const int MAX_TOKENS = 50;
 
-		private static readonly Lazy<ValueDefinitions> instance =
-		new Lazy<ValueDefinitions>(()=> new ValueDefinitions());
+		private static readonly Lazy<ValueDefinitions2> instance =
+		new Lazy<ValueDefinitions2>(()=> new ValueDefinitions2());
 
-		static ValueDefinitions() {Init(); }
+		static ValueDefinitions2() {Init(); }
 
 		// private ValueDefinitions() : base() { }
 
-		public static ValueDefinitions ValDefInst => instance.Value;
+		public static ValueDefinitions2 ValDefInst => instance.Value;
 
-		public override DefValue Invalid => 
+		public override ADefBase2 Invalid => 
 			new DefValue("Invalid", null, VT_INVALID, (int) VT_INVALID, (int) VT_INVALID);
-		public override DefValue Default => 
+		public override ADefBase2 Default => 
 			new DefValue("Default", null, VT_DEFAULT, (int) VT_DEFAULT, (int) VT_DEFAULT);
 
 		// public DefValue[] VDefDefs => idDefArray;

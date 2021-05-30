@@ -1,16 +1,20 @@
 ﻿#region + Using Directives
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CellsTest.Windows;
+using SharedCode.DebugAssist;
 using SharedCode.EquationSupport.TokenSupport;
 using SharedCode.EquationSupport.TokenSupport.Amounts;
 using SharedCode.EquationSupport.Definitions;
+using SharedCode.EquationSupport.ParseSupport;
 using static SharedCode.EquationSupport.Definitions.ValueType;
-
 using static SharedCode.EquationSupport.Definitions.ValueDefinitions;
+using ValueType = SharedCode.EquationSupport.Definitions.ValueType;
+
 #endregion
 
 // user name: jeffs
@@ -21,105 +25,205 @@ namespace CellsTest.CellsTests
 	public class Tests04Amounts
 	{
 		private static MainWindow win;
+		private ParseGeneralDefinitions pDefs = new ParseGeneralDefinitions();
+		private ShowResults show = ShowResults.Inst;
 
 		public Tests04Amounts(MainWindow win1)
 		{
 			win = win1;
 		}
 
-		internal void valueDefTest02a() 
+		// show parse defs
+		internal void ShowParseGenDefs01a()
 		{
-			win.WriteLine($"valueDefTest01|");
+			win.showTabId = false;
+
+			win.WriteLine($"ShowParseDefs01a|");
+
+			win.WriteLine("");
+			ShowParseGenDefs1D(pDefs.Invalid);
+
+			win.WriteLine("");
+			ShowParseGenDefs1D(pDefs.Default);
+
+			for (var i = 0; i < pDefs.Count; i++)
+			{
+				win.WriteLine("");
+				win.WriteLine($"{"ShowParseGenDefs",titleWidthD}| for {i:D}");
+				ShowParseGenDefs1D(pDefs[i]);
+			}
+		}
+
+		// show value defs
+		internal void valueDefTest01b()
+		{
+			win.WriteLine($"valueDefTest02b|");
 
 			ShowValueDefB(Vd_NumInt);
+			ShowValueDefB(Vd_NumDouble);
+			ShowValueDefB(Vd_NumFract);
+			ShowValueDefB(Vd_NumUntLenImp);
+
+			ShowValueTypesEnumB();
+			ShowValueTypesC();
 		}
 
-		private const int titleWidthB = -13;
-		private const int fieldWidthB = -33;
-		private void ShowValueDefB(int idx)
-		{
-			ValueDef vDef = VdefInst[idx];
-
-			win.WriteLine($"{"ShowValueDefA|",titleWidthB} for {idx:D}");
-			win.WriteLine($"{"nameOf",titleWidthB} for {nameof(vDef)}");
-			win.WriteLine($"{"value string",titleWidthB} for {vDef.ValueStr}");
-			win.WriteLine($"{"description",titleWidthB} for {vDef.Description}");
-
-		}
-
-
+		// test making tokens
 		internal void tokenAmtTest01()
 		{
 			win.WriteLine($"tokenAmtTest01|");
 
-			AmtInteger2 ai2 = new AmtInteger2("1234");
-			AmtDouble2 ad2 = new AmtDouble2("456.78");
+			AmtInteger ai = new AmtInteger("1234");
+			AmtDouble ad = new AmtDouble("456.78");
+			AmtOpAdd aoa = new AmtOpAdd("+");
+			AmtGpRef agr = new AmtGpRef("");
+			AmtGpBeg agb = new AmtGpBeg("(");
+			AmtGpEnd age = new AmtGpEnd(")");
 
-			IAmtBase2[] aib = new IAmtBase2[]
+			AAmtBase[] aibs = new AAmtBase[]
 			{
-				ai2,
-				ad2,
+				ai,
+				ad,
+				aoa,
+				agr,
+				agb,
+				age,
 			};
 
-			foreach (IAmtBase2 ai in aib)
+			foreach (AAmtBase aib in aibs)
 			{
-				ShowBaseAmtA(ai);
+				ShowBaseAmtA(aib);
 				win.WriteLine("");
 			}
 
-			TokenAmt2[] ta2s = new []
+			Token[] tokens = new []
 			{
-				new TokenAmt2(aib[0]),
-				new TokenAmt2(aib[1]),
-				// new TokenAmt2(ai2s[2]),
+				new Token(aibs[0], 0, 0),
+				new Token(aibs[1], 0, 0),
+				new Token(aibs[2], 0, 0),
+				new Token(aibs[3], 0, 0),
+				new Token(aibs[4], 0, 0),
+				new Token(aibs[5], 0, 0),
 			};
-			
-			foreach (TokenAmt2 ta2 in ta2s)
+
+			foreach (Token tk in tokens)
 			{
-				ShowTknA(ta2);
+				ShowTknA(tk);
 				win.WriteLine("");
 			}
+		}
 
-			// AmtInteger2[] ai2s = new []
-			// {
-			// 	new AmtInteger2("1234"),
-			// 	new AmtInteger2("456"),
-			// 	// AmtInteger2.Default,
-			// 	// AmtInteger2.Invalid,
-			// };
-			//
-			// foreach (AmtInteger2 ai in ai2s)
-			// {
-			// 	ShowAmtA(ai);
-			// 	win.WriteLine("");
-			// }
+		public bool ShowParseGen(ParseGen pg)
+		{
+			if (pg == null) return false;
+
+			win.WriteLineTab($"{"val str",titleWidthD}| {pg.ValueStr}");
+			win.WriteLineTab($"{"group",titleWidthD}| {pg.Group}");
+			win.WriteLineTab($"{"id",titleWidthD}| {pg.Id}");
+			win.WriteLineTab($"{"val type",titleWidthD}| {pg.ValueType}");
+			win.WriteLineTab($"{"description",titleWidthD}| {pg.Description}");
+			win.WriteLineTab($"{"isgood",titleWidthD}| {pg.IsGood}");
+
+			return true;
+		}
+
+	#region private methods
+
+		private const int titleWidthD = -20;
+		private const int fieldWidthD = -23;
+
+		private void ShowParseGenDefs1D(ParseGen pg)
+		{
+			if (!ShowParseGen(pg)) return;
+
+			if (pg.aDefBase2 == null
+				|| pg.aDefBase2.Count == 0
+				) return;
+
+			win.TabUp(1);
+			foreach (ADefBase aDef in pg.aDefBase2)
+			{
+				win.WriteLine("");
+				// ShowParsVarDefs2D(aDef);
+
+				show.ShowParsVarDefs2D(aDef);
+			}
+
+			win.TabDn(1);
+			win.WriteLine("");
+		}
 
 
-			// TokenAmt2[] ta2s = new []
-			// {
-			// 	new TokenAmt2(ai2s[0]),
-			// 	new TokenAmt2(ai2s[1]),
-			// 	// new TokenAmt2(ai2s[2]),
-			// };
-			//
-			// foreach (TokenAmt2 ta2 in ta2s)
-			// {
-			// 	ShowTknA(ta2);
-			// 	win.WriteLine("");
-			// }
+		// private void ShowParsVarDefs2D<T>(T pv) where T : ADefBase
+		// {
+		// 	win.WriteLineTab($"{"val str",titleWidthD}| {pv.ValueStr}");
+		// 	win.WriteLineTab($"{"type",titleWidthD}| {pv.GetType()}");
+		// 	win.WriteLineTab($"{"id",titleWidthD}| {pv.Id}");
+		// 	win.WriteLineTab($"{"val type",titleWidthD}| {pv.ValueType}");
+		// 	win.WriteLineTab($"{"description",titleWidthD}| {pv.Description}");
+		// }
+
+		private const int titleWidthB = -14;
+		private const int fieldWidthB = -23;
+
+		private void ShowValueDefB(int idx)
+		{
+			// ValueDefinitions a = VdefInst;
+			DefValue vDef = ValDefInst[idx];
+
+			if (vDef == null) return;
+
+			win.WriteLine("");
+			win.WriteLine($"{"ShowValueDefB|",titleWidthB}| for {idx:D}");
+			win.WriteLine($"{"nameOf",titleWidthB}| {nameof(vDef)}");
+			win.WriteLine($"{"value string",titleWidthB}| {vDef.ValueStr}");
+			win.WriteLine($"{"numeric?",titleWidthB}| {vDef.IsNumeric}");
+			win.WriteLine($"{"description",titleWidthB}| {vDef.Description}");
+			win.WriteLine($"{"order",titleWidthB}| {vDef.Order}");
+			win.WriteLine($"{"seq",titleWidthB}| {vDef.Seq}");
+			win.WriteLine($"{"id",titleWidthB}| {vDef.Id}");
+		}
+
+		private void ShowValueTypesEnumB()
+		{
+			win.WriteLine("");
+			win.WriteLine("ValueTypesEnum|");
+			foreach (object vt in Enum.GetValues(typeof(ValueType)))
+			{
+				win.WriteLine($"{"value type", titleWidthB}| {vt.ToString(),-20} | {(int) vt:D}");
+			}
+		}
+
+		private const int titleWidthC = -13;
+		private const int fieldWidthC = -33;
+
+		private void ShowValueTypesC()
+		{
+			ValueDefinitions a = ValDefInst;
+
+			win.WriteLine("");
+			win.WriteLine("ValueTypes|");
+			for (var i = 0; i < ValDefInst.Count; i++)
+			{
+				DefValue vDef = ValDefInst[i];
+
+				if (vDef == null) continue;
+
+				win.Write($"{"value type", titleWidthC}| {vDef.Description,fieldWidthC} |");
+				win.WriteLine($"{(int) vDef.ValueType,-6:D}| numeric| {vDef.IsNumeric}");
+			}
 		}
 
 		private const int titleWidthA = -13;
 		private const int fieldWidthA = -23;
 
-		private void ShowBaseAmtA(IAmtBase2 aib2)
+		private void ShowBaseAmtA(AAmtBase aib2)
 		{
-
 			win.WriteLine("ShowBaseAmtA");
 
 			win.WriteLine($"{"original" ,titleWidthA}| {aib2.Original   , fieldWidthA}| ");
 			win.WriteLine($"{"as string",titleWidthA}| {aib2.AsString() , fieldWidthA}| ");
-			ShowBaseAmountA(aib2);
+			if (aib2.ValueDef.IsNumeric) ShowBaseAmountA(aib2);
 			win.WriteLine($"{"data type",titleWidthA}| {aib2.DataType   , fieldWidthA}| ");
 			win.WriteLine($"{"desc"     ,titleWidthA}| {aib2.Description, fieldWidthA}| ");
 			win.WriteLine($"{"order"    ,titleWidthA}| {aib2.Order      , fieldWidthA}| order of operation");
@@ -127,25 +231,23 @@ namespace CellsTest.CellsTests
 			win.WriteLine($"{"id"       ,titleWidthA}| {aib2.Id         , fieldWidthA}| generic sequence / id number");
 		}
 
-		private void ShowBaseAmountA(IAmtBase2 ai2)
+		private void ShowBaseAmountA(AAmtBase ai2)
 		{
-
-
 			switch (ai2.DataType)
 			{
 			case VT_NUM_INTEGER:
 				{
-					win.WriteLine($"{"as integer"   ,titleWidthA}| {ai2.AsInteger() , fieldWidthA}| ");
+					win.WriteLine($"{"is integer"   ,titleWidthA}| {ai2.AsInteger() , fieldWidthA}| ");
 					break;
 				}
 			case VT_NUM_DOUBLE:
 				{
-					win.WriteLine($"{"as double"   ,titleWidthA}| {ai2.AsDouble() , fieldWidthA}| ");
+					win.WriteLine($"{"is double"   ,titleWidthA}| {ai2.AsDouble() , fieldWidthA}| ");
 					break;
 				}
 			case VT_STRING:
 				{
-					win.WriteLine($"{"as string"   ,titleWidthA}| {ai2.AsString() , fieldWidthA}| ");
+					win.WriteLine($"{"is string"   ,titleWidthA}| {ai2.AsString() , fieldWidthA}| ");
 					break;
 				}
 			default:
@@ -156,9 +258,8 @@ namespace CellsTest.CellsTests
 			}
 		}
 
-		private void ShowAmtA(AmtInteger2 ai2)
+		private void ShowAmtA(AmtInteger ai2)
 		{
-
 			win.WriteLine("ShowAmtA");
 
 			win.WriteLine($"{"amount"   ,titleWidthA}| {ai2.Amount     , fieldWidthA}| ");
@@ -172,9 +273,8 @@ namespace CellsTest.CellsTests
 			win.WriteLine($"{"id"       ,titleWidthA}| {ai2.Id         , fieldWidthA}| generic sequence / id number");
 		}
 
-		private void ShowTknA(TokenAmt2 ta2)
+		private void ShowTknA(Token ta2)
 		{
-
 			win.WriteLine("ShowTknA");
 
 			win.WriteLine($"{"original"    ,titleWidthA}| {ta2.AmountBase.Original    , fieldWidthA}| ");
@@ -188,17 +288,26 @@ namespace CellsTest.CellsTests
 			{
 			case VT_NUM_INTEGER:
 				{
-					win.WriteLine($"{"as integer"   ,titleWidthA}| {ta2.AmountBase.AsInteger() , fieldWidthA}| ");
+					win.WriteLine($"{"is integer"   ,titleWidthA}| {ta2.AmountBase.AsInteger() , fieldWidthA}| ");
 					break;
 				}
 			case VT_NUM_DOUBLE:
 				{
-					win.WriteLine($"{"as double"   ,titleWidthA}| {ta2.AmountBase.AsDouble() , fieldWidthA}| ");
+					win.WriteLine($"{"is double"   ,titleWidthA}| {ta2.AmountBase.AsDouble() , fieldWidthA}| ");
 					break;
 				}
+			case VT_OP_URINARY:
+			case VT_OP_LOGICAL:
+			case VT_OP_MULTIPLICATIVE:
+			case VT_OP_RELATIONAL:
+			case VT_OP_STRING:
+			case VT_OP_ADDITIVE:
+			case VT_GP_REF:
+			case VT_GP_BEG:
+			case VT_GP_END:
 			case VT_STRING:
 				{
-					win.WriteLine($"{"as string"   ,titleWidthA}| {ta2.AmountBase.AsString() , fieldWidthA}| ");
+					win.WriteLine($"{"is string"   ,titleWidthA}| {ta2.AmountBase.AsString() , fieldWidthA}| ");
 					break;
 				}
 			default:
@@ -208,5 +317,7 @@ namespace CellsTest.CellsTests
 				}
 			}
 		}
+
+	#endregion
 	}
 }

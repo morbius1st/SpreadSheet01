@@ -23,11 +23,17 @@ namespace CellsTest.FormulaSupport.FormulaStorage.RevitFormulaDefinition
 	{
 	#region private fields
 
+#pragma warning disable CS0169 // The field 'RevitFormula._formula' is never used
 		private string _formula;
+#pragma warning restore CS0169 // The field 'RevitFormula._formula' is never used
 
+#pragma warning disable CS0169 // The field 'RevitFormula._destinition' is never used
 		private string _destinition;
+#pragma warning restore CS0169 // The field 'RevitFormula._destinition' is never used
 
+#pragma warning disable CS0169 // The field 'RevitFormula._value' is never used
 		private DynamicValue _value;
+#pragma warning restore CS0169 // The field 'RevitFormula._value' is never used
 
 		private Equation _equation;
 
@@ -81,13 +87,19 @@ namespace CellsTest.FormulaSupport.FormulaStorage.RevitFormulaDefinition
 		{
 			private FunctionOperators functOps = new FunctionOperators();
 
+#pragma warning disable CS0649 // Field 'RevitFormula.Equation._value' is never assigned to, and will always have its default value null
 			private DynamicValue _value;
+#pragma warning restore CS0649 // Field 'RevitFormula.Equation._value' is never assigned to, and will always have its default value null
 
 			private OpElement _left;
 			private OpElement _right;
 
+#pragma warning disable CS0649 // Field 'RevitFormula.Equation._opCodeString' is never assigned to, and will always have its default value null
 			private string _opCodeString;
+#pragma warning restore CS0649 // Field 'RevitFormula.Equation._opCodeString' is never assigned to, and will always have its default value null
+#pragma warning disable CS0649 // Field 'RevitFormula.Equation._opCode' is never assigned to, and will always have its default value
 			private Operation _opCode;
+#pragma warning restore CS0649 // Field 'RevitFormula.Equation._opCode' is never assigned to, and will always have its default value
 
 			private bool? _isBinary = null;
 			private bool? _status;

@@ -7,50 +7,29 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using SharedCode.EquationSupport.Definitions;
 using SharedCode.EquationSupport.TokenSupport.Amounts;
 
 #endregion
 
 // username: jeffs
-// created:  5/22/2021 5:29:23 PM
+// created:  5/29/2021 9:06:45 AM
 
 namespace SharedCode.EquationSupport.TokenSupport
 {
-	public class testxxx2
-	{
-		public void txx(IAmtBase2 iab)
-		{
-			TokenAmts2 tas2 = new TokenAmts2();
-
-			AmtInteger2 ai2 = new AmtInteger2("1234");
-			ai2 = AmtInteger2.Invalid;
-			TokenAmt2 ta = new TokenAmt2(ai2);
-			
-
-		}
-	}
-
-
-
-	public class TokenAmts2
+	public class TokenAssist
 	{
 	#region private fields
 
-		private TokenAmt2 tokenAmtRoot2;
 	#endregion
 
 	#region ctor
 
-		public TokenAmts2()
-		{
-			tokenAmtRoot2 = new TokenAmt2(null);
-		}
+		public TokenAssist() { }
 
 	#endregion
 
 	#region public properties
-
-		public TokenAmt2 this[int idx] => tokenAmtRoot2[idx];
 
 	#endregion
 
@@ -60,14 +39,42 @@ namespace SharedCode.EquationSupport.TokenSupport
 
 	#region public methods
 
-		public void Add(TokenAmt2 ta2)
+		public Token MakeToken(ParseGen pg, string value, int pos, int len)
 		{
-			tokenAmtRoot2.Add(ta2);
+			AAmtBase ab;
+
+			switch (pg.Group)
+			{
+			case ParseGroupGeneral.PGG_ASSIGNMENT:
+				{
+					ab = new AmtAssignment(value);
+
+					return new Token(ab, pos, len);
+				}
+			case ParseGroupGeneral.PGG_OPERATOR:
+				{
+
+					break;
+				}
+			}
+
+			return null;
 		}
 
 	#endregion
 
 	#region private methods
+
+		private Token makeTokenOp(ParseGen pg, string value, int pos, int len)
+		{
+			DefValue vd = (DefValue) pg.Classify(value);
+
+			
+
+			// AAmtBase ab = new AmtOpAdd()
+
+			return null;
+		}
 
 	#endregion
 
@@ -83,8 +90,7 @@ namespace SharedCode.EquationSupport.TokenSupport
 
 		public override string ToString()
 		{
-			return "this is| " + nameof(TokenAmt2) + 
-				"(" + tokenAmtRoot2.AmountBase.AsString() + ")";
+			return "this is TokenAssist";
 		}
 
 	#endregion

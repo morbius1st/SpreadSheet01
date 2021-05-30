@@ -1,5 +1,4 @@
 ﻿#region using
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,9 +6,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+
 using SharedCode.EquationSupport.Definitions;
-using SharedCode.EquationSupport.TokenSupport.Values;
+
 using static SharedCode.EquationSupport.Definitions.ValueDefinitions;
+
 using ValueType = SharedCode.EquationSupport.Definitions.ValueType;
 
 #endregion
@@ -19,210 +20,92 @@ using ValueType = SharedCode.EquationSupport.Definitions.ValueType;
 
 namespace SharedCode.EquationSupport.TokenSupport.Amounts
 {
-	public interface IAmtBase
+	public abstract class AAmtBase
 	{
-		string Original { get; set; } // the original value
-		ValueDef ValueDef { get; }    // the definition for the value
-		ValueType DataType { get; }   // the type of the value
-
-		// from ValueDef
-		string ValueString { get; } // the value as a string
-		int Id { get; }             // the Id of the value| simple numerical identifier
-		int Seq { get; }            // a sequence number| varies per ValueDefGroup
-		int Order { get; }          // the precedence for the value
-		string Description { get; } // the description of the value
-
-		bool IsValid { get; } // whether this item is valid
-
-		// depending on the value definition
-		string AsString(); // value as a string
-		object AsObject(); // value as an object
-		bool AsBool();     // value as a bool
-		int AsInteger();   // value as an integer
-		double AsDouble(); // value as a double
-		UoM AsUnit();      // value as a unit of measure
-	}
-
-	public interface IAmtTypeSpecific<T>
-	{
-		int ValueDefIdx { get; } // index to the specific value definition
-
-		T Amount { get; set; } // the original value converted to its native value
-
-		T DefaultAmt { get; } // a default value
-		T InvalidAmt { get; } // value when invalid
-
-		T ConvertFromString(string original); // the conversion method
-
-		string AsString();
-
-		void SetAmount(string original);
-	}
-
-	public class AAmtBase<T, U> : IAmtBase where T : IAmtTypeSpecific<U>, new()
-	{
-		protected T amt;
-		public AAmtBase() { }
-
-		public AAmtBase(string original)
-		{
-			Original = original;
-
-			amt = new T();
-			amt.SetAmount(original);
-
-			ValueDef = SetValueDef(original, amt.ValueDefIdx);
-		}
-
 		public string Original { get; set; }             // the original value
-		public ValueDef ValueDef { get; protected set; } // the definition for the value
-		public ValueType DataType => ValueDef.ValueType;
+		public DefValue ValueDef { get; protected set; } // the definition for the value
+		public static int ValueDefIdx { get; protected set; }   // index to the specific value definition
 
 		// from ValueDef
 		public string ValueString => ValueDef.ValueStr;
-		public int Id => ValueDef.Id;       // number for the definition order
-		public int Seq => ValueDef.Seq;     // the sequence number within a value def group
-		public int Order => ValueDef.Order; // the order of operation / precedence order / higher gets done first
+		public ValueType DataType => ValueDef.ValueType; // the type of the value
+		public int Id => ValueDef.Id;                    // number of the definition order
+		public int Seq => ValueDef.Seq;                  // the sequence number within a value def group
+		public int Order => ValueDef.Order;              // the order of operation / precedence order / higher gets done first
 		public string Description => ValueDef.Description;
 
-		public bool IsValid { get; private set; } // whether this item is valid
+		public bool IsValid { get; protected set; }      // whether this item is valid
 
-		private ValueDef SetValueDef(string original, int idx)
+		public DefValue SetValueDef(string original, int idx)
 		{
-			if (original == null) return VdefInst.Invalid;
+			if (original == null) return ValDefInst.Invalid;
 
-			return VdefInst[idx];
+			ValueDefinitions a = ValDefInst;
+
+			return ValDefInst[idx];
 		}
 
-		public string AsString() => amt.AsString();
+		public static AAmtBase Invalid => (AAmtBase) new AmtInvalid();
+
+		public abstract string AsString();
 
 		// depending on the value definition
-		public virtual bool AsBool()
-		{
-			return DefaultBool;
-		} // value as a string
+		public virtual bool AsBool() => DefaultBool;
+		public virtual double AsDouble() =>DefaultDouble;
+		public virtual int AsInteger() =>DefaultInt;
+		public virtual object AsObject() =>DefaultObj;
+		public virtual UoM AsUnit() => DefaultUnit;
 
-		public virtual double AsDouble()
-		{
-			return DefaultDouble;
-		} // value as an object
-
-		public virtual int AsInteger()
-		{
-			return DefaultInt;
-		} // value as a bool
-
-		public virtual object AsObject()
-		{
-			return DefaultObj;
-		} // value as an integer
-
-		public virtual UoM AsUnit()
-		{
-			return DefaultUnit;
-		} // value as a unit
-
-		public static bool DefaultBool = false;
-		public static double DefaultDouble = double.NaN;
-		public static int DefaultInt = int.MinValue;
+		public static bool   DefaultBool = false;
+		public static string DefaultString = string.Empty;
+		public static double DefaultDouble = double.PositiveInfinity;
+		public static int    DefaultInt = int.MinValue;
 		public static object DefaultObj = null;
-		public static UoM DefaultUnit = null;
+		public static UoM    DefaultUnit = null;
 
-		public override string ToString()
-		{
-			return amt.ToString();
-		}
-
-		public static AAmtBase<T, U> Default
-		{
-			get
-			{
-				AAmtBase<T, U> aaBase = new AAmtBase<T, U>(null);
-				aaBase.amt.Amount = aaBase.amt.DefaultAmt;
-				return aaBase;
-			}
-		}
-
-		public static AAmtBase<T, U> Invalid
-		{
-			get
-			{
-				AAmtBase<T, U> aaBase = new AAmtBase<T, U>(null);
-				aaBase.amt.Amount = aaBase.amt.InvalidAmt;
-				return aaBase;
-			}
-		}
+		public static bool   InvalidBool = false;
+		public static string InvalidString = null;
+		public static double InvalidDouble = double.NegativeInfinity;
+		public static int    InvalidInt = int.MaxValue;
+		public static object InvalidObj = null;
+		public static UoM    InvalidUnit = null;
 	}
 
-	internal class AmtDbl : AAmtBase<AmtDouble, int>
+	public abstract class AAmtTypeSpecific<T> : AAmtBase
 	{
-	#region ctor
+		public AAmtTypeSpecific() {}
 
-		public AmtDbl(string original) : base(original) { }
-
-	#endregion
-
-	#region public properties
-
-		public AmtDouble AI => amt;
-
-		public static AmtDbl Default => (AmtDbl) AAmtBase<AmtDouble, int>.Default;
-
-		public static AmtDbl Invalid => (AmtDbl) AAmtBase<AmtDouble, int>.Invalid;
-
-	#endregion
-
-	#region system overrides
-
-		public override string ToString()
+		public AAmtTypeSpecific(string original)
 		{
-			return "This is| " + nameof(AmtDouble) + " (" + AsString() + ")";
+			Original = original;
+			Amount = SetAmount(original);
+			ValueDef = SetValueDef(original, ValueDefIdx);
 		}
 
-	#endregion
-	}
-
-	internal class AmtDouble : IAmtTypeSpecific<int>
-	{
-		public int Amount { get; set; }
-
-		public int ValueDefIdx { get; protected set; }
-
-		public int DefaultAmt { get; } = int.MaxValue;
-		public int InvalidAmt { get; } = int.MinValue;
-
-		public void SetAmount(string original)
+		protected static U Make<U>(T amount, bool valid, DefValue valDef)
+			where U:  AAmtTypeSpecific<T>, new()
 		{
-			Amount = ConvertFromString(original);
+			U ai = new U();
+			ai.Original = null;
+			ai.Amount = amount;
+			ai.IsValid = valid;
+			ai.ValueDef = valDef;
+
+			return ai;
 		}
 
-		public int ConvertFromString(string original)
+		public T Amount { get; protected set; } // the original value converted to its native value
+
+		public abstract T ConvertFromString(string original); // the conversion method
+
+		public T SetAmount(string original)
 		{
-			int result;
-
-			if (original == null)
-			{
-				return InvalidAmt;
-			}
-
-			if (int.TryParse(original, out result))
-			{
-				result = InvalidAmt;
-			}
-
-			return result;
+			return ConvertFromString(original);
 		}
 
-		public string AsString()
+		public override string AsString()
 		{
 			return Amount.ToString();
 		}
-
-		public override string ToString()
-		{
-			return "This is| " + nameof(AmtDouble) + " (" + AsString() + ")";
-		}
 	}
-
-
 }

@@ -92,7 +92,9 @@ namespace SharedCode.FormulaSupport.ParseSupport
 	
 	internal class ExcelAddrValidation : AStringValidate
 	{
+#pragma warning disable CS0114 // 'ExcelAddrValidation.Validate(string)' hides inherited member 'AStringValidate.Validate(string)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
 		public Tuple<int, char, TestType, TestStatusCode> Validate(string test)
+#pragma warning restore CS0114 // 'ExcelAddrValidation.Validate(string)' hides inherited member 'AStringValidate.Validate(string)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
 		{
 			Match m = ParseRegexSupport.ValidateExcelAddr(test);
 

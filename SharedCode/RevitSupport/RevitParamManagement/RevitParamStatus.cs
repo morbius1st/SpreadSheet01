@@ -22,7 +22,9 @@ namespace SharedCode.RevitSupport.RevitManagement
 		public class ParamStatus
 		{
 			private ParamDesc paramDesc;
+#pragma warning disable CS0649 // Field 'RevitParamStatus.ParamStatus.errors' is never assigned to, and will always have its default value null
 			private ErrorCodeList errors;
+#pragma warning restore CS0649 // Field 'RevitParamStatus.ParamStatus.errors' is never assigned to, and will always have its default value null
 
 			public ParamStatus(ParamDesc pd)
 			{

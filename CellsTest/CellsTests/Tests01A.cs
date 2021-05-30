@@ -46,7 +46,9 @@ namespace CellsTest.CellsTests
 		private static MainWindow win;
 
 		private EqComponentList opCodes;
+#pragma warning disable CS0169 // The field 'Tests01A.compCodes' is never used
 		private EqComponentList compCodes;
+#pragma warning restore CS0169 // The field 'Tests01A.compCodes' is never used
 
 	#endregion
 
@@ -109,7 +111,7 @@ namespace CellsTest.CellsTests
 			// as a part of the digit even though an operator is then missing
 			// final "approved" pattern
 			patt[numPatterns++] =
-				@"(?<l1>[-+]?(?>\d+'-(?>\d*\.\d+|(?>\d+ )?\d+\/\d+|\d+)""|(?>\d+ \d+\/\d+|\d+\/\d+|\d*\.\d+|\d+)[""']))|(?<fr1>[-+]?\d+ \d+\/\d+|\d+\/\d+)|(?<d1>[-+]?(?>\d+\.\d*|\d*\.\d+))|(?<n1>[-+]?\d+(?![.\/]))|(?<fn1>[a-zA-Z]\w*(?=\())|(?<s1>\"".+?\"")|(?<op1>\<[oO][rR]\>|\<[aA][nN][dD]\>|\+|\-|&|<=|>=|<|>|==|!=|\*|\/)|(?<eq>=)|(?<pdn>\()|(?<pup>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<x1>[^ ])";
+				@"(?<l1>[-+]?(?>\d+'-(?>\d*\.\d+|(?>\d+ )?\d+\/\d+|\d+)""|(?>\d+ \d+\/\d+|\d+\/\d+|\d*\.\d+|\d+)[""']))|(?<fr1>[-+]?(?>\d+ \d+\/\d+|\d+\/\d+))|(?<d1>[-+]?(?>\d+\.\d*|\d*\.\d+))|(?<n1>[-+]?\d+(?![.\/]))|(?<fn1>[a-zA-Z]\w*(?=\())|(?<s1>\"".+?\"")|(?<op1>\<[oO][rR]\>|\<[aA][nN][dD]\>|\+|\-|&|<=|>=|<|>|==|!=|\*|\/)|(?<eq>=)|(?<pdn>\()|(?<pup>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<x1>[^ ])";
 			
 /*
 	prior tests - did not pass
@@ -271,7 +273,9 @@ namespace CellsTest.CellsTests
 			int colLeft = pos0;
 			int colRight = pos1;
 
+#pragma warning disable CS0219 // The variable 'idxLeft' is assigned but its value is never used
 			int idxLeft = 0;
+#pragma warning restore CS0219 // The variable 'idxLeft' is assigned but its value is never used
 
 			if (count[colLeft] >= count[colRight])
 			{
@@ -441,7 +445,9 @@ namespace CellsTest.CellsTests
 
 			int grp = 0;
 			int level = 0;
+#pragma warning disable CS0168 // The variable 'k' is declared but never used
 			string k;
+#pragma warning restore CS0168 // The variable 'k' is declared but never used
 			Eq1 t;
 
 			Match m;
@@ -501,7 +507,9 @@ namespace CellsTest.CellsTests
 			string grpEnd = "grpEnd";
 			int grp = 0;
 			int level = 0;
+#pragma warning disable CS0168 // The variable 'k' is declared but never used
 			string k;
+#pragma warning restore CS0168 // The variable 'k' is declared but never used
 			Eq1 t;
 
 

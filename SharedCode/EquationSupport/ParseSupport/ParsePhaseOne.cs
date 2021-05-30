@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using SharedCode.EquationSupport.Definitions;
 
 #endregion
 
@@ -20,11 +21,32 @@ using System.Threading.Tasks;
 
 namespace SharedCode.EquationSupport.ParseSupport
 {
+	public struct ParsePh1Data
+	{
+		public string Name { get; }
+		public string Value { get; }
+		public int Position { get; }
+		public int Length { get; }
+		public ADefBase2 Definition { get; set; }
+		public bool IsValueDef { get; set; }
+
+		public ParsePh1Data(string name, string value, int position, int length)
+		{
+			Name = name;
+			Value = value;
+			Position = position;
+			Length = length;
+			Definition = null;
+			IsValueDef = false;
+		}
+	}
+
+
 	public class ParsePhaseOne
 	{
 	#region private fields
 
-		private string pattern = @"(?<l1>[-+]?(?>\d+'-(?>\d*\.\d+|(?>\d+ )?\d+\/\d+|\d+)""|(?>\d+ \d+\/\d+|\d+\/\d+|\d*\.\d+|\d+)[""']))|(?<fr1>[-+]?\d+ \d+\/\d+|\d+\/\d+)|(?<d1>[-+]?(?>\d+\.\d*|\d*\.\d+))|(?<n1>[-+]?\d+(?![.\/]))|(?<fn1>[a-zA-Z]\w*(?=\())|(?<s1>\"".+?\"")|(?<op1>\<[oO][rR]\>|\<[aA][nN][dD]\>|\+|\-|&|<=|>=|<|>|==|!=|\*|\/)|(?<eq>=)|(?<pdn>\()|(?<pup>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<w1>[a-zA-Z]\w*)|(?<x1>[^ ])";
+		private string pattern = @"(?<l1>[-+]?(?>\d+'-(?>\d*\.\d+|(?>\d+ )?\d+\/\d+|\d+)""|(?>\d+ \d+\/\d+|\d+\/\d+|\d*\.\d+|\d+)[""']))|(?<fr1>[-+]?(?>\d+ \d+\/\d+|\d+\/\d+))|(?<d1>[-+]?(?>\d+\.\d*|\d*\.\d+))|(?<n1>[-+]?\d+(?![.\/]))|(?<b1>\bTrue\b|\bFalse\b)|(?<fn1>[a-zA-Z]\w*(?=\())|(?<s1>\"".+?\"")|(?<op1>\<[oO][rR]\>|\<[aA][nN][dD]\>|\+|\-|&|<=|>=|<|>|==|!=|\*|\/)|(?<eq>=)|(?<pb>\()|(?<pe>\))|(?<v1>{\[.+?\]})|(?<v2>\{[!@#$%].+?\})|(?<v3>[a-zA-Z]\w*)|(?<x1>[^ ])";
 
 	#endregion
 
@@ -36,7 +58,7 @@ namespace SharedCode.EquationSupport.ParseSupport
 
 	#region public properties
 
-		public List<Tuple<string, string>> FormulaComponents { get; private set; }
+		public List<ParsePh1Data> FormulaComponents { get; private set; }
 
 		public string Pattern => pattern;
 
@@ -48,12 +70,14 @@ namespace SharedCode.EquationSupport.ParseSupport
 
 	#region public methods
 
-		public bool Parse(string formula)
+		// phase one - use the regex to parse the line into its equation components
+		// store as a List<> of tuples<string, string>
+		public bool Parse1(string formula)
 		{
 			Regex r = new Regex(pattern, RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 			MatchCollection c = r.Matches(formula);
 
-			FormulaComponents = new List<Tuple<string, string>>();
+			FormulaComponents = new List<ParsePh1Data>();
 
 			bool result = GetMatches(c, FormulaComponents);
 
@@ -69,7 +93,7 @@ namespace SharedCode.EquationSupport.ParseSupport
 
 	#region private methods
 
-		private bool GetMatches(MatchCollection c, List<Tuple<string, string>> matches)
+		private bool GetMatches(MatchCollection c, List<ParsePh1Data> matches)
 		{
 			Match m;
 			Group g;
@@ -89,7 +113,8 @@ namespace SharedCode.EquationSupport.ParseSupport
 
 					if (g.Success)
 					{
-						matches.Add(new Tuple<string, string>(g.Name, g.Value));
+						
+						matches.Add(new ParsePh1Data(g.Name, g.Value, g.Index, g.Length));
 					}
 				}
 			}

@@ -144,12 +144,16 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public abstract override dynamic GetValue();
 
+#pragma warning disable CS0108 // 'RevitContainer<T>.UpdateProperties()' hides inherited member 'ARevitParam.UpdateProperties()'. Use the new keyword if hiding was intended.
 		public void UpdateProperties()
+#pragma warning restore CS0108 // 'RevitContainer<T>.UpdateProperties()' hides inherited member 'ARevitParam.UpdateProperties()'. Use the new keyword if hiding was intended.
 		{
 			OnPropertyChanged(nameof(RevitParamLists));
 		}
 
+#pragma warning disable CS0108 // 'RevitContainer<T>.PropertyChanged' hides inherited member 'ARevitParam.PropertyChanged'. Use the new keyword if hiding was intended.
 		public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS0108 // 'RevitContainer<T>.PropertyChanged' hides inherited member 'ARevitParam.PropertyChanged'. Use the new keyword if hiding was intended.
 
 		private void OnPropertyChanged([CallerMemberName] string memberName = "")
 		{
@@ -174,7 +178,9 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public Dictionary<string, RevitChart> ListOfCharts => Containers;
 
+#pragma warning disable CS0108 // 'RevitCharts.Add(string, RevitChart)' hides inherited member 'RevitContainers<RevitChart>.Add(string, RevitChart)'. Use the new keyword if hiding was intended.
 		public bool Add(string key, RevitChart container)
+#pragma warning restore CS0108 // 'RevitCharts.Add(string, RevitChart)' hides inherited member 'RevitContainers<RevitChart>.Add(string, RevitChart)'. Use the new keyword if hiding was intended.
 		{
 			return base.Add(key, container);
 		}
@@ -538,7 +544,9 @@ namespace SpreadSheet01.RevitSupport.RevitCellsManagement
 
 		public void ValidateLabelMustExist()
 		{
+#pragma warning disable CS0168 // The variable 'result' is declared but never used
 			bool result;
+#pragma warning restore CS0168 // The variable 'result' is declared but never used
 
 			foreach (KeyValuePair<string, RevitLabel> kvp in ListOfLabels)
 			{

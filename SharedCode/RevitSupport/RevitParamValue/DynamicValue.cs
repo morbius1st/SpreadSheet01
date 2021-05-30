@@ -13,8 +13,12 @@ namespace SpreadSheet01.RevitSupport.RevitParamValue
 	public class DynamicValue : INotifyPropertyChanged
 	{
 		private dynamic dynamicValue; // base value, as provided // as a number from excel
+#pragma warning disable CS0649 // Field 'DynamicValue.formatString' is never assigned to, and will always have its default value null
 		private string formatString;  // 
+#pragma warning restore CS0649 // Field 'DynamicValue.formatString' is never assigned to, and will always have its default value null
+#pragma warning disable CS0649 // Field 'DynamicValue.preFormatted' is never assigned to, and will always have its default value null
 		private string preFormatted;  // as provided directly from excel
+#pragma warning restore CS0649 // Field 'DynamicValue.preFormatted' is never assigned to, and will always have its default value null
 
 		public DynamicValue(dynamic value)
 		{

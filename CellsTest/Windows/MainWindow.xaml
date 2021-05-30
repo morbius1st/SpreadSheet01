@@ -9,7 +9,7 @@
 		xmlns:mgmt="clr-namespace:SpreadSheet01.RevitSupport.RevitCellsManagement"
 		Title="MainWindow"
 		Width="1600"
-		Height="700"
+		Height="1200"
 		DataContext="{Binding ElementName=PrimeWin}"
 		mc:Ignorable="d"
 		Background="{StaticResource Normal.Window.Background}"
@@ -87,7 +87,7 @@
 			/>
 			
 			<Button x:Name="BtnParse01"
-					Content="Prase Test #01"
+					Content="Parse Test #01"
 					Margin="5"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Bottom"
@@ -96,12 +96,21 @@
 			/>
 								
 			<Button x:Name="BtnParse02"
-					Content="Prase Test #02"
+					Content="Parse Test #02"
 					Margin="5"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Bottom"
 					DockPanel.Dock="Bottom"
 					Click="BtnParse02_OnClick"
+			/>
+
+			<Button x:Name="BtnParse03"
+					Content="Parse Test #03"
+					Margin="5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
+					DockPanel.Dock="Bottom"
+					Click="BtnParse02a_03_OnClick"
 			/>
 
 			
@@ -129,6 +138,15 @@
 					VerticalAlignment="Bottom"
 					DockPanel.Dock="Bottom"
 					Click="BtnToken04_02a_OnClick"
+			/>
+																					
+			<Button x:Name="BtnParseTest0401a"
+					Content="Parse Test #04-01a"
+					Margin="5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
+					DockPanel.Dock="Bottom"
+					Click="BtnParse04_01a_OnClick"
 			/>
 					
 			
@@ -334,6 +352,23 @@
 					DockPanel.Dock="Bottom"
 					Click="BtnLabelsAndFormulas_OnClick"
 					/>
+					
+			<Rectangle
+					Margin="5,0,5,0"
+					Height="5"
+					HorizontalAlignment="Stretch"
+					DockPanel.Dock="Bottom"
+					Fill="Blue"
+					/>
+
+			<Button x:Name="BtnShow01"
+					Content="(01) Show All&#13;Definitions"
+					Margin="5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
+					DockPanel.Dock="Bottom"
+					Click="BtnAllDefs_OnClick"
+					/>
 
 			<Rectangle
 					Margin="5,0,5,0"
@@ -365,118 +400,118 @@
 				HorizontalScrollBarVisibility="Visible"
 				/>
 
-
-		<ListView x:Name="LvSymbols01"
-				Grid.Column="1"
-				Grid.Row="0"
-				DataContext="{Binding ElementName=PrimeWin,
-															Path=RevitParamTests}"
-				Background="Transparent"
-				Foreground="White"
-				ScrollViewer.VerticalScrollBarVisibility="Visible"
-				ItemsSource="{Binding AnnoSyms.ListOfRevitCellSym}"
-				>
-			<ListView.ItemTemplate>
-				<DataTemplate x:Name="LvDt01"
-						DataType="{x:Type mgmt:RevitCellData}"
-						>
-					<DockPanel x:Name="Dok01">
-						<DockPanel DockPanel.Dock="Top">
-							<TextBox
-									Foreground="#444444"
-									Text="{Binding Path=Key,
-																 Mode=OneWay}"
-									/>
-						</DockPanel>
-
-						<ListView x:Name="LvSymbol01"
-								DataContext="{Binding Value}"
-								Foreground="#444444"
-								DockPanel.Dock="Bottom"
-								ScrollViewer.VerticalScrollBarVisibility="Visible"
-								ItemsSource="{Binding Value,
-																			Mode=OneWay}"
-								>
-
-							<DockPanel>
-								<TextBlock
-										DockPanel.Dock="Top"
-										Text="{Binding Path=AnnoSymbol.Name}"
-										/>
-
-								<StackPanel
-										DockPanel.Dock="Top"
-										Orientation="Horizontal"
-										>
-									<TextBlock
-											Margin="10,0,0,0"
-											Text="{Binding Path=RevitParamList[0].Value,
-																		 Mode=OneWay}"
-											/>
-									<TextBlock
-											Margin="10,0,0,0"
-											Text="{Binding Path=RevitParamList[1].Value,
-																		 Mode=OneWay}"
-											/>
-									<TextBlock
-											Margin="10,0,0,0"
-											Text="{Binding Path=RevitParamList[2].Value,
-																		 Mode=OneWay}"
-											/>
-									<TextBlock
-											Margin="10,0,0,0"
-											Text="{Binding Path=RevitParamList[3].Value,
-																		 Mode=OneWay}"
-											/>
-									<TextBlock
-											Margin="10,0,0,0"
-											Text="{Binding Path=RevitParamList[4].Value,
-																		 Mode=OneWay}"
-											/>
-								</StackPanel>
-
-
-								<ListView x:Name="LvLabels01"
-										DataContext="{Binding RevitParamList[8],
-																					Mode=OneWay}"
-										DockPanel.Dock="Bottom"
-										ItemsSource="{Binding Containers,
-																					Mode=OneWay}"
-										>
-									<ListView.ItemTemplate>
-										<DataTemplate>
-											<StackPanel Orientation="Vertical">
-												<TextBlock Text="{Binding Path=Value, Mode=OneWay}" />
-
-												<ListView x:Name="LvLabel01"
-														DataContext="{Binding Value}"
-														ItemsSource="{Binding Value}"
-														>
-													<!-- <ListView.ItemTemplate> -->
-													<!-- 	<DataTemplate> -->
-													<StackPanel Orientation="Horizontal">
-														<TextBlock Text="{Binding Path=RevitParamList[1].Value, Mode=OneWay}">
-														</TextBlock>
-													</StackPanel>
-													<!-- 	</DataTemplate> -->
-													<!-- </ListView.ItemTemplate> -->
-
-												</ListView>
-
-											</StackPanel>
-
-										</DataTemplate>
-									</ListView.ItemTemplate>
-								</ListView>
-
-							</DockPanel>
-
-						</ListView>
-					</DockPanel>
-				</DataTemplate>
-			</ListView.ItemTemplate>
-
-		</ListView>
+		<!-- -->
+		<!-- <ListView x:Name="LvSymbols01" -->
+		<!-- 		Grid.Column="1" -->
+		<!-- 		Grid.Row="0" -->
+		<!-- 		DataContext="{Binding ElementName=PrimeWin, -->
+		<!-- 													Path=RevitParamTests}" -->
+		<!-- 		Background="Transparent" -->
+		<!-- 		Foreground="White" -->
+		<!-- 		ScrollViewer.VerticalScrollBarVisibility="Visible" -->
+		<!-- 		ItemsSource="{Binding AnnoSyms.ListOfRevitCellSym}" -->
+		<!-- 		> -->
+		<!-- 	<ListView.ItemTemplate> -->
+		<!-- 		<DataTemplate x:Name="LvDt01" -->
+		<!-- 				DataType="{x:Type mgmt:RevitCellData}" -->
+		<!-- 				> -->
+		<!-- 			<DockPanel x:Name="Dok01"> -->
+		<!-- 				<DockPanel DockPanel.Dock="Top"> -->
+		<!-- 					<TextBox -->
+		<!-- 							Foreground="#444444" -->
+		<!-- 							Text="{Binding Path=Key, -->
+		<!-- 														 Mode=OneWay}" -->
+		<!-- 							/> -->
+		<!-- 				</DockPanel> -->
+		<!-- -->
+		<!-- 				<ListView x:Name="LvSymbol01" -->
+		<!-- 						DataContext="{Binding Value}" -->
+		<!-- 						Foreground="#444444" -->
+		<!-- 						DockPanel.Dock="Bottom" -->
+		<!-- 						ScrollViewer.VerticalScrollBarVisibility="Visible" -->
+		<!-- 						ItemsSource="{Binding Value, -->
+		<!-- 																	Mode=OneWay}" -->
+		<!-- 						> -->
+		<!-- -->
+		<!-- 					<DockPanel> -->
+		<!-- 						<TextBlock -->
+		<!-- 								DockPanel.Dock="Top" -->
+		<!-- 								Text="{Binding Path=AnnoSymbol.Name}" -->
+		<!-- 								/> -->
+		<!-- -->
+		<!-- 						<StackPanel -->
+		<!-- 								DockPanel.Dock="Top" -->
+		<!-- 								Orientation="Horizontal" -->
+		<!-- 								> -->
+		<!-- 							<TextBlock -->
+		<!-- 									Margin="10,0,0,0" -->
+		<!-- 									Text="{Binding Path=RevitParamList[0].Value, -->
+		<!-- 																 Mode=OneWay}" -->
+		<!-- 									/> -->
+		<!-- 							<TextBlock -->
+		<!-- 									Margin="10,0,0,0" -->
+		<!-- 									Text="{Binding Path=RevitParamList[1].Value, -->
+		<!-- 																 Mode=OneWay}" -->
+		<!-- 									/> -->
+		<!-- 							<TextBlock -->
+		<!-- 									Margin="10,0,0,0" -->
+		<!-- 									Text="{Binding Path=RevitParamList[2].Value, -->
+		<!-- 																 Mode=OneWay}" -->
+		<!-- 									/> -->
+		<!-- 							<TextBlock -->
+		<!-- 									Margin="10,0,0,0" -->
+		<!-- 									Text="{Binding Path=RevitParamList[3].Value, -->
+		<!-- 																 Mode=OneWay}" -->
+		<!-- 									/> -->
+		<!-- 							<TextBlock -->
+		<!-- 									Margin="10,0,0,0" -->
+		<!-- 									Text="{Binding Path=RevitParamList[4].Value, -->
+		<!-- 																 Mode=OneWay}" -->
+		<!-- 									/> -->
+		<!-- 						</StackPanel> -->
+		<!-- -->
+		<!-- -->
+		<!-- 						<ListView x:Name="LvLabels01" -->
+		<!-- 								DataContext="{Binding RevitParamList[8], -->
+		<!-- 																			Mode=OneWay}" -->
+		<!-- 								DockPanel.Dock="Bottom" -->
+		<!-- 								ItemsSource="{Binding Containers, -->
+		<!-- 																			Mode=OneWay}" -->
+		<!-- 								> -->
+		<!-- 							<ListView.ItemTemplate> -->
+		<!-- 								<DataTemplate> -->
+		<!-- 									<StackPanel Orientation="Vertical"> -->
+		<!-- 										<TextBlock Text="{Binding Path=Value, Mode=OneWay}" /> -->
+		<!-- -->
+		<!-- 										<ListView x:Name="LvLabel01" -->
+		<!-- 												DataContext="{Binding Value}" -->
+		<!-- 												ItemsSource="{Binding Value}" -->
+		<!-- 												> -->
+		<!-- 											~1~ <ListView.ItemTemplate> @1@ -->
+		<!-- 											~1~ 	<DataTemplate> @1@ -->
+		<!-- 											<StackPanel Orientation="Horizontal"> -->
+		<!-- 												<TextBlock Text="{Binding Path=RevitParamList[1].Value, Mode=OneWay}"> -->
+		<!-- 												</TextBlock> -->
+		<!-- 											</StackPanel> -->
+		<!-- 											~1~ 	</DataTemplate> @1@ -->
+		<!-- 											~1~ </ListView.ItemTemplate> @1@ -->
+		<!-- -->
+		<!-- 										</ListView> -->
+		<!-- -->
+		<!-- 									</StackPanel> -->
+		<!-- -->
+		<!-- 								</DataTemplate> -->
+		<!-- 							</ListView.ItemTemplate> -->
+		<!-- 						</ListView> -->
+		<!-- -->
+		<!-- 					</DockPanel> -->
+		<!-- -->
+		<!-- 				</ListView> -->
+		<!-- 			</DockPanel> -->
+		<!-- 		</DataTemplate> -->
+		<!-- 	</ListView.ItemTemplate> -->
+		<!-- -->
+		<!-- </ListView> -->
 
 
 

@@ -1,18 +1,11 @@
 ﻿#region using directives
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using CellsTest.Windows;
 using SharedCode.EquationSupport.Definitions;
 using SharedCode.EquationSupport.ParseSupport;
-
-using SharedCode.EquationSupport.Definitions;
 
 #endregion
 
@@ -34,6 +27,7 @@ namespace CellsTest.CellsTests
 	#region private fields
 
 		private static MainWindow win;
+		public static Tests04Amounts test04;
 
 	#endregion
 
@@ -42,6 +36,7 @@ namespace CellsTest.CellsTests
 		public Tests02A(MainWindow win1)
 		{
 			win = win1;
+			test04 = new Tests04Amounts(win);
 		}
 
 	#endregion
@@ -56,11 +51,66 @@ namespace CellsTest.CellsTests
 
 	#region public methods
 
+		public void ShowResult(int index, object result)
+		{
+			switch (index)
+			{
+			case 0:
+				{
+					ParseGen pg = (ParseGen) result;
+					
+					break;
+				}
+			case 1:
+				{
+					break;
+				}
+			}
+		}
+
+
+		// parse line show matches
+		internal void parseTest03()
+		{
+			win.WriteLine("parse test 01");
+
+			ParsePhaseOne p1 = new ParsePhaseOne();
+			ParsePhaseTwo p2 = new ParsePhaseTwo();
+
+			p2.Messenger(win);
+
+			string[] test = new string[15];
+
+			int k = 0;
+
+			test[k++] = "= 123 (456+(123 + 246))";
+
+			// test[k++] = "=(1 + (21 + 22 + (31 + 32 * (41 + 42) * (sign(51+52) ) ) ) + 2*3) + 4+5 + {[A1]} + ({!B1}) & \"text\"";
+			// test[k++] = "= 123 (456+(123 + (678 + (123 + 123 + (123 + (123 + 456) + 456)) + 456) + 246) + variable)";
+
+			for (int i = 0; i < test.Length; i++)
+			{
+				if (test[i] == null) break;
+
+				bool result = p1.Parse1(test[i]);
+
+				if (result)
+				{
+					win.WriteLine("\ntesting| " + i + "| length| " + test[i].Length);
+					ListPattern(test[i]);
+
+					p2.Parse2(p1);
+				}
+			}
+		}
+
+
+		// parse line show matches
 		internal void parseTest02()
 		{
 			win.WriteLine("parse test 01");
 
-			ParseInitial pi = new ParseInitial();
+			ParsePhaseOne pi = new ParsePhaseOne();
 
 			string[] test = new string[15];
 
@@ -73,7 +123,7 @@ namespace CellsTest.CellsTests
 			{
 				if (test[i] == null) break;
 
-				bool result = pi.Parse(test[i]);
+				bool result = pi.Parse1(test[i]);
 
 				if (result)
 				{
@@ -81,31 +131,14 @@ namespace CellsTest.CellsTests
 					ListPattern(test[i]);
 					ListMatches(pi);
 				}
-
 			}
 		}
 
-		private void ListPattern(string pattern)
-		{
-			win.Write("");
-			win.WriteLine("0---  0---1--- 10---2--- 20---3--- 30---4--- 40---5--- 50---6--- 60---7--- 70---8--- 80---0--- 90---1");
-			win.WriteLine("0123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|");
-			win.WriteLine(pattern);
-			win.Write("\n");
-		}
-
-		private void ListMatches(ParseInitial pi)
-		{
-			for (var i = 0; i < pi.FormulaComponents.Count; i++)
-			{
-				Tuple<string, string> pc = pi.FormulaComponents[i];
-				win.WriteLine($"name|\t{pc.Item1,-6}\t\tvalue|\t{pc.Item2}");
-			}
-		}
-
+		// test classifying equation component items
+		// but this is a timed test for a set number of loops
 		internal void parseTest01()
 		{
-			ValueDefinitions opValues = ValueDefinitions.VdefInst;
+			ValueDefinitions opValues = ValueDefinitions.ValDefInst;
 
 			win.WriteLine("parse test 01");
 
@@ -124,6 +157,28 @@ namespace CellsTest.CellsTests
 			FindTokens(1, opValues, tests, numLoops, numTestStrings);
 		}
 
+	#endregion
+
+	#region private methods
+
+		private void ListPattern(string pattern)
+		{
+			win.Write("");
+			win.WriteLine("0---  0---1--- 10---2--- 20---3--- 30---4--- 40---5--- 50---6--- 60---7--- 70---8--- 80---0--- 90---1");
+			win.WriteLine("0123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|");
+			win.WriteLine(pattern);
+			win.Write("\n");
+		}
+
+		private void ListMatches(ParsePhaseOne pi)
+		{
+			for (var i = 0; i < pi.FormulaComponents.Count; i++)
+			{
+				ParsePh1Data pd1 = pi.FormulaComponents[i];
+				win.WriteLine($"name|\t{pd1.Name,-6}\tvalue|\t{pd1.Value}\tindex|\t{pd1.Position}\tlength|\t{pd1.Length}");
+			}
+		}
+
 		private void FindTokens(int which, ValueDefinitions opValues,
 			string[] tests, int numLoops, int numTestStrings)
 		{
@@ -131,7 +186,7 @@ namespace CellsTest.CellsTests
 			int countTests = 0;
 			int countFails = 0;
 
-			ValueDef vdIdentifier;
+			DefValue vdIdentifier;
 
 			Stopwatch s = new Stopwatch();
 			s.Start();
@@ -150,7 +205,8 @@ namespace CellsTest.CellsTests
 					{
 						win.WriteLine("\ntest         | test 0");
 					}
-					vdIdentifier = GetToken0(opValues, tests[t]);
+
+					vdIdentifier = GetToken0(tests[t]);
 					// }
 					// else
 					// {
@@ -181,9 +237,9 @@ namespace CellsTest.CellsTests
 			win.WriteLine("\n");
 		}
 
-		private ValueDef GetToken0(ValueDefinitions opValues, string test)
+		private DefValue GetToken0(string test)
 		{
-			return opValues.Classify(test);
+			return ValueDefinitions.Classify(test);
 		}
 
 		// this method was lots slower (something like 4000 versus 700)
@@ -191,10 +247,6 @@ namespace CellsTest.CellsTests
 		// {
 		// 	return opTokens.Find(test);
 		// }
-
-	#endregion
-
-	#region private methods
 
 	#endregion
 

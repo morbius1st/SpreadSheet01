@@ -9,7 +9,9 @@ using SpreadSheet01.RevitSupport.RevitParamValue;
 using static SpreadSheet01.Management.ErrorCodes;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamClass;
+#pragma warning disable CS0105 // The using directive for 'ParamType' appeared previously in this namespace
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamType;
+#pragma warning restore CS0105 // The using directive for 'ParamType' appeared previously in this namespace
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamReadReqmt;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamRootDataType;
 using static SpreadSheet01.RevitSupport.RevitParamManagement.ParamSubDataType;

@@ -17,7 +17,9 @@ namespace SharedCode.FormulaSupport.ParseSupport
 
 		private bool hasRanges;
 		private bool hasAllowed;
+#pragma warning disable CS0414 // The field 'charValidation.hasDisallowed' is assigned but its value is never used
 		private bool hasDisallowed;
+#pragma warning restore CS0414 // The field 'charValidation.hasDisallowed' is assigned but its value is never used
 
 
 		public charValidation(string oKchars, char[][] ranges = null, string badChars = null, bool disallowedOverlapsAllowed = false)

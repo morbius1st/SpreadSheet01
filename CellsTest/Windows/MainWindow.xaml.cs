@@ -41,10 +41,13 @@ namespace CellsTest.Windows
 
 		private ListInfo<MainWindow> listInfo;
 
+		private Show01 show01;
 		private Tests01 tests01;
 		private Tests01A tests01A;
 		private Tests02A tests02A;
 		private Tests04Amounts tests04Amts;
+
+		private ShowResults show;
 
 	#endregion
 
@@ -58,12 +61,16 @@ namespace CellsTest.Windows
 
 			listInfo = new ListInfo<MainWindow>(this);
 
+			show01 = new Show01(this);
 			tests01 = new Tests01(this);
 			tests01A = new Tests01A(this);
 			tests02A = new Tests02A(this);
 			tests04Amts = new Tests04Amounts(this);
 
 			configTrace();
+
+			show = ShowResults.Inst;
+			show.SetMessenger(this);
 		}
 
 	#endregion
@@ -142,7 +149,7 @@ namespace CellsTest.Windows
 		{
 			// TbxMsg.Text +=
 			// 	// (tabId > 0 ? tabId.ToString("D3") : "") + 
-				Write((tabs > 0 ? "    ".Repeat(tabs) : "" ) + msg);
+			Write((tabs > 0 ? "    ".Repeat(tabs) : "" ) + msg);
 		}
 
 		public void WriteLine(string msg)
@@ -152,7 +159,6 @@ namespace CellsTest.Windows
 
 		public void Write(string msg)
 		{
-
 			sb.Append(msg);
 
 			// TbxMsg.Text += msg;
@@ -166,31 +172,67 @@ namespace CellsTest.Windows
 		public void ClrMessage()
 		{
 			sb = new StringBuilder();
-			TbxMsg.Text ="";
+			TbxMsg.Text = "";
 		}
-
-
 
 	#endregion
 
 	#region private methods
 
-	
 	#endregion
 
 	#region event consuming
 
-		private void BtnToken04_02a_OnClick(object sender, RoutedEventArgs e)
+		private void BtnAllDefs_OnClick(object sender, RoutedEventArgs e)
 		{
 			ClrMessage();
 
-			WriteLineTab("Token Test 4-1");
+			WriteLineTab("Show 1");
 
-			tests04Amts.valueDefTest02a();
+			WriteLineTab("");
+			show01.ShowParseGens();
+			WriteLineTab("");
+			show01.ShowDefVars();
+			WriteLineTab("");
+			show01.ShowDefVals();
+			WriteLineTab("");
 
 			ShowMessage();
 		}
 		
+		private void BtnParse02a_03_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("Parse Test 2-3");
+
+			tests02A.parseTest03();
+
+			ShowMessage();
+		}
+		
+		private void BtnParse04_01a_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("parse Test 4-1");
+
+			tests04Amts.ShowParseGenDefs01a();
+
+			ShowMessage();
+		}
+		
+		private void BtnToken04_02a_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("Token Test 4-2");
+
+			tests04Amts.valueDefTest01b();
+
+			ShowMessage();
+		}
+
 		private void BtnToken04_01a_OnClick(object sender, RoutedEventArgs e)
 		{
 			ClrMessage();
@@ -206,13 +248,13 @@ namespace CellsTest.Windows
 		{
 			ClrMessage();
 
-			WriteLineTab("Parse Test 1");
+			WriteLineTab("Parse Test 2-1");
 
 			tests02A.parseTest01();
 
 			ShowMessage();
 		}
-		
+
 		private void BtnParse02_OnClick(object sender, RoutedEventArgs e)
 		{
 			ClrMessage();
@@ -245,7 +287,7 @@ namespace CellsTest.Windows
 
 			ShowMessage();
 		}
-			
+
 		private void BtnReset_OnClick(object sender, RoutedEventArgs e)
 		{
 			sb = new StringBuilder("Reset\n");
@@ -255,21 +297,21 @@ namespace CellsTest.Windows
 
 			Debug.WriteLine("@List Params");
 		}
-				
+
 		private void BtnLabelsAndFormulas_OnClick(object sender, RoutedEventArgs e)
 		{
 			listInfo.listLablesAndFormulas();
 
 			Debug.WriteLine("@List listLablesAndFormulas");
 		}
-						
+
 		private void BtnListErrors_OnClick(object sender, RoutedEventArgs e)
 		{
 			listInfo.listErrors1();
 
 			Debug.WriteLine("@List errors");
 		}
-		
+
 		private void BtnGetChartsAll_OnClick(object sender, RoutedEventArgs e)
 		{
 			listInfo.getParamsTest4a();
@@ -311,7 +353,7 @@ namespace CellsTest.Windows
 
 			SampleAnnoSymbols sample = new SampleAnnoSymbols();
 			sample.Process(RevitParamManager.CHART_FAMILY_NAME);
-			
+
 			// listInfo.listSample(sample.ChartElements, sample.CellElements);
 			myTrace.TraceEvent(TraceEventType.Information, 2, "List Sample| Start");
 			listInfo.listSample(sample.ChartElements, sample.CellSyms);
@@ -386,7 +428,7 @@ namespace CellsTest.Windows
 			}
 
 			myTrace.Switch = new SourceSwitch("SourceSwitch", "Off");
-			
+
 			myTrace.Listeners.Remove("Default");
 
 			writerListener = new TextWriterTraceListener("trace.log");
@@ -396,8 +438,6 @@ namespace CellsTest.Windows
 			myTrace.Listeners.Add(writerListener);
 
 			Trace.AutoFlush = true;
-			
-
 		}
 
 	#region event publishing
@@ -525,6 +565,6 @@ namespace CellsTest.Windows
 			Debug.WriteLine("@split test 9");
 		}
 					
-*/		
+*/
 	}
 }

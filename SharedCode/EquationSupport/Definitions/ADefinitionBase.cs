@@ -1,9 +1,6 @@
 ﻿#region using
 
-using System;
-using System.Collections.Generic;
 using System.Windows.Controls;
-using SharedCode.EquationSupport.TokenSupport;
 
 // using static SharedCode.EquationSupport.Definitions.TokenClassGroups;
 // using static SharedCode.EquationSupport.Definitions.TokenClassUnit;
@@ -16,8 +13,6 @@ using static SharedCode.EquationSupport.Definitions.ValueClassIdFunct;
 using static SharedCode.EquationSupport.Definitions.ValueClassUnit;
 using static SharedCode.EquationSupport.Definitions.ValueClassUnitSys;
 using static SharedCode.EquationSupport.Definitions.ValueClassGroup;
-
-using static SharedCode.EquationSupport.Definitions.ValueDefinitions;
 
 #endregion
 
@@ -170,163 +165,8 @@ namespace SharedCode.EquationSupport.Definitions
 		PGV_GBL_PARAM   = 50,
 		PGV_LBL_NAME    = 60,
 	}
-
-	public abstract class ADefBase : IEquatable<string>
-	{
-		private static int id = 1;
-
-		public string Description { get; private set; }  // general description of the token
-		public string ValueStr { get; private set; }     // the actual token value - i.e. "v1" or "+"
-		public ValueType ValueType { get; private set; } // the type of value held
-		public int Id { get; private set; }              // a numeric id // sequential number
-
-		public ADefBase() { }
-
-		public ADefBase(string description, string valueStr,
-			ValueType valType)
-		{
-			Description = description;
-			ValueStr = valueStr;
-			ValueType = valType;
-			Id = id++;
-		}
-
-		public abstract bool Equals(string test);
-
-		public static ADefBase Invalid => (ADefBase) ValDefInst[Vd_Invalid];
-	}
-
-	// tokens associated with the initial equation parse
-	public class ParseGen : ADefBase
-	{
-		public List<ADefBase2> aDefBase2 = null;
-		public ParseGroupGeneral Group { get; private set; } // functional grouping
-		public bool IsGood { get; private set; }             // indicates token is not valid
-
-		public ParseGen() { }
-
-		public ParseGen(   string description, string valueStr, ValueType valType,
-			ParseGroupGeneral @group, ADefBase2[] aDefs, bool isGood = true)
-			: base(description, valueStr, valType)
-		{
-			Group = group;
-
-			if (aDefs == null || aDefs.Length == 0)
-			{
-				IsGood = false;
-			}
-			else
-			{
-				IsGood = isGood;
-
-				this.aDefBase2 = new List<ADefBase2>();
-
-				foreach (ADefBase2 vd in aDefs)
-				{
-					if (vd == null) continue;
-					this.aDefBase2.Add(vd);
-				}
-			}
-		}
-
-		public ADefBase2 Classify(string test)
-		{
-			foreach (ADefBase2 ab in aDefBase2)
-			{
-				if (ab.Equals(test)) return ab;
-			}
-
-			return (ADefBase2) ADefBase.Invalid;
-		}
-
-		public override bool Equals(string test)
-		{
-			return (ValueStr?.Equals(string.Empty) ?? false) || (ValueStr?.Equals(test) ?? false);
-		}
-	}
-
-	public abstract class ADefBase2 : ADefBase
-	{
-		public int Seq { get; private set; }   // the sequence number in a group
-		public int Order { get; private set; } // order of operation - higher gets done first
-		public bool IsNumeric { get; private set; }
-
-		public ADefBase2() { }
-
-		protected ADefBase2(string description, 
-			string valueStr, 
-			ValueType valType,
-			int seq, 
-			int order, 
-			bool isNumeric
-			) : base(description, valueStr, valType)
-		{
-			Seq = seq;
-			Order = order;
-			IsNumeric = isNumeric;
-		}
-
-		public abstract Token MakeToken();
-
-	}
-
-	// tokens associated with an equation operation
-	public class DefValue : ADefBase2
-	{
-		public DefValue() { }
-
-		public DefValue(string description, string valueStr, ValueType valType, 
-			int seq, int order, bool isNumeric = false) : base(description, valueStr, valType, seq, order, isNumeric) { }
-
-		public override Token MakeToken()
-		{
-			return null;
-		}
-
-		public override bool Equals(string test)
-		{
-			return (ValueStr?.Equals(string.Empty) ?? false) || (ValueStr?.Equals(test) ?? false);
-		}
-	}
-
-	// tokens associated with the initial equation parse
-	public class DefVar : ADefBase2
-	{
-		private int valStrLen;
-		private int tokStrTrmLen;
-
-		public string TokenStrTerm { get; private set; }
-		public ParseGroupVar Group { get; private set; } // functional grouping
-
-		public DefVar() { }
-
-		public DefVar(string description, string valueStr, string tokenStrTerm, ValueType valType, ParseGroupVar @group, 
-			int seq, int order, bool isNumeric = false) : base(description, valueStr, valType, seq, order, isNumeric)
-		{
-			TokenStrTerm = tokenStrTerm;
-			Group = group;
-
-			valStrLen = valueStr.Length;
-			tokStrTrmLen = TokenStrTerm.Length;
-		}
-
-		public override Token MakeToken()
-		{
-			return null;
-		}
-
-		public override bool Equals(string test)
-		{
-			if (ValueStr == null) return false;
-
-			string prefix = test.Substring(0, valStrLen);
-			string suffix = test.Substring(test.Length - tokStrTrmLen, tokStrTrmLen);
-
-			return prefix.Equals(ValueStr) && suffix.Equals(TokenStrTerm);
-		}
-	}
-
-	public abstract class ADefinitionBase<T> where T : ADefBase, new()
+	
+	public abstract class ADefinitionBase<T> where T : ADefBase //, new()
 	{
 	#region private fields
 

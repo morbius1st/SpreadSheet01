@@ -1,0 +1,57 @@
+
+// definitions
+// defines the parse components
+base class:
+ADefBase
+Derived:
+	ParseGen  // defines a regex parse component
+
+	ValueDef  // defines a equation component
+	VarDef    // defines a special variable
+
+// class to hold / manage the definitions
+base class:
+DefinitionBase
+Derived:
+	// the list of regex parse components
+	// includes a cross-ref to the list of
+	// -> ParseVariableDefinitions  -or-
+	// -> ValueDefinitions
+	ParseGeneralDefinitions : DefinitionBase<ParseGen>
+
+	// the list of possible value definitions - 'VariableDefinitions' is a subset
+	ValueDefinitions : DefinitionBase<ValueDef>
+
+	// the list of special variable definitions
+	VariableDefinitions : DefinitionBase<VarDef>
+	
+
+the above is used to create a token
+
+
+holds the value placed into a token
+base class:
+AmountBase
+
+Derived:
+	AmtAssignment	an equal sign
+	etc.
+
+
+
+
+
+
+ParsePhaseOne
+divide a formula into its named regex groups + track the position & length
+
+
+ParsePhaseTwo
+use data from ParsePhaseOne to determine the appropriate 
+ADefBase (for each item either ValueDef or VarDef)
+
+
+
+
+
+

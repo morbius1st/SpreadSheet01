@@ -29,7 +29,9 @@ namespace SharedCode.FormulaSupport.ParseSupport
 			int t = 0;
 			int subLen = 0;
 
+#pragma warning disable CS0168 // The variable 'result' is declared but never used
 			bool result;
+#pragma warning restore CS0168 // The variable 'result' is declared but never used
 
 			char[] c = test.ToCharArray();
 

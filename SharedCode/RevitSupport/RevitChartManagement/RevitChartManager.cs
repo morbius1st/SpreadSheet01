@@ -41,7 +41,9 @@ namespace RevitSupport.RevitChartManagement
 
 		private int errorIdx;
 
+#pragma warning disable CS0169 // The field 'RevitChartManager.fail' is never used
 		private int fail;
+#pragma warning restore CS0169 // The field 'RevitChartManager.fail' is never used
 
 	#endregion
 
@@ -135,8 +137,12 @@ namespace RevitSupport.RevitChartManagement
 				chartData = getChartData(el);
 
 				RevitChart chart = null;
+#pragma warning disable CS0219 // The variable 'chartFamily' is assigned but its value is never used
 				ChartFamily chartFamily = null;
+#pragma warning restore CS0219 // The variable 'chartFamily' is assigned but its value is never used
+#pragma warning disable CS0219 // The variable 'cellFamily' is assigned but its value is never used
 				CellFamily cellFamily = null;
+#pragma warning restore CS0219 // The variable 'cellFamily' is assigned but its value is never used
 
 				string key = RevitParamUtil.MakeAnnoSymKey(chartData,
 					(int) RevitParamManager.NameIdx, (int) RevitParamManager.SeqIdx);
