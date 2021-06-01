@@ -47,7 +47,7 @@ namespace CellsTest.Windows
 		private Tests02A tests02A;
 		private Tests04Amounts tests04Amts;
 
-		private ShowResults show;
+		private ShowInfo show;
 
 	#endregion
 
@@ -69,7 +69,7 @@ namespace CellsTest.Windows
 
 			configTrace();
 
-			show = ShowResults.Inst;
+			show = ShowInfo.Inst;
 			show.SetMessenger(this);
 		}
 
@@ -183,11 +183,26 @@ namespace CellsTest.Windows
 
 	#region event consuming
 
+		
+		private void BtnValDefs_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("Show 02");
+
+			WriteLineTab("");
+			show01.ShowDefVals();
+			WriteLineTab("");
+
+			ShowMessage();
+		}
+
+
 		private void BtnAllDefs_OnClick(object sender, RoutedEventArgs e)
 		{
 			ClrMessage();
 
-			WriteLineTab("Show 1");
+			WriteLineTab("Show 01");
 
 			WriteLineTab("");
 			show01.ShowParseGens();

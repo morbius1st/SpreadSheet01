@@ -8,14 +8,16 @@ using static SharedCode.EquationSupport.Definitions.ValueDefinitions;
 
 namespace SharedCode.EquationSupport.TokenSupport.Amounts
 {
-	public class AmtOpAdd : AAmtTypeString
+	public class AmtGenericString : AAmtTypeString
 	{
-		static AmtOpAdd()
+		static AmtGenericString()
 		{
-			// ValueDefIdx = ValueDefinitions.Vd_MathAdd;
+			// as this is used by multiple values, the index 
+			// gets set to invalid and must be adjusted
+			// ValueDefIdx = Vd_Invalid;
 		}
 
-		public AmtOpAdd(string original) : base(Vd_MathAdd, original) { }
+		public AmtGenericString(int index, string original) : base(index, original) { }
 
 		// public override string AsString() => Amount;
 		//
@@ -26,7 +28,7 @@ namespace SharedCode.EquationSupport.TokenSupport.Amounts
 
 		public override string ToString()
 		{
-			return "This is| " + nameof(AmtOpAdd) + " (" + AsString() + ")";
+			return "This is| " + nameof(AmtGenericString) + " (" + AsString() + ")";
 		}
 	}
 }

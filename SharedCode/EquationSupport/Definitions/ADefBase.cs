@@ -11,10 +11,11 @@ namespace SharedCode.EquationSupport.Definitions
 	{
 		private static int id = 1;
 
-		public string Description { get; private set; }  // general description of the token
-		public string ValueStr { get; private set; }     // the actual token value - i.e. "v1" or "+"
-		public ValueType ValueType { get; private set; } // the type of value held
-		public int Id { get; private set; }              // a numeric id // sequential number
+		public string ValueStr { get; }      // the actual token value - i.e. "v1" or "+"
+		public string Description { get; }   // general description of the token
+		public ValueType ValueType { get; }  // the type of value held
+		public int Id { get; }               // a numeric id // sequential number
+
 
 		public ADefBase() { }
 

@@ -369,6 +369,15 @@
 					DockPanel.Dock="Bottom"
 					Click="BtnAllDefs_OnClick"
 					/>
+					
+			<Button x:Name="BtnShow02"
+					Content="(02) Show Value&#13;Definitions"
+					Margin="5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
+					DockPanel.Dock="Bottom"
+					Click="BtnValDefs_OnClick"
+					/>
 
 			<Rectangle
 					Margin="5,0,5,0"

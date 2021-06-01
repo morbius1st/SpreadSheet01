@@ -38,22 +38,6 @@ namespace SharedCode.EquationSupport.TokenSupport.Amounts
 
 	#region public methods
 
-		public static AAmtBase Classify(ParseGen pg)
-		{
-			AAmtBase ab;
-
-			switch (pg.Group)
-			{
-			case ParseGroupGeneral.PGG_ASSIGNMENT:
-				{
-					return new AmtAssignment("");
-					break;
-				}
-			}
-
-			return AAmtBase.Invalid;
-		}
-
 	#endregion
 
 	#region private methods

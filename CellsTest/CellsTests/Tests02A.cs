@@ -74,8 +74,8 @@ namespace CellsTest.CellsTests
 		{
 			win.WriteLine("parse test 01");
 
-			ParsePhaseOne p1 = new ParsePhaseOne();
-			ParsePhaseTwo p2 = new ParsePhaseTwo();
+			ParsePhase p1 = new ParsePhase();
+			TokenizePhase p2 = new TokenizePhase();
 
 			p2.Messenger(win);
 
@@ -83,7 +83,7 @@ namespace CellsTest.CellsTests
 
 			int k = 0;
 
-			test[k++] = "= 123 (456+(123 + 246))";
+			test[k++] = "= 123 + (456+(123 + 246))";
 
 			// test[k++] = "=(1 + (21 + 22 + (31 + 32 * (41 + 42) * (sign(51+52) ) ) ) + 2*3) + 4+5 + {[A1]} + ({!B1}) & \"text\"";
 			// test[k++] = "= 123 (456+(123 + (678 + (123 + 123 + (123 + (123 + 456) + 456)) + 456) + 246) + variable)";
@@ -110,7 +110,7 @@ namespace CellsTest.CellsTests
 		{
 			win.WriteLine("parse test 01");
 
-			ParsePhaseOne pi = new ParsePhaseOne();
+			ParsePhase pi = new ParsePhase();
 
 			string[] test = new string[15];
 
@@ -170,11 +170,11 @@ namespace CellsTest.CellsTests
 			win.Write("\n");
 		}
 
-		private void ListMatches(ParsePhaseOne pi)
+		private void ListMatches(ParsePhase pi)
 		{
 			for (var i = 0; i < pi.FormulaComponents.Count; i++)
 			{
-				ParsePh1Data pd1 = pi.FormulaComponents[i];
+				ParsePhData pd1 = pi.FormulaComponents[i];
 				win.WriteLine($"name|\t{pd1.Name,-6}\tvalue|\t{pd1.Value}\tindex|\t{pd1.Position}\tlength|\t{pd1.Length}");
 			}
 		}
@@ -186,7 +186,7 @@ namespace CellsTest.CellsTests
 			int countTests = 0;
 			int countFails = 0;
 
-			DefValue vdIdentifier;
+			ValDef vdIdentifier;
 
 			Stopwatch s = new Stopwatch();
 			s.Start();
@@ -237,9 +237,9 @@ namespace CellsTest.CellsTests
 			win.WriteLine("\n");
 		}
 
-		private DefValue GetToken0(string test)
+		private ValDef GetToken0(string test)
 		{
-			return ValueDefinitions.Classify(test);
+			return (ValDef) ValueDefinitions.Classify(test);
 		}
 
 		// this method was lots slower (something like 4000 versus 700)

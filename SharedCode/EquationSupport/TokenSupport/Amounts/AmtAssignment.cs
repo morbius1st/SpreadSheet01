@@ -1,4 +1,5 @@
 ﻿using SharedCode.EquationSupport.Definitions;
+using static SharedCode.EquationSupport.Definitions.ValueDefinitions;
 
 // Solution:     SpreadSheet01
 // Project:       CellsTest
@@ -7,21 +8,22 @@
 
 namespace SharedCode.EquationSupport.TokenSupport.Amounts
 {
-	public class AmtAssignment : AAmtTypeSpecific<string>
+	public class AmtAssignment : AAmtTypeString
 	{
 		static AmtAssignment()
 		{
-			ValueDefIdx = ValueDefinitions.Vd_Assignment;
+			// ValueDefIdx = ValueDefinitions.Vd_Assignment;
 		}
 
-		public AmtAssignment(string original) : base(original) { }
+		public AmtAssignment(string original) : base(Vd_Assignment, original) { }
 
-		public override string AsString() => Amount;
-
-		public override string ConvertFromString(string original)
-		{
-			return original;
-		}
+		// public override string AsString() => Amount;
+		//
+		// public override string ConvertFromString(string original, out bool isValid)
+		// {
+		// 	isValid = true;
+		// 	return original;
+		// }
 
 		public override string ToString()
 		{

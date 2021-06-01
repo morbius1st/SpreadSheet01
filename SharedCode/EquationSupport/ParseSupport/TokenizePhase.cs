@@ -22,7 +22,7 @@ namespace SharedCode.EquationSupport.ParseSupport
 {
 	// take the data from ParsePhaseOne and
 	// tokenize
-	public class ParsePhaseTwo
+	public class TokenizePhase
 	{
 	#region private fields
 
@@ -32,13 +32,13 @@ namespace SharedCode.EquationSupport.ParseSupport
 		private ISendMessages win;
 		// private IShowResults show;
 
-		private ShowResults show = ShowResults.Inst;
+		private ShowInfo show = ShowInfo.Inst;
 
 	#endregion
 
 	#region ctor
 
-		public ParsePhaseTwo()
+		public TokenizePhase()
 		{
 			tokens = new List<Token>();
 			// pgd = new ParseGeneralDefinitions();
@@ -48,7 +48,7 @@ namespace SharedCode.EquationSupport.ParseSupport
 
 	#region public properties
 
-		public void Parse2(ParsePhaseOne p1)
+		public void Parse2(ParsePhase p1)
 		{
 			parse2(p1);
 		}
@@ -71,9 +71,9 @@ namespace SharedCode.EquationSupport.ParseSupport
 	#region private methods
 
 		// tested from Test02A / parfseTest03
-		private void parse2(ParsePhaseOne p1)
+		private void parse2(ParsePhase p1)
 		{
-			ParsePh1Data fc;
+			ParsePhData fc;
 			ParseGen pg;
 			Token tk;
 			AAmtBase aa;
@@ -93,10 +93,11 @@ namespace SharedCode.EquationSupport.ParseSupport
 
 				fc.Definition = ParseGeneralDefinitions.Classify(fc.Name, fc.Value);
 
-
+				Token t = fc.Definition.MakeToken(fc.Value, fc.Position, fc.Length);
 
 				win.TabUp();
-				show.ShowParsePh1Data(fc);
+				win.WriteLineTab("");
+				show.ShowToken(t, false);
 				win.TabDn();
 			}
 		}

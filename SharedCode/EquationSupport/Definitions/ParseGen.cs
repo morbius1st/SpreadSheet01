@@ -10,16 +10,14 @@ namespace SharedCode.EquationSupport.Definitions
 	public class ParseGen : ADefBase
 	{
 		public List<ADefBase2> aDefBase2 = null;
-		public ParseGroupGeneral Group { get; private set; } // functional grouping
+		
 		public bool IsGood { get; private set; }             // indicates token is not valid
 
 		public ParseGen() { }
 
-		public ParseGen(   string description, string valueStr, ValueType valType,
-			ParseGroupGeneral @group, ADefBase2[] aDefs, bool isGood = true)
+		public ParseGen(string description, string valueStr, ValueType valType, ADefBase2[] aDefs, bool isGood = true)
 			: base(description, valueStr, valType)
 		{
-			Group = group;
 
 			if (aDefs == null || aDefs.Length == 0)
 			{

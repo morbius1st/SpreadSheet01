@@ -21,7 +21,7 @@ using SharedCode.EquationSupport.Definitions;
 
 namespace SharedCode.EquationSupport.ParseSupport
 {
-	public struct ParsePh1Data
+	public struct ParsePhData
 	{
 		public string Name { get; }
 		public string Value { get; }
@@ -30,7 +30,7 @@ namespace SharedCode.EquationSupport.ParseSupport
 		public ADefBase2 Definition { get; set; }
 		public bool IsValueDef { get; set; }
 
-		public ParsePh1Data(string name, string value, int position, int length)
+		public ParsePhData(string name, string value, int position, int length)
 		{
 			Name = name;
 			Value = value;
@@ -42,7 +42,7 @@ namespace SharedCode.EquationSupport.ParseSupport
 	}
 
 
-	public class ParsePhaseOne
+	public class ParsePhase
 	{
 	#region private fields
 
@@ -52,13 +52,13 @@ namespace SharedCode.EquationSupport.ParseSupport
 
 	#region ctor
 
-		public ParsePhaseOne() { }
+		public ParsePhase() { }
 
 	#endregion
 
 	#region public properties
 
-		public List<ParsePh1Data> FormulaComponents { get; private set; }
+		public List<ParsePhData> FormulaComponents { get; private set; }
 
 		public string Pattern => pattern;
 
@@ -77,7 +77,7 @@ namespace SharedCode.EquationSupport.ParseSupport
 			Regex r = new Regex(pattern, RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 			MatchCollection c = r.Matches(formula);
 
-			FormulaComponents = new List<ParsePh1Data>();
+			FormulaComponents = new List<ParsePhData>();
 
 			bool result = GetMatches(c, FormulaComponents);
 
@@ -93,7 +93,7 @@ namespace SharedCode.EquationSupport.ParseSupport
 
 	#region private methods
 
-		private bool GetMatches(MatchCollection c, List<ParsePh1Data> matches)
+		private bool GetMatches(MatchCollection c, List<ParsePhData> matches)
 		{
 			Match m;
 			Group g;
@@ -114,7 +114,7 @@ namespace SharedCode.EquationSupport.ParseSupport
 					if (g.Success)
 					{
 						
-						matches.Add(new ParsePh1Data(g.Name, g.Value, g.Index, g.Length));
+						matches.Add(new ParsePhData(g.Name, g.Value, g.Index, g.Length));
 					}
 				}
 			}

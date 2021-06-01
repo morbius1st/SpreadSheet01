@@ -3,31 +3,30 @@ using static SharedCode.EquationSupport.Definitions.ValueDefinitions;
 
 // Solution:     SpreadSheet01
 // Project:       CellsTest
-// File:             AmtGpEnd.cs
+// File:             AmtOpAdd.cs
 // Created:      2021-05-24 (10:18 AM)
 
 namespace SharedCode.EquationSupport.TokenSupport.Amounts
 {
-	public class AmtGpEnd : AAmtTypeString
+	public class AmtOpSub : AAmtTypeString
 	{
-		static AmtGpEnd()
+		static AmtOpSub()
 		{
-			// ValueDefIdx = ValueDefinitions.Vd_GrpEnd;
+			// ValueDefIdx = ValueDefinitions.Vd_MathSubt;
 		}
 
-		public AmtGpEnd(string original) : base(Vd_GrpEnd, original) { }
+		public AmtOpSub(string original) : base(Vd_MathSubt, original) { }
 
 		// public override string AsString() => Amount;
 		//
-		// public override string ConvertFromString(string original, out bool isValid)
+		// public override string ConvertFromString(string original)
 		// {
-		// 	isValid = true;
 		// 	return original;
 		// }
 
 		public override string ToString()
 		{
-			return "This is| " + nameof(AmtGpEnd) + " (" + AsString() + ")";
+			return "This is| " + nameof(AmtOpSub) + " (" + AsString() + ")";
 		}
 	}
 }

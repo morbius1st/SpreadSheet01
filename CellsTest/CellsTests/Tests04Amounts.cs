@@ -26,7 +26,7 @@ namespace CellsTest.CellsTests
 	{
 		private static MainWindow win;
 		private ParseGeneralDefinitions pDefs = new ParseGeneralDefinitions();
-		private ShowResults show = ShowResults.Inst;
+		private ShowInfo show = ShowInfo.Inst;
 
 		public Tests04Amounts(MainWindow win1)
 		{
@@ -118,7 +118,6 @@ namespace CellsTest.CellsTests
 			if (pg == null) return false;
 
 			win.WriteLineTab($"{"val str",titleWidthD}| {pg.ValueStr}");
-			win.WriteLineTab($"{"group",titleWidthD}| {pg.Group}");
 			win.WriteLineTab($"{"id",titleWidthD}| {pg.Id}");
 			win.WriteLineTab($"{"val type",titleWidthD}| {pg.ValueType}");
 			win.WriteLineTab($"{"description",titleWidthD}| {pg.Description}");
@@ -141,7 +140,7 @@ namespace CellsTest.CellsTests
 				) return;
 
 			win.TabUp(1);
-			foreach (ADefBase aDef in pg.aDefBase2)
+			foreach (ADefBase2 aDef in pg.aDefBase2)
 			{
 				win.WriteLine("");
 				// ShowParsVarDefs2D(aDef);
@@ -169,7 +168,7 @@ namespace CellsTest.CellsTests
 		private void ShowValueDefB(int idx)
 		{
 			// ValueDefinitions a = VdefInst;
-			DefValue vDef = ValDefInst[idx];
+			ValDef vDef = (ValDef) ValDefInst[idx];
 
 			if (vDef == null) return;
 
@@ -180,7 +179,7 @@ namespace CellsTest.CellsTests
 			win.WriteLine($"{"numeric?",titleWidthB}| {vDef.IsNumeric}");
 			win.WriteLine($"{"description",titleWidthB}| {vDef.Description}");
 			win.WriteLine($"{"order",titleWidthB}| {vDef.Order}");
-			win.WriteLine($"{"seq",titleWidthB}| {vDef.Seq}");
+			// win.WriteLine($"{"seq",titleWidthB}| {vDef.Seq}");
 			win.WriteLine($"{"id",titleWidthB}| {vDef.Id}");
 		}
 
@@ -205,7 +204,7 @@ namespace CellsTest.CellsTests
 			win.WriteLine("ValueTypes|");
 			for (var i = 0; i < ValDefInst.Count; i++)
 			{
-				DefValue vDef = ValDefInst[i];
+				ValDef vDef = (ValDef) ValDefInst[i];
 
 				if (vDef == null) continue;
 
@@ -227,7 +226,7 @@ namespace CellsTest.CellsTests
 			win.WriteLine($"{"data type",titleWidthA}| {aib2.DataType   , fieldWidthA}| ");
 			win.WriteLine($"{"desc"     ,titleWidthA}| {aib2.Description, fieldWidthA}| ");
 			win.WriteLine($"{"order"    ,titleWidthA}| {aib2.Order      , fieldWidthA}| order of operation");
-			win.WriteLine($"{"seq"      ,titleWidthA}| {aib2.Seq        , fieldWidthA}| sequence number within a value def group");
+			// win.WriteLine($"{"seq"      ,titleWidthA}| {aib2.Seq        , fieldWidthA}| sequence number within a value def group");
 			win.WriteLine($"{"id"       ,titleWidthA}| {aib2.Id         , fieldWidthA}| generic sequence / id number");
 		}
 
@@ -269,7 +268,7 @@ namespace CellsTest.CellsTests
 			win.WriteLine($"{"data type",titleWidthA}| {ai2.DataType   , fieldWidthA}| ");
 			win.WriteLine($"{"desc"     ,titleWidthA}| {ai2.Description, fieldWidthA}| ");
 			win.WriteLine($"{"order"    ,titleWidthA}| {ai2.Order      , fieldWidthA}| order of operation");
-			win.WriteLine($"{"seq"      ,titleWidthA}| {ai2.Seq        , fieldWidthA}| sequence number within a value def group");
+			// win.WriteLine($"{"seq"      ,titleWidthA}| {ai2.Seq        , fieldWidthA}| sequence number within a value def group");
 			win.WriteLine($"{"id"       ,titleWidthA}| {ai2.Id         , fieldWidthA}| generic sequence / id number");
 		}
 

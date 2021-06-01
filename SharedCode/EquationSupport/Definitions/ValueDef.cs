@@ -7,14 +7,14 @@ using SharedCode.EquationSupport.TokenSupport;
 
 namespace SharedCode.EquationSupport.Definitions
 {
-	public class DefValue : ADefBase2
+	public class ValDef : ADefBase2
 	{
-		public DefValue() { }
+		public ValDef() { }
 
-		public DefValue(string description, string valueStr, ValueType valType, 
-			int seq, int order, bool isNumeric = false) : base(description, valueStr, valType, seq, order, isNumeric) { }
+		public ValDef(int index, string description, string valueStr, ValueType valType, ValueDataGroup dataGroup,
+			/*int seq,*/ int order, bool isNumeric = false) : base(index, description, valueStr, valType, dataGroup, /*seq,*/ order, isNumeric) { }
 
-		public override Token MakeToken(int pos, int len)
+		public override Token MakeToken(string value, int pos, int len)
 		{
 			return null;
 		}

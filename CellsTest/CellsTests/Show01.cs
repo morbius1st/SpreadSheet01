@@ -24,7 +24,7 @@ namespace CellsTest.CellsTests
 		private VariableDefinitions varDefs = VariableDefinitions.VarDefInst;
 		private ValueDefinitions valDefs = ValueDefinitions.ValDefInst;
 
-		private ShowResults show = ShowResults.Inst;
+		private ShowInfo show = ShowInfo.Inst;
 
 		public Show01(MainWindow win1)
 		{
@@ -48,6 +48,8 @@ namespace CellsTest.CellsTests
 		{
 			win.WriteLineTab("");
 			win.WriteLineTab("*** Value Definitions ***");
+
+			show.ShowParsVarDefs2D(valDefs[Vd_MathAdd]);
 
 			for (int i = 0; i < valDefs.Count; i++)
 			{

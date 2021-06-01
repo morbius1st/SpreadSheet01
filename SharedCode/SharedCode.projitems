@@ -10,34 +10,40 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory).External\" />
+    <Folder Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\AmountDefs\" />
     <Folder Include="$(MSBuildThisFileDirectory)Management\" />
     <Folder Include="$(MSBuildThisFileDirectory)RevitSupport\RevitChartManagement\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory).DebugAssist\ISendMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory).DebugAssist\ListInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory).DebugAssist\ShowResults.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory).DebugAssist\ShowInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\ADefBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\ADefBase2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\ADefinitionBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\DefOpAdd.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\DefValue.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\DefVar.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\AmountDefs\DefGrouping.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\AmountDefs\DefAssignment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\AmountDefs\DefOpMathAdditive.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\AmountDefs\DefNumInt.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\ValueDef.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\VarDef.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\ParseGen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\ParseGeneralDefinitions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\ValueDefinitions2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\ValueDefinitions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\VariableDefinitions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\ParseSupport\ParsePhaseOne.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\ParseSupport\ParsePhaseTwo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmountBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\ParseSupport\ParsePhase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\ParseSupport\TokenizePhase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AAmtBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmountSupport.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmtDouble.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmtAssignment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmtGpEnd.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmtGpBeg.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmtInvalid.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmtInvalidDefault.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmtGpRef.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmtGenericString.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmtOpSub.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmtOpAdd.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\AmtInteger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\TokenSupport\Amounts\UnitOfMeasure.cs" />

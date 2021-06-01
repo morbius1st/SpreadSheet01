@@ -1,13 +1,16 @@
+Definitions
+AmountDefs
 
-// definitions
-// defines the parse components
-base class:
-ADefBase
-Derived:
-	ParseGen  // defines a regex parse component
 
-	ValueDef  // defines a equation component
-	VarDef    // defines a special variable
+
+ParsePhase
+divide a formula into its named regex groups + track the position & length
+
+
+TokenizePhase
+use data from ParsePhaseOne to determine the appropriate 
+ADefBase (for each item either ValueDef or VarDef)
+
 
 // class to hold / manage the definitions
 base class:
@@ -20,36 +23,142 @@ Derived:
 	ParseGeneralDefinitions : DefinitionBase<ParseGen>
 
 	// the list of possible value definitions - 'VariableDefinitions' is a subset
-	ValueDefinitions : DefinitionBase<ValueDef>
+	ValueDefinitions : DefinitionBase<ValDef>
 
 	// the list of special variable definitions
 	VariableDefinitions : DefinitionBase<VarDef>
-	
 
-the above is used to create a token
+
+// definitions
+// defines components types
+base class:
+ADefBase									// root class
+	** fields / properties - native
+	ValueStr		/ string				// the string that represents this definition (e.g. '+' or 'eq')
+	Description		/ string				// a description for the definition
+	ValueType		/ ValueType				// enum, identifier and approximate processing order
+	Id				/ int					// simple sequential number that allows simple comparison
+
+	ADefBase2 : ADefBase						// first derived, used for DefValue & DefVar
+		** fields / properties - native
+		Order			/ int				// actual processing order
+		IsNumeric		/ bool				// does this hold numeric value?
+		Index			/ int				// index to itself in the array
+		DataGroup		/ ValueDataGroup	// enum, represents the type of data held (e.g. a string or an int)
+
+		** fields / properties - inherated
+		ValueStr		/ string	
+		Description		/ string	
+		ValueType		/ ValueType	
+		Id				/ int		
+
+	ADefBaseString2 : ADefBase2				// second derived, used specifically for Value and Var definitions that hold a string
+		** fields / properties - native
+		{none}
+
+
+Derived:
+	ParseGen : ADefBase						// defines a regex parse component - used to categorize parse groups
+	ValDef : ADefBase2						// defines a equation component - this is the LCD form
+	VarDef : ADefBase2						// defines a special variable - this is the LCD form
+
+	DefAssignment : ADefBaseString2			// defines the definition for 'Assignment'
+	DefNumInt : ADefBase2					// defines the definition for 'integer'
+	{etc.}
+	
 
 
 holds the value placed into a token
 base class:
-AmountBase
+EquationSupport / TokenSupport / Amounts
+AAmtBase										// root class that holds the value of a token / can be one of several value types
+	** fields / properties - native			
+	Original		/ string					// original text from the formula
+	IsValid			/ bool						// is this a valid amount
+	Invalid			/ static AAmtBase			// standard invalid value
+	Default			/ static AAmtBase			// standard default value
+	ValueDef		/ ADefBase2					// definition of the value
+	+->	Order			/ int			
+		IsNumeric		/ bool			
+		Index			/ int			
+		DataGroup		/ ValueDataGroup
+		ValueStr		/ string	
+		Description		/ string	
+		ValueType		/ ValueType	
+		Id				/ int	
+
+	AAmtTypeSpecific<T>
+		** fields / properties - native
+		Amount			/ T						// the value of the Amount
+
+		** fields / properties - inherated
+		Original		/ string		
+		IsValid			/ bool			
+		Invalid			/ static AAmtBase
+		Default			/ static AAmtBase
+		ValueDef		/ ADefBase2
+		+->	Order			/ int			
+			IsNumeric		/ bool			
+			Index			/ int			
+			DataGroup		/ ValueDataGroup
+			ValueStr		/ string	
+			Description		/ string	
+			ValueType		/ ValueType	
+			Id				/ int		
+
+	AAmtTypeString : AAmtTypeSpecific<string>
+		** fields / properties - native
+		{none}
+
+		** fields / properties - inherated
+		Amount			/ string	
+		Original		/ string		
+		IsValid			/ bool			
+		Invalid			/ static AAmtBase
+		Default			/ static AAmtBase
+		ValueDef		/ ADefBase2
+		+->	Order			/ int			
+			IsNumeric		/ bool			
+			Index			/ int			
+			DataGroup		/ ValueDataGroup
+			ValueStr		/ string	
+			Description		/ string	
+			ValueType		/ ValueType	
+			Id				/ int	
+
+
 
 Derived:
 	AmtAssignment	an equal sign
 	etc.
 
 
+the above is used to create a token
 
 
-
-
-ParsePhaseOne
-divide a formula into its named regex groups + track the position & length
-
-
-ParsePhaseTwo
-use data from ParsePhaseOne to determine the appropriate 
-ADefBase (for each item either ValueDef or VarDef)
-
+EquationSupport / TokenSupport
+Token
+	** fields / properties - native
+	position	/ int						// location within the original formula string
+	length		/ int						// length within the original formula string
+	tokenAmts2	/ List<Token>				// next level of tokens (based on prentheses)
+	aAmtBase	/ AAmtBase					// base class that holds the value of the token
+											// will hold a derived type (AAmtTypeSpecific<T>)
+	** fields / properties - inherated
+	Amount			/ T						// the value of the Amount
+	Original		/ string				// original text from the formula
+	IsValid			/ bool					// is this a valid amount
+	Invalid			/ static AAmtBase		// standard invalid value
+	Default			/ static AAmtBase		// standard default value
+	ValueDef		/ ADefBase2				// definition of the value
+	+->	Order			/ int				// actual processing order
+		IsNumeric		/ bool				// does this hold numeric value?
+		Index			/ int				// index to itself in the array
+		DataGroup		/ ValueDataGroup	// enum, represents the type of data held (e.g. a string or an int)
+		ValueStr		/ string			// the string that represents this definition (e.g. '+' or 'eq')
+		Description		/ string			// a description for the definition
+		ValueType		/ ValueType			// enum, identifier and approximate processing order
+		Id				/ int				// simple sequential number that allows simple comparison
 
 
 

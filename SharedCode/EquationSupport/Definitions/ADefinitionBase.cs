@@ -1,5 +1,6 @@
 ﻿#region using
 
+using System;
 using System.Windows.Controls;
 
 // using static SharedCode.EquationSupport.Definitions.TokenClassGroups;
@@ -23,8 +24,8 @@ namespace SharedCode.EquationSupport.Definitions
 {
 	public enum ValueType
 	{
-		VT_INVALID                = -1,
-		VT_DEFAULT                = 0,
+		VT_INVALID                = (int) VC_INVALID,
+		VT_DEFAULT                = (int) VC_DEFAULT,
 		VT_ASSIGNMENT             = (int) VC_ASSIGNMENT,
 		VT_OPERATOR               = (int) VC_OPERATOR,
 		
@@ -56,10 +57,10 @@ namespace SharedCode.EquationSupport.Definitions
 
 // to here is numeric
 		VT_IDENTIFIER             = (int) VC_IDENTIFIER,
-			VT_ID_VARIABLE        = (int) VT_IDENTIFIER  + (int) VCI_VARIABLE,
+			VT_ID_VARIABLE        = (int) VT_IDENTIFIER + VCI_VARIABLE,
 				VT_ID_VAR_KEY     = (int) VT_ID_VARIABLE + (int) VCIV_KEY,
 				VT_ID_VAR_VAR     = (int) VT_ID_VARIABLE + (int) VCIV_VARIABLE,
-			VT_ID_FUNCTION        = (int) VT_IDENTIFIER  + (int) VCI_FUNCTION,
+			VT_ID_FUNCTION        = (int) VT_IDENTIFIER + VCI_FUNCTION,
 				VT_ID_FUN_INT     = (int) VT_ID_FUNCTION + (int) VCIF_INTERNAL,
 				VT_ID_FUN_LIB     = (int) VT_ID_FUNCTION + (int) VCIF_LIBRARY,
 				VT_ID_FUN_USR     = (int) VT_ID_FUNCTION + (int) VCIF_USER,
@@ -71,7 +72,9 @@ namespace SharedCode.EquationSupport.Definitions
 
 	public enum ValueClass
 	{
-		VC_ASSIGNMENT      = 1,
+		VC_INVALID         = -1,
+		VC_DEFAULT         = 0,
+		VC_ASSIGNMENT      = 10,
 		VC_OPERATOR        = 100,
 		VC_STRING          = 500,
 		VC_BOOLEAN         = 800,
@@ -100,7 +103,7 @@ namespace SharedCode.EquationSupport.Definitions
 
 	public enum ValueClassId
 	{
-		VCI_VARIABLE       = 1,
+		VCI_VARIABLE       = 10,
 		VCI_FUNCTION       = 50001,
 	}
 
@@ -138,20 +141,23 @@ namespace SharedCode.EquationSupport.Definitions
 		VCG_END          = 41,
 	}
 
-	public enum ParseGroupGeneral
+	public enum ValueDataGroup
 	{
-		PGG_INVALID      = -1,
-		PGG_DEFAULT      = 0,
-		PGG_ASSIGNMENT   = 10,
-		PGG_OPERATOR     = 20,
-		PGG_STRING       = 30,
-		PGG_BOOLEAN      = 40,
-		PGG_NUMBER       = 50,
-		PGG_UNIT         = 60,
-		PGG_FUNCTION     = 70,
-		PGG_VARIABLE     = 80,
-		PGG_GROUP_REF    = 100,
-		PGG_GROUPING     = 110,
+		VDG_INVALID      = -1,
+		VDG_DEFAULT      = 0,
+		VDG_TEXT         = 10,
+
+		VDG_STRING       = 20,
+		VDG_BOOLEAN      = 30,
+		VDG_NUM_INT      = 40,
+		VDG_NUM_DBL      = 50,
+		VDG_NUM_FRACT    = 60,
+		VDG_FUNCT        = 2000,
+		VDG_VAR          = 3000,
+		VDG_UNIT         = 4000,
+
+		VDG_OBJECT       = 5000,
+
 	}
 
 	public enum ParseGroupVar

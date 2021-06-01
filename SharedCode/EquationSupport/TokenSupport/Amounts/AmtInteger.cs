@@ -1,4 +1,6 @@
-﻿using SharedCode.EquationSupport.Definitions;
+﻿using EquationSupport.Definitions.AmountDefs;
+using SharedCode.EquationSupport.Definitions;
+using static SharedCode.EquationSupport.Definitions.ValueDefinitions;
 
 // Solution:     SpreadSheet01
 // Project:       CellsTest
@@ -11,15 +13,15 @@ namespace SharedCode.EquationSupport.TokenSupport.Amounts
 	{
 		static AmtInteger()
 		{
-			ValueDefIdx = ValueDefinitions.Vd_NumInt;
+			// ValueDefIdx = ValueDefinitions.Vd_NumInt;
 
-			Default = Make<AmtInteger>(DefaultInt, false, ValueDefinitions.ValDefInst[ValueDefIdx]);
-			Invalid = Make<AmtInteger>(InvalidInt, false, ValueDefinitions.ValDefInst[ValueDefIdx]);
+			Default = Make<AmtInteger>(DefaultInt, false, (DefNumInt) ValueDefinitions.ValDefInst[Vd_NumInt]);
+			Invalid = Make<AmtInteger>(InvalidInt, false, (DefNumInt) ValueDefinitions.ValDefInst[Vd_NumInt]);
 		}
 
 		public AmtInteger() { } 
 
-		public AmtInteger(string original) : base(original) { }
+		public AmtInteger(string original) : base(Vd_NumInt, original) { }
 
 		public override int AsInteger() => Amount;
 
@@ -27,8 +29,10 @@ namespace SharedCode.EquationSupport.TokenSupport.Amounts
 
 		public static AmtInteger Invalid { get; }
 
-		public override int ConvertFromString(string original)
+		public override int ConvertFromString(string original, out bool isValid)
 		{
+			isValid = false;
+
 			int result;
 
 			if (original == null)
@@ -40,6 +44,8 @@ namespace SharedCode.EquationSupport.TokenSupport.Amounts
 			{
 				result = InvalidInt;
 			}
+
+			isValid = true;
 
 			return result;
 		}

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using static SharedCode.EquationSupport.Definitions.ParseGroupGeneral;
+using static SharedCode.EquationSupport.Definitions.ValueDataGroup;
 using static SharedCode.EquationSupport.Definitions.ValueType;
 using static SharedCode.EquationSupport.Definitions.ValueDefinitions;
 using static SharedCode.EquationSupport.Definitions.VariableDefinitions;
@@ -32,7 +32,7 @@ namespace SharedCode.EquationSupport.Definitions
 
 		public static ParseGeneralDefinitions PgDefInst => instance.Value;
 
-		public override ParseGen Invalid => new ParseGen("Invalid", null, VT_INVALID,    PGG_INVALID, null, false);
+		public override ParseGen Invalid => new ParseGen("Invalid", null, VT_INVALID, null, false);
 
 		// public override ParseGen Default => new ParseGen("Default", null, VT_DEFAULT, PGG_DEFAULT, (int) PGG_DEFAULT, false);
 		public override ParseGen Default => idDefArray[0];
@@ -66,13 +66,13 @@ namespace SharedCode.EquationSupport.Definitions
 
 			// ParseItem pi = new ParseItem(ValueDefinitions.VdefInst[1], "Assignment", "=", VT_STRING, PGG_ASSIGNMENT, id++);
 
-			idDefArray[0] = new ParseGen("Default"                    , null  , VT_DEFAULT, PGG_DEFAULT  , null, false);
-			idDefArray[idx++] = new ParseGen("Invalid"                , "x1"  , VT_STRING, PGG_INVALID   , null, false);
-			idDefArray[idx++] = new ParseGen("Word"                   , "w1"  , VT_STRING, PGG_INVALID   , null, false);
-			idDefArray[idx++] = new ParseGen("Assignment"             , "eq"   , VT_STRING, PGG_ASSIGNMENT ,
+			idDefArray[0] = new ParseGen("Default"                    , null  , VT_DEFAULT  , null, false);
+			idDefArray[idx++] = new ParseGen("Invalid"                , "x1"  , VT_STRING   , null, false);
+			idDefArray[idx++] = new ParseGen("Word"                   , "w1"  , VT_STRING   , null, false);
+			idDefArray[idx++] = new ParseGen("Assignment"             , "eq"   , VT_STRING ,
 				new [] {ValDefInst[Vd_Assignment]} );
 
-			idDefArray[idx++] = new ParseGen("Operator"               , "op1" , VT_STRING, PGG_OPERATOR  ,
+			idDefArray[idx++] = new ParseGen("Operator"               , "op1" , VT_STRING  ,
 				new []
 				{
 					ValDefInst[Vd_LogOr],
@@ -92,10 +92,10 @@ namespace SharedCode.EquationSupport.Definitions
 				}
 				);
 
-			idDefArray[idx++] = new ParseGen("String"                 , "s1"  , VT_STRING, PGG_STRING    ,
+			idDefArray[idx++] = new ParseGen("String"                 , "s1"  , VT_STRING,
 				new [] {ValDefInst[Vd_String]} );
 
-			idDefArray[idx++] = new ParseGen("Boolean"                , "b1"   , VT_STRING, PGG_BOOLEAN   ,
+			idDefArray[idx++] = new ParseGen("Boolean"                , "b1"   , VT_STRING,
 				new []
 				{
 					ValDefInst[Vd_BoolTrue],
@@ -103,32 +103,32 @@ namespace SharedCode.EquationSupport.Definitions
 				}
 				);
 
-			idDefArray[idx++] = new ParseGen("Number Integer"         , "n1"  , VT_STRING, PGG_NUMBER    ,
+			idDefArray[idx++] = new ParseGen("Number Integer"         , "n1"  , VT_STRING,
 				new [] {ValDefInst[Vd_NumInt]} );
 
-			idDefArray[idx++] = new ParseGen("Number Double"          , "d1"  , VT_STRING, PGG_NUMBER    ,
+			idDefArray[idx++] = new ParseGen("Number Double"          , "d1"  , VT_STRING,
 				new [] {ValDefInst[Vd_NumDouble]} );
 
-			idDefArray[idx++] = new ParseGen("Number Fraction"        , "fr1" , VT_STRING, PGG_NUMBER    ,
+			idDefArray[idx++] = new ParseGen("Number Fraction"        , "fr1" , VT_STRING,
 				new [] {ValDefInst[Vd_NumFract]} );
 
-			idDefArray[idx++] = new ParseGen("Number Length"          , "l1"  , VT_STRING, PGG_UNIT      ,
+			idDefArray[idx++] = new ParseGen("Number Length"          , "l1"  , VT_STRING,
 				new [] {ValDefInst[Vd_NumUntLenImp]} );
 
-			idDefArray[idx++] = new ParseGen("Function"               , "fn1" , VT_STRING, PGG_FUNCTION  ,
+			idDefArray[idx++] = new ParseGen("Function"               , "fn1" , VT_STRING  ,
 				new [] {ValDefInst[Vd_FunUsr]} );
 
 
 			// int a = Pvd_XcellAddr;
 			// VarDef c = VariableDefinitions.idDefArray[Pvd_XcellAddr];
-			idDefArray[idx++] = new ParseGen("Variable Special"       , "v1"  , VT_STRING, PGG_VARIABLE  ,
+			idDefArray[idx++] = new ParseGen("Variable Special"       , "v1"  , VT_STRING  ,
 				new []
 				{
 					VarDefInst[Pvd_XcellAddr],
 				}
 				);
 
-			idDefArray[idx++] = new ParseGen("Variable Special"       , "v2"  , VT_STRING, PGG_VARIABLE  ,
+			idDefArray[idx++] = new ParseGen("Variable Special"       , "v2"  , VT_STRING  ,
 				new []
 				{
 					VarDefInst[Pvd_SysVar],
@@ -139,16 +139,16 @@ namespace SharedCode.EquationSupport.Definitions
 				}
 				);
 
-			idDefArray[idx++] = new ParseGen("Variable Address"       , "v3"  , VT_STRING, PGG_VARIABLE  ,
+			idDefArray[idx++] = new ParseGen("Variable Address"       , "v3"  , VT_STRING  ,
 				new [] {ValDefInst[Vd_Varible]} );
 
-			idDefArray[idx++] = new ParseGen("Group Reference"        , "ref" , VT_STRING, PGG_GROUP_REF ,
+			idDefArray[idx++] = new ParseGen("Group Reference"        , "ref" , VT_STRING ,
 				new [] {ValDefInst[Vd_GrpRef]} );
 
-			idDefArray[idx++] = new ParseGen("Group Parenthesis Begin", "pb" , VT_STRING, PGG_GROUPING  ,
+			idDefArray[idx++] = new ParseGen("Group Parenthesis Begin", "pb" , VT_STRING  ,
 				new [] {ValDefInst[Vd_GrpBeg]} );
 
-			idDefArray[idx++] = new ParseGen("Group Parenthesis End"  , "pe" , VT_STRING, PGG_GROUPING  ,
+			idDefArray[idx++] = new ParseGen("Group Parenthesis End"  , "pe" , VT_STRING  ,
 				new [] {ValDefInst[Vd_GrpEnd]} );
 
 			count = idx;

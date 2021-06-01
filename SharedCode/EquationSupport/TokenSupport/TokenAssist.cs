@@ -39,35 +39,13 @@ namespace SharedCode.EquationSupport.TokenSupport
 
 	#region public methods
 
-		public Token MakeToken(ParseGen pg, string value, int pos, int len)
-		{
-			AAmtBase ab;
-
-			switch (pg.Group)
-			{
-			case ParseGroupGeneral.PGG_ASSIGNMENT:
-				{
-					ab = new AmtAssignment(value);
-
-					return new Token(ab, pos, len);
-				}
-			case ParseGroupGeneral.PGG_OPERATOR:
-				{
-
-					break;
-				}
-			}
-
-			return null;
-		}
-
 	#endregion
 
 	#region private methods
 
 		private Token makeTokenOp(ParseGen pg, string value, int pos, int len)
 		{
-			DefValue vd = (DefValue) pg.Classify(value);
+			ValDef vd = (ValDef) pg.Classify(value);
 
 			
 
