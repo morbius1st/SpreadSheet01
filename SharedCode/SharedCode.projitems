@@ -10,7 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory).External\" />
-    <Folder Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\AmountDefs\" />
     <Folder Include="$(MSBuildThisFileDirectory)Management\" />
     <Folder Include="$(MSBuildThisFileDirectory)RevitSupport\RevitChartManagement\" />
   </ItemGroup>
@@ -23,6 +22,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\ADefinitionBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\AmountDefs\DefGrouping.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\AmountDefs\DefAssignment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\AmountDefs\DefOpLogical.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\AmountDefs\DefOpMathAdditive.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\AmountDefs\DefNumInt.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EquationSupport\Definitions\ValueDef.cs" />
