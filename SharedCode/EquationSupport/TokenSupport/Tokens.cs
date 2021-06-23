@@ -1,14 +1,15 @@
 ﻿#region using
 
-using System;
+// using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using SharedCode.EquationSupport.Definitions;
 using SharedCode.EquationSupport.ParseSupport;
 using SharedCode.EquationSupport.TokenSupport.Amounts;
+using static SharedCode.EquationSupport.Definitions.ValueType;
+using static SharedCode.EquationSupport.Definitions.ValueDefinitions;
+using static SharedCode.EquationSupport.Definitions.ParseDefinitions;
 
 #endregion
 
@@ -17,41 +18,44 @@ using SharedCode.EquationSupport.TokenSupport.Amounts;
 
 namespace SharedCode.EquationSupport.TokenSupport
 {
-	public class testxxx2
-	{
-		public void txx(AAmtBase iab)
-		{
-			Tokens tas2 = new Tokens();
 
-			AmtInteger ai2 = new AmtInteger("1234");
-			ai2 = AmtInteger.Invalid;
-			Token ta = new Token(ai2, 0, 0);
-			
-
-		}
-	}
-
-
-
-	public class Tokens
+	public class Tokens : IEnumerable<Token>
 	{
 	#region private fields
 
-		private Token tokenAmtRoot2;
+		private List<List<Token>> tokenList;
+		private List<List<ParseData>> parseList;
+		
+		private ValueDefinitions vds = ValueDefinitions.ValDefInst;
+		private string vd_grpRefVal ;
+		private string vd_grpBegVal ;
+		private string vd_grpEndVal ;
+
+
 	#endregion
 
 	#region ctor
 
-		public Tokens()
+		public Tokens(string name)
 		{
-			tokenAmtRoot2 = new Token();
+			Name = name;
+
+			vd_grpRefVal  = vds.Definitions[Vd_GrpRef].ValueStr; // <gpr>
+			vd_grpBegVal  = vds.Definitions[Vd_GrpBeg].ValueStr; // <gpb>
+			vd_grpEndVal  = vds.Definitions[Vd_GrpEnd].ValueStr; // <gpe>
 		}
 
 	#endregion
 
 	#region public properties
 
-		public Token this[int idx] => tokenAmtRoot2[idx];
+		public string Name { get; private set; }
+
+		public bool Initialized { get; private set; }
+
+		public List<List<Token>> TokenList => tokenList;
+
+		public List<List<ParseData>> ParseList => parseList;
 
 	#endregion
 
@@ -61,14 +65,67 @@ namespace SharedCode.EquationSupport.TokenSupport
 
 	#region public methods
 
-		public void Add(Token ta2)
+		public bool Process(List<List<ParseData>> parseList)
 		{
-			tokenAmtRoot2.Add(ta2);
+			if (Initialized) return false;
+
+			Debug.WriteLine("@100");
+
+			Initialized = true;
+
+			this.parseList = parseList;
+
+			return AddList(parseList);
 		}
+
 
 	#endregion
 
 	#region private methods
+
+		private bool AddList(List<List<ParseData>> parseList)
+		{
+			try
+			{
+				MakeLists(parseList);
+
+				for (int i = 0; i < parseList.Count; i++)
+				{
+					for (int j = 0; j < parseList[i].Count; j++)
+					{
+						string s1 = parseList[i][j].Name;
+						string s2 = parseList[i][j].Value;
+						
+						AValDefBase a = parseList[i][j].Definition;
+
+						// Token t = GetToken(parseList[i][j]);
+
+						tokenList[i].Add(GetToken(parseList[i][j]));
+					}
+				}
+			}
+			catch
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		private void MakeLists(List<List<ParseData>> parseList)
+		{
+			tokenList = new List<List<Token>>();
+
+			for (int i = 0; i < parseList.Count; i++)
+			{
+				tokenList.Add(new List<Token>());
+			}
+		}
+
+		private Token GetToken(ParseData pd)
+		{
+			return pd.Definition.MakeToken(pd.Value, pd.Position, pd.Length, pd.Level);
+		}
 
 	#endregion
 
@@ -82,10 +139,58 @@ namespace SharedCode.EquationSupport.TokenSupport
 
 	#region system overrides
 
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		public IEnumerator<Token> GetEnumerator()
+		{
+			if (tokenList == null || tokenList[0].Count == 0) yield break;
+
+			int level = 0;
+			int priorLevel = 0;
+			int idx = 0;
+			int priorIdx = 0;
+
+			bool done = false;
+
+			do
+			{
+				Token t = tokenList[level][idx];
+
+				// if (t.AmountBase.AsString().Equals(vd_grpRefVal))
+				if (t.ValDef.ValueType== VT_GP_REF)
+				{
+					priorLevel = level;
+					priorIdx = idx;
+
+					level = t.RefIdx;
+					idx = 0;
+					continue;
+				}
+
+				yield return t;
+
+
+				// if (t.AmountBase.AsString().Equals(vd_grpEndVal))
+				if (t.ValDef.ValueType == VT_GP_END)
+				{
+					level = priorLevel;
+					idx = priorIdx;
+				}
+
+				idx++;
+
+				if (idx >= tokenList[level].Count) done = true;
+
+			}
+			while (!done);
+		}
+
 		public override string ToString()
 		{
-			return "this is| " + nameof(Token) + 
-				"(" + tokenAmtRoot2.AmountBase.AsString() + ")";
+			return $"this is| {nameof(Tokens)} ({Name})";
 		}
 
 	#endregion

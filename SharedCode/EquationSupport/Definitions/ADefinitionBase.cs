@@ -2,6 +2,7 @@
 
 using System;
 using System.Windows.Controls;
+using SharedCode.EquationSupport.TokenSupport.Amounts;
 
 // using static SharedCode.EquationSupport.Definitions.TokenClassGroups;
 // using static SharedCode.EquationSupport.Definitions.TokenClassUnit;
@@ -10,10 +11,11 @@ using static SharedCode.EquationSupport.Definitions.ValueClassOp;
 using static SharedCode.EquationSupport.Definitions.ValueClassNumber;
 using static SharedCode.EquationSupport.Definitions.ValueClassId;
 using static SharedCode.EquationSupport.Definitions.ValueClassIdVar;
-using static SharedCode.EquationSupport.Definitions.ValueClassIdFunct;
+using static SharedCode.EquationSupport.Definitions.ValueClassIdFun;
 using static SharedCode.EquationSupport.Definitions.ValueClassUnit;
 using static SharedCode.EquationSupport.Definitions.ValueClassUnitSys;
 using static SharedCode.EquationSupport.Definitions.ValueClassGroup;
+using static SharedCode.EquationSupport.Definitions.ValueDataGroup;
 
 #endregion
 
@@ -29,14 +31,17 @@ namespace SharedCode.EquationSupport.Definitions
 		VT_ASSIGNMENT             = (int) VC_ASSIGNMENT,
 		VT_OPERATOR               = (int) VC_OPERATOR,
 		
-			VT_OP_LOGICAL         = (int) VT_OPERATOR + (int) VCO_LOGICAL,
-			VT_OP_RELATIONAL      = (int) VT_OPERATOR + (int) VCO_RELATIONAL,
-			VT_OP_STRING          = (int) VT_OPERATOR + (int) VCO_STRING,
+			VT_OP_LOGICALMATH     = (int) VT_OPERATOR + (int) VCO_LOGMATH,  // ie. <and> <or>
+			VT_OP_LOGICALSTR      = (int) VT_OPERATOR + (int) VCO_LOGSTR,   // ie. <s_eq>, <s_ne> 
+			VT_OP_RELATIONALMATH  = (int) VT_OPERATOR + (int) VCO_RELMATH,  // ie. <, <=, >, >- 
+			VT_OP_RELATIONALSTR   = (int) VT_OPERATOR + (int) VCO_RELSTR,   // ie. starts with, ends with
+			VT_OP_TEXT            = (int) VT_OPERATOR + (int) VCO_TEXT,     // ie. concatenate, left, right, mid
 			VT_OP_ADDITIVE        = (int) VT_OPERATOR + (int) VCO_ADDITIVE,
 			VT_OP_MULTIPLICATIVE  = (int) VT_OPERATOR + (int) VCO_MULTIPLICATIVE,
 			VT_OP_URINARY         = (int) VT_OPERATOR + (int) VCO_URINARY,
 	
 		VT_STRING                 = (int) VC_STRING,
+		VT_TEXT                   = (int) VC_TEXT,
 
 // everything from here
 		VT_BOOLEAN                = (int) VC_BOOLEAN,
@@ -61,13 +66,18 @@ namespace SharedCode.EquationSupport.Definitions
 				VT_ID_VAR_KEY     = (int) VT_ID_VARIABLE + (int) VCIV_KEY,
 				VT_ID_VAR_VAR     = (int) VT_ID_VARIABLE + (int) VCIV_VARIABLE,
 			VT_ID_FUNCTION        = (int) VT_IDENTIFIER + VCI_FUNCTION,
-				VT_ID_FUN_INT     = (int) VT_ID_FUNCTION + (int) VCIF_INTERNAL,
-				VT_ID_FUN_LIB     = (int) VT_ID_FUNCTION + (int) VCIF_LIBRARY,
-				VT_ID_FUN_USR     = (int) VT_ID_FUNCTION + (int) VCIF_USER,
+				VT_ID_FUN_TXT     = (int) VT_ID_FUNCTION + (int) VCIF_TEXT,
+				VT_ID_FUN_BOOL    = (int) VT_ID_FUNCTION + (int) VCIF_BOOLEAN,
+				VT_ID_FUN_INT     = (int) VT_ID_FUNCTION + (int) VCIF_NUM_INT,
+				VT_ID_FUN_DBL     = (int) VT_ID_FUNCTION + (int) VCIF_NUM_DBL,
 		VT_GROUPING               = (int) VC_GROUPING,
 			VT_GP_REF             = (int) VC_GROUPING + (int) VCG_REF,
 			VT_GP_BEG             = (int) VC_GROUPING + (int) VCG_BEG,
 			VT_GP_END             = (int) VC_GROUPING + (int) VCG_END,
+			VT_PRN_BEG            = (int) VC_GROUPING + (int) VCG_PRN_BEG,
+			VT_PRN_END            = (int) VC_GROUPING + (int) VCG_PRN_END,
+			VT_GP_ARG_SEP         = (int) VC_GROUPING + (int) VCG_ARG_SEP,
+		VT_MAX                    = (int) VC_MAX, 
 	}
 
 	public enum ValueClass
@@ -76,22 +86,26 @@ namespace SharedCode.EquationSupport.Definitions
 		VC_DEFAULT         = 0,
 		VC_ASSIGNMENT      = 10,
 		VC_OPERATOR        = 100,
-		VC_STRING          = 500,
+		VC_STRING          = 400,
+		VC_TEXT            = 600,
 		VC_BOOLEAN         = 800,
 		VC_NUMBER          = 1000,
 		VC_UNIT            = 1100,
 		VC_IDENTIFIER      = 10000,
-		VC_GROUPING        = 90000
+		VC_GROUPING        = 90000,
+		VC_MAX             = 99999
 	}
 
 	public enum ValueClassOp
 	{
-		VCO_LOGICAL        = 1,
-		VCO_RELATIONAL     = 11,
-		VCO_STRING         = 21,
-		VCO_ADDITIVE       = 31,
-		VCO_MULTIPLICATIVE = 41,
-		VCO_URINARY        = 51,
+		VCO_LOGMATH        = 1,
+		VCO_LOGSTR         = 51,
+		VCO_RELMATH		   = 101,
+		VCO_RELSTR         = 151,
+		VCO_TEXT           = 201,
+		VCO_ADDITIVE       = 251,
+		VCO_MULTIPLICATIVE = 301,
+		VCO_URINARY        = 351,
 	}
 
 	public enum ValueClassNumber
@@ -103,7 +117,7 @@ namespace SharedCode.EquationSupport.Definitions
 
 	public enum ValueClassId
 	{
-		VCI_VARIABLE       = 10,
+		VCI_VARIABLE       = 1,
 		VCI_FUNCTION       = 50001,
 	}
 
@@ -113,11 +127,12 @@ namespace SharedCode.EquationSupport.Definitions
 		VCIV_VARIABLE      = 101,
 	}
 
-	public enum ValueClassIdFunct
+	public enum ValueClassIdFun
 	{
-		VCIF_INTERNAL     = 1,
-		VCIF_LIBRARY      = 11,
-		VCIF_USER         = 21,
+		VCIF_TEXT         = VDG_TEXT + 1,
+		VCIF_BOOLEAN      = VDG_BOOLEAN + 1,
+		VCIF_NUM_INT      = VDG_NUM_INT + 1,
+		VCIF_NUM_DBL      = VDG_NUM_DBL + 1,
 	}
 
 	public enum ValueClassUnit
@@ -137,27 +152,30 @@ namespace SharedCode.EquationSupport.Definitions
 	public enum ValueClassGroup
 	{
 		VCG_REF		     = 1,
-		VCG_BEG          = 21,
-		VCG_END          = 41,
+		VCG_BEG		     = 2,
+		VCG_END		     = 3,
+		VCG_PRN_BEG      = 22,
+		VCG_PRN_END      = 23,
+		VCG_ARG_SEP      = 51,
 	}
 
 	public enum ValueDataGroup
 	{
 		VDG_INVALID      = -1,
 		VDG_DEFAULT      = 0,
-		VDG_TEXT         = 10,
 
-		VDG_STRING       = 20,
+		VDG_STRING       = 10,
+		VDG_TEXT         = 20,
 		VDG_BOOLEAN      = 30,
 		VDG_NUM_INT      = 40,
 		VDG_NUM_DBL      = 50,
-		VDG_NUM_FRACT    = 60,
-		VDG_FUNCT        = 2000,
-		VDG_VAR          = 3000,
-		VDG_UNIT         = 4000,
+		VDG_DATETIME     = 60,
+		// VDG_NUM_FRACT    = 60,
+		// VDG_FUNCT        = 2000,
+		// VDG_VAR          = 3000,
 
-		VDG_OBJECT       = 5000,
-
+		VDG_UNIT         = 100,
+		VDG_OBJECT       = 1000,
 	}
 
 	public enum ParseGroupVar
@@ -189,6 +207,7 @@ namespace SharedCode.EquationSupport.Definitions
 
 		public int Count => count;
 
+		// public AValDefBase this[int idx] => idDefArray[idx];
 		public T this[int idx] => idDefArray[idx];
 
 		public T[] Definitions => idDefArray;

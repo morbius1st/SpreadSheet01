@@ -16,7 +16,6 @@ namespace SharedCode.EquationSupport.Definitions
 		public ValueType ValueType { get; }  // the type of value held
 		public int Id { get; }               // a numeric id // sequential number
 
-
 		public ADefBase() { }
 
 		public ADefBase(string description, string valueStr,
@@ -31,5 +30,10 @@ namespace SharedCode.EquationSupport.Definitions
 		public abstract bool Equals(string test);
 
 		public static ADefBase Invalid => (ADefBase) ValueDefinitions.ValDefInst[ValueDefinitions.Vd_Invalid];
+
+		public override string ToString()
+		{
+			return $"this is| {this.GetType().Name} ({ValueStr})";
+		}
 	}
 }

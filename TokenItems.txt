@@ -1,0 +1,70 @@
+		value												value def				value def
+		string			description							var (int)				obj (class)
+
+vType  = VT_ASSIGNMENT
+		"="				"Assignment"						Vd_Assignment			DefAssignment		     
+vType  = VT_OP_LOGICALMATH
+		"<or>"			"Logical Or"						Vd_LogOr				DefOpMathLogOr		     
+		"<and>"			"Logical And"						Vd_LogAnd				DefOpMathLogAnd			 
+		"=="			"Logical Equality"					Vd_LogEq				DefOpMathLogEq		     
+		"!="			"Logical Inequality"				Vd_LogInEq				DefOpMathLogInEq		 
+		"!"				"Logical Not"						Vd_LogNot				DefOpMathLogNot			 
+vType  = VT_OP_RELATIONALMATH
+		"<"				"Relational Less Than"				Vd_RelLt				DefOpMathRelLt		     
+		"<="			"Relational Less Than or Equal"		Vd_RelLtEq				DefOpMathRelLte			 
+		">"				"Relational Greater Than"			Vd_RelGt				DefOpMathRelGt		     
+		">="			"Relational Greater Than or Equal"	Vd_RelGtEq				DefOpMathRelGte			 
+vType  = VT_OP_STRING
+		"&"				"String Addition"					Vd_AddStr				DefOpStrAdd				 
+vType  = VT_OP_ADDITIVE
+		"+"				"Additive Addition"					Vd_MathAdd				DefOpMathAdd		     
+		"-"				"Additive Subtraction"				Vd_MathSubt				DefOpMathSubt		     
+vType  = VT_OP_MULTIPLICATIVE
+		"*"				"Multiplicative Multiply"			Vd_MathMul				DefOpMathMul		     
+		"/"				"Multiplicative Divide"				Vd_MathDiv				DefOpMathDiv		     
+		"^"				"Multiplicative Power"				Vd_MathPwr				DefOpMathMod		     
+		"%"				"Multiplicative Modulus"			Vd_MathMod				DefOpMathMod		     
+vType  = VT_OP_URINARY
+		"-"				"Urinary Negative"					Vd_MathNeg				DefOpMathNeg		     
+vType  = VT_STRING
+		""				"String"							Vd_String				DefString		         
+vType  = VT_BOOLEAN
+		"True"			"Boolean True"						Vd_BoolTrue				DefNumBoolTrue		     
+		"False"			"Boolean False"						Vd_BoolFalse			DefNumBoolFalse			 
+vType  = VT_NUMBER
+		""				"Number Integer"					Vd_NumInt				DefNumInt		         
+		""				"Number Double"						Vd_NumDouble			DefNumDouble		     
+		""				"Number Fraction"					Vd_NumFract				DefNumFract				 
+vType  = VT_ID_VARIABLE
+		"{["	"]}"	"Variable XlAddr"					Vd_VarXlAddr			DefVarKeyXlAddr			 
+		"{$"	"}"		"Variable System Var"				Vd_VarSysVar			DefVarKeySysVar			 
+		"{#"	"}"		"Variable Revit Param"				Vd_VarRvtParam			DefVarKeyRvtParam		 
+		"{%"	"}"		"Variable Project Param"			Vd_VarPrjParam			DefVarKeyPrjParam		 
+		"{!"	"}"		"Variable Global Param"				Vd_VarGblParam			DefVarKeyGblParam		 
+		"{@"	"}"		"Variable Label Param"				Vd_VarLblName			DefVarKeyLblName		 
+		"{"		"}"		"Variable Cells"					Vd_VarKey				DefVarKeyString			 
+		"{"				"Variable"							Vd_Varible				DefVarString		     
+vType  = VT_ID_FUNCTION
+		""				"Function Builtin"					Vd_FunBltIn				DefFunString		     
+		""				"Function Library"					Vd_FunLib				DefFunString		     
+		""				"Function User"						Vd_FunUsr				DefFunString		     
+vType  = VT_GROUPING
+		"<gpr>"			"Group Reference"					Vd_GrpRef				DefGrpRef		         
+		"<gpb>"			"Group Begin"						Vd_GrpBeg				DefGrpRef		         
+		"<gpe>"			"Group End"							Vd_GrpEnd				DefGrpRef		         
+		"<fgb>"			"Function Group Begin"				Vd_FnGrpBeg				DefGrpRef		         
+		"<fge>"			"Function Group End"				Vd_FnGrpEnd				DefGrpRef		         
+		"("				"Parenthesis Begin"					Vd_PrnBeg				DefGrpBeg		         
+		")"				"Parenthesis End"					Vd_PrnEnd				DefGrpEnd		         
+		","				"Argument Separator"				Vd_FunctArgSep			DefGrpEnd		         
+vType  = VT_UNIT
+		""				"Unit Length Imperial"				Vd_NumUntLenImp			DefUnitLenImp		     
+		""				"Unit Length Metric"				Vd_NumUntLenMet			DefUnitLenMetric		 
+		""				"Unit Area Imperial"				Vd_NumUntAreaImp		DefUnitAreaImp		     
+		""				"Unit Area Metric"					Vd_NumUntAreaMet		DefUnitAreaMetric		 
+		""				"Unit Vol Imperial"					Vd_NumUntVolImp			DefUnitVolImp		     
+		""				"Unit Vol Metric"					Vd_NumUntVolMet			DefUnitVolMetric		 
+vType  = VT_INVALID
+		""				"Invalid"							Vd_Invalid				DefInvalid		         
+vType  = VT_DEFAULT
+		""				"Default"							Vd_Assignment			DefDefault		         

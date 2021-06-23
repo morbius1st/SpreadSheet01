@@ -17,3 +17,4 @@ namespace SharedCode.EquationSupport.TokenSupport.Amounts
 		}
 	}
 }
+

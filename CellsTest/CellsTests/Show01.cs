@@ -20,8 +20,8 @@ namespace CellsTest.CellsTests
 	public class Show01
 	{
 		private static MainWindow win;
-		private ParseGeneralDefinitions pgDefs = ParseGeneralDefinitions.PgDefInst;
-		private VariableDefinitions varDefs = VariableDefinitions.VarDefInst;
+		private ParseDefinitions pgDefs = ParseDefinitions.PgDefInst;
+		// private VariableDefinitions varDefs = VariableDefinitions.VarDefInst;
 		private ValueDefinitions valDefs = ValueDefinitions.ValDefInst;
 
 		private ShowInfo show = ShowInfo.Inst;
@@ -31,46 +31,44 @@ namespace CellsTest.CellsTests
 			win = win1;
 		}
 
-		public void ShowParseGens()
-		{
-			win.WriteLineTab("");
-			win.WriteLineTab("*** Parse General ***");
-
-			for (int i = 0; i < pgDefs.Count; i++)
-			{
-				win.WriteLine("");
-
-				show.ShowParseGen(pgDefs[i]);
-			}
-		}
-		
-		public void ShowDefVals()
-		{
-			win.WriteLineTab("");
-			win.WriteLineTab("*** Value Definitions ***");
-
-			show.ShowParsVarDefs2D(valDefs[Vd_MathAdd]);
-
-			for (int i = 0; i < valDefs.Count; i++)
-			{
-				win.WriteLine("");
-
-				show.ShowParsVarDefs2D(valDefs[i]);
-			}
-		}
-		
-		public void ShowDefVars()
-		{
-			win.WriteLineTab("");
-			win.WriteLineTab("*** Special Variable Definitions ***");
-
-			for (int i = 0; i < varDefs.Count; i++)
-			{
-				win.WriteLine("");
-
-				show.ShowParsVarDefs2D(varDefs[i]);
-			}
-		}
+		// public void ShowParseGens()
+		// {
+		// 	win.WriteLineTab("");
+		// 	win.WriteLineTab("*** Parse General ***");
+		//
+		// 	for (int i = 0; i < pgDefs.Count; i++)
+		// 	{
+		// 		win.WriteLine("");
+		//
+		// 		show.ShowParseGen(pgDefs[i]);
+		// 	}
+		// }
+		//
+		// public void ShowDefVals()
+		// {
+		// 	win.WriteLineTab("");
+		// 	win.WriteLineTab("*** Value Definitions ***");
+		//
+		// 	for (int i = 0; i < valDefs.Count; i++)
+		// 	{
+		// 		// win.WriteLine("");
+		//
+		// 		show.ShowValDefs2D(valDefs[i]);
+		// 	}
+		// }
+		//
+		// public void ShowDefVars()
+		// {
+		// 	win.WriteLineTab("");
+		// 	win.WriteLineTab("*** Special Variable Definitions ***");
+		//
+		// 	for (int i = 0; i < varDefs.Count; i++)
+		// 	{
+		// 		win.WriteLine("");
+		//
+		// 		show.ShowValDefs2D(varDefs[i]);
+		// 	}
+		// }
 
 
 

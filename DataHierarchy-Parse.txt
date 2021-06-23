@@ -1,16 +1,54 @@
-Definitions
-AmountDefs
-
+Tests04:
+parse 04-01a: ShowParseGenDefs01a == show all ParseGen's
+token 04-02a: valueDefTest01b == show all ValueDefs / show ValueTypeEnum
+token 04-01a: tokenAmtTest01 == test making some tokens
 
 
 ParsePhase
 divide a formula into its named regex groups + track the position & length
 
+ParseData
+	contains the data derived from the regex parsed formula
+	includes ParseDataInfo (information from the parsed formula (index, position, etc.)
+	includes AValDefBase (information about the determined value)
 
-TokenizePhase
+
+Definitions
+
+Value / Var defs
+
+ValueDefinitions -> a collection of AvalDefBase objects - one per token element
+ParseDefinitions -> a collection of ParseDef objecs with a list of associated ValDef objects - one per regex group
+
+Base class:
+ADefBase [abs]  (ADefBase)
+    +-> AValDefBase [abs] (AValDefBase)
+		*** includes MakeToken()
+		*** includes MakeAmt() [abs]
+		v
+		v	+-> ValDefNumBoolFalse [conc]
+		|	+-> ValDefNumBoolTrue [conc]
+		|	+-> ValDefNumDouble [conc]
+		|
+		+-> AValDefBaseString [abs] (ADefBaseString)
+		|	+-> ValDefAssignment [conc]
+		|	+-> ValDefDefault [conc]
+		|	+-> ValDefFunString [conc]
+		|
+		+-> AVarDef [abs] (VarDef)
+			+-> VarDefKeyGblParam [conc]
+			+-> VarDefKeyLblName [conc]
+
+		(removed from project)
+		+-> ValDef [abs] (ValDef)
+			+-> (none)
+		
+    +-> ParseDef [conc]    (ParseDef)
+
+	+-> ADefinitionBase<T> where T: ADefBase  (ADefinitionBase)
+
 use data from ParsePhaseOne to determine the appropriate 
 ADefBase (for each item either ValueDef or VarDef)
-
 
 // class to hold / manage the definitions
 base class:

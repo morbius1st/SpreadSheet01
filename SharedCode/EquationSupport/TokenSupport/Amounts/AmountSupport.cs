@@ -16,49 +16,49 @@ using SharedCode.EquationSupport.Definitions;
 
 namespace SharedCode.EquationSupport.TokenSupport.Amounts
 {
-	public class AmountSupport
-	{
-	#region private fields
-
-	#endregion
-
-	#region ctor
-
-		public AmountSupport() { }
-
-	#endregion
-
-	#region public properties
-
-	#endregion
-
-	#region private properties
-
-	#endregion
-
-	#region public methods
-
-	#endregion
-
-	#region private methods
-
-	#endregion
-
-	#region event consuming
-
-	#endregion
-
-	#region event publishing
-
-	#endregion
-
-	#region system overrides
-
-		public override string ToString()
-		{
-			return "this is AmountSupport";
-		}
-
-	#endregion
-	}
+	// public class AmountSupport
+	// {
+	// #region private fields
+	//
+	// #endregion
+	//
+	// #region ctor
+	//
+	// 	public AmountSupport() { }
+	//
+	// #endregion
+	//
+	// #region public properties
+	//
+	// #endregion
+	//
+	// #region private properties
+	//
+	// #endregion
+	//
+	// #region public methods
+	//
+	// #endregion
+	//
+	// #region private methods
+	//
+	// #endregion
+	//
+	// #region event consuming
+	//
+	// #endregion
+	//
+	// #region event publishing
+	//
+	// #endregion
+	//
+	// #region system overrides
+	//
+	// 	public override string ToString()
+	// 	{
+	// 		return "this is AmountSupport";
+	// 	}
+	//
+	// #endregion
+	// }
 }

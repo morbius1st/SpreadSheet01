@@ -27,7 +27,7 @@ namespace SharedCode.EquationSupport.ParseSupport
 	#region private fields
 
 		private List<Token> tokens;
-		private ParseGeneralDefinitions pgd;
+		private ParseDefinitions pgd;
 
 		private ISendMessages win;
 		// private IShowResults show;
@@ -48,10 +48,10 @@ namespace SharedCode.EquationSupport.ParseSupport
 
 	#region public properties
 
-		public void Parse2(ParsePhase p1)
-		{
-			parse2(p1);
-		}
+		// public void Parse2(ParsePhase p1)
+		// {
+		// 	parse2(p1);
+		// }
 
 	#endregion
 
@@ -69,45 +69,6 @@ namespace SharedCode.EquationSupport.ParseSupport
 	#endregion
 
 	#region private methods
-
-		// tested from Test02A / parfseTest03
-		private void parse2(ParsePhase p1)
-		{
-			ParsePhData fc;
-			ParseGen pg;
-			Token tk;
-			AAmtBase aa;
-			ADefBase ab;
-
-			win.showTabId = false;
-
-			for (var i = 0; i < p1.FormulaComponents.Count; i++)
-			{
-				fc = p1.FormulaComponents[i];
-
-				if (fc.Name == null || fc.Value == null) continue;
-				//
-				// win.WriteLine("");
-				//
-				// win.WriteLine($"name| {fc.Name,-6} value| {fc.Value} index| {fc.Position} length| {fc.Length}");
-
-				fc.Definition = ParseGeneralDefinitions.Classify(fc.Name, fc.Value);
-
-				Token t = fc.Definition.MakeToken(fc.Value, fc.Position, fc.Length);
-
-				win.TabUp();
-				win.WriteLineTab("");
-				show.ShowToken(t, false);
-				win.TabDn();
-			}
-		}
-
-		// private Token MakeToken()
-		// {
-		// 	Token t = new Token()
-		// }
-		
-
 
 	#endregion
 
@@ -127,5 +88,45 @@ namespace SharedCode.EquationSupport.ParseSupport
 		}
 
 	#endregion
+
+
+		// tested from Test02A / parfseTest03
+		// private void parse2(ParsePhase p1)
+		// {
+		// 	ParsePhData fc;
+		// 	ParseGen pg;
+		// 	Token tk;
+		// 	AAmtBase aa;
+		// 	ADefBase ab;
+		//
+		// 	win.showTabId = false;
+		//
+		// 	for (var i = 0; i < p1.FormulaComponents.Count; i++)
+		// 	{
+		// 		fc = p1.FormulaComponents[i];
+		//
+		// 		if (fc.Name == null || fc.Value == null) continue;
+		// 		//
+		// 		// win.WriteLine("");
+		// 		//
+		// 		// win.WriteLine($"name| {fc.Name,-6} value| {fc.Value} index| {fc.Position} length| {fc.Length}");
+		//
+		// 		fc.Definition = ParseGeneralDefinitions.Classify(fc.Name, fc.Value);
+		//
+		// 		Token t = fc.Definition.MakeToken(fc.Value, fc.Position, fc.Length);
+		//
+		// 		win.TabUp();
+		// 		win.WriteLineTab("");
+		// 		show.ShowToken(t, false);
+		// 		win.TabDn();
+		// 	}
+		// }
+
+		// private Token MakeToken()
+		// {
+		// 	Token t = new Token()
+		// }
+		
+
 	}
 }

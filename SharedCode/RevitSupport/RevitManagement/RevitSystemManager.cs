@@ -7,7 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using RevitSupport.RevitChartManagement;
-using SharedCode.FormulaSupport.FormulaManagement;
+// using SharedCode.FormulaSupport.FormulaManagement;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
 using SpreadSheet01.RevitSupport.RevitParamManagement;
@@ -25,7 +25,7 @@ namespace SharedCode.RevitSupport.RevitManagement
 
 		private RevitChartManager chartMgr;
 		private ManagementSupport mgmtSupport;
-		private FormulaSupervisor fmSuper;
+		// private FormulaSupervisor fmSuper;
 
 	#endregion
 
@@ -35,7 +35,7 @@ namespace SharedCode.RevitSupport.RevitManagement
 		{
 			chartMgr = new RevitChartManager();
 			mgmtSupport = new ManagementSupport();
-			fmSuper = new FormulaSupervisor(chartMgr);
+			// fmSuper = new FormulaSupervisor(chartMgr);
 
 		}
 
@@ -45,7 +45,7 @@ namespace SharedCode.RevitSupport.RevitManagement
 
 		public RevitCharts Charts => chartMgr.Charts;
 
-		public FormulaSupervisor Formulas => fmSuper;
+		// public FormulaSupervisor Formulas => fmSuper;
 
 	#endregion
 
@@ -57,7 +57,7 @@ namespace SharedCode.RevitSupport.RevitManagement
 
 		public bool PreProcessFormulas()
 		{
-			fmSuper.Preprocess();
+			// fmSuper.Preprocess();
 
 			return true;
 		}

@@ -48,24 +48,24 @@ namespace SharedCode.DebugAssist
 
 		public void listLablesAndFormulas()
 		{
-			foreach (KeyValuePair<string, RevitLabel> formulasAllCellLabel in RevitSystMgr.Formulas.AllCellLabels)
-			{
-				
-			}
+			// foreach (KeyValuePair<string, RevitLabel> formulasAllCellLabel in RevitSystMgr.Formulas.AllCellLabels)
+			// {
+			// 	
+			// }
 			win.WriteLine("Get All Charts / List labels and formulas| start");
 			bool result;
-
+		
 			// get all of the revit chart families and 
 			// process each to get its parameters
 			result = paramTestA();
-
+		
 			if (!result)
 			{
 				win.WriteLine("Charts has errors");
 			}
-
+		
 			listLabsAndForms(RevitSystMgr.Charts);
-
+		
 			win.WriteLine("Get All Charts / List labels and formulas| end");
 		}
 
@@ -532,7 +532,7 @@ namespace SharedCode.DebugAssist
 			win.TabUp("labels summary 2");
 			{
 				listLabelHeader();
-				listLabels(charts);
+				// listLabels(charts);
 			}
 			win.TabDn("labels summary2 ");
 		}
@@ -599,18 +599,18 @@ namespace SharedCode.DebugAssist
 			win.TabDn("chart ");
 		}
 
-		private void listLabels(RevitCharts charts)
-		{
-			int idx = 0;
-			// foreach (KeyValuePair<string, RevitLabel> kvp in charts.FormulaManager.AllCellLabels)
-
-			foreach (KeyValuePair<string, RevitLabel> kvp in RevitSystMgr.Formulas.AllCellLabels)
-			{
-				RevitLabel label = kvp.Value;
-
-				listLabel(label, idx++);
-			}
-		}
+		// private void listLabels(RevitCharts charts)
+		// {
+		// 	int idx = 0;
+		// 	// foreach (KeyValuePair<string, RevitLabel> kvp in charts.FormulaManager.AllCellLabels)
+		//
+		// 	foreach (KeyValuePair<string, RevitLabel> kvp in RevitSystMgr.Formulas.AllCellLabels)
+		// 	{
+		// 		RevitLabel label = kvp.Value;
+		//
+		// 		listLabel(label, idx++);
+		// 	}
+		// }
 
 		private void listLnf(Dictionary<string, RevitLabel> labels)
 		{

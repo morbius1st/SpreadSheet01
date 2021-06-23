@@ -1,13 +1,11 @@
 ﻿#region + Using Directives
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SharedCode.EquationSupport.Definitions;
+using SharedCode.EquationSupport.Definitions.ValueDefs.FromBase;
+using SharedCode.EquationSupport.Definitions.ValueDefs.FromString;
+using SharedCode.EquationSupport.Definitions.ValueDefs.FromVar;
 using static SharedCode.EquationSupport.Definitions.ValueType;
-using static SharedCode.EquationSupport.Definitions.ValueDataGroup;
+using static SharedCode.EquationSupport.Definitions.ParseGroupVar;
 
 #endregion
 
@@ -16,23 +14,24 @@ using static SharedCode.EquationSupport.Definitions.ValueDataGroup;
 
 namespace SharedCode.EquationSupport.Definitions
 {
-	public class ValueDefinitionsx : ADefinitionBase<ValDef>
+	public class ValueDefinitions : ADefinitionBase<AValDefBase>
 	{
-		private const int MAX_TOKENS = 50;
+		private const int MAX_TOKENS = 70;
+		// private static ValueType vType;
 
-		private static readonly Lazy<ValueDefinitionsx> instance =
-		new Lazy<ValueDefinitionsx>(()=> new ValueDefinitionsx());
+		private static readonly Lazy<ValueDefinitions> instance =
+		new Lazy<ValueDefinitions>(() => new ValueDefinitions());
 
-		static ValueDefinitionsx() {Init(); }
+		static ValueDefinitions() { Init(); }
 
 		// private ValueDefinitions() : base() { }
 
-		public static ValueDefinitionsx ValDefInst => instance.Value;
+		public static ValueDefinitions ValDefInst => instance.Value;
 
-		public override ValDef Invalid => 
-			new ValDef(-1, "Invalid", null, VT_INVALID, VDG_INVALID, (int) VT_INVALID);
-		public override ValDef Default => 
-			new ValDef(0, "Default", null, VT_DEFAULT, VDG_DEFAULT, (int) VT_DEFAULT);
+		public override AValDefBase Invalid =>
+			new ValDefInvalid(-1, "Invalid", null, VT_INVALID, (int)VT_INVALID);
+		public override AValDefBase Default =>
+			new ValDefDefault(0, "Default", null, VT_DEFAULT, (int)VT_DEFAULT);
 
 		// public DefValue[] VDefDefs => idDefArray;
 		//
@@ -60,23 +59,25 @@ namespace SharedCode.EquationSupport.Definitions
 		public static int Vd_RelGt;
 		public static int Vd_RelGtEq;
 		// operator - string
-		public static int Vd_AddStr;
+		public static int Vd_AddText;
 		// operator - additive
 		public static int Vd_MathAdd;
 		public static int Vd_MathSubt;
 		// operator - multiply
 		public static int Vd_MathMul;
 		public static int Vd_MathDiv;
-		// operator - urniary
+		public static int Vd_MathPwr;
 		public static int Vd_MathMod;
+		// operator - urniary
 		public static int Vd_MathNeg;
 
 		// string
-		public static int Vd_String;
+		public static int Vd_Text;
 
 		// boolean
 		public static int Vd_BoolTrue;
 		public static int Vd_BoolFalse;
+		public static int Vd_BoolNull;
 
 		// number - integer
 		public static int Vd_NumInt;
@@ -98,11 +99,22 @@ namespace SharedCode.EquationSupport.Definitions
 		public static int Vd_NumUntVolMet;
 
 		// identifier - function
-		public static int Vd_FunBltIn;
-		public static int Vd_FunLib;
-		public static int Vd_FunUsr;
+		public static int Vd_FunStrText;
+		public static int Vd_FunBoolean;
+		public static int Vd_FunInteger;
+		public static int Vd_FunDouble;
+
+
+
 		// identifier - variable - key
+		public static int Vd_VarXlAddr;
+		public static int Vd_VarSysVar;
+		public static int Vd_VarRvtParam;
+		public static int Vd_VarPrjParam;
+		public static int Vd_VarGblParam;
+		public static int Vd_VarLblName;
 		public static int Vd_VarKey;
+
 		// identifier - variable
 		public static int Vd_Varible;
 
@@ -110,161 +122,141 @@ namespace SharedCode.EquationSupport.Definitions
 		public static int Vd_GrpRef;
 		public static int Vd_GrpBeg;
 		public static int Vd_GrpEnd;
-		
+		public static int Vd_FnGrpBeg;
+		public static int Vd_FnGrpEnd;
+		public static int Vd_PrnBeg;
+		public static int Vd_PrnEnd;
+		public static int Vd_FunctArgSep;
+
 		private static void Init()
 		{
-			idDefArray = new ValDef[MAX_TOKENS];
+			idDefArray = new AValDefBase[MAX_TOKENS];
 
 			int idx = 0;
 
+			// must include all valye types
+			// vType            = VT_ASSIGNMENT;
+			Vd_Assignment    = setValue(new ValDefAssignment(idx++    , "Assignment"                      , "="    , VT_ASSIGNMENT, 1));
+
+			// vType            = VT_OP_LOGICALMATH;
+			Vd_LogOr         = setValue(new ValDefOpMathLogOr(idx++   , "Logical Or"                      , "<or>" , VT_OP_LOGICALMATH, 1));
+			Vd_LogAnd        = setValue(new ValDefOpMathLogAnd(idx++  , "Logical And"                     , "<and>", VT_OP_LOGICALMATH, 2));
+			Vd_LogEq         = setValue(new ValDefOpMathLogEq(idx++   , "Logical Equality"                , "=="   , VT_OP_LOGICALMATH, 3));
+			Vd_LogInEq       = setValue(new ValDefOpMathLogInEq(idx++ , "Logical Inequality"              , "!="   , VT_OP_LOGICALMATH, 4));
+			Vd_LogNot        = setValue(new ValDefOpMathLogNot(idx++  , "Logical Not"                     , "!"    , VT_OP_LOGICALMATH, 5));
+
+			// vType            = VT_OP_RELATIONALMATH;
+			Vd_RelLt         = setValue(new ValDefOpMathRelLt(idx++   , "Relational Less Than"            , "<"    , VT_OP_RELATIONALMATH, 1));
+			Vd_RelLtEq       = setValue(new ValDefOpMathRelLte(idx++  , "Relational Less Than or Equal"   , "<="   , VT_OP_RELATIONALMATH, 2));
+			Vd_RelGt         = setValue(new ValDefOpMathRelGt(idx++   , "Relational Greater Than"         , ">"    , VT_OP_RELATIONALMATH, 3));
+			Vd_RelGtEq       = setValue(new ValDefOpMathRelGte(idx++  , "Relational Greater Than or Equal", ">="   , VT_OP_RELATIONALMATH, 4));
+
+			// vType            = VT_OP_TEXT;
+			Vd_AddText       = setValue(new ValDefOpTextAdd(idx++      , "Text Addition"                 , "&"    , VT_OP_TEXT, 1));
+
+			// vType            = VT_OP_ADDITIVE;
+			Vd_MathAdd       = setValue(new ValDefOpMathAdd(idx++     , "Additive Addition"               , "+"    , VT_OP_ADDITIVE, 1));
+			Vd_MathSubt      = setValue(new ValDefOpMathSubt(idx++    , "Additive Subtraction"            , "-"    , VT_OP_ADDITIVE, 2));
+
+			// vType            = VT_OP_MULTIPLICATIVE;
+			Vd_MathMul       = setValue(new ValDefOpMathMul(idx++     , "Multiplicative Multiply"         , "*"    , VT_OP_MULTIPLICATIVE, 1));
+			Vd_MathDiv       = setValue(new ValDefOpMathDiv(idx++     , "Multiplicative Divide"           , "/"    , VT_OP_MULTIPLICATIVE, 2));
+			Vd_MathPwr       = setValue(new ValDefOpMathPower(idx++   , "Multiplicative Power"            , "^"    , VT_OP_MULTIPLICATIVE, 3));
+			Vd_MathMod       = setValue(new ValDefOpMathMod(idx++     , "Multiplicative Modulus"          , "%"    , VT_OP_MULTIPLICATIVE, 4));
+
+			// vType            = VT_OP_URINARY;
+			Vd_MathNeg       = setValue(new ValDefOpMathNeg(idx++     , "Urinary Negative"                , "-"    , VT_OP_URINARY, 1));
+
+			// vType            = VT_TEXT;
+			Vd_Text          = setValue(new ValDefText(idx++            , "Text"                           , ""     , VT_TEXT, 1));
+
+			// vType            = VT_BOOLEAN;
+			Vd_BoolTrue      = setValue(new ValDefNumBoolTrue(idx++   , "Boolean True"                    , "True" , VT_BOOLEAN, 1, true));
+			Vd_BoolFalse     = setValue(new ValDefNumBoolFalse(idx++  , "Boolean False"                   , "False", VT_BOOLEAN, 2, true));
+			Vd_BoolFalse     = setValue(new ValDefNumBoolNull(idx++  , "Boolean Null"                     , "bNull", VT_BOOLEAN, 3, true));
+
+			// vType            = VT_NUMBER;
+			Vd_NumInt        = setValue(new ValDefNumInt(idx++        , "Number Integer"                  , ""     , VT_NUM_INTEGER, 1, true));
+			Vd_NumDouble     = setValue(new ValDefNumDouble(idx++     , "Number Double"                   , ""     , VT_NUM_DOUBLE, 2, true));
+			Vd_NumFract      = setValue(new ValDefNumFract(idx++      , "Number Fraction"                 , ""     , VT_NUM_FRACTION, 3, true));
 			
-			vType = VT_INVALID;
-			Vd_Invalid = idx++;
-			idDefArray[Vd_Invalid] = defineValue("Invalid"                               , "", VT_INVALID, VDG_INVALID);
-			
-			vType = VT_DEFAULT;
-			Vd_Assignment = idx++;
-			idDefArray[Vd_Default] = defineValue("Default"                               , "", VT_DEFAULT, VDG_DEFAULT);
+			// see VarDefinitions for variables
+			// // vType            = VT_ID_VARIABLE;
+			Vd_VarXlAddr     = setValue(new VarDefKeyXlAddr(idx++  , "Variable XlAddr"                 , "{[", "]}", VT_ID_VAR_KEY, PGV_EXCL_ADDR, 1));
+			Vd_VarSysVar     = setValue(new VarDefKeySysVar(idx++  , "Variable System Var"             , "{$", "}",  VT_ID_VAR_KEY, PGV_SYS_VAR  , 2));
+			Vd_VarRvtParam   = setValue(new VarDefKeyRvtParam(idx++, "Variable Revit Param"            , "{#", "}",  VT_ID_VAR_KEY, PGV_RVT_PARAM, 3));
+			Vd_VarPrjParam   = setValue(new VarDefKeyPrjParam(idx++, "Variable Project Param"          , "{%", "}",  VT_ID_VAR_KEY, PGV_PRJ_PARAM, 4));
+			Vd_VarGblParam   = setValue(new VarDefKeyGblParam(idx++, "Variable Global Param"           , "{!", "}",  VT_ID_VAR_KEY, PGV_GBL_PARAM, 5));
+			Vd_VarLblName    = setValue(new VarDefKeyLblName(idx++ , "Variable Label Param"            , "{@", "}",  VT_ID_VAR_KEY, PGV_LBL_NAME , 6));
+
+			// Vd_VarKey        = setValue(new DefVarKeyString(idx++, "Variable Cells"                    , "{" , "}" , VT_ID_VAR_KEY,  PGV_DEFAULT,10));
+
+			Vd_Varible       = setValue(new ValDefVarStrText(idx++     , "Variable"                        , "{"    , VT_ID_VAR_VAR, 11));
 
 
-			vType = VT_ASSIGNMENT;
-			Vd_Assignment = idx++;
-			idDefArray[Vd_Assignment] = defineValue("Assignment"                         , "=", VT_ASSIGNMENT, VDG_TEXT);
+			// vType            = VT_ID_FUNCTION;
+			Vd_FunStrText    = setValue(new ValDefFunStrText(idx++     , "Functions Text"                 , ""     , VT_ID_FUN_TXT, 1));
+			Vd_FunBoolean    = setValue(new ValDefFunBool(idx++     , "Functions Boolean"                 , ""     , VT_ID_FUN_BOOL,1));
+			Vd_FunInteger    = setValue(new ValDefFunNumInt(idx++     , "Functions Integer"               , ""     , VT_ID_FUN_INT, 1));
+			Vd_FunDouble     = setValue(new ValDefFunNumDbl(idx++     , "Functions Double"                , ""     , VT_ID_FUN_DBL, 1));
 
-			vType = VT_OP_LOGICAL;
-			Vd_LogOr = idx++;
-			idDefArray[Vd_LogOr]      = defineValue("Logical Or"                         , "<or>", VT_OP_LOGICAL, VDG_TEXT );
-			Vd_LogAnd = idx++;
-			idDefArray[Vd_LogAnd]     = defineValue("Logical And"                        , "<and>", VT_OP_LOGICAL, VDG_TEXT);
-			Vd_LogEq = idx++;
-			idDefArray[Vd_LogEq]      = defineValue("Logical Equality"                   , "==", VT_OP_LOGICAL, VDG_TEXT   );
-			Vd_LogInEq = idx++;
-			idDefArray[Vd_LogInEq]    = defineValue("Logical Inequality"                 , "!=", VT_OP_LOGICAL, VDG_TEXT   );
-			Vd_LogNot = idx++;
-			idDefArray[Vd_LogNot]    = defineValue("Logical Not"                         , "!", VT_OP_LOGICAL, VDG_TEXT   );
+			// vType            = VT_GROUPING;
+			Vd_GrpRef        = setValue(new ValDefGrpRef(idx++        , "Group Reference"                 , "<gpr>", VT_GP_REF, 1));
+			Vd_GrpBeg        = setValue(new ValDefGrpBeg(idx++        , "Group Begin"                     , "<gpb>", VT_GP_BEG, 2));
+			Vd_GrpEnd        = setValue(new ValDefGrpEnd(idx++        , "Group End"                       , "<gpe>", VT_GP_END, 3));
+			Vd_FnGrpBeg      = setValue(new ValDefGrpBeg(idx++        , "Function Group Begin"            , "<fgb>", VT_GP_REF, 21));
+			Vd_FnGrpEnd      = setValue(new ValDefGrpEnd(idx++        , "Function Group End"              , "<fge>", VT_GP_REF, 22));
+			Vd_PrnBeg        = setValue(new ValDefGrpBeg(idx++        , "Parenthesis Begin"               , "("    , VT_PRN_BEG, 51));
+			Vd_PrnEnd        = setValue(new ValDefGrpEnd(idx++        , "Parenthesis End"                 , ")"    , VT_PRN_END, 52));
+			Vd_FunctArgSep   = setValue(new ValDefGrpArgSep(idx++     , "Argument Separator"              , ","    , VT_GP_ARG_SEP, 71));
 
-			vType = VT_OP_RELATIONAL;
-			Vd_RelLt = idx++;
-			idDefArray[Vd_RelLt]      = defineValue("Relational Less Than"               , "<", VT_OP_RELATIONAL, VDG_TEXT );
-			Vd_RelLtEq = idx++;
-			idDefArray[Vd_RelLtEq]    = defineValue("Relational Less Than or Equal"      , "<=", VT_OP_RELATIONAL, VDG_TEXT);
-			Vd_RelGt = idx++;
-			idDefArray[Vd_RelGt]      = defineValue("Relational Greater Than"            , ">", VT_OP_RELATIONAL, VDG_TEXT );
-			Vd_RelGtEq = idx++;
-			idDefArray[Vd_RelGtEq]    = defineValue("Relational Greater Than or Equal"   , ">=", VT_OP_RELATIONAL, VDG_TEXT);
+			// vType            = VT_UNIT;
+			Vd_NumUntLenImp  = setValue(new ValDefUnitLenImp(idx++    , "Unit Length Imperial"            , ""     , VT_UN_LEN_IMP, 1, true));
+			Vd_NumUntLenMet  = setValue(new ValDefUnitLenMetric(idx++ , "Unit Length Metric"              , ""     , VT_UN_LEN_MET, 1, true));
 
-			vType = VT_OP_STRING;
-			Vd_AddStr = idx++;
-			idDefArray[Vd_AddStr]     = defineValue("String Addition"                    , "&", VT_OP_STRING, VDG_TEXT);
+			Vd_NumUntAreaImp = setValue(new ValDefUnitAreaImp(idx++   , "Unit Area Imperial"              , ""     , VT_UN_AREA_IMP, 1, true));
+			Vd_NumUntAreaMet = setValue(new ValDefUnitAreaMetric(idx++, "Unit Area Metric"                , ""     , VT_UN_AREA_MET, 1, true));
 
-			vType = VT_OP_ADDITIVE;
-			Vd_MathAdd = idx++;
-			idDefArray[Vd_MathAdd]    = defineValue("Additive Addition"                  , "+", VT_OP_ADDITIVE, VDG_TEXT);
-			Vd_MathSubt = idx++;
-			idDefArray[Vd_MathSubt]   = defineValue("Additive Subtraction"               , "-", VT_OP_ADDITIVE, VDG_TEXT);
+			Vd_NumUntVolImp  = setValue(new ValDefUnitVolImp(idx++    , "Unit Vol Imperial"               , ""     , VT_UN_VOL_IMP, 1, true));
+			Vd_NumUntVolMet  = setValue(new ValDefUnitVolMetric(idx++ , "Unit Vol Metric"                 , ""     , VT_UN_VOL_MET, 1, true));
 
-			vType = VT_OP_MULTIPLICATIVE;
-			Vd_MathMul = idx++;
-			idDefArray[Vd_MathMul]    = defineValue("Multiplicative Multiply"            , "*", VT_OP_MULTIPLICATIVE, VDG_TEXT);
-			Vd_MathDiv = idx++;
-			idDefArray[Vd_MathDiv]    = defineValue("Multiplicative Divide"              , "/", VT_OP_MULTIPLICATIVE, VDG_TEXT);
+			// vType            = VT_INVALID;
+			Vd_Invalid       = setValue(new ValDefInvalid(idx++       , "Invalid"                         , ""     , VT_INVALID, 0));
 
-			vType = VT_OP_URINARY;
-			Vd_MathMod = idx++;
-			idDefArray[Vd_MathMod]    = defineValue("Urinary Modulus"                    , "%", VT_OP_URINARY, VDG_TEXT);
-			Vd_MathNeg = idx++;
-			idDefArray[Vd_MathNeg]    = defineValue("Urinary Negative"                   , "-", VT_OP_URINARY, VDG_TEXT);
-
-
-
-			vType = VT_STRING;
-			Vd_String = idx++;
-			idDefArray[Vd_String]    = defineValue("String"                              , "", VT_STRING, VDG_STRING);
-
-
-			vType = VT_BOOLEAN;
-			Vd_BoolTrue = idx++;
-			idDefArray[Vd_BoolTrue]    = defineValue("Boolean True"                      , "True", VT_BOOLEAN, VDG_BOOLEAN, true);
-			Vd_BoolFalse = idx++;
-			idDefArray[Vd_BoolFalse]    = defineValue("Boolean False"                    , "False", VT_BOOLEAN, VDG_BOOLEAN, true);
-
-
-			vType = VT_NUMBER;
-			Vd_NumInt = idx++;
-			idDefArray[Vd_NumInt]     = defineValue("Number Integer"                     , "", VT_NUM_INTEGER, VDG_NUM_INT, true);
-			Vd_NumDouble = idx++;
-			idDefArray[Vd_NumDouble]  = defineValue("Number Double"                      , "", VT_NUM_DOUBLE, VDG_NUM_DBL, true);
-			Vd_NumFract = idx++;
-			idDefArray[Vd_NumFract]   = defineValue("Number Fraction"                    , "", VT_NUM_FRACTION, VDG_NUM_FRACT, true);
-
-
-			vType = VT_UNIT;
-			Vd_NumUntLenImp = idx++;
-			idDefArray[Vd_NumUntLenImp]  = defineValue("Unit Length Imperial"            , "", VT_UN_LEN_IMP, VDG_UNIT, true);
-			Vd_NumUntLenMet = idx++;
-			idDefArray[Vd_NumUntLenMet]  = defineValue("Unit Length Metric"              , "", VT_UN_LEN_MET, VDG_UNIT, true);
-
-			Vd_NumUntAreaImp = idx++;
-			idDefArray[Vd_NumUntAreaImp]  = defineValue("Unit Area Imperial"             , "", VT_UN_AREA_IMP, VDG_UNIT, true);
-			Vd_NumUntAreaMet = idx++;
-			idDefArray[Vd_NumUntAreaMet]  = defineValue("Unit Area Metric"               , "", VT_UN_AREA_MET, VDG_UNIT, true);
-
-			Vd_NumUntVolImp = idx++;
-			idDefArray[Vd_NumUntVolImp]  = defineValue("Unit Vol Imperial"               , "", VT_UN_VOL_IMP, VDG_UNIT, true);
-			Vd_NumUntVolMet = idx++;
-			idDefArray[Vd_NumUntVolMet]  = defineValue("Unit Vol Metric"                 , "", VT_UN_VOL_MET, VDG_UNIT, true);
-
-
-			vType = VT_ID_VARIABLE;
-			Vd_VarKey = idx++;
-			idDefArray[Vd_VarKey]     = defineValue("Key Variable"                       , "{", VT_ID_VAR_KEY, VDG_VAR);
-			Vd_Varible = idx++;
-			idDefArray[Vd_Varible]     = defineValue("Variable"                           , "{", VT_ID_VAR_VAR, VDG_VAR);
-
-
-			vType = VT_ID_FUNCTION;
-			Vd_FunBltIn = idx++;
-			idDefArray[Vd_FunBltIn]   = defineValue("Function Builtin"                   , "", VT_ID_FUN_INT, VDG_FUNCT);
-			Vd_FunLib = idx++;
-			idDefArray[Vd_FunLib]     = defineValue("Function Library"                   , "", VT_ID_FUN_LIB, VDG_FUNCT);
-			Vd_FunUsr = idx++;
-			idDefArray[Vd_FunUsr]     = defineValue("Function User"                      , "", VT_ID_FUN_USR, VDG_FUNCT);
-
-
-			vType = VT_GROUPING;
-			Vd_GrpRef = idx++;
-			idDefArray[Vd_GrpRef]     = defineValue("Group Reference"                    , "", VT_GP_REF, VDG_TEXT);
-			Vd_GrpBeg = idx++;
-			idDefArray[Vd_GrpBeg]     = defineValue("Parenthesis Begin"                  , "(", VT_GP_BEG, VDG_TEXT);
-			Vd_GrpEnd = idx++;
-			idDefArray[Vd_GrpEnd]     = defineValue("Parenthesis End"                    , ")", VT_GP_END, VDG_TEXT);
-
+			// vType            = VT_DEFAULT;
+			Vd_Default       = setValue(new ValDefDefault(idx++       , "Default"                         , ""     , VT_DEFAULT, 0));
 
 			count = idx;
 		}
 
-		// private static int setValue(int idx, string desc, string tokenStr, ValueType valType, bool isNumeric = false)
+		private static int setValue(AValDefBase ab2)
+		{
+			idDefArray[ab2.Index] = ab2;
+
+			return ab2.Index;
+		}
+
+		// private static int setValue(int idx, string desc, string tokenStr, ValueType valType, ValueDataGroup group, bool isNumeric = false)
 		// {
-		// 	idDefArray[idx] = defineValue(desc, tokenStr, valType, isNumeric);
+		// 	idDefArray[idx] = defineValue(idx, desc, tokenStr, valType, group, isNumeric);
 		//
 		// 	return idx;
 		// }
 
-		private static int id = 0;
-		private static int seq = 0;
-		private static ValueType vType;
-		private static ValueType vTypePrior = VT_DEFAULT;
-
-		// private static DefValue defineValue(int index, string desc, string tokenStr, ValueType valType, bool isNumeric = false)
-		private static ValDef defineValue(   string desc, string tokenStr, ValueType valType, ValueDataGroup group, bool isNumeric = false)
-		{
-			if (vType != vTypePrior)
-			{
-				seq = 0;
-				vTypePrior = vType;
-			}
-
-			return new ValDef(0, desc, tokenStr, valType, group, id++, isNumeric);
-		}
+		// private static int id = 0;
+		// private static int seq = 0;
+		//
+		// private static ValueType vTypePrior = VT_DEFAULT;
+		//
+		// private static AValDefBase defineValue(int index, string desc, string tokenStr, ValueType valType, ValueDataGroup @group, bool isNumeric = false)
+		// {
+		// 	if (vType != vTypePrior)
+		// 	{
+		// 		seq = 0;
+		// 		vTypePrior = vType;
+		// 	}
+		//
+		// 	return new AValDefBase(index, desc, tokenStr, valType, group, id++, isNumeric);
+		// }
 	}
 }

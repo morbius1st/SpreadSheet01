@@ -1,0 +1,13 @@
+revisions
+
+ParseTokenData
++-> was ParseData
+ParseTokenDefinitions (uses ParseTokenDef -> was ParseGen)
++-> was ParseGenDefinitions
+
+
+
+EqTokenData
++-> was Token
+EqTokenDefinitions
++-> was 

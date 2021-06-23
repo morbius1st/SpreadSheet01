@@ -7,8 +7,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using SharedCode.EquationSupport.Definitions;
 using SharedCode.EquationSupport.ParseSupport;
 using SharedCode.EquationSupport.TokenSupport.Amounts;
+using ValueType = SharedCode.EquationSupport.Definitions.ValueType;
 
 #endregion
 
@@ -22,12 +24,11 @@ namespace SharedCode.EquationSupport.TokenSupport
 	{
 	#region private fields
 
-		private int position;	// position in the formula string
-		private int length; // length in the formula string
+		private ParseDataInfo info;
 
-		private int level = 0;
-		private AAmtBase aAmtBase;
-		private List<Token> tokenAmts2 = null;
+		private AAmtBase aAmtBase = new AmtDefault();
+
+		private AValDefBase aValDef;
 
 	#endregion
 
@@ -35,27 +36,36 @@ namespace SharedCode.EquationSupport.TokenSupport
 
 		public Token()
 		{
-			this.aAmtBase = null;
-			position = 0;
-			length = 0;
+			this.aAmtBase = new AmtDefault();
+			// position = 0;
+			// length = 0;
 		}
 
-		public Token(AAmtBase aAmtBase, int pos, int len)
+		public Token( AValDefBase aValDef1, AAmtBase aAmtBase, ParseDataInfo info)
 		{
 			this.aAmtBase = aAmtBase;
-			position = pos;
-			length = len;
+			// position = pos;
+			// length = len;
+
+			this.info = info;
 		}
 
 	#endregion
 
 	#region public properties
 
+		public AValDefBase ValDef => aValDef;
 		public AAmtBase AmountBase => aAmtBase;
-		public ValueType DataType => aAmtBase.DataType;
-		public Token this[int idx] => tokenAmts2[idx];
-		public int Position => position;
-		public int Length => length;
+		// public ValueType ValueType => aAmtBase.ValueType;
+		// public AValDefBase ValDef => aAmtBase.ValDef;
+		// public Token this[int idx] => tokenAmts2[idx];
+
+		public int Position => info.Position;
+		public int Length => info.Length;
+		public int Level => info.Level;
+
+		public int RefIdx => info.RefIdx;
+		public bool IsRefIdx => info.GotRefIdx;
 
 	#endregion
 
@@ -64,21 +74,21 @@ namespace SharedCode.EquationSupport.TokenSupport
 	#endregion
 
 	#region public methods
-
-		public Token MakeBranch()
-		{
-			Token t = new Token();
-			t.level++;
-			t.tokenAmts2 = new List<Token>();
-			tokenAmts2.Add(t);
-
-			return t;
-		}
-
-		public void Add(Token t)
-		{
-			tokenAmts2.Add(t);
-		}
+		//
+		// public Token MakeBranch()
+		// {
+		// 	Token t = new Token();
+		// 	t.level++;
+		// 	t.tokenAmts2 = new List<Token>();
+		// 	tokenAmts2.Add(t);
+		//
+		// 	return t;
+		// }
+		//
+		// public void Add(Token t)
+		// {
+		// 	tokenAmts2.Add(t);
+		// }
 
 
 	#endregion
@@ -99,7 +109,7 @@ namespace SharedCode.EquationSupport.TokenSupport
 
 		public override string ToString()
 		{
-			return "this is| " + nameof(Token) + "(" + aAmtBase.AsString() + ")";
+			return "this is| " + nameof(Token) + " (" + aAmtBase.AsString() + ")";
 		}
 
 	#endregion

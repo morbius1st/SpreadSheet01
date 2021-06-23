@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{EC7EC826
 		DataHierarchy-Revit.txt = DataHierarchy-Revit.txt
 		Equation Processing.txt = Equation Processing.txt
 		Notes.txt = Notes.txt
+		ObjectNaming.txt = ObjectNaming.txt
+		TokenItems.txt = TokenItems.txt
 		TokenProcessing.txt = TokenProcessing.txt
 	EndProjectSection
 EndProject

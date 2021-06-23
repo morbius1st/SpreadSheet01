@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
-using SharedCode.FormulaSupport.FormulaManagement;
+// using SharedCode.FormulaSupport.FormulaManagement;
 using SpreadSheet01;
 using SpreadSheet01.Management;
 using SpreadSheet01.RevitSupport.RevitCellsManagement;
@@ -65,7 +65,7 @@ namespace RevitSupport.RevitChartManagement
 		// this holds a collection of individual charts
 		public RevitCharts Charts { get; private set; }
 
-		public FormulaSupervisor FormulaSupervisor { get; private set; }
+		// public FormulaSupervisor FormulaSupervisor { get; private set; }
 
 	#endregion
 

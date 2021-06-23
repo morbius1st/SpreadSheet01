@@ -9,7 +9,7 @@
 		xmlns:mgmt="clr-namespace:SpreadSheet01.RevitSupport.RevitCellsManagement"
 		Title="MainWindow"
 		Width="1600"
-		Height="1200"
+		Height="1000"
 		DataContext="{Binding ElementName=PrimeWin}"
 		mc:Ignorable="d"
 		Background="{StaticResource Normal.Window.Background}"
@@ -21,7 +21,7 @@
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="auto" />
 			<ColumnDefinition Width="160" />
 			<ColumnDefinition Width="160" />
 		</Grid.ColumnDefinitions>
@@ -94,24 +94,33 @@
 					DockPanel.Dock="Bottom"
 					Click="BtnParse01_OnClick"
 			/>
-								
-			<Button x:Name="BtnParse02"
-					Content="Parse Test #02"
-					Margin="5"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Bottom"
-					DockPanel.Dock="Bottom"
-					Click="BtnParse02_OnClick"
-			/>
-
-			<Button x:Name="BtnParse03"
-					Content="Parse Test #03"
-					Margin="5"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Bottom"
-					DockPanel.Dock="Bottom"
-					Click="BtnParse02a_03_OnClick"
-			/>
+			<!-- 					 -->
+			<!-- <Button x:Name="BtnParse02" -->
+			<!-- 		Content="Parse Test #02" -->
+			<!-- 		Margin="5" -->
+			<!-- 		HorizontalAlignment="Stretch" -->
+			<!-- 		VerticalAlignment="Bottom" -->
+			<!-- 		DockPanel.Dock="Bottom" -->
+			<!-- 		Click="BtnParse02_OnClick" -->
+			<!-- /> -->
+			<!-- -->
+			<!-- <Button x:Name="BtnParse03" -->
+			<!-- 		Content="Parse Test #02a-03" -->
+			<!-- 		Margin="5" -->
+			<!-- 		HorizontalAlignment="Stretch" -->
+			<!-- 		VerticalAlignment="Bottom" -->
+			<!-- 		DockPanel.Dock="Bottom" -->
+			<!-- 		Click="BtnParse02a_03_OnClick" -->
+			<!-- /> -->
+			<!-- -->
+			<!-- <Button x:Name="BtnParse04" -->
+			<!-- 		Content="Parse Test #02a-04" -->
+			<!-- 		Margin="5" -->
+			<!-- 		HorizontalAlignment="Stretch" -->
+			<!-- 		VerticalAlignment="Bottom" -->
+			<!-- 		DockPanel.Dock="Bottom" -->
+			<!-- 		Click="BtnParse02a_04_OnClick" -->
+			<!-- /> -->
 
 			
 			<Rectangle
@@ -140,16 +149,15 @@
 					Click="BtnToken04_02a_OnClick"
 			/>
 																					
-			<Button x:Name="BtnParseTest0401a"
-					Content="Parse Test #04-01a"
-					Margin="5"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Bottom"
-					DockPanel.Dock="Bottom"
-					Click="BtnParse04_01a_OnClick"
-			/>
+			<!-- <Button x:Name="BtnParseTest0401a" -->
+			<!-- 		Content="Parse Test #04-01a" -->
+			<!-- 		Margin="5" -->
+			<!-- 		HorizontalAlignment="Stretch" -->
+			<!-- 		VerticalAlignment="Bottom" -->
+			<!-- 		DockPanel.Dock="Bottom" -->
+			<!-- 		Click="BtnParse04_01a_OnClick" -->
+			<!-- /> -->
 					
-			
 
 			<!-- -->
 			<!-- <Button x:Name="BtnSplit8" -->
@@ -377,6 +385,15 @@
 					VerticalAlignment="Bottom"
 					DockPanel.Dock="Bottom"
 					Click="BtnValDefs_OnClick"
+					/>
+										
+			<Button x:Name="BtnShow03"
+					Content="(03) Show Parse Gen&#13;Definitions"
+					Margin="5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Bottom"
+					DockPanel.Dock="Bottom"
+					Click="BtnParseGenDefs_OnClick"
 					/>
 
 			<Rectangle

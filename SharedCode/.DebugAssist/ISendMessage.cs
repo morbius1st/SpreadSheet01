@@ -19,6 +19,8 @@ namespace SharedCode.DebugAssist
 		void listTabId();
 		void TabUp(string id = "");
 		void TabDn(string id = "");
+		void TabUp(int id = -1);
+		void TabDn(int id = -1);
 		void TabClr(string id = "");
 		void TabSet(int t);
 		void WriteLineTab(string msg);

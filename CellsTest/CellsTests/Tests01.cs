@@ -12,7 +12,7 @@ using System.Windows.Media.Animation;
 using CellsTest.Windows;
 using UtilityLibrary;
 using static CellsTest.Windows.MainWindow;
-using SharedCode.FormulaSupport;
+// using SharedCode.FormulaSupport;
 #pragma warning disable CS0105 // The using directive for 'UtilityLibrary' appeared previously in this namespace
 using UtilityLibrary;
 #pragma warning restore CS0105 // The using directive for 'UtilityLibrary' appeared previously in this namespace
@@ -538,203 +538,203 @@ namespace CellsTest.CellsTests
 			return end;
 		}
 
-
-// simple test to split a formula
-		internal void splitTest1()
-		{
-			win.WriteLine("split test 1");
-			win.WriteLine("splitting| ");
-
-			string[] test = new string[15];
-
-			test[0] = "= asf asdf asf + {[A1]} +\"this time\"+ {$variable} +\"this time\"+ {[C1]} + {$} dfadsf ";
-			test[1] = "={#Bx1}+\"this time\"+{#Bx1} + asf +{[x1]} dfdfd";
-			test[2] = "={%Bx2}+\"this time\"+{%Bx1} + asf +{[x1]} dfdfd";
-			test[3] = "={!Bx4}+\"this time\"+{!Bx4} + asf +{[x3} dfdfd";
-			test[4] = "{#Bx1}={@Bx4}+\"this time\"+{@Bx4} + asf +{[x3} dfdfd + asf";
-			test[6] = "={[A1]}";
-			test[7] = "={$A1}";
-			test[8] = "={#ex1}";
-			test[9] = "={%bx6}";
-			test[10] = "={!A1}";
-			test[11] = "={@A1}";
-
-			string patt = @"\s*(?<E>=?)(?<eq>.*?)\{(?:(?<keyvar>[\$\#\%\!\@].+?)|(?<keyvar>\[.+?\]))\}|\s*(?<E>=?)(?<eq>.+$)";
-
-			Regex r = new Regex(patt, RegexOptions.Compiled);
-
-			for (var i = 0; i < test.Length; i++)
-			{
-				if (test[i] == null) break;
-
-				win.Write("\n");
-				win.WriteLine("testing| " + i + "| " + test[i]);
-				win.Write("\n");
-
-				MatchCollection c = r.Matches(test[i]);
-				if (c.Count < 1)
-				{
-					win.WriteLine("*** MATCH FAILED ***");
-					continue;
-				}
-
-				win.WriteLine("found| " + c.Count);
-
-				foreach (Match m in c)
-				{
-					win.Write("\n");
-					win.WriteLine("found| Groups| " + m.Groups.Count);
-
-					for (var j = 1; j < m.Groups.Count; j++)
-					{
-						Group g = m.Groups[j];
-
-						if (g.Success && !string.IsNullOrWhiteSpace(g.Value))
-						{
-							win.Write("match| idx| " + g.Index.ToString().PadRight(4));
-							win.Write(" len| " + g.Length.ToString().PadRight(4));
-							win.Write(" name| " + g.Name.PadRight(8));
-							win.Write(" value| >" + (g.Value + "<"));
-							// win.Write(" success| " + g.Success);
-							win.Write("\n");
-						}
-					}
-
-					// win.Write("\n");
-					// win.WriteLine("found| Captures| " + m.Captures.Count);
-					// foreach (Capture cp in m.Captures)
-					// {
-					// 	win.Write("match| idx| " + cp.Index.ToString().PadRight(4));
-					// 	win.Write(" value| >" + (cp.Value + "<").PadRight(30));
-					// 	win.Write("\n");
-					// }
-				}
-			}
-		}
-
-// tests working with key vars
-		internal void splitTest2()
-		{
-			win.WriteLine("split test 2");
-
-			for (int j = 0; j < 10; j++)
-			{
-				ProcessFormula pf = new ProcessFormula();
-
-				string[] test = new string[15];
-
-				// test[0] = "={[A1]}";
-				// test[1] = "={$A1}";
-				// test[2] = "={#ex1}";
-				// test[3] = "={%bx6}";
-				// test[4] = "={!A1}";
-				// test[5] = "={@A1}";
-
-				test[6] = "asdf={[A1]}";
-				test[7] = "{$A1}={$A1}";
-				test[8] = "{#ex1}";
-				test[9] = "={%bx6} + {$A1}";
-				test[10] = "{!A1} + {$A1}";
-				test[11] = "={@A[1}";
-
-				ValuePair<string, string> leftSide;
-				ValuePair<string, string> rightSide;
-
-				bool gotLeftSide;
-
-
-				for (var i = 0; i < test.Length; i++)
-				{
-					if (test[i] == null) continue;
-
-					win.WriteLine("testing| " + test[i]);
-
-					bool result = pf.GetKeyVars(test[i], out gotLeftSide, out leftSide, out rightSide);
-
-					win.WriteLine("final answer| worked?| " + result );
-					win.WriteLine("");
-
-					if (result)
-					{
-						win.WriteLine("tested| " + test[i] + "| passed "
-							+ ">" + rightSide.Key + "< >" + rightSide.Value + "<\n"
-							+ "gotLeftSize| " + gotLeftSide + "\n"
-							);
-					}
-					else
-					{
-						win.WriteLine("testing| " + test[i] + "| failed \n");
-					}
-				}
-
-				win.WriteLine("done");
-			}
-		}
-
-// tests working with key vars
-		internal void splitTest3()
-		{
-			win.WriteLine("split test 3");
-
-			// for (int j = 0; j < 5; j++)
-			// {
-			ProcessFormula pf = new ProcessFormula();
-
-			string[] test = new string[15];
-
-			test[0] = "={[A1]]}";
-			test[1] = "={[A1]}";
-			test[3] = "={$A1}";
-			test[4] = "={#ex1}";
-			test[5] = "={%bx6}";
-			test[6] = "={!A1}";
-			test[7] = "={@A1}";
-
-			test[9] = "asdf={[A1]}";
-			test[10] = "{$A1}={$A1}";
-			test[11] = "{#ex1}";
-			test[12] = "={%bx6} + {$A1}";
-			test[13] = "{!A1} + {$A1}";
-			test[14] = "={@A[1}";
-
-			ValuePair<int, string> keyVar;
-
-			for (var i = 0; i < test.Length; i++)
-			{
-				if (test[i] == null) continue;
-
-				win.WriteLine("\ntesting| " + test[i]);
-
-				Tuple<int, char, TestType, TestStatusCode> result =
-					pf.GetKeyVars3(test[i], out keyVar);
-
-				// win.WriteLine("final answer| worked?| " + result );
-				// win.Write("\n");
-
-				if (result.Item1 == 0)
-				{
-					win.WriteLine("PASSED| " + test[i]);
-					win.Write(" index| " + keyVar.Key);
-					win.Write(" keyvar| " + keyVar.Value);
-					win.Write(" id| " + ProcessFormulaSupport.varIds[keyVar.Key].Id);
-					win.Write(" prefix| " + ProcessFormulaSupport.varIds[keyVar.Key].Prefix);
-					win.Write("\n");
-				}
-				else
-				{
-					win.WriteLine("FAILED| " + test[i]);
-					win.Write(" index| " + result.Item1);
-					win.Write(" char| " + (result.Item2 == 0 ? "none" : result.Item2.ToString()));
-					win.Write(" test type| " + result.Item3);
-					win.Write(" stat code| " + result.Item4);
-					win.Write("\n");
-				}
-
-				win.WriteLine("");
-			}
-
-			win.WriteLine("done");
-		}
+//
+// // simple test to split a formula
+// 		internal void splitTest1()
+// 		{
+// 			win.WriteLine("split test 1");
+// 			win.WriteLine("splitting| ");
+//
+// 			string[] test = new string[15];
+//
+// 			test[0] = "= asf asdf asf + {[A1]} +\"this time\"+ {$variable} +\"this time\"+ {[C1]} + {$} dfadsf ";
+// 			test[1] = "={#Bx1}+\"this time\"+{#Bx1} + asf +{[x1]} dfdfd";
+// 			test[2] = "={%Bx2}+\"this time\"+{%Bx1} + asf +{[x1]} dfdfd";
+// 			test[3] = "={!Bx4}+\"this time\"+{!Bx4} + asf +{[x3} dfdfd";
+// 			test[4] = "{#Bx1}={@Bx4}+\"this time\"+{@Bx4} + asf +{[x3} dfdfd + asf";
+// 			test[6] = "={[A1]}";
+// 			test[7] = "={$A1}";
+// 			test[8] = "={#ex1}";
+// 			test[9] = "={%bx6}";
+// 			test[10] = "={!A1}";
+// 			test[11] = "={@A1}";
+//
+// 			string patt = @"\s*(?<E>=?)(?<eq>.*?)\{(?:(?<keyvar>[\$\#\%\!\@].+?)|(?<keyvar>\[.+?\]))\}|\s*(?<E>=?)(?<eq>.+$)";
+//
+// 			Regex r = new Regex(patt, RegexOptions.Compiled);
+//
+// 			for (var i = 0; i < test.Length; i++)
+// 			{
+// 				if (test[i] == null) break;
+//
+// 				win.Write("\n");
+// 				win.WriteLine("testing| " + i + "| " + test[i]);
+// 				win.Write("\n");
+//
+// 				MatchCollection c = r.Matches(test[i]);
+// 				if (c.Count < 1)
+// 				{
+// 					win.WriteLine("*** MATCH FAILED ***");
+// 					continue;
+// 				}
+//
+// 				win.WriteLine("found| " + c.Count);
+//
+// 				foreach (Match m in c)
+// 				{
+// 					win.Write("\n");
+// 					win.WriteLine("found| Groups| " + m.Groups.Count);
+//
+// 					for (var j = 1; j < m.Groups.Count; j++)
+// 					{
+// 						Group g = m.Groups[j];
+//
+// 						if (g.Success && !string.IsNullOrWhiteSpace(g.Value))
+// 						{
+// 							win.Write("match| idx| " + g.Index.ToString().PadRight(4));
+// 							win.Write(" len| " + g.Length.ToString().PadRight(4));
+// 							win.Write(" name| " + g.Name.PadRight(8));
+// 							win.Write(" value| >" + (g.Value + "<"));
+// 							// win.Write(" success| " + g.Success);
+// 							win.Write("\n");
+// 						}
+// 					}
+//
+// 					// win.Write("\n");
+// 					// win.WriteLine("found| Captures| " + m.Captures.Count);
+// 					// foreach (Capture cp in m.Captures)
+// 					// {
+// 					// 	win.Write("match| idx| " + cp.Index.ToString().PadRight(4));
+// 					// 	win.Write(" value| >" + (cp.Value + "<").PadRight(30));
+// 					// 	win.Write("\n");
+// 					// }
+// 				}
+// 			}
+// 		}
+//
+// // tests working with key vars
+// 		internal void splitTest2()
+// 		{
+// 			win.WriteLine("split test 2");
+//
+// 			for (int j = 0; j < 10; j++)
+// 			{
+// 				ProcessFormula pf = new ProcessFormula();
+//
+// 				string[] test = new string[15];
+//
+// 				// test[0] = "={[A1]}";
+// 				// test[1] = "={$A1}";
+// 				// test[2] = "={#ex1}";
+// 				// test[3] = "={%bx6}";
+// 				// test[4] = "={!A1}";
+// 				// test[5] = "={@A1}";
+//
+// 				test[6] = "asdf={[A1]}";
+// 				test[7] = "{$A1}={$A1}";
+// 				test[8] = "{#ex1}";
+// 				test[9] = "={%bx6} + {$A1}";
+// 				test[10] = "{!A1} + {$A1}";
+// 				test[11] = "={@A[1}";
+//
+// 				ValuePair<string, string> leftSide;
+// 				ValuePair<string, string> rightSide;
+//
+// 				bool gotLeftSide;
+//
+//
+// 				for (var i = 0; i < test.Length; i++)
+// 				{
+// 					if (test[i] == null) continue;
+//
+// 					win.WriteLine("testing| " + test[i]);
+//
+// 					bool result = pf.GetKeyVars(test[i], out gotLeftSide, out leftSide, out rightSide);
+//
+// 					win.WriteLine("final answer| worked?| " + result );
+// 					win.WriteLine("");
+//
+// 					if (result)
+// 					{
+// 						win.WriteLine("tested| " + test[i] + "| passed "
+// 							+ ">" + rightSide.Key + "< >" + rightSide.Value + "<\n"
+// 							+ "gotLeftSize| " + gotLeftSide + "\n"
+// 							);
+// 					}
+// 					else
+// 					{
+// 						win.WriteLine("testing| " + test[i] + "| failed \n");
+// 					}
+// 				}
+//
+// 				win.WriteLine("done");
+// 			}
+// 		}
+//
+// // tests working with key vars
+// 		internal void splitTest3()
+// 		{
+// 			win.WriteLine("split test 3");
+//
+// 			// for (int j = 0; j < 5; j++)
+// 			// {
+// 			ProcessFormula pf = new ProcessFormula();
+//
+// 			string[] test = new string[15];
+//
+// 			test[0] = "={[A1]]}";
+// 			test[1] = "={[A1]}";
+// 			test[3] = "={$A1}";
+// 			test[4] = "={#ex1}";
+// 			test[5] = "={%bx6}";
+// 			test[6] = "={!A1}";
+// 			test[7] = "={@A1}";
+//
+// 			test[9] = "asdf={[A1]}";
+// 			test[10] = "{$A1}={$A1}";
+// 			test[11] = "{#ex1}";
+// 			test[12] = "={%bx6} + {$A1}";
+// 			test[13] = "{!A1} + {$A1}";
+// 			test[14] = "={@A[1}";
+//
+// 			ValuePair<int, string> keyVar;
+//
+// 			for (var i = 0; i < test.Length; i++)
+// 			{
+// 				if (test[i] == null) continue;
+//
+// 				win.WriteLine("\ntesting| " + test[i]);
+//
+// 				Tuple<int, char, TestType, TestStatusCode> result =
+// 					pf.GetKeyVars3(test[i], out keyVar);
+//
+// 				// win.WriteLine("final answer| worked?| " + result );
+// 				// win.Write("\n");
+//
+// 				if (result.Item1 == 0)
+// 				{
+// 					win.WriteLine("PASSED| " + test[i]);
+// 					win.Write(" index| " + keyVar.Key);
+// 					win.Write(" keyvar| " + keyVar.Value);
+// 					win.Write(" id| " + ProcessFormulaSupport.varIds[keyVar.Key].Id);
+// 					win.Write(" prefix| " + ProcessFormulaSupport.varIds[keyVar.Key].Prefix);
+// 					win.Write("\n");
+// 				}
+// 				else
+// 				{
+// 					win.WriteLine("FAILED| " + test[i]);
+// 					win.Write(" index| " + result.Item1);
+// 					win.Write(" char| " + (result.Item2 == 0 ? "none" : result.Item2.ToString()));
+// 					win.Write(" test type| " + result.Item3);
+// 					win.Write(" stat code| " + result.Item4);
+// 					win.Write("\n");
+// 				}
+//
+// 				win.WriteLine("");
+// 			}
+//
+// 			win.WriteLine("done");
+// 		}
 
 	#endregion
 

@@ -42,7 +42,7 @@ namespace CellsTest.Windows
 		private ListInfo<MainWindow> listInfo;
 
 		private Show01 show01;
-		private Tests01 tests01;
+		// private Tests01 tests01;
 		private Tests01A tests01A;
 		private Tests02A tests02A;
 		private Tests04Amounts tests04Amts;
@@ -62,7 +62,7 @@ namespace CellsTest.Windows
 			listInfo = new ListInfo<MainWindow>(this);
 
 			show01 = new Show01(this);
-			tests01 = new Tests01(this);
+			// tests01 = new Tests01(this);
 			tests01A = new Tests01A(this);
 			tests02A = new Tests02A(this);
 			tests04Amts = new Tests04Amounts(this);
@@ -74,7 +74,6 @@ namespace CellsTest.Windows
 		}
 
 	#endregion
-
 
 	#region public properties
 
@@ -94,7 +93,7 @@ namespace CellsTest.Windows
 		private int tabs = 0;
 		private string tabId = null;
 
-		public bool showTabId { get; set; }  = true;
+		public bool showTabId { get; set; }  = false;
 
 		public void listTabId()
 		{
@@ -149,7 +148,7 @@ namespace CellsTest.Windows
 		{
 			// TbxMsg.Text +=
 			// 	// (tabId > 0 ? tabId.ToString("D3") : "") + 
-			Write((tabs > 0 ? "    ".Repeat(tabs) : "" ) + msg);
+			Write((tabs > 0 ? "   ".Repeat(tabs) : "" ) + msg);
 		}
 
 		public void WriteLine(string msg)
@@ -183,15 +182,30 @@ namespace CellsTest.Windows
 
 	#region event consuming
 
-		
+		private void BtnParseGenDefs_OnClick(object sender, RoutedEventArgs e)
+		{
+			ClrMessage();
+
+			WriteLineTab("Show 03 - parse gen defs");
+
+			WriteLineTab("");
+			tests02A.ShowParseGens();
+			// show01.ShowParseGens();
+			WriteLineTab("");
+
+			ShowMessage();
+		}
+
+
 		private void BtnValDefs_OnClick(object sender, RoutedEventArgs e)
 		{
 			ClrMessage();
 
-			WriteLineTab("Show 02");
+			WriteLineTab("Show 02 - value defs");
 
 			WriteLineTab("");
-			show01.ShowDefVals();
+			tests02A.ShowValDefs();
+			// show01.ShowDefVals();
 			WriteLineTab("");
 
 			ShowMessage();
@@ -202,48 +216,78 @@ namespace CellsTest.Windows
 		{
 			ClrMessage();
 
-			WriteLineTab("Show 01");
+			WriteLineTab("Show 01 - All defs");
 
 			WriteLineTab("");
-			show01.ShowParseGens();
+			tests02A.ShowParseGens();
+			// show01.ShowParseGens();
 			WriteLineTab("");
-			show01.ShowDefVars();
-			WriteLineTab("");
-			show01.ShowDefVals();
+			tests02A.ShowValDefs();
+			// show01.ShowDefVars();
+			// WriteLineTab("");
+			// tests02A.ShowVarDefs();
+			// show01.ShowDefVals();
 			WriteLineTab("");
 
 			ShowMessage();
 		}
-		
-		private void BtnParse02a_03_OnClick(object sender, RoutedEventArgs e)
-		{
-			ClrMessage();
 
-			WriteLineTab("Parse Test 2-3");
+		// private void BtnParse02_OnClick(object sender, RoutedEventArgs e)
+		// {
+		// 	ClrMessage();
+		//
+		// 	WriteLineTab("Parse Test 2");
+		// 	WriteLineTab("void");
+		//
+		// 	// tests02A.parseTest02();
+		//
+		// 	ShowMessage();
+		// }
+		//
+		// private void BtnParse02a_03_OnClick(object sender, RoutedEventArgs e)
+		// {
+		// 	ClrMessage();
+		//
+		// 	WriteLineTab("Parse Test 2-3");
+		// 	WriteLineTab("void");
+		//
+		// 	// tests02A.parseTest03();
+		//
+		// 	ShowMessage();
+		// }
+		//
+		// private void BtnParse02a_04_OnClick(object sender, RoutedEventArgs e)
+		// {
+		// 	ClrMessage();
+		//
+		// 	WriteLineTab("Parse Test 02a-04");
+		// 	WriteLineTab("void");
+		//
+		// 	// tests02A.parseTest04();
+		//
+		// 	ShowMessage();
+		// }
 
-			tests02A.parseTest03();
+		// private void BtnParse04_01a_OnClick(object sender, RoutedEventArgs e)
+		// {
+		// 	ClrMessage();
+		//
+		// 	WriteLineTab("parse Test 4-1 void");
+		//
+		// 	ShowMessage();
+		// }
 
-			ShowMessage();
-		}
-		
-		private void BtnParse04_01a_OnClick(object sender, RoutedEventArgs e)
-		{
-			ClrMessage();
-
-			WriteLineTab("parse Test 4-1");
-
-			tests04Amts.ShowParseGenDefs01a();
-
-			ShowMessage();
-		}
-		
 		private void BtnToken04_02a_OnClick(object sender, RoutedEventArgs e)
 		{
 			ClrMessage();
 
-			WriteLineTab("Token Test 4-2");
+			WriteLineTab("Tokenize Test 4-2");
 
-			tests04Amts.valueDefTest01b();
+			// tests04Amts.valueDefTest01b();
+
+			WriteLine("@1");
+
+			tests04Amts.TokenTest02();
 
 			ShowMessage();
 		}
@@ -254,7 +298,7 @@ namespace CellsTest.Windows
 
 			WriteLineTab("Token Test 4-1");
 
-			tests04Amts.tokenAmtTest01();
+			tests04Amts.TokenAmtTest01();
 
 			ShowMessage();
 		}
@@ -266,17 +310,6 @@ namespace CellsTest.Windows
 			WriteLineTab("Parse Test 2-1");
 
 			tests02A.parseTest01();
-
-			ShowMessage();
-		}
-
-		private void BtnParse02_OnClick(object sender, RoutedEventArgs e)
-		{
-			ClrMessage();
-
-			WriteLineTab("Parse Test 2");
-
-			tests02A.parseTest02();
 
 			ShowMessage();
 		}
@@ -316,7 +349,7 @@ namespace CellsTest.Windows
 		private void BtnLabelsAndFormulas_OnClick(object sender, RoutedEventArgs e)
 		{
 			listInfo.listLablesAndFormulas();
-
+		
 			Debug.WriteLine("@List listLablesAndFormulas");
 		}
 
